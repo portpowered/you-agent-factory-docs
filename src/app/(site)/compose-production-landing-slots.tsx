@@ -3,6 +3,14 @@ import { Terminal, type TerminalProps } from "@/features/code";
 import { SiteFooter, type SiteFooterProps } from "@/features/footer";
 import {
   CapabilityStrip,
+  CtaBand,
+  type CtaBandProps,
+  FactoryCarousel,
+  type FactoryCarouselProps,
+  type FactorySlideData,
+  FaqPanel,
+  type FaqPanelItem,
+  type FaqPanelProps,
   HeroSection,
   LandingFooterArt,
   LandingHeader,
@@ -19,6 +27,7 @@ import {
   type LandingCapabilityData,
   type LandingCarouselData,
   type LandingCtaContent,
+  type LandingFaqData,
   type LandingFooterData,
   type LandingHeaderData,
   type LandingHeroData,
@@ -31,16 +40,28 @@ import {
   WHALE_BUBBLES_FIXTURE_SRC,
 } from "@/features/landing-page/whale-bubbles.fixtures";
 
+/** Compose-local FAQ heading — same default as harness Wave B / faq-cta-harness. */
+const FAQ_PANEL_HEADING = "FAQ";
+
+/**
+ * Compose-local CTA control defaults — same as harness Wave B / faq-cta-harness.
+ * Not fixture schema fields; LandingCtaContent has no ctaLabel / ctaHref.
+ */
+const CTA_BAND_LABEL = "Install the CLI";
+const CTA_BAND_HREF = "/docs/guides";
+
 /**
  * Production `/` LandingPage slots filled from MERGED public exports.
- * Carousel / FAQ / CTA stay omitted so LandingPage keeps labeled placeholders
- * until those surfaces are ready (carousel #217 remains open).
+ * Includes Wave A fills plus Wave B carousel / faq / cta.
  */
 export const WIRED_PRODUCTION_LANDING_SLOTS = [
   "header",
   "hero",
   "capability",
   "youi",
+  "carousel",
+  "faq",
+  "cta",
   "whaleBubbles",
   "footer",
 ] as const satisfies ReadonlyArray<keyof LandingPageSlots>;
@@ -165,6 +186,90 @@ export function composeProductionYouiSlot(
 }
 
 /**
+ * Map landing fixture carousel slides onto the public FactoryCarousel /
+ * FactorySlideData contract. Keeps id / title / blurb / command only; omits
+ * `art` unless the fixture already supplies a caller-owned ReactNode (no path
+ * → ReactNode invention from strings). Mirrored from harness Wave B — do not
+ * import from (dev)/landing-harness/**.
+ */
+export function mapFixtureCarouselToFactoryCarouselProps(
+  carousel: LandingCarouselData = fixtureLandingPageData.carousel,
+): Pick<FactoryCarouselProps, "slides"> {
+  const slides: FactorySlideData[] = carousel.slides.map((slide) => {
+    const mapped: FactorySlideData = {
+      id: slide.id,
+      title: slide.title,
+      blurb: slide.blurb,
+      command: slide.command,
+    };
+    if (slide.art != null) {
+      mapped.art = slide.art;
+    }
+    return mapped;
+  });
+
+  return { slides };
+}
+
+/** Real production carousel slot: FactoryCarousel from fixture slides. */
+export function composeProductionCarouselSlot(
+  carousel: LandingCarouselData = fixtureLandingPageData.carousel,
+): ReactNode {
+  return (
+    <FactoryCarousel {...mapFixtureCarouselToFactoryCarouselProps(carousel)} />
+  );
+}
+
+/**
+ * Map landing fixture FAQ items onto the public FaqPanel / FaqPanelItem
+ * contract (id / question / answer). No invented FAQ schemas. Mirrored from
+ * harness Wave B — do not import from (dev)/landing-harness/**.
+ */
+export function mapFixtureFaqToFaqPanelProps(
+  faq: LandingFaqData = fixtureLandingPageData.faq,
+): Pick<FaqPanelProps, "items" | "heading"> {
+  const items: FaqPanelItem[] = faq.items.map((item) => ({
+    id: item.id,
+    question: item.question,
+    answer: item.answer,
+  }));
+
+  return { items, heading: FAQ_PANEL_HEADING };
+}
+
+/** Real production faq slot: FaqPanel from fixture items. */
+export function composeProductionFaqSlot(
+  faq: LandingFaqData = fixtureLandingPageData.faq,
+): ReactNode {
+  return <FaqPanel {...mapFixtureFaqToFaqPanelProps(faq)} />;
+}
+
+/**
+ * Map landing fixture CTA fields onto the public CtaBand contract.
+ * Reuses faq-cta-harness defaults for required `ctaLabel` and optional
+ * `ctaHref` — does not extend LandingCtaContent or invent schema fields.
+ * Mirrored from harness Wave B — do not import from (dev)/landing-harness/**.
+ */
+export function mapFixtureCtaToCtaBandProps(
+  cta: LandingCtaContent = fixtureLandingPageData.cta,
+): CtaBandProps {
+  return {
+    headline: cta.headline,
+    supporting: cta.supporting,
+    installCommand: cta.installCommand,
+    ctaLabel: CTA_BAND_LABEL,
+    ctaHref: CTA_BAND_HREF,
+  };
+}
+
+/** Real production cta slot: CtaBand from fixture CTA fields. */
+export function composeProductionCtaSlot(
+  cta: LandingCtaContent = fixtureLandingPageData.cta,
+): ReactNode {
+  return <CtaBand {...mapFixtureCtaToCtaBandProps(cta)} />;
+}
+
+/**
  * Map landing fixture whale/bubbles data onto WhaleBubblesSection props.
  * Falls back to `WHALE_BUBBLES_FIXTURE_*` when fixture fields are empty.
  */
@@ -227,9 +332,8 @@ export function composeProductionFooterSlot(
 
 /**
  * Aggregate production LandingPage slot props from MERGED public exports.
- * Returns only wired keys — carousel / faq / cta stay on LandingPage
- * placeholder defaults. Props map from `fixtureLandingPageData` (or optional
- * override) onto public component contracts only; no CMS schemas.
+ * Returns only wired keys. Props map from `fixtureLandingPageData` (or
+ * optional override) onto public component contracts only; no CMS schemas.
  */
 export function composeProductionLandingSlots(
   data: LandingPageData = fixtureLandingPageData,
@@ -242,6 +346,9 @@ export function composeProductionLandingSlots(
     }),
     capability: composeProductionCapabilitySlot(data.capability),
     youi: composeProductionYouiSlot(data.youi),
+    carousel: composeProductionCarouselSlot(data.carousel),
+    faq: composeProductionFaqSlot(data.faq),
+    cta: composeProductionCtaSlot(data.cta),
     whaleBubbles: composeProductionWhaleBubblesSlot(data.whaleBubbles),
     footer: composeProductionFooterSlot(data.footer),
   };

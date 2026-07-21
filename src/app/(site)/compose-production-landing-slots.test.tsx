@@ -1,4 +1,5 @@
-import { describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, test } from "bun:test";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { LandingPage } from "@/features/landing-page/LandingPage";
@@ -9,19 +10,43 @@ import {
 } from "@/features/landing-page/whale-bubbles.fixtures";
 import {
   composeProductionCapabilitySlot,
+  composeProductionCarouselSlot,
+  composeProductionCtaSlot,
+  composeProductionFaqSlot,
   composeProductionFooterSlot,
   composeProductionHeaderSlot,
   composeProductionHeroSlot,
   composeProductionLandingSlots,
   composeProductionWhaleBubblesSlot,
   composeProductionYouiSlot,
+  mapFixtureCarouselToFactoryCarouselProps,
   mapFixtureCommandsToTerminalLines,
   mapFixtureCommandsToTerminalProps,
+  mapFixtureCtaToCtaBandProps,
+  mapFixtureFaqToFaqPanelProps,
   mapFixtureFooterToSiteFooterProps,
   mapFixtureHeaderToLandingHeaderProps,
   mapFixtureWhaleBubblesToSectionProps,
   WIRED_PRODUCTION_LANDING_SLOTS,
 } from "./compose-production-landing-slots";
+
+function mockPrefersReducedMotion(reduce: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: reduce && query.includes("prefers-reduced-motion: reduce"),
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
+const originalMatchMedia = window.matchMedia;
 
 describe("composeProductionHeaderSlot", () => {
   test("maps fixture brand and nav onto LandingHeader props", () => {
@@ -106,6 +131,168 @@ describe("composeProductionYouiSlot", () => {
   });
 });
 
+describe("composeProductionCarouselSlot", () => {
+  afterEach(() => {
+    cleanup();
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: originalMatchMedia,
+    });
+  });
+
+  test("maps fixture slides onto FactoryCarousel public slide contract", () => {
+    const props = mapFixtureCarouselToFactoryCarouselProps(
+      fixtureLandingPageData.carousel,
+    );
+
+    expect(props.slides).toHaveLength(
+      fixtureLandingPageData.carousel.slides.length,
+    );
+    for (const [index, slide] of props.slides.entries()) {
+      const fixture = fixtureLandingPageData.carousel.slides[index];
+      expect(slide.id).toBe(fixture?.id);
+      expect(slide.title).toBe(fixture?.title);
+      expect(slide.blurb).toBe(fixture?.blurb);
+      expect(slide.command).toBe(fixture?.command);
+      expect(slide).not.toHaveProperty("art");
+    }
+  });
+
+  test("preserves caller-owned art ReactNode when fixture supplies one", () => {
+    const art = <span data-testid="fixture-slide-art">art</span>;
+    const props = mapFixtureCarouselToFactoryCarouselProps({
+      slides: [
+        {
+          id: "with-art",
+          title: "With art",
+          blurb: "Has art node",
+          command: "you --help",
+          art,
+        },
+      ],
+    });
+
+    expect(props.slides[0]?.art).toBe(art);
+  });
+
+  test("composeProductionCarouselSlot renders FactoryCarousel markers from fixture", () => {
+    const html = renderToStaticMarkup(
+      composeProductionCarouselSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-factory-carousel=""');
+    expect(html).not.toContain('data-landing-placeholder="carousel"');
+
+    for (const slide of fixtureLandingPageData.carousel.slides) {
+      expect(html).toContain(slide.title);
+      expect(html).toContain(slide.blurb);
+      expect(html).toContain(slide.command);
+      expect(html).toContain(`data-factory-slide="${slide.id}"`);
+    }
+  });
+
+  test("prefers-reduced-motion: reduce reports static carousel motion on production fill", async () => {
+    mockPrefersReducedMotion(true);
+    const { container } = render(
+      composeProductionCarouselSlot() as ReactElement,
+    );
+
+    await waitFor(() => {
+      expect(
+        container
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("static");
+    });
+
+    const activeTitle = fixtureLandingPageData.carousel.slides[0]?.title ?? "";
+    expect(container.querySelectorAll("[data-carousel-slide]").length).toBe(1);
+    expect(container.textContent).toContain(activeTitle);
+    expect(
+      container.querySelectorAll("[data-carousel-depth='neighbor']").length,
+    ).toBe(0);
+  });
+
+  test("no reduced-motion preference keeps depth carousel motion on production fill", async () => {
+    mockPrefersReducedMotion(false);
+    const { container } = render(
+      composeProductionCarouselSlot() as ReactElement,
+    );
+
+    await waitFor(() => {
+      expect(
+        container
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("depth");
+    });
+
+    expect(
+      container.querySelectorAll("[data-carousel-slide]").length,
+    ).toBeGreaterThan(1);
+  });
+});
+
+describe("composeProductionFaqSlot", () => {
+  test("maps fixture FAQ items onto FaqPanel public item contract", () => {
+    const props = mapFixtureFaqToFaqPanelProps(fixtureLandingPageData.faq);
+
+    expect(props.heading).toBe("FAQ");
+    expect(props.items).toHaveLength(fixtureLandingPageData.faq.items.length);
+    for (const [index, item] of props.items.entries()) {
+      const fixture = fixtureLandingPageData.faq.items[index];
+      expect(item.id).toBe(fixture?.id);
+      expect(item.question).toBe(fixture?.question);
+      expect(item.answer).toBe(fixture?.answer);
+    }
+  });
+
+  test("composeProductionFaqSlot renders FaqPanel markers from fixture", () => {
+    const html = renderToStaticMarkup(
+      composeProductionFaqSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-faq-parchment=""');
+    expect(html).not.toContain('data-landing-placeholder="faq"');
+
+    for (const item of fixtureLandingPageData.faq.items) {
+      expect(html).toContain(item.question);
+      expect(html).toContain(item.answer);
+      expect(html).toContain(`data-landing-faq-item-id="${item.id}"`);
+    }
+  });
+});
+
+describe("composeProductionCtaSlot", () => {
+  test("maps fixture CTA fields onto CtaBand public contract with compose defaults", () => {
+    const props = mapFixtureCtaToCtaBandProps(fixtureLandingPageData.cta);
+
+    expect(props.headline).toBe(fixtureLandingPageData.cta.headline);
+    expect(props.supporting).toBe(fixtureLandingPageData.cta.supporting);
+    expect(props.installCommand).toBe(
+      fixtureLandingPageData.cta.installCommand,
+    );
+    expect(props.ctaLabel).toBe("Install the CLI");
+    expect(props.ctaHref).toBe("/docs/guides");
+  });
+
+  test("composeProductionCtaSlot renders CtaBand markers from fixture", () => {
+    const html = renderToStaticMarkup(
+      composeProductionCtaSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-landing-cta-band=""');
+    expect(html).toContain('data-landing-cta-fog=""');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
+    expect(html).toContain(fixtureLandingPageData.cta.headline);
+    expect(html).toContain(fixtureLandingPageData.cta.supporting);
+    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain("Install the CLI");
+    expect(html).toContain('href="/docs/guides"');
+  });
+});
+
 describe("composeProductionWhaleBubblesSlot", () => {
   test("maps fixture whaleSrc and bubbles onto WhaleBubblesSection props", () => {
     const props = mapFixtureWhaleBubblesToSectionProps(
@@ -173,17 +360,37 @@ describe("composeProductionFooterSlot", () => {
 });
 
 describe("composeProductionLandingSlots", () => {
+  test("WIRED_PRODUCTION_LANDING_SLOTS includes Wave A keys plus Wave B carousel/faq/cta", () => {
+    expect([...WIRED_PRODUCTION_LANDING_SLOTS]).toEqual([
+      "header",
+      "hero",
+      "capability",
+      "youi",
+      "carousel",
+      "faq",
+      "cta",
+      "whaleBubbles",
+      "footer",
+    ]);
+  });
+
   test("returns only wired production slot keys", () => {
     const slots = composeProductionLandingSlots();
     const keys = Object.keys(slots).sort();
 
     expect(keys).toEqual([...WIRED_PRODUCTION_LANDING_SLOTS].sort());
-    expect(slots).not.toHaveProperty("carousel");
-    expect(slots).not.toHaveProperty("faq");
-    expect(slots).not.toHaveProperty("cta");
+    expect(slots).toHaveProperty("header");
+    expect(slots).toHaveProperty("hero");
+    expect(slots).toHaveProperty("capability");
+    expect(slots).toHaveProperty("youi");
+    expect(slots).toHaveProperty("carousel");
+    expect(slots).toHaveProperty("faq");
+    expect(slots).toHaveProperty("cta");
+    expect(slots).toHaveProperty("whaleBubbles");
+    expect(slots).toHaveProperty("footer");
   });
 
-  test("LandingPage mounts wired fills and keeps carousel as placeholder", () => {
+  test("LandingPage mounts wired fills including carousel, faq, and cta", () => {
     const html = renderToStaticMarkup(
       <LandingPage {...composeProductionLandingSlots()} />,
     );
@@ -194,13 +401,36 @@ describe("composeProductionLandingSlots", () => {
     expect(html).toContain('data-particle-sphere=""');
     expect(html).toContain('data-capability-strip=""');
     expect(html).toContain('data-youi-showcase=""');
+    expect(html).toContain('data-factory-carousel=""');
+    expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-cta-band=""');
     expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-testid="site-footer"');
-    expect(html).toContain('data-landing-placeholder="carousel"');
-    expect(html).toContain('data-landing-placeholder="faq"');
-    expect(html).toContain('data-landing-placeholder="cta"');
+    expect(html).not.toContain('data-landing-placeholder="carousel"');
+    expect(html).not.toContain('data-landing-placeholder="faq"');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
     expect(html).not.toContain('data-landing-placeholder="header"');
     expect(html).not.toContain('data-landing-placeholder="hero"');
     expect(html).not.toContain('data-landing-placeholder="footer"');
+    expect(html).not.toContain('data-landing-placeholder="capability"');
+    expect(html).not.toContain('data-landing-placeholder="youi"');
+    expect(html).not.toContain('data-landing-placeholder="whaleBubbles"');
+
+    for (const slide of fixtureLandingPageData.carousel.slides) {
+      expect(html).toContain(slide.title);
+      expect(html).toContain(slide.blurb);
+      expect(html).toContain(slide.command);
+    }
+
+    for (const item of fixtureLandingPageData.faq.items) {
+      expect(html).toContain(item.question);
+      expect(html).toContain(item.answer);
+    }
+
+    expect(html).toContain(fixtureLandingPageData.cta.headline);
+    expect(html).toContain(fixtureLandingPageData.cta.supporting);
+    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain("Install the CLI");
+    expect(html).toContain('href="/docs/guides"');
   });
 });

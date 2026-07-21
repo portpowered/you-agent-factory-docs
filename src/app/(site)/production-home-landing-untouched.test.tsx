@@ -57,7 +57,8 @@ function findElementOfType(
  * Wave C production route flip regression: `/` (and localized home sharing
  * renderHomePage) mounts LandingPage with wired MERGED fills. HomeArticle
  * remains available for other surfaces but is not the production home
- * composition. Carousel may stay a labeled placeholder.
+ * composition. Carousel and FAQ are real Wave B fills (FactoryCarousel /
+ * FaqPanel).
  */
 describe("production home mounts LandingPage (Wave C route flip)", () => {
   test("renderHomePage mounts LandingPage and does not mount HomeArticle", async () => {
@@ -83,7 +84,7 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     expect(html).toContain('data-landing-page=""');
   });
 
-  test("production home exposes wired landing markers and keeps carousel placeholder", async () => {
+  test("production home exposes wired landing markers including FactoryCarousel, FaqPanel, and CtaBand", async () => {
     const tree = (await renderHomePage()) as ReactElement;
     const landingPage = findElementOfType(tree, LandingPage);
     expect(landingPage).not.toBeNull();
@@ -91,7 +92,7 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     const html = renderToStaticMarkup(landingPage as ReactElement);
 
     // Root + wired MERGED slots (header / hero+sphere / capability / youi /
-    // whale / footer). Carousel stays a labeled placeholder by design.
+    // carousel / faq / cta / whale / footer).
     expect(html).toContain('data-landing-page=""');
     expect(html).toContain('data-landing-main=""');
     expect(html).toContain("<main");
@@ -100,10 +101,15 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     expect(html).toContain('data-particle-sphere=""');
     expect(html).toContain('data-capability-strip=""');
     expect(html).toContain('data-youi-showcase=""');
+    expect(html).toContain('data-factory-carousel=""');
+    expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-cta-band=""');
     expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-testid="site-footer"');
     expect(html).toContain('data-landing-footer-art=""');
-    expect(html).toContain('data-landing-placeholder="carousel"');
+    expect(html).not.toContain('data-landing-placeholder="carousel"');
+    expect(html).not.toContain('data-landing-placeholder="faq"');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
 
     // Reject docs-home composition and harness-only hero surface.
     expect(html).not.toContain(
