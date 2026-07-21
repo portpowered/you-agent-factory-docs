@@ -39,7 +39,7 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-field-tree.tsx` | Recursive field tree with disclosure semantics and `$ref` via SchemaRefLink |
 | `src/components/references/schema/schema-field-tree.test.tsx` | Field tree/row keyboard expand + path + `$ref` non-recursion + in-row default/constraint proofs |
 | `src/components/references/schema/schema-ref-display.ts` | Pure `$ref` / composition / discriminator display projectors over W04 outcomes |
-| `src/components/references/schema/schema-ref-link.tsx` | Navigable `$ref` link + cycle sentinel; unresolved missing/malformed status |
+| `src/components/references/schema/schema-ref-link.tsx` | Navigable `$ref` link + cycle sentinel; unresolved missing/malformed status. Navigable anchors use `text-secondary` (not `text-primary`); unresolved status keeps `text-destructive`. |
 | `src/components/references/schema/schema-composition.tsx` | oneOf/anyOf/allOf + discriminator mapping display |
 | `src/components/references/schema/schema-composition.test.tsx` | Composition, discriminator, cycle, unresolved, and field-tree `$ref` proofs |
 | `src/components/references/schema/schema-anchor.ts` | Pure W04 deep-link / breadcrumb segment helpers (`anchorForIdentity`) |
@@ -94,6 +94,14 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   Pass pre-resolved `SchemaFieldTreeNode` children — do not walk `$ref`
   targets in the UI. `$ref` rows render `SchemaRefLink` (stable W04 anchors;
   cycle sentinels stay links; missing/malformed are unresolved `role="status"`).
+  Navigable `SchemaRefLink` anchors use `text-secondary` with mono / `text-xs`
+  / `underline-offset-2` / `hover:underline` / focus-visible ring classes —
+  do not restyle them to `text-primary` yellow, and do not invent
+  `decoration-*` chrome when the link string has none. Unresolved
+  missing/malformed markup stays `text-destructive`. Consumers
+  (composition/definition rows, events discriminator payload links) inherit
+  the accent via `SchemaRefLink`; leave API navigators and events-only
+  probe/matrix classNames to sibling repair lanes.
   Use `schemaFieldTreeNodeCanExpand` so refs never recurse even if children
   were accidentally attached. When a field publishes `default` / enum /
   constraints / const / additionalProperties, the row composes
