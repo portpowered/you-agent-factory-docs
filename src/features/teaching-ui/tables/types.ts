@@ -28,3 +28,22 @@ export type AttributeFilterState = {
 };
 
 export type GetAttributeValue<Row> = (row: Row, attributeId: string) => unknown;
+
+/** Host-owned sort direction for a single attribute column. */
+export type SortDirection = "asc" | "desc";
+
+/**
+ * Display model after transpose: columns = entities, rows = attributes.
+ * Internal storage remains entity-as-row; this shape is view-only.
+ */
+export type TransposedMatrixDisplayModel = {
+  /** Column headers / entity axis, in visible-id order. */
+  columnEntityIds: string[];
+  /** Row axis: attribute defs in matrix order (`order` when set, else input order). */
+  attributeDefs: AttributeDef[];
+  /**
+   * Cell grid aligned as `cells[attributeRowIndex][entityColumnIndex]`.
+   * Values come from `getAttributeValue` for each entity × attribute.
+   */
+  cells: unknown[][];
+};
