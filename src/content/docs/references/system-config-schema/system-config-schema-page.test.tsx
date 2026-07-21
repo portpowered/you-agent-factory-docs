@@ -219,6 +219,25 @@ describe("SystemConfigSchemaReference mount", () => {
       `"workerModel": "${SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE.defaults.workerModel}"`,
     );
     expect(exampleCode.textContent ?? "").not.toMatch(/defaultModelProvider/);
+
+    // Opt-in examples-before-body: authored examples precede definition fields.
+    const definition = screen.getByTestId(
+      "system-config-schema-reference-definition",
+    );
+    expect(definition.getAttribute("data-schema-examples-placement")).toBe(
+      "before-body",
+    );
+    const fields = surface.querySelector("[data-schema-definition-fields]");
+    expect(examples).toBeTruthy();
+    expect(fields).toBeTruthy();
+    expect(
+      Boolean(
+        examples &&
+          fields &&
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
   });
 
   test("shows an accessible invalid status when schema acquisition fails", () => {
