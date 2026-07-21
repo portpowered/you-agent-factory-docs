@@ -32,9 +32,9 @@ page-formatting / homepage-2 / SEO work.
 | Route | Content / registry cue | Integrate status (re-check each pass) |
 | --- | --- | --- |
 | `/docs/techniques/planner-executor-in-action/` | Technique content bundle + registry entry when landed | Soft-skipped 2026-07-21 UTC — absent from `main` (sibling worktree has MDX; no open PR / not merged) |
-| `/blog/comparing-orchestrators/` | Blog content bundle + registry entry when landed | Soft-skipped 2026-07-21 UTC — absent from `main` |
+| `/blog/comparing-orchestrators/` | Blog content bundle + registry entry when landed | Soft-skipped 2026-07-21 UTC — absent from `main` (sibling worktree has MDX; no open PR / not merged) |
 | `/docs/techniques/planner-executor/` | Existing glossary technique (cross-link source) | Present — **no in-action cross-link edits** until destination lands |
-| `/blog/comparing-agent-factories/` (or nearest comparison slug) | Existing comparison post (cross-link peer) | Present (`comparing-agent-factories`) |
+| `/blog/comparing-agent-factories/` (or nearest comparison slug) | Existing comparison post (cross-link peer) | Present — **no orchestrator cross-link edits** until destination lands |
 
 Sibling branches may exist (`teaching-technique-planner-executor-in-action`,
 `teaching-blog-comparing-orchestrators`) while still off `main`. Soft-inventory
@@ -46,6 +46,7 @@ MDX or done inventory rows from in-flight sibling worktrees.
 | Story | Outcome | UTC check |
 | --- | --- | --- |
 | `003` planner-executor ↔ in-action | Soft-skipped — destination absent on `origin/main`; no technique MDX edits | 2026-07-21 11:12 UTC |
+| `004` comparing-orchestrators ↔ comparing-agent-factories | Soft-skipped — destination absent on `origin/main`; no blog MDX edits | 2026-07-21 11:11 UTC |
 
 ## Patterns
 

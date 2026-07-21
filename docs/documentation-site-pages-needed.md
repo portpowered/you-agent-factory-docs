@@ -129,4 +129,7 @@ techniques (beside `planner-executor`)
 blog (beside comparing agent factories)
 - `comparing-orchestrators` (`/blog/comparing-orchestrators/`) — **soft-skipped**
   (2026-07-21 UTC): not present on `main` / this integrate HEAD; sibling
-  worktrees may land it later — re-check before cross-linking
+  worktrees may land it later — re-check before cross-linking.
+  Cross-link soft-wire (`comparing-orchestrators` ↔ `comparing-agent-factories`)
+  also **soft-skipped** for the same reason (no blog MDX edits until the
+  destination lands; nearest peer remains `comparing-agent-factories`).
