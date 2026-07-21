@@ -346,6 +346,13 @@ workers / workstations) needs a page-owned mount such as the W11 events corpus
 
 For `/docs/references/events`, also see
 [events-reference-page-relevant-files](./events-reference-page-relevant-files.md).
+Events-local ordinary textual links in
+`event-json-reconnect-probe.tsx` and `response-event-matrix.tsx` use
+`text-secondary` (keep `underline-offset-4 hover:underline`; matrix also
+keeps `font-mono text-sm`) — not `text-primary` yellow. SchemaRefLink /
+API navigator accents are separate ownership. Browser-verify with
+`bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1` and
+fetch `/docs/references/events` (no trailing slash, or `curl -L`).
 
 Blog discoverability proofs (index card, search queries, tag landing) for a
 blog-local lane should colocate under `src/content/blog/<slug>/` (for example
