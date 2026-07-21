@@ -84,14 +84,14 @@ function FactoriesIndexSchemaSummary({
       <p className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-sm">
         <Link
           href="/docs/references/schema"
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="font-medium text-secondary underline-offset-4 decoration-secondary hover:underline"
           data-factories-index-full-schema-link=""
         >
           {messages.fullFactorySchemaLink}
         </Link>
         <Link
           href="/docs/references/api"
-          className="font-medium text-primary underline-offset-4 hover:underline"
+          className="font-medium text-secondary underline-offset-4 decoration-secondary hover:underline"
           data-factories-index-full-api-link=""
         >
           {messages.fullFactoryApiLink}

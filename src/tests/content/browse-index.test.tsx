@@ -187,6 +187,34 @@ describe("collection-driven browse behavior", () => {
     }
   });
 
+  it("uses secondary accent on section footer textual CTAs, not primary yellow", async () => {
+    const messages = await loadUiMessages();
+    const page = await renderBrowseIndexPage();
+    const html = renderToStaticMarkup(page);
+    const documentationCta = messages.browseIndex.documentationSectionLinkLabel;
+    const secondaryFooterClass =
+      "text-sm font-medium text-secondary underline-offset-4 decoration-secondary hover:underline";
+
+    expect(html).toContain(documentationCta);
+    expect(html).toContain(`href="/docs/documentation"`);
+    expect(html).toContain(secondaryFooterClass);
+    expect(html).not.toContain(
+      "text-sm font-medium text-primary underline-offset-4 hover:underline",
+    );
+    expect(html).not.toContain(
+      "text-sm font-medium text-primary underline-offset-4 decoration-primary hover:underline",
+    );
+
+    for (const label of [
+      messages.browseIndex.guidesSectionLinkLabel,
+      messages.browseIndex.conceptsSectionLinkLabel,
+      messages.browseIndex.techniquesSectionLinkLabel,
+      documentationCta,
+    ] as const) {
+      expect(html).toContain(label);
+    }
+  });
+
   it("renders localized quick routes and CLI section index hrefs for shipped locales", async () => {
     const page = await renderBrowseIndexPage("vi");
     const html = renderToStaticMarkup(page);

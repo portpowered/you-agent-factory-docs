@@ -154,6 +154,15 @@ shared map — not per-control hex hacks.
 - Inline auto-links share `proseAutoLinkClassName` in
   `src/features/docs/components/prose-auto-link-class.ts`
   (`text-secondary` + `decoration-secondary`, not `text-primary`).
+- Ordinary non-button browse-all / see-all textual CTAs use the same
+  secondary accent family (not `text-primary` yellow): Browse section
+  footers in `BrowseIndexPage.tsx` (`linkHref` + `linkLabel`) and
+  factories-index see-all links in `render-factories-index-page.tsx`
+  (`data-factories-index-full-schema-link` /
+  `data-factories-index-full-api-link`). Lock with
+  `browse-index.test.tsx` and `factories-index.test.tsx` class assertions.
+  Do not restyle solid primary buttons, search trigger, or primary accent
+  icons as part of that repair.
 - Lock with `prose-auto-link-class.test.tsx` and rendered secondary-class
   assertions on a live factory phrase (for example Model Context Protocol).
   The representative layout chrome contract
