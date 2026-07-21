@@ -9,7 +9,10 @@ import {
   resolveProductionSitemapUrl,
 } from "@/lib/seo/export-robots";
 import { EXPORT_SITEMAP_RELATIVE_PATH } from "@/lib/seo/export-sitemap";
-import { resolveProductionMetadataHref } from "@/lib/seo/production-metadata-base";
+import {
+  resolveProductionMetadataHref,
+  resolveProductionSitemapLocHref,
+} from "@/lib/seo/production-metadata-base";
 import { listPublicSitemapAbsoluteUrls } from "@/lib/seo/public-sitemap-routes";
 import { resolveSocialPreviewImageAbsoluteHref } from "@/lib/seo/social-preview-assets";
 import { verifyExportSeoDiscovery } from "@/lib/seo/verify-export-seo-discovery";
@@ -152,7 +155,10 @@ describe("verifyExportSeoDiscovery", () => {
       writeDiscoveryFixture(dir);
       const urls = [
         ...listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV),
-        resolveProductionMetadataHref("/docs/models", PROJECT_SITE_EXPORT_ENV),
+        resolveProductionSitemapLocHref(
+          "/docs/models",
+          PROJECT_SITE_EXPORT_ENV,
+        ),
       ];
       writeFileSync(join(dir, EXPORT_SITEMAP_RELATIVE_PATH), sitemapXml(urls));
       const result = verifyExportSeoDiscovery({

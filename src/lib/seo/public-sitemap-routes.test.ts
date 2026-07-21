@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   PRODUCTION_SITE_ORIGIN,
-  resolveProductionMetadataHref,
+  resolveProductionSitemapLocHref,
 } from "@/lib/seo/production-metadata-base";
 import {
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
@@ -25,12 +25,13 @@ describe("public-sitemap-routes unit", () => {
 
     for (const route of SITEMAP_INCLUSION_PROOF_ROUTES) {
       expect(routes).toContain(route);
+      expect(route === "/" || !route.endsWith("/")).toBe(true);
       expect(urls).toContain(
-        resolveProductionMetadataHref(route, PROJECT_SITE_EXPORT_ENV),
+        resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
       );
     }
 
-    expect(resolveProductionMetadataHref("/", PROJECT_SITE_EXPORT_ENV)).toBe(
+    expect(resolveProductionSitemapLocHref("/", PROJECT_SITE_EXPORT_ENV)).toBe(
       `${PRODUCTION_SITE_ORIGIN}${BUILT_APP_GITHUB_PAGES_BASE_PATH}/`,
     );
   });

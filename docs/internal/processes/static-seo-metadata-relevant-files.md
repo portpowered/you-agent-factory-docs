@@ -8,7 +8,7 @@ social assets, sitemap, robots).
 
 | Path | Role |
 | --- | --- |
-| `src/lib/seo/production-metadata-base.ts` | Production origin + `resolveProductionMetadataBase` / `resolveProductionMetadataHref` |
+| `src/lib/seo/production-metadata-base.ts` | Production origin + `resolveProductionMetadataBase` / `resolveProductionMetadataHref` (non-slash) / `resolveProductionSitemapLocHref` (trailing-slash sitemap locs) |
 | `src/lib/seo/production-metadata-base.test.ts` | Origin/base-path resolution for project-site vs root modes |
 | `src/lib/seo/export-absolute-canonical.ts` | Absolute production canonical HTML checks + export-dir verification for home/docs/blog proof routes |
 | `src/lib/seo/export-absolute-canonical.test.ts` | Fixture + metadata + temp-`out/` proofs that canonicals are absolute under the production origin/base path and never legacy Atlas routes |
@@ -55,6 +55,17 @@ social assets, sitemap, robots).
 | `src/lib/build/verify-export-base-path.ts` | Export HTML checks accept path-prefixed or absolute production metadata hrefs |
 | `src/lib/build/build-contract-required-test-paths.ts` | Register focused SEO `*.test.ts` paths here for `make test-build-contract` / `bun run test:build-contract` (do not inline them in `package.json`) |
 
+## Policy notes (sitemap absolute locs)
+
+- App-relative sitemap inventories (`listPublicSitemapRoutes`) stay **non-slash**
+  (`/docs/factories`).
+- Absolute sitemap `<loc>` values use
+  `resolveProductionSitemapLocHref` → trailing-slash production URLs that match
+  live GitHub Pages / `rel=canonical` landings under `trailingSlash: true`.
+- Keep `resolveProductionMetadataHref` **non-slash** for file-like absolute URLs
+  (`/sitemap.xml`, `/images/og-default.png`) and non-sitemap metadata helpers.
+  Do not route those through the sitemap loc helper.
+
 ## Contract
 
 1. **Origin** is always `https://portpowered.github.io`.
@@ -99,9 +110,11 @@ social assets, sitemap, robots).
    `/docs/concepts/task-queue` (en only). Use
    `exportHtmlHasShippedAbsoluteAlternates` /
    `verifyExportLocalizedAlternates`. Never advertise deleted Atlas paths.
-10. **Sitemap** (story 006): `listPublicSitemapRoutes` / `buildPublicSitemapEntries`
-    emit only current public factory routes as absolute production URLs.
-    Project-site export writes `out/sitemap.xml` via `src/app/sitemap.ts`.
+10. **Sitemap** (story 006 + SEO-SITEMAP-SLASH): `listPublicSitemapRoutes` stays
+    app-relative non-slash; `listPublicSitemapAbsoluteUrls` /
+    `buildPublicSitemapEntries` emit trailing-slash absolute production locs via
+    `resolveProductionSitemapLocHref`. Project-site export writes
+    `out/sitemap.xml` via `src/app/sitemap.ts`.
     Inclusion proofs: `/`, `/search`, `/browse`, `/tags`, `/blog`,
     `/blog/bottlenecks`, `/docs/concepts`, `/docs/concepts/harness`.
     Exclusion proofs: retired `/docs/models|modules|papers|training|systems`,

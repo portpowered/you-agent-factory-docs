@@ -9,7 +9,7 @@ import {
   listDocumentationRouteMigrationTargetRoutes,
 } from "@/lib/seo/documentation-route-migration";
 import { isCanonicalPublicDiscoveryPath } from "@/lib/seo/export-absolute-canonical";
-import { resolveProductionMetadataHref } from "@/lib/seo/production-metadata-base";
+import { resolveProductionSitemapLocHref } from "@/lib/seo/production-metadata-base";
 
 /**
  * Fixed shell surfaces that always ship on the factory-only public site.
@@ -103,13 +103,17 @@ export function listPublicSitemapRoutes(): string[] {
 }
 
 /**
- * Resolves public sitemap routes to absolute production URLs under the
+ * Resolves public sitemap routes to absolute production `<loc>` URLs under the
  * configured origin + optional project-site base path.
+ *
+ * Locs use {@link resolveProductionSitemapLocHref} (trailing-slash absolute
+ * form matching live canonicals). App-relative
+ * {@link listPublicSitemapRoutes} inventories stay non-slash.
  */
 export function listPublicSitemapAbsoluteUrls(
   env: BuildModeEnv = process.env,
 ): string[] {
   return listPublicSitemapRoutes().map((path) =>
-    resolveProductionMetadataHref(path, env),
+    resolveProductionSitemapLocHref(path, env),
   );
 }

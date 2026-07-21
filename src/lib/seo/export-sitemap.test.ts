@@ -18,6 +18,7 @@ import {
 import {
   PRODUCTION_SITE_ORIGIN,
   resolveProductionMetadataHref,
+  resolveProductionSitemapLocHref,
 } from "@/lib/seo/production-metadata-base";
 import {
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
@@ -90,15 +91,16 @@ describe("public sitemap routes", () => {
       expect(
         url.startsWith(`${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}`),
       ).toBe(true);
+      expect(url.endsWith("/")).toBe(true);
     }
     for (const route of SITEMAP_INCLUSION_PROOF_ROUTES) {
       expect(urls).toContain(
-        resolveProductionMetadataHref(route, PROJECT_SITE_EXPORT_ENV),
+        resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
       );
     }
   });
 
-  test("collection index sitemap locs stay non-slash canonical hrefs", () => {
+  test("collection index sitemap locs use trailing-slash absolute hrefs", () => {
     const routes = listPublicSitemapRoutes();
     const urls = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
     const collectionIndexes = [
@@ -110,13 +112,15 @@ describe("public sitemap routes", () => {
     for (const route of collectionIndexes) {
       expect(routes).toContain(route);
       expect(routes).not.toContain(`${route}/`);
-      const absolute = resolveProductionMetadataHref(
+      const absolute = resolveProductionSitemapLocHref(
         route,
         PROJECT_SITE_EXPORT_ENV,
       );
-      expect(absolute.endsWith("/")).toBe(false);
+      expect(absolute.endsWith("/")).toBe(true);
       expect(urls).toContain(absolute);
-      expect(urls).not.toContain(`${absolute}/`);
+      expect(urls).not.toContain(
+        resolveProductionMetadataHref(route, PROJECT_SITE_EXPORT_ENV),
+      );
     }
   });
 
@@ -189,7 +193,7 @@ describe("export sitemap helpers", () => {
 
     const withLegacy = [
       ...good,
-      resolveProductionMetadataHref("/docs/models", PROJECT_SITE_EXPORT_ENV),
+      resolveProductionSitemapLocHref("/docs/models", PROJECT_SITE_EXPORT_ENV),
     ];
     expect(
       sitemapLocsMatchPublicFactoryContract(
@@ -200,7 +204,7 @@ describe("export sitemap helpers", () => {
 
     const missingHome = good.filter(
       (url) =>
-        url !== resolveProductionMetadataHref("/", PROJECT_SITE_EXPORT_ENV),
+        url !== resolveProductionSitemapLocHref("/", PROJECT_SITE_EXPORT_ENV),
     );
     expect(
       sitemapLocsMatchPublicFactoryContract(
@@ -247,7 +251,7 @@ describe("export sitemap helpers", () => {
       mkdirSync(tempRoot, { recursive: true });
       const urls = [
         ...listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV),
-        resolveProductionMetadataHref(
+        resolveProductionSitemapLocHref(
           "/docs/modules/grouped-query-attention",
           PROJECT_SITE_EXPORT_ENV,
         ),
