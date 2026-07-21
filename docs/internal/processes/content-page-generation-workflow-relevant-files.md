@@ -277,11 +277,33 @@ Before the first authored page under a rewrite-era CLI collection can pass
    missing MDX message keys. Draft documentation scaffolds must use
    non-empty placeholder bodies (even before story copy lands); do not
    leave `""` for keys referenced by `<T k="sections.*.body" />`.
+5b. Unlabeled Related blocks (page-formatting Q1 curated-only): do **not**
+   blank `sections.related.title` to `""` — `pageSectionSchema` requires
+   `title: z.string().min(1)` and empty titles fail published-docs registry
+   generation / page load. To drop the Related heading while keeping
+   `#related` + `<RelatedDocs />`, use a plain `<section id="related">`
+   (no `Section` / `titleKey`) and remove `sections.related` from locale
+   messages. Keep answer-section `LocalizedLinkList` mounts; strip only the
+   Related-footer hardcoded sibling list. In colocated page tests, prove the
+   strip with `#related` scoped asserts: `ul.mt-3.list-disc` absent
+   (`LocalizedLinkList` marker), `[data-testid="curated-related-docs"]`
+   present, and `Related To` / Limits headings null. Prefer scoping answer
+   links with `within(#section-id)` so RelatedDocs curated titles cannot
+   masquerade as answer-section LocalizedLinkList proofs.
 6. Browser verify with `bun run start` serves the last production build.
    After editing page MDX or colocated messages, run `bun run build` (or
    use `bun run dev`) before curling the route, or the HTML will still show
    the previous copy. Prefer a unique port in `3100-3999`,
    `curl --max-time 10`, and kill the server before the command exits.
+   In parent-hoisted worktrees, plain Turbopack `bun run dev` often fails to
+   resolve `next` from `src/app` — use
+   `bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` instead.
+   For FAQ PF-D chrome proofs on `/docs/documentation/faq`, assert from SSR
+   HTML: no `Limits And Assumptions` / `#limits-and-assumptions`, no `h2`
+   titled exactly `Related To` (do not grep the bare substring — empty-tag
+   copy like “related topics” false-positives), `#related` keeps
+   `data-testid="curated-related-docs"` without `list-disc`, answer-section
+   ids still mount their links, and Tags / References headings remain.
 7. Do not run overlapping `prepare:content-runtime` / `fumadocs-mdx`
    invocations in parallel on the same worktree — concurrent prep can delete
    `.source` mid-validate and fail with `Cannot find module '../../.source/server'`.

@@ -27,13 +27,6 @@
       "title": "Something Failed—Where Do I Recover?",
       "body": "When install, run, configuration, MCP, or dynamic-workflow steps fail, open Troubleshooting for symptom-scoped recovery that links into the owning canonical docs. Use this FAQ for common how-to questions; use Troubleshooting when you already have a failure symptom."
     },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "FAQ answers common you-agent-factory questions. It is not the install command matrix, not the getting-started quickstart, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short replies here."
-    },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
     },

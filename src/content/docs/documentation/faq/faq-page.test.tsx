@@ -2,8 +2,10 @@
  * Page-owned render proof for documentation/faq.
  * Covers documentation shell, FAQ identity, short-answer Q&A entries with
  * canonical-doc links, Troubleshooting cross-link, non-en locale stub
- * structure, and absence of Model Atlas / reader-shortcut / page-meta copy —
- * not route inventories or shared helper contracts.
+ * structure, quieter footer chrome (no Limits / Related To / hardcoded Related
+ * LocalizedLinkList; curated RelatedDocs + Tags + References retained), and
+ * absence of Model Atlas / reader-shortcut / page-meta copy — not route
+ * inventories or shared helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within the ordinary page-owned + locale-shipping surface for this lane.
  */
@@ -57,9 +59,6 @@ describe("faq documentation page", () => {
     const somethingFailed = String(
       loadedPage.messages.sections?.somethingFailed?.body ?? "",
     );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(whatIsYouAgentFactory).toMatch(/you-agent-factory/i);
     expect(whatIsYouAgentFactory).toMatch(/Getting Started|first-run/i);
@@ -87,11 +86,7 @@ describe("faq documentation page", () => {
 
     expect(somethingFailed).toMatch(/Troubleshooting/i);
     expect(somethingFailed).toMatch(/failure|recover/i);
-
-    expect(limits).toMatch(/FAQ answers common you-agent-factory questions/i);
-    expect(limits).toMatch(/not the install command matrix/i);
-    expect(limits).toMatch(/not a full CLI flag dump/i);
-    expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
 
     render(
       <main>
@@ -141,11 +136,15 @@ describe("faq documentation page", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Limits And Assumptions" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(document.getElementById("limits-and-assumptions")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(document.getElementById("tags")).toBeTruthy();
+    expect(document.getElementById("references")).toBeTruthy();
 
     expect(document.body.textContent).toMatch(/keeps long-running agent work/i);
     expect(document.body.textContent).toMatch(/OS-specific script/i);
@@ -160,83 +159,110 @@ describe("faq documentation page", () => {
     // Docs shell owns the page title; body must not duplicate an h1 title.
     expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
 
-    const whatIsLinks = screen.getAllByRole("link", {
-      name: "What is you-agent-factory",
-    });
-    expect(whatIsLinks.length).toBeGreaterThanOrEqual(1);
-    expect(whatIsLinks[0]?.getAttribute("href")).toBe(
-      "/docs/documentation/what-is-you-agent-factory",
-    );
-
-    const gettingStartedLinks = screen.getAllByRole("link", {
-      name: "Getting Started",
-    });
-    expect(gettingStartedLinks.length).toBeGreaterThanOrEqual(1);
-    expect(gettingStartedLinks[0]?.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
-    );
-
-    const installLinks = screen.getAllByRole("link", { name: "Install" });
-    expect(installLinks.length).toBeGreaterThanOrEqual(1);
-    expect(installLinks[0]?.getAttribute("href")).toBe(
-      "/docs/documentation/install",
-    );
-    expect(screen.getByRole("link", { name: "CLI" }).getAttribute("href")).toBe(
-      "/docs/documentation/cli",
-    );
+    // Answer-section LocalizedLinkList mounts stay intact (scoped to Q&A ids).
+    const whatIsSection = document.getElementById("what-is-you-agent-factory");
+    expect(whatIsSection).toBeTruthy();
     expect(
-      screen
-        .getByRole("link", { name: "Factory Session" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/sessions");
-    expect(
-      screen.getByRole("link", { name: "Configuration" }).getAttribute("href"),
-    ).toBe("/docs/factories/configuration");
-    expect(
-      screen
-        .getByRole("link", { name: "Global Configuration Factories" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/global-configuration");
-    const mcpLinks = screen.getAllByRole("link", { name: "MCP" });
-    expect(mcpLinks.length).toBeGreaterThanOrEqual(1);
-    expect(mcpLinks[0]?.getAttribute("href")).toBe("/docs/documentation/mcp");
-    expect(
-      screen
-        .getByRole("link", { name: "Dynamic Workflows" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/dynamic-workflows");
-    expect(
-      screen
-        .getByRole("link", { name: "Cursor dynamic workflows guide" })
-        .getAttribute("href"),
-    ).toBe("/docs/guides/cursor-dynamic-workflows");
-
-    const troubleshootingLinks = screen.getAllByRole("link", {
-      name: "Troubleshooting",
-    });
-    expect(troubleshootingLinks.length).toBeGreaterThanOrEqual(1);
-    expect(troubleshootingLinks[0]?.getAttribute("href")).toBe(
-      "/docs/documentation/troubleshooting",
-    );
-
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection).toBeTruthy();
-    const relatedQueries = within(relatedSection as HTMLElement);
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Troubleshooting" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/troubleshooting");
-    expect(
-      relatedQueries
+      within(whatIsSection as HTMLElement)
         .getByRole("link", { name: "What is you-agent-factory" })
         .getAttribute("href"),
     ).toBe("/docs/documentation/what-is-you-agent-factory");
     expect(
-      relatedQueries
+      within(whatIsSection as HTMLElement)
         .getByRole("link", { name: "Getting Started" })
         .getAttribute("href"),
     ).toBe("/docs/guides/getting-started");
+
+    const installSection = document.getElementById("how-to-install");
+    expect(installSection).toBeTruthy();
+    expect(
+      within(installSection as HTMLElement)
+        .getByRole("link", { name: "Install" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/install");
+
+    const runSection = document.getElementById("how-to-run-named-workflow");
+    expect(runSection).toBeTruthy();
+    expect(
+      within(runSection as HTMLElement)
+        .getByRole("link", { name: "Getting Started" })
+        .getAttribute("href"),
+    ).toBe("/docs/guides/getting-started");
+    expect(
+      within(runSection as HTMLElement)
+        .getByRole("link", { name: "CLI" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/cli");
+    expect(
+      within(runSection as HTMLElement)
+        .getByRole("link", { name: "Factory Session" })
+        .getAttribute("href"),
+    ).toBe("/docs/factories/sessions");
+
+    const configSection = document.getElementById("where-configuration-lives");
+    expect(configSection).toBeTruthy();
+    expect(
+      within(configSection as HTMLElement)
+        .getByRole("link", { name: "Configuration" })
+        .getAttribute("href"),
+    ).toBe("/docs/factories/configuration");
+    expect(
+      within(configSection as HTMLElement)
+        .getByRole("link", { name: "Global Configuration Factories" })
+        .getAttribute("href"),
+    ).toBe("/docs/factories/global-configuration");
+
+    const mcpSection = document.getElementById("how-mcp-or-cursor-connects");
+    expect(mcpSection).toBeTruthy();
+    expect(
+      within(mcpSection as HTMLElement)
+        .getByRole("link", { name: "MCP" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/mcp");
+    expect(
+      within(mcpSection as HTMLElement)
+        .getByRole("link", { name: "Dynamic Workflows" })
+        .getAttribute("href"),
+    ).toBe("/docs/factories/dynamic-workflows");
+    expect(
+      within(mcpSection as HTMLElement)
+        .getByRole("link", { name: "Cursor dynamic workflows guide" })
+        .getAttribute("href"),
+    ).toBe("/docs/guides/cursor-dynamic-workflows");
+
+    const failedSection = document.getElementById("something-failed");
+    expect(failedSection).toBeTruthy();
+    expect(
+      within(failedSection as HTMLElement)
+        .getByRole("link", { name: "Troubleshooting" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/troubleshooting");
+
+    const relatedSection = document.getElementById("related");
+    expect(relatedSection).toBeTruthy();
+    const relatedQueries = within(relatedSection as HTMLElement);
+    // Related footer is curated-only (RelatedDocs): unlabeled, no Related To,
+    // and no hardcoded LocalizedLinkList sibling stack under #related.
+    expect(
+      relatedSection?.querySelector('[data-testid="curated-related-docs"]'),
+    ).toBeTruthy();
+    expect(
+      relatedQueries.queryByRole("heading", { name: "Related To" }),
+    ).toBeNull();
+    expect(relatedSection?.querySelector("ul.mt-3.list-disc")).toBeNull();
+    expect(
+      relatedQueries.queryByRole("link", { name: "Troubleshooting" }),
+    ).toBeNull();
+    expect(
+      relatedQueries.queryByRole("link", {
+        name: "What is you-agent-factory",
+      }),
+    ).toBeNull();
+    expect(
+      relatedQueries.queryByRole("link", { name: "Getting Started" }),
+    ).toBeNull();
+    expect(relatedQueries.queryByRole("link", { name: "Install" })).toBeNull();
+    expect(relatedQueries.queryByRole("link", { name: "MCP" })).toBeNull();
   });
 
   test("loads ja locale messages with the same section structure", async () => {
@@ -258,9 +284,8 @@ describe("faq documentation page", () => {
     expect(loadedPage.messages.sections?.somethingFailed?.title).toBe(
       "Something Failed—Where Do I Recover?",
     );
-    expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
-      "Limits And Assumptions",
-    );
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
 
     render(
       <main>
@@ -281,6 +306,17 @@ describe("faq documentation page", () => {
       screen.getByRole("heading", {
         name: "Something Failed—Where Do I Recover?",
       }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(
+      document
+        .getElementById("related")
+        ?.querySelector('[data-testid="curated-related-docs"]'),
     ).toBeTruthy();
     expect(document.body.textContent).not.toMatch(/Model Atlas/i);
   });
