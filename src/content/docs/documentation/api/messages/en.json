@@ -5,23 +5,23 @@
   "sections": {
     "howToReach": {
       "title": "How To Reach",
-      "body": "The local factory service exposes an HTTP API on the operator machine. Session and API traffic use the default local base URL http://localhost:7437 unless the process that bound the listener overrides host or port. This documentation site is not the Agent Factory API. Point HTTP clients at a local Factory server you run yourself—not at this docs host."
+      "body": "The local factory service exposes an HTTP API on the operator machine. Session and API traffic use the default local base URL http://localhost:7437 unless the process that bound the listener overrides host or port. Point HTTP clients at a local Factory server you run yourself—not at a documentation host."
     },
     "typicalSessionFlow": {
       "title": "Typical Session Flow",
-      "body": "Treat the live Factory Session as the unit you discover, inspect, and address. Confirm a live session on the running host before submitting work or reading status. Inspect one session by id when you need its identity and runtime projection. Submit work and read status or events against that same session id. Prefer CLI and API reads—you session list, you session show, you workflow status, and matching status or event endpoints—when you need scripted inspection. Exhaustive path, method, and schema contracts stay on the Reference API catalog rather than on this how-to."
+      "body": "Treat the live Factory Session as the unit you discover, inspect, and address. Confirm a live session on the running host before submitting work or reading status. Inspect one session by id when you need its identity and runtime projection. Submit work and read status or events against that same session id. Prefer CLI and API reads—you session list, you session show, you workflow status, and matching status or event endpoints—when you need scripted inspection. Exhaustive path, method, and schema contracts stay on the Reference API catalog."
     },
     "trustBoundaries": {
       "title": "Trust Boundaries",
-      "body": "Treat the default local bind as an operator-accessible local surface, not a multi-tenant public product edge. Open Security / Trust Boundaries for local-bind expectations, operator versus autonomous-agent ingress paths, and sensitive artifact handling. This how-to does not replace that trust documentation."
+      "body": "Treat the default local bind as an operator-accessible local surface, not a multi-tenant public product edge. Open Security / Trust Boundaries for local-bind expectations, operator versus autonomous-agent ingress paths, and sensitive artifact handling. API coverage here points to that trust documentation; it does not replace it."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start or attach a local factory so a service is listening. Point your HTTP client at http://localhost:7437 unless you overrode host or port. Confirm a live Factory Session, then call session-oriented status, event, or submit operations against that session id. Use this how-to to reach and interact with the local HTTP API; open the Reference API catalog when you need exact operations, media types, or schema components."
+      "body": "Start or attach a local factory so a service is listening. Point your HTTP client at http://localhost:7437 unless you overrode host or port. Confirm a live Factory Session, then call session-oriented status, event, or submit operations against that session id. Open the Reference API catalog when you need exact operations, media types, or schema components."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "API coverage here is how to interact with the local HTTP API: default base URL, factory-running precondition, trust-boundary pointer, and a typical session-oriented flow. The Reference API page is the operations catalog. This how-to is not the operations catalog, not an OpenAPI playground, not a pasted OpenAPI document, and not agent CLI-ingress policy replacement—it does not render OpenAPI or an operations embed. Exhaustive HTTP operations stay on the Reference API page. Autonomous agents must submit work only through the CLI; dashboard submit and operator HTTP submit paths remain operator surfaces."
+      "body": "API coverage here is how to interact with the local HTTP API: default base URL, factory-running precondition, trust-boundary pointer, and a typical session-oriented flow. It is not the operations catalog, not an OpenAPI playground, not a pasted OpenAPI document, and not agent CLI-ingress policy replacement—it does not render OpenAPI or an operations embed. Exact HTTP operations live on the Reference API catalog. Autonomous agents must submit work only through the CLI; dashboard submit and operator HTTP submit paths remain operator surfaces."
     },
     "related": {
       "title": "Related To"
@@ -61,7 +61,7 @@
       "body": "Autonomous agents must submit work only through the CLI. Dashboard submit and POST /factory-sessions/{session_id}/work remain operator paths—do not treat them as parallel agent control ingress. See Security / Trust Boundaries for the full local-bind and ingress policy."
     },
     "operationsCatalogPointer": {
-      "body": "Exact path, method, media-type, and schema contracts live on the Reference API operations catalog—not on this how-to. Follow the catalog link when you need an operation inventory; keep interaction steps here."
+      "body": "Exact path, method, media-type, and schema contracts live on the Reference API operations catalog. Follow the catalog link when you need an operation inventory."
     }
   }
 }
