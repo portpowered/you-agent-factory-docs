@@ -46,7 +46,11 @@ concept `pageMdx` stays strip-ready and validates (no
 fails when chrome is absent. Techniques collection MDX under
 `src/content/docs/techniques/**` no longer mounts Related / References footer
 chrome (`RelatedDocs`, Related-section `LocalizedLinkList`, References
-`CitationList`); teaching sections and Tags remain. Other published collections
+`CitationList`); teaching sections and Tags remain. After MDX strip, remove
+owned `sections.related` / `sections.references` footer title keys and orphan
+Related-footer-only `links.*` keys from techniques `messages/*.json` (all owned
+locales) so bundles match the page. Keep teaching-section body keys. Colocated
+absence assertions remain a follow-on strip story. Other published collections
 may still mount RelatedDocs until their PF-L-strip lane removes it; that
 remaining chrome is not a contracts-lane failure. FAQ-only strip remains PF-D2.
 
