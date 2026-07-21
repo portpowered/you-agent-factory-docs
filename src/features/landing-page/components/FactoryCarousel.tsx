@@ -269,6 +269,10 @@ export function FactoryCarousel({
               data-carousel-depth={depth.role}
               data-carousel-slide={slide.id}
               data-carousel-slide-index={String(index)}
+              // Neighbor/far slides stay in the DOM for depth visuals but must
+              // not expose Terminal copy controls (or other focusables) while
+              // aria-hidden — inert removes them from tab order / AT.
+              inert={isActive ? undefined : true}
               style={slideStyle}
             >
               <FactorySlide {...slide} />

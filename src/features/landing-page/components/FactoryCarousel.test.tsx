@@ -163,9 +163,17 @@ describe("FactoryCarousel", () => {
 
     expect(active.getAttribute("data-active")).toBe("true");
     expect(active.getAttribute("data-carousel-depth")).toBe("active");
+    expect(active.hasAttribute("inert")).toBe(false);
+    expect(active.getAttribute("aria-hidden")).toBeNull();
     expect(neighborLeft.getAttribute("data-carousel-depth")).toBe("neighbor");
     expect(neighborRight.getAttribute("data-carousel-depth")).toBe("neighbor");
     expect(far.getAttribute("data-carousel-depth")).toBe("far");
+    expect(neighborLeft.getAttribute("aria-hidden")).toBe("true");
+    expect(neighborRight.getAttribute("aria-hidden")).toBe("true");
+    expect(far.getAttribute("aria-hidden")).toBe("true");
+    expect(neighborLeft.hasAttribute("inert")).toBe(true);
+    expect(neighborRight.hasAttribute("inert")).toBe(true);
+    expect(far.hasAttribute("inert")).toBe(true);
 
     const activeStyle = active.style;
     const neighborStyle = neighborLeft.style;
