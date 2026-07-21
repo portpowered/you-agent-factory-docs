@@ -36,12 +36,15 @@ const taggedItems: TeachingListItem[] = [
 ];
 
 describe("TeachingList", () => {
-  test("plain variant renders item titles and descriptions without tagged treatment", () => {
+  test("plain variant renders expected item titles by count and presence", () => {
     render(<TeachingList items={plainItems} listLabel="Pattern bullets" />);
 
     const list = screen.getByRole("list", { name: "Pattern bullets" });
     expect(list).toBeTruthy();
     expect(list.getAttribute("data-variant")).toBe("plain");
+    expect(list.querySelectorAll(":scope > li")).toHaveLength(
+      plainItems.length,
+    );
 
     expect(screen.getByText("Loop until done")).toBeTruthy();
     expect(screen.getByText("Writer then reviewer")).toBeTruthy();
@@ -51,7 +54,7 @@ describe("TeachingList", () => {
     expect(screen.queryByText("should-not-show-in-plain")).toBeNull();
   });
 
-  test("tagged variant renders titles, descriptions, and visible tags", () => {
+  test("tagged variant renders item titles and visible tags for tagged fixtures", () => {
     render(
       <TeachingList
         items={taggedItems}
@@ -60,11 +63,11 @@ describe("TeachingList", () => {
       />,
     );
 
-    expect(
-      screen
-        .getByRole("list", { name: "Reading notes" })
-        .getAttribute("data-variant"),
-    ).toBe("tagged");
+    const list = screen.getByRole("list", { name: "Reading notes" });
+    expect(list.getAttribute("data-variant")).toBe("tagged");
+    expect(list.querySelectorAll(":scope > li")).toHaveLength(
+      taggedItems.length,
+    );
     expect(screen.getByText("Harness keeps work alive")).toBeTruthy();
     expect(
       screen.getByText("Long-running agent work stays persistent."),
@@ -75,7 +78,7 @@ describe("TeachingList", () => {
     expect(screen.getByText("git")).toBeTruthy();
   });
 
-  test("empty items render an accessible status and keep listLabel on the list shell", () => {
+  test("empty items yield accessible empty status while listLabel remains the list name", () => {
     render(<TeachingList items={[]} listLabel="Empty notes" />);
 
     const status = screen.getByRole("status");

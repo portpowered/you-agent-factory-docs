@@ -21,6 +21,16 @@ from this lane. Prefer the lists barrel only — W-recipes owns the top-level
 | --- | --- |
 | `src/app/(dev)/teaching-ui-lists-harness/page.tsx` | Gated route `/teaching-ui-lists-harness`: plain + tagged fixtures; `notFound()` in production unless `ENABLE_COMPONENT_EXAMPLES=1` |
 
+## Ownership fence (W-lists)
+
+This lane owns only `src/features/teaching-ui/lists/**` plus the gated harness
+above. Do **not** add production technique/blog/documentation MDX or route
+imports of `TeachingList` here (Wave B pages may import later). Do **not** edit
+charts, tables, registry JSON/loaders, ModelCostPlayground, or invent content
+schemas. Do **not** expand `@you-agent-factory/components` public APIs. Do **not**
+edit top-level `teaching-ui/index.ts` unless W-recipes already expects list
+re-exports.
+
 ## Patterns
 
 - Import from `@/features/teaching-ui/lists` until W-recipes re-exports from the
@@ -36,3 +46,5 @@ from this lane. Prefer the lists barrel only — W-recipes owns the top-level
 - Browser-verify with a unique port (for example `3456`), kill the server before
   exit, and assert both section headings plus `aria-label` list names
   (`Pattern bullets` / `Reading notes` fixtures).
+- Lock render proofs with item count (`:scope > li`) plus title/tag presence;
+  empty proofs use `getByRole("status")` and `getByRole("list", { name })`.
