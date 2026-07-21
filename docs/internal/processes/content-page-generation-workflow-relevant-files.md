@@ -968,6 +968,28 @@ those paths only accept collection section refs.
   factory CLI browse headings and the absence of retired Atlas browse cards at
   desktop and narrow viewports when integration tests run.
 
+## Live tip Pages IA verify (PS-400 / Lane F)
+
+When a page-structure lane requires verification against **deployed tip GitHub
+Pages** (not only local `source.pageTree` contracts):
+
+1. Confirm the prerequisite merge is on `main` and wait for **Deploy GitHub
+   Pages** on that tip SHA to reach `conclusion: success` before treating the
+   live tree as authoritative. While the deploy is still progressing within the
+   usual ~15-minute window, prefer waiting over verifying a pre-tip snapshot.
+2. Visit a concrete docs route that ships the explorer chrome (for example
+   `/docs/guides/getting-started/`). Prefer routes that return `200`; a `404` on
+   `/docs/` alone is not evidence of explorer failure when collection indexes
+   are not exported.
+3. For top-level folder order, read `#nd-sidebar` static HTML: folder
+   `button[aria-expanded]` labels in DOM order, then the top-level FAQ page
+   link. Collapsed folders omit nested subgroup labels from static HTML — expand
+   or open a child route when verifying Program / Reference nesting.
+4. Record route + UTC visit time + pass/fail in the lane evidence note (see
+   [ia-live-verify-page-structure-ps400-evidence.md](./ia-live-verify-page-structure-ps400-evidence.md)).
+   Prefer notes-only when live matches locked IA; tiny expect/product fixes only
+   when a concrete live defect blocks acceptance.
+
 ## PR-head mergeability for page branches (process executors)
 
 When a routine canonical page branch has finished its page PRD stories but the
