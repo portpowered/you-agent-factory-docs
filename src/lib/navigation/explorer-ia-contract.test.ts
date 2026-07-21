@@ -319,9 +319,22 @@ describe("explorer IA exact-order contract", () => {
     expect(
       pageEntriesUnderSeparator(
         reference,
+        SIDEBAR_GROUP_LABELS.references.contracts,
+      ).some((page) => page.url.endsWith("/docs/references/mcp-reference")),
+    ).toBe(true);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
         SIDEBAR_GROUP_LABELS.references.schemas,
       ).some((page) => page.url.endsWith("/docs/references/factory-schema")),
     ).toBe(true);
+    // MCP catalog must not trail Limits as an ungrouped Reference leftover.
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.limits,
+      ).some((page) => page.url.endsWith("/docs/references/mcp-reference")),
+    ).toBe(false);
 
     const nestedFolderNames = reference.children
       .filter((node) => node.type === "folder")

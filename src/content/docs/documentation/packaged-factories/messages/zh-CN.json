@@ -22,5 +22,8 @@
     "tags": {
       "title": "Tags"
     }
+  },
+  "links": {
+    "packagedFactoriesReference": "Packaged Factories reference"
   }
 }

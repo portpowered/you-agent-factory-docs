@@ -136,6 +136,12 @@ describe("dynamic-workflows documentation Mode A overview", () => {
       expect(limitsSection?.textContent).toMatch(
         /Dynamic Workflows reference/i,
       );
+      const depthLinks = Array.from(
+        limitsSection?.querySelectorAll(
+          'a[href="/docs/factories/dynamic-workflows"]',
+        ) ?? [],
+      );
+      expect(depthLinks.length).toBeGreaterThan(0);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

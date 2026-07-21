@@ -15,6 +15,7 @@ aliases:
 updatedAt: "2026-07-21"
 ---
 
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -33,6 +34,14 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/factories/sessions",
+        labelKey: "links.factorySessionsReference",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">

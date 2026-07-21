@@ -990,6 +990,69 @@ those paths only accept collection section refs.
   factory CLI browse headings and the absence of retired Atlas browse cards at
   desktop and narrow viewports when integration tests run.
 
+## Live tip Pages IA verify (PS-400 / Lane F)
+
+When a page-structure lane requires verification against **deployed tip GitHub
+Pages** (not only local `source.pageTree` contracts):
+
+1. Confirm the prerequisite merge is on `main` and wait for **Deploy GitHub
+   Pages** on that tip SHA to reach `conclusion: success` before treating the
+   live tree as authoritative. While the deploy is still progressing within the
+   usual ~15-minute window, prefer waiting over verifying a pre-tip snapshot.
+2. Visit a concrete docs route that ships the explorer chrome (for example
+   `/docs/guides/getting-started/`). Prefer routes that return `200`; a `404` on
+   `/docs/` alone is not evidence of explorer failure when collection indexes
+   are not exported.
+3. For top-level folder order, read `#nd-sidebar` static HTML: folder
+   `button[aria-expanded]` labels in DOM order, then the top-level FAQ page
+   link. Collapsed folders omit nested subgroup labels from static HTML — expand
+   or open a child route when verifying Program / Reference nesting.
+4. For Program subgroups, open any Program child route so Program documentation
+   is expanded, then read uppercase separator `<p>` labels under `#nd-sidebar`
+   (Orientation → Capabilities → Interfaces → Operations). Those headers are
+   not `button[aria-expanded]` folders — do not treat missing folder buttons as
+   a missing-subgroup defect. Mode A overviews and Interfaces how-tos appear as
+   ordinary sidebar page links under the matching separator.
+5. For Reference nesting, open a Reference child route (for example
+   `/docs/references/api/` or `/docs/factories/sessions/`) so Reference is
+   expanded, then read Contracts / Schemas / Limits separator `<p>` labels and
+   nested Factories / Workers / Workstations folder buttons under Reference.
+   Confirm those three families are absent from top-level folder order.
+   Membership keys in `FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG` use the stripped
+   `references/…` slug (for example published `mcp-reference`, not Program
+   how-to `mcp`) — a wrong key leaves the page as an ungrouped leftover after
+   the last separator.
+6. For Mode A ↔ Mode B dual-link spot-checks, fetch the Mode A article HTML
+   (Capability overviews under `/docs/documentation/{factory-session,dynamic-workflows,packaged-factories}/`
+   and Interfaces API how-to under `/docs/documentation/api/`) and assert
+   reader-visible `<a href>` targets — not prose mentions alone. Mode A
+   Capability overviews must link to matching Reference depth routes
+   (`/docs/factories/sessions`, `/docs/factories/dynamic-workflows`,
+   `/docs/factories/packaged`) via page-local `<LocalizedLinkList>` (same
+   pattern as API → `/docs/references/api`). Prose that names “X reference”
+   without an href fails the dual-link criterion. Confirm the API how-to has
+   no OpenAPI / ApiReferenceProjection embed markers; catalog UI stays on
+   `/docs/references/api`. Optional reciprocal overview links from depth pages
+   are noted when present but are not blocking unless a merged content PR
+   required them.
+7. For install demotion, open `/docs/guides/getting-started/` and confirm the
+   article owns install teaching (`#install` with OS release scripts such as
+   `install.sh` / `install.ps1`). Scan `#nd-sidebar` on Getting Started and on a
+   Program-expanded child route for absence of `/docs/documentation/install`
+   hrefs and an `Install` page label. A direct `200` on the install URL is
+   allowed only as a thin compatibility stub that points readers to Getting
+   Started — not as an explorer destination and not as a second full install
+   teaching page.
+8. Record route + UTC visit time + pass/fail in the lane evidence note (see
+   [ia-live-verify-page-structure-ps400-evidence.md](./ia-live-verify-page-structure-ps400-evidence.md)).
+   Prefer notes-only when live matches locked IA; tiny expect/product fixes only
+   when a concrete live defect blocks acceptance.
+9. Close the lane with an outcomes rollup in the same evidence note: pass/fail for
+   each locked outcome, which defects were fixed in-lane vs intentionally not
+   filed, and an explicit fence statement. Do not invent follow-up slices for
+   optional / non-blocking polish (for example optional reciprocal dual links)
+   when acceptance already treats them as non-blocking.
+
 ## PR-head mergeability for page branches (process executors)
 
 When a routine canonical page branch has finished its page PRD stories but the

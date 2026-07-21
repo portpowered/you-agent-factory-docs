@@ -22,5 +22,8 @@
     "tags": {
       "title": "Tags"
     }
+  },
+  "links": {
+    "dynamicWorkflowsReference": "Dynamic Workflows reference"
   }
 }

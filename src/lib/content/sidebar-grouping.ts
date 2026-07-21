@@ -253,7 +253,8 @@ type ReferenceSidebarGroupId =
 export const FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG = {
   api: "contracts",
   cli: "contracts",
-  mcp: "contracts",
+  // Published Mode B catalog slug is `mcp-reference` (not Program how-to `mcp`).
+  "mcp-reference": "contracts",
   events: "contracts",
   "javascript-runtime": "contracts",
   "factory-schema": "schemas",
