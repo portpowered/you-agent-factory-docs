@@ -30,7 +30,7 @@ export const REFERENCE_FAMILY_DISCOVERABILITY_ROUTES = [
   },
   {
     id: "mcp",
-    href: "/docs/references/mcp",
+    href: "/docs/references/mcp-reference",
   },
   {
     id: "javascript-runtime",

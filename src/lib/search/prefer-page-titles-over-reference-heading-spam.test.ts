@@ -25,7 +25,7 @@ describe("prefer page titles over reference heading spam", () => {
 
     const firstInventoryIndex = results.findIndex(
       (result) =>
-        result.url.startsWith("/docs/references/mcp#") ||
+        result.url.startsWith("/docs/references/mcp-reference#") ||
         result.url.startsWith("/docs/references/cli#you-mcp"),
     );
     expect(firstInventoryIndex).toBeGreaterThanOrEqual(0);
@@ -45,7 +45,8 @@ describe("prefer page titles over reference heading spam", () => {
 
     const results = await docsSearchApi.search("you.factory_session.get");
     const itemIndex = results.findIndex(
-      (result) => result.url === "/docs/references/mcp#you.factory_session.get",
+      (result) =>
+        result.url === "/docs/references/mcp-reference#you.factory_session.get",
     );
     expect(itemIndex).toBeGreaterThanOrEqual(0);
     expect(itemIndex).toBe(0);

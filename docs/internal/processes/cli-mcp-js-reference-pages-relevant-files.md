@@ -1,14 +1,14 @@
 # W11 CLI / MCP / JavaScript Runtime Reference Pages — Relevant Files
 
-Use these files when wiring the published `/docs/references/{cli,mcp,javascript-runtime}`
-pages that mount W10 public family inventories from W03-resolved / W04-normalized
-package artifacts.
+Use these files when wiring the published
+`/docs/references/{cli,mcp-reference,javascript-runtime}` pages that mount W10
+public family inventories from W03-resolved / W04-normalized package artifacts.
 
 ## Ownership fence
 
 W11 owns only:
 
-- page bundles under `src/content/docs/references/{cli,mcp,javascript-runtime}/`
+- page bundles under `src/content/docs/references/{cli,mcp-reference,javascript-runtime}/`
 - matching `reference.*` registry records under `src/content/registry/references/`
 - page-local tests, messages, assets, and MDX component mounts
 - minimal additive loader wiring so those pages resolve and validate

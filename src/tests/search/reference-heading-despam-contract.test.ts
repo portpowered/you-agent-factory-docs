@@ -49,7 +49,7 @@ describe("reference heading de-spam search contract", () => {
     const firstInventoryIndex = firstIndexMatching(
       results,
       (result) =>
-        result.url.startsWith("/docs/references/mcp#") ||
+        result.url.startsWith("/docs/references/mcp-reference#") ||
         result.url.startsWith("/docs/references/cli#you-mcp"),
     );
     expect(firstInventoryIndex).toBeGreaterThanOrEqual(0);
@@ -63,7 +63,7 @@ describe("reference heading de-spam search contract", () => {
     const cases = [
       {
         query: "you.factory_session.get",
-        url: "/docs/references/mcp#you.factory_session.get",
+        url: "/docs/references/mcp-reference#you.factory_session.get",
       },
       {
         query: "submitWorkBySessionId",

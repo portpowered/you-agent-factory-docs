@@ -156,16 +156,18 @@ describe("reference inventory item exact-match deep links", () => {
   test("resolveReferenceItemDeepLinkUrl keeps registry anchors and rejects #heading-N", () => {
     expect(
       resolveReferenceItemDeepLinkUrl(
-        "/docs/references/mcp#you.factory_session.get",
+        "/docs/references/mcp-reference#you.factory_session.get",
       ),
-    ).toBe("/docs/references/mcp#you.factory_session.get");
+    ).toBe("/docs/references/mcp-reference#you.factory_session.get");
     expect(
       resolveReferenceItemDeepLinkUrl(
-        "/docs/references/mcp#you.factory_session.get#heading-0",
+        "/docs/references/mcp-reference#you.factory_session.get#heading-0",
       ),
-    ).toBe("/docs/references/mcp#you.factory_session.get");
+    ).toBe("/docs/references/mcp-reference#you.factory_session.get");
     expect(
-      resolveReferenceItemDeepLinkUrl("/docs/references/mcp#heading-0"),
+      resolveReferenceItemDeepLinkUrl(
+        "/docs/references/mcp-reference#heading-0",
+      ),
     ).toBeUndefined();
     expect(
       resolveReferenceItemDeepLinkUrl("/docs/concepts/harness#overview"),
@@ -179,7 +181,7 @@ describe("reference inventory item exact-match deep links", () => {
     const representatives = [
       {
         query: "you.factory_session.get",
-        url: "/docs/references/mcp#you.factory_session.get",
+        url: "/docs/references/mcp-reference#you.factory_session.get",
       },
       {
         query: "submitWorkBySessionId",
