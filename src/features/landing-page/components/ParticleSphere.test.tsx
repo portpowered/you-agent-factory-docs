@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render } from "@testing-library/react";
+import { afterEach, describe, expect, spyOn, test } from "bun:test";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import { ParticleSphere } from "./ParticleSphere";
 import {
   DEFAULT_PARTICLE_SPHERE_THEME,
@@ -12,6 +12,43 @@ import {
   createSphereParticles,
   meanNearestNeighborDistance,
 } from "./particle-sphere-simulation";
+
+function mockPrefersReducedMotion(reduce: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: reduce && query.includes("prefers-reduced-motion: reduce"),
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
+const originalMatchMedia = window.matchMedia;
+const originalGetContext = HTMLCanvasElement.prototype.getContext;
+
+function stubCanvas2dContext() {
+  HTMLCanvasElement.prototype.getContext = ((
+    contextId: string,
+  ): RenderingContext | null => {
+    if (contextId !== "2d") return null;
+    const gradient = { addColorStop: () => {} };
+    return {
+      clearRect: () => {},
+      createRadialGradient: () => gradient,
+      beginPath: () => {},
+      arc: () => {},
+      fill: () => {},
+      setTransform: () => {},
+      fillStyle: "",
+    } as unknown as CanvasRenderingContext2D;
+  }) as typeof HTMLCanvasElement.prototype.getContext;
+}
 
 describe("particle-sphere.theme", () => {
   test("resolveParticleSphereTheme applies typed local defaults", () => {
@@ -76,6 +113,11 @@ describe("particle-sphere-simulation", () => {
 describe("ParticleSphere", () => {
   afterEach(() => {
     cleanup();
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: originalMatchMedia,
+    });
+    HTMLCanvasElement.prototype.getContext = originalGetContext;
   });
 
   test("mounts a Canvas 2D surface and applies className to the root host", () => {
@@ -113,5 +155,60 @@ describe("ParticleSphere", () => {
     const marked = document.querySelector("[data-particle-sphere]");
     expect(marked?.getAttribute("data-particle-count")).toBe("88");
     expect(marked?.getAttribute("data-particle-repulsion")).toBe("0.72");
+  });
+
+  test("prefers-reduced-motion: reduce paints a static frame without rAF loop", async () => {
+    mockPrefersReducedMotion(true);
+    stubCanvas2dContext();
+    const rafSpy = spyOn(window, "requestAnimationFrame").mockImplementation(
+      () => 1,
+    );
+
+    render(<ParticleSphere />);
+
+    await waitFor(() => {
+      expect(
+        document
+          .querySelector("[data-particle-sphere]")
+          ?.getAttribute("data-particle-sphere-motion"),
+      ).toBe("static");
+    });
+
+    expect(rafSpy).not.toHaveBeenCalled();
+    expect(
+      document.querySelector("canvas[data-particle-sphere-canvas]"),
+    ).toBeTruthy();
+    expect(
+      document
+        .querySelector("[data-particle-sphere]")
+        ?.getAttribute("aria-hidden"),
+    ).toBe("true");
+
+    rafSpy.mockRestore();
+  });
+
+  test("animates with requestAnimationFrame when reduced motion is not preferred", async () => {
+    mockPrefersReducedMotion(false);
+    stubCanvas2dContext();
+    const rafSpy = spyOn(window, "requestAnimationFrame").mockImplementation(
+      () => 1,
+    );
+
+    render(<ParticleSphere />);
+
+    await waitFor(() => {
+      expect(
+        document
+          .querySelector("[data-particle-sphere]")
+          ?.getAttribute("data-particle-sphere-motion"),
+      ).toBe("animated");
+    });
+
+    expect(rafSpy).toHaveBeenCalled();
+    expect(
+      document.querySelector("canvas[data-particle-sphere-canvas]"),
+    ).toBeTruthy();
+
+    rafSpy.mockRestore();
   });
 });

@@ -21,6 +21,15 @@ export type ParticleSphereProps = {
   theme?: Partial<ParticleSphereThemeKnobs>;
 };
 
+export type ParticleSphereMotionMode = "static" | "animated";
+
+function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined" || !window.matchMedia) {
+    return false;
+  }
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 function paintSphereFrame(
   ctx: CanvasRenderingContext2D,
   width: number,
@@ -79,10 +88,17 @@ export function ParticleSphere({ className, theme }: ParticleSphereProps) {
     const host = hostRef.current;
     if (!canvas || !host) return;
 
+    const reduceMotion = prefersReducedMotion();
+    const motionMode: ParticleSphereMotionMode = reduceMotion
+      ? "static"
+      : "animated";
+    host.dataset.particleSphereMotion = motionMode;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const { particles: restParticles } = createParticleSphereRestPose(theme);
+
     let frameId = 0;
     let running = true;
     let angle = 0;
@@ -109,11 +125,17 @@ export function ParticleSphere({ className, theme }: ParticleSphereProps) {
       frameId = window.requestAnimationFrame(tick);
     };
 
-    // Story 001 ships the animated sphere; reduced-motion static path is story 002.
+    // Reduced-motion: one static rest-pose paint, no continuous rAF loop.
     resizeAndPaint(restParticles);
-    frameId = window.requestAnimationFrame(tick);
+    if (!reduceMotion) {
+      frameId = window.requestAnimationFrame(tick);
+    }
 
     const observer = new ResizeObserver(() => {
+      if (reduceMotion) {
+        resizeAndPaint(restParticles);
+        return;
+      }
       const rotated = rotateParticlesY(restParticles, angle);
       resizeAndPaint(rotated);
     });
