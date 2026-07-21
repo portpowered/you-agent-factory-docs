@@ -20,7 +20,10 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 | `src/features/landing-page/components/CtaBand.test.tsx` | Fixture CTA label/href, fog markers, optional-field omission |
 | `src/features/landing-page/components/LandingFooterArt.tsx` | Decorative seadragon / YOU-field art node for `SiteFooter` `art` slot (`src` / `className`; decorative `alt=""`) |
 | `src/features/landing-page/components/LandingFooterArt.test.tsx` | Art root + default `/home/seadragon-crop.png`; SiteFooter art-slot wrap |
-| `src/app/(dev)/faq-cta-harness/page.tsx` | (story 005) Gated harness: header → faq → cta → footer art |
+| `src/features/landing-page/index.ts` | Public barrel: re-exports LandingHeader, FaqPanel, CtaBand, LandingFooterArt + prop types (and whale-bubbles) |
+| `src/features/landing-page/index.test.ts` | Barrel export smoke for W-faq-cta public APIs |
+| `src/app/(dev)/faq-cta-harness/page.tsx` | Gated harness: header → faq → cta → footer art on skeleton bg |
+| `src/app/(dev)/faq-cta-harness/page.test.tsx` | Gate + stack markers (nav hrefs, parchment, CTA, footer art) |
 
 ## Shared stubs (owned by W-skeleton; consume, do not reinvent schemas)
 
@@ -55,5 +58,8 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
   `alt=""`; pass as opaque `art={<LandingFooterArt />}` — do not edit footer.
 - Harness gating matches other `(dev)` routes: `notFound()` when
   `NODE_ENV === "production"` unless `ENABLE_COMPONENT_EXAMPLES === "1"`.
+- Worktree browser verify: use `bun ./scripts/run-next.ts dev --webpack -p <port>`
+  (Turbopack often fails when `node_modules` is parent-hoisted). Kill the server
+  before exiting.
 - Do not implement carousel, hero portrait/capability/youi, whale/sphere, or
   production `/` flip in this lane.
