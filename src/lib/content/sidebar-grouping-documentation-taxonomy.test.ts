@@ -14,6 +14,7 @@ import {
   getDocumentationSidebarSecondaryIdsForGroup,
   getDocumentationSidebarSecondaryLabel,
   isDocumentationSidebarSecondaryGroup,
+  MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
   SIDEBAR_GROUP_LABELS,
 } from "@/lib/content/sidebar-grouping";
 
@@ -74,16 +75,6 @@ const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
   "poller-workers",
   "mock-workers",
   "workstations",
-] as const;
-
-/**
- * Mode A Program overviews restored under PS-210 before PS-300 wires explorer
- * membership. Published and canonical, but not yet explorer members.
- */
-const MODE_A_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS = [
-  "factory-session",
-  "dynamic-workflows",
-  "packaged-factories",
 ] as const;
 
 describe("Program documentation three-level taxonomy", () => {
@@ -181,7 +172,7 @@ describe("Program documentation three-level taxonomy", () => {
     );
     const moveStubSlugSet = new Set<string>(W18_DOCUMENTATION_MOVE_STUB_SLUGS);
     const pendingExplorerSlugSet = new Set<string>(
-      MODE_A_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
+      MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
     );
 
     expect(membershipSlugs).not.toContain("faq");
@@ -198,7 +189,7 @@ describe("Program documentation three-level taxonomy", () => {
       expect(publishedSlugs).toContain(stubSlug);
     }
 
-    for (const overviewSlug of MODE_A_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
+    for (const overviewSlug of MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
       expect(membershipSlugs).not.toContain(overviewSlug);
       expect(getDocumentationSidebarMembership(overviewSlug)).toBeUndefined();
       expect(publishedSlugs).toContain(overviewSlug);

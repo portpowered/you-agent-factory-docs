@@ -117,12 +117,48 @@ export type DocumentationSidebarMembership =
   | DocumentationMembershipWithSecondary;
 
 /**
+ * Mode A Program capability overviews restored under PS-210 before PS-300 wires
+ * explorer membership. Published and canonical, but not explorer destinations
+ * until Lane A membership lands — otherwise they fall through as ungrouped
+ * leftovers once removed from the W18 move-stub ledger.
+ */
+export const MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS = [
+  "factory-session",
+  "dynamic-workflows",
+  "packaged-factories",
+] as const;
+
+export type ModeAProgramOverviewPendingExplorerMembershipSlug =
+  (typeof MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS)[number];
+
+const MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUG_SET =
+  new Set<string>(MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS);
+
+/**
+ * True when a Program documentation docsSlug (with or without the
+ * `documentation/` prefix) is a Mode A overview waiting on PS-300 explorer
+ * membership.
+ */
+export function isModeAProgramOverviewPendingExplorerMembership(
+  docsSlugOrPath: string,
+): boolean {
+  const normalized = docsSlugOrPath
+    .replace(/^\/docs\//, "")
+    .replace(/^documentation\//, "");
+  return MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUG_SET.has(
+    normalized,
+  );
+}
+
+/**
  * Explicit three-level Program documentation explorer membership by page slug.
  * FAQ is a top-level explorer page and is intentionally omitted here.
  * W18 documentation move-stub slugs (see DOCUMENTATION_ROUTE_MIGRATION_LEDGER)
  * are also omitted — they keep static compatibility HTML but are not explorer
- * destinations. Groups with declared secondaries assign exactly one secondary
- * per slug; other groups place pages directly under the top group.
+ * destinations. Mode A overviews in
+ * `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` are likewise
+ * omitted until PS-300. Groups with declared secondaries assign exactly one
+ * secondary per slug; other groups place pages directly under the top group.
  */
 export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
   "harness-support": { group: "system-feature-set" },

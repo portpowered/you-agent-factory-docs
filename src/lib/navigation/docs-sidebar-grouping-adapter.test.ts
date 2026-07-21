@@ -8,6 +8,7 @@ import {
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
   getSidebarGroupLabel,
+  isModeAProgramOverviewPendingExplorerMembership,
 } from "@/lib/content/sidebar-grouping";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
 import {
@@ -186,14 +187,15 @@ describe("docs sidebar grouping adapter", () => {
     expect(countPageNodes(nodes)).toBe(pages.length);
   });
 
-  test("Program documentation emits three-level nesting without FAQ or W18 move stubs", () => {
+  test("Program documentation emits three-level nesting without FAQ, W18 stubs, or pending Mode A overviews", () => {
     const allDocumentationPages = loadPublishedDocsPagesSync("en").filter(
       (page) => page.docsSlug.startsWith("documentation/"),
     );
     const pages = allDocumentationPages.filter(
       (page) =>
         !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
-        !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug),
+        !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug) &&
+        !isModeAProgramOverviewPendingExplorerMembership(page.docsSlug),
     );
     const nodes = buildGroupedSidebarNodes(
       "documentation",
@@ -348,6 +350,19 @@ describe("docs sidebar grouping adapter", () => {
           .flat()
           .some((url) => url.endsWith(oldRoute)),
         `${oldRoute} must not appear in Program documentation explorer`,
+      ).toBe(false);
+    }
+
+    for (const overviewSlug of [
+      "factory-session",
+      "dynamic-workflows",
+      "packaged-factories",
+    ] as const) {
+      expect(
+        Object.values(byGroup)
+          .flat()
+          .some((url) => url.endsWith(`/docs/documentation/${overviewSlug}`)),
+        `${overviewSlug} Mode A overview must not appear until PS-300`,
       ).toBe(false);
     }
 

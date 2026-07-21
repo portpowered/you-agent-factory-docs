@@ -209,7 +209,11 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    on the Mode B Related list first (for example
    `/docs/factories/sessions` → `/docs/documentation/factory-session`) and
    assert the href in the Mode B page-owned test; do not change schema embeds
-   or Mode B depth body copy for that discovery link alone.
+   or Mode B depth body copy for that discovery link alone. Until PS-300 wires
+   explorer membership, keep restored Mode A slugs in
+   `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` and filter them
+   from Program documentation explorer construction (same path as FAQ / W18
+   stubs) so they do not reappear as ungrouped leftovers.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and
