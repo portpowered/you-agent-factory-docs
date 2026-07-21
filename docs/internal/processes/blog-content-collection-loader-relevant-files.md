@@ -161,6 +161,12 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   export it from the post `page-mdx-components.tsx` beside the matrix composer.
   MDX section order is Intro prose → matrix composer → Reading notes
   (`TeachingList`). Do not register NotesList in shared `blog-mdx-components.tsx`.
+* Published blog MDX must stay customer-facing: rewrite PRD / acceptance-criteria
+  leftovers (for example “URL-synced … optional”, “first pass”, “should show an
+  accessible empty state”) into reader teaching prose. Expand recurring acronyms
+  such as Model Context Protocol (MCP) on the first narrative mention; registry
+  tag values like `mcp` can stay short. Smoke tests can assert the expanded form
+  and reject leftover authoring phrases.
 * Empty `tags: []` is valid when no published tag fits. Discoverability then
   relies on the blog index card plus prose/title search documents (not tag
   landings). Keep that proof colocated under

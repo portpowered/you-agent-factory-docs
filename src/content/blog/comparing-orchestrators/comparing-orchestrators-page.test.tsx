@@ -28,6 +28,11 @@ describe("comparing-orchestrators blog page smoke (001–004)", () => {
     expect(html).toContain("How to read the feature matrix");
     expect(html).toContain("feature attributes");
     expect(html).toContain("ranking of benchmark scores");
+    expect(html).toContain("Model Context Protocol (MCP)");
+    expect(html).toContain("clear a filter or restore a column");
+    expect(html).not.toContain("URL-synced filter state");
+    expect(html).not.toContain("enough for a first pass");
+    expect(html).not.toContain("should show an accessible empty state");
     expect(html).toContain('href="/blog/comparing-agent-factories"');
     expect(html).toContain(
       'href="/docs/documentation/what-is-you-agent-factory"',
