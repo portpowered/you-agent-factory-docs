@@ -86,6 +86,8 @@ describe("getting-started guide page", () => {
       installHeading: "インストール",
       firstYouHeading: "最初の you",
       proseNeedle: /クイックスタート/,
+      confirmYouNeedle: /シェルで you が使えることを確認/,
+      scaffoldNeedle: /--executor を省略すると/,
     },
     {
       locale: "zh-CN" as SiteLocale,
@@ -93,6 +95,8 @@ describe("getting-started guide page", () => {
       installHeading: "安装",
       firstYouHeading: "第一次运行 you",
       proseNeedle: /快速入门/,
+      confirmYouNeedle: /确认 shell 中可以使用 you/,
+      scaffoldNeedle: /省略 --executor 会保留默认的 Codex/,
     },
     {
       locale: "vi" as SiteLocale,
@@ -100,6 +104,8 @@ describe("getting-started guide page", () => {
       installHeading: "Cài đặt",
       firstYouHeading: "Lần you đầu tiên",
       proseNeedle: /Hướng dẫn nhanh/,
+      confirmYouNeedle: /xác nhận you có sẵn trong shell/,
+      scaffoldNeedle: /Bỏ qua --executor giữ scaffold starter mặc định/,
     },
   ])("renders $locale getting-started with real target-language prose and copyable commands", async ({
     locale,
@@ -107,6 +113,8 @@ describe("getting-started guide page", () => {
     installHeading,
     firstYouHeading,
     proseNeedle,
+    confirmYouNeedle,
+    scaffoldNeedle,
   }) => {
     const en = await loadLocalDocsPage({
       section: "guides",
@@ -137,6 +145,24 @@ describe("getting-started guide page", () => {
       Object.keys(en.messages).sort(),
     );
 
+    // Install-merge keys from PS-200 must stay target-language, not English leftovers.
+    expect(localized.messages.sections?.install?.title).toBe(installHeading);
+    expect(localized.messages.sections?.install?.body).not.toBe(
+      en.messages.sections?.install?.body,
+    );
+    expect(localized.messages.callouts?.confirmYouAvailable?.body).not.toBe(
+      en.messages.callouts?.confirmYouAvailable?.body,
+    );
+    expect(localized.messages.callouts?.scaffoldChoice?.body).not.toBe(
+      en.messages.callouts?.scaffoldChoice?.body,
+    );
+    expect(localized.messages.links?.claudeInitLabel).not.toBe(
+      en.messages.links?.claudeInitLabel,
+    );
+    expect(localized.messages.sections?.commonPitfalls?.body).not.toBe(
+      en.messages.sections?.commonPitfalls?.body,
+    );
+
     render(
       <main>
         <DocsPageProviders
@@ -154,11 +180,19 @@ describe("getting-started guide page", () => {
     expect(screen.getByText(INSTALL_SH)).toBeTruthy();
     expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
     expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
+    expect(screen.getByText(confirmYouNeedle)).toBeTruthy();
+    expect(screen.getByText(scaffoldNeedle)).toBeTruthy();
     expect(screen.getByText(NAMED_RUN)).toBeTruthy();
     expect(screen.getByText("you session list")).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toContain(
       "This quickstart walks install",
+    );
+    expect(document.body.textContent ?? "").not.toContain(
+      "After install, open a new terminal if needed",
+    );
+    expect(document.body.textContent ?? "").not.toContain(
+      "Omitting --executor keeps the default Codex-backed starter scaffold",
     );
     expect(document.body.textContent ?? "").not.toContain(
       "/docs/documentation/install",
