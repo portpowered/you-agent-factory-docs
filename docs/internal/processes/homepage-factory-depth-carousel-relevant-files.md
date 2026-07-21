@@ -19,7 +19,7 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 | `src/features/landing-page/components/FactoryCarousel.tsx` | Depth carousel + wrap nav; `prefers-reduced-motion` → static active-only (`data-carousel-motion`) |
 | `src/features/landing-page/components/FactoryCarousel.test.tsx` | Depth markers; nav; matchMedia reduce vs no-preference; reduced-motion buttons/keyboard |
 | `src/features/landing-page/landing-page.data.ts` | Re-exports `FactorySlideData` from FactorySlide; fixture slides omit `art` |
-| `src/features/landing-page/index.ts` | Public barrel: exports `FactoryCarousel`, `FactorySlide`, slide types (+ FAQ/CTA chrome + whale-bubbles). On rebase onto `main`, keep **both** sibling-lane exports and the carousel exports — do not drop `CtaBand` / `FaqPanel` / header / footer art. |
+| `src/features/landing-page/index.ts` | Public barrel: exports `FactoryCarousel`, `FactorySlide`, slide types (+ FAQ/CTA + whale-bubbles + hero-art). On rebase onto `main`, keep **all** sibling-lane exports and the carousel exports — do not drop `CtaBand` / `FaqPanel` / header / footer art / `CapabilityStrip` / `HeroPortrait` / `HeroSection` / `TornEdge` / `YouiShowcase`. |
 | `src/features/code/Terminal.tsx` | Command chrome (`lines`, optional `chips`, `install` \| `dark`) — prefer this over stubs |
 | `src/app/(dev)/factory-carousel-harness/` | Gated carousel-only harness (gate + view + page); 4 fixture slides on neutral bg |
 
