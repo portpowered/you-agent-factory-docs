@@ -137,6 +137,11 @@ describe("packaged-factories documentation Mode A overview", () => {
       expect(limitsSection?.textContent).toMatch(
         /Packaged Factories reference/i,
       );
+      const depthLinks = Array.from(
+        limitsSection?.querySelectorAll('a[href="/docs/factories/packaged"]') ??
+          [],
+      );
+      expect(depthLinks.length).toBeGreaterThan(0);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

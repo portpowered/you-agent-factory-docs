@@ -128,6 +128,11 @@ describe("factory-session documentation Mode A overview", () => {
 
       const limitsSection = document.getElementById("limits-and-assumptions");
       expect(limitsSection?.textContent).toMatch(/Factory Sessions reference/i);
+      const depthLinks = Array.from(
+        limitsSection?.querySelectorAll('a[href="/docs/factories/sessions"]') ??
+          [],
+      );
+      expect(depthLinks.length).toBeGreaterThan(0);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

@@ -122,10 +122,49 @@ placement in `explorer-ia-contract.test.ts`. Local contract tree now places
 MCP Contracts placement after this branch deploys. No PS-H1 / schema / chrome
 work.
 
-## Outcomes (4)–(5)
+## Outcome (4) — Dual-link Mode A ↔ Mode B
 
-Deferred to stories `004`–`005`. This file will append route-level pass/fail as
-those visits complete.
+| Field | Value |
+| --- | --- |
+| Story | `ia-live-verify-page-structure-004` |
+| Visited (UTC) | `2026-07-21T13:08:00Z` (tip Pages baseline); local page-render re-check after fix |
+| Mode A routes | `/docs/documentation/factory-session/`, `/docs/documentation/dynamic-workflows/`, `/docs/documentation/packaged-factories/`, `/docs/documentation/api/` (all `200`) |
+| Mode B routes | `/docs/factories/sessions/`, `/docs/factories/dynamic-workflows/`, `/docs/factories/packaged/`, `/docs/references/api/` (all `200`) |
+| Method | Fetch tip Pages article HTML; list `<a href>` in `<article>`; confirm OpenAPI embed markers absent on API how-to |
+
+**Expected:** At least one Capability overview links to its matching Reference
+depth route; Interfaces API how-to links to `/docs/references/api` without
+embedding OpenAPI on the how-to. Optional reciprocal overview links from depth
+pages are not blocking unless a merged content PR required them.
+
+**Observed on tip Pages (`4515f350`) before fix:**
+
+| Check | Result |
+| --- | --- |
+| Factory Sessions overview → `/docs/factories/sessions` | FAIL — prose names “Factory Sessions reference” but no article `<a href>` |
+| Dynamic Workflows overview → `/docs/factories/dynamic-workflows` | FAIL — same prose-only pattern |
+| Packaged Factories overview → `/docs/factories/packaged` | FAIL — same prose-only pattern |
+| API how-to → `/docs/references/api` | PASS — `Reference API (operations catalog)` link present |
+| API how-to OpenAPI embed | PASS — no swagger-ui / redoc / openapi.json embed; catalog projection stays on `/docs/references/api` |
+| Optional reciprocal depth → overview | Not present on tip Pages; not treated as blocking |
+
+**Concrete live defect:** Mode A Capability overviews pointed readers at Mode B
+in prose only. Dual-link acceptance requires a reader-visible href (same
+contract as API how-to → Contracts catalog).
+
+**Fix (smallest product change):** add page-local `<LocalizedLinkList>` under
+Limits And Assumptions on each Mode A overview to the matching
+`/docs/factories/{sessions,dynamic-workflows,packaged}` depth route; assert
+`a[href=…]` in the three page-local tests.
+
+**Result:** PASS after fix — Capability dual links + API catalog dual link
+proven locally; tip Pages will show Capability hrefs after this branch deploys.
+No OpenAPI embed on the how-to. No PS-H1 / schema / chrome work.
+
+## Outcome (5)
+
+Deferred to story `005`. This file will append route-level pass/fail when that
+visit completes.
 
 ## Fence
 

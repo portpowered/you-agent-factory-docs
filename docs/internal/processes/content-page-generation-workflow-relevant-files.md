@@ -1000,7 +1000,20 @@ Pages** (not only local `source.pageTree` contracts):
    `references/…` slug (for example published `mcp-reference`, not Program
    how-to `mcp`) — a wrong key leaves the page as an ungrouped leftover after
    the last separator.
-6. Record route + UTC visit time + pass/fail in the lane evidence note (see
+6. For Mode A ↔ Mode B dual-link spot-checks, fetch the Mode A article HTML
+   (Capability overviews under `/docs/documentation/{factory-session,dynamic-workflows,packaged-factories}/`
+   and Interfaces API how-to under `/docs/documentation/api/`) and assert
+   reader-visible `<a href>` targets — not prose mentions alone. Mode A
+   Capability overviews must link to matching Reference depth routes
+   (`/docs/factories/sessions`, `/docs/factories/dynamic-workflows`,
+   `/docs/factories/packaged`) via page-local `<LocalizedLinkList>` (same
+   pattern as API → `/docs/references/api`). Prose that names “X reference”
+   without an href fails the dual-link criterion. Confirm the API how-to has
+   no OpenAPI / ApiReferenceProjection embed markers; catalog UI stays on
+   `/docs/references/api`. Optional reciprocal overview links from depth pages
+   are noted when present but are not blocking unless a merged content PR
+   required them.
+7. Record route + UTC visit time + pass/fail in the lane evidence note (see
    [ia-live-verify-page-structure-ps400-evidence.md](./ia-live-verify-page-structure-ps400-evidence.md)).
    Prefer notes-only when live matches locked IA; tiny expect/product fixes only
    when a concrete live defect blocks acceptance.

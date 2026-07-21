@@ -22,5 +22,8 @@
     "tags": {
       "title": "Tags"
     }
+  },
+  "links": {
+    "factorySessionsReference": "Factory Sessions reference"
   }
 }
