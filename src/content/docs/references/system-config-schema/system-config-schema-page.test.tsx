@@ -121,9 +121,10 @@ describe("system-config-schema reference page", () => {
     expect(
       schemaSurface.querySelector('[data-schema-field-path="workerPresets"]'),
     ).toBeTruthy();
-    expect(
-      schemaSurface.querySelector('[data-schema-examples="present"]'),
-    ).toBeTruthy();
+    const pageExamples = schemaSurface.querySelector(
+      '[data-schema-examples="present"]',
+    );
+    expect(pageExamples).toBeTruthy();
     expect(
       schemaSurface.querySelector('[data-schema-example-origin="authored"]'),
     ).toBeTruthy();
@@ -131,6 +132,26 @@ describe("system-config-schema reference page", () => {
       screen.getByTestId("schema-example-code-operator-config-defaults")
         .textContent ?? "",
     ).toMatch(/workerModelProvider[\s\S]*codex/);
+
+    // Q5 layout lock: authored examples precede definition fields/body.
+    const pageDefinition = screen.getByTestId(
+      "system-config-schema-reference-definition",
+    );
+    expect(pageDefinition.getAttribute("data-schema-examples-placement")).toBe(
+      "before-body",
+    );
+    const pageFields = schemaSurface.querySelector(
+      "[data-schema-definition-fields]",
+    );
+    expect(pageFields).toBeTruthy();
+    expect(
+      Boolean(
+        pageExamples &&
+          pageFields &&
+          pageExamples.compareDocumentPosition(pageFields) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
 
     const howToAccessSection = document.getElementById("how-to-access");
     expect(howToAccessSection?.textContent ?? "").toMatch(
