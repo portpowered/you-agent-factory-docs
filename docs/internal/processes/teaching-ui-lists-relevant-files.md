@@ -31,16 +31,6 @@ schemas. Do **not** expand `@you-agent-factory/components` public APIs. Do **not
 edit top-level `teaching-ui/index.ts` unless W-recipes already expects list
 re-exports.
 
-## Wave B soft-wire (technique pages)
-
-Production technique pages soft-wire `TeachingList` from
-`@/features/teaching-ui/lists` via a **page-local** client mount (for example
-`PatternListTeachingList.tsx`) plus `page-mdx-components.tsx`, merged by a
-static slug switch in `technique-page-load.ts`. Do **not** register
-`TeachingList` in shared `mdx-components.tsx`. Pass `listLabel` and item
-title/description strings from colocated `messages` (`links.*` keys) — do not
-deep-import list internals.
-
 ## Patterns
 
 - Import from `@/features/teaching-ui/lists` until W-recipes re-exports from the
