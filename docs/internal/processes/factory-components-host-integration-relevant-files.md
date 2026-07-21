@@ -109,15 +109,20 @@ shared map — not per-control hex hacks.
 - Sidebar row surface (story 004 / PF-K repair): consume
   `src/features/docs/styles/docs-chrome-sidebar.ts` + `docs-chrome-sidebar.css`
   (imported from `globals.css`). Rest text = `--docs-chrome-white`; hover =
-  wide `--docs-chrome-primary-yellow` **background** (with `px-2` so the fill
-  covers outline/padding — not text-only recolor). Active rows use a muted
-  secondary-blue wash (`color-mix` of `--docs-chrome-secondary-blue` at 18%
-  into transparent) so selection stays quiet and distinct from yellow hover.
+  wide `--docs-chrome-primary-yellow` **background** + dark
+  `--primary-foreground` text (with `px-2` so the fill covers outline/padding —
+  not text-only recolor; do not invent a secondary-blue hover). Active rows use
+  a muted secondary-blue wash (`color-mix` of `--docs-chrome-secondary-blue` at
+  18% into transparent) so selection stays quiet and distinct from yellow hover.
+  Hover rules follow active in the stylesheet so `:hover` wins over the active
+  wash at the same specificity. Focus-visible keeps a `--ring` outline.
   Marker class `docs-chrome-sidebar-row` is shared by desktop `#nd-sidebar`
   tree (`docs-sidebar-tree.tsx`) and mobile drawer (`data-mobile-docs-drawer`).
   Do not leave `text-fd-muted-foreground` rest or `hover:bg-fd-accent/50` /
   `hover:bg-sidebar-accent` owning these rows. Prove with
-  `docs-chrome-sidebar.test.ts`.
+  `docs-chrome-sidebar.test.ts` and
+  `docs-chrome-sidebar.browser.test.ts` (Playwright fixture — rest, yellow
+  hover on resting+active rows, focus-visible ring; no Next build).
 - Header text/icons + breadcrumb surface (story 005): consume
   `src/features/docs/styles/docs-chrome-header-breadcrumb.ts` +
   `docs-chrome-header-breadcrumb.css` (imported from `globals.css`). Header

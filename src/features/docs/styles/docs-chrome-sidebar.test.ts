@@ -68,6 +68,24 @@ describe("docs chrome sidebar highlighting", () => {
       "var(--docs-chrome-muted-white)",
     );
     expect(DOCS_CHROME_SIDEBAR_TOKENS.hoverBackground).not.toContain("accent");
+
+    // Story 002: hover stays primary yellow — never secondary blue / muted white.
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.hoverBackground).not.toContain(
+      "--docs-chrome-secondary-blue",
+    );
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.hoverBackground).not.toContain(
+      "--docs-chrome-muted-white",
+    );
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.hoverForeground).not.toContain(
+      "--docs-chrome-white",
+    );
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.hoverForeground).not.toContain(
+      "--docs-chrome-secondary-blue",
+    );
+    // Active wash and hover fill must remain distinct signals.
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.hoverBackground).not.toBe(
+      DOCS_CHROME_SIDEBAR_TOKENS.activeBackground,
+    );
   });
 
   test("row classes include marker and wide horizontal padding for hover fill", () => {
@@ -162,5 +180,38 @@ describe("docs chrome sidebar highlighting", () => {
     resting.style.color = tokens.hoverForeground;
     expect(normalizeHex(resting.style.backgroundColor)).toBe("#f5c76f");
     expect(normalizeHex(resting.style.color)).toBe("#1a2228");
+
+    // Active row can also take the same yellow hover language (selection ≠ hover).
+    active.style.backgroundColor = tokens.hoverBackground;
+    active.style.color = tokens.hoverForeground;
+    expect(normalizeHex(active.style.backgroundColor)).toBe("#f5c76f");
+    expect(normalizeHex(active.style.color)).toBe("#1a2228");
+
+    // Focus ring token stays --ring (accessible outline, not removed).
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.focusRing).toBe("var(--ring)");
+  });
+
+  test("hover language stays primary yellow + dark text distinct from active secondary-blue wash", () => {
+    expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverBackground.toLowerCase()).toBe(
+      "#f5c76f",
+    );
+    expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverForeground.toLowerCase()).toBe(
+      "#1a2228",
+    );
+    expect(
+      DOCS_CHROME_SIDEBAR_FACTORY_DARK.activeBackground.toLowerCase(),
+    ).toBe("#507f8c");
+    expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverBackground).not.toBe(
+      DOCS_CHROME_SIDEBAR_FACTORY_DARK.activeBackground,
+    );
+    expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverBackground).not.toBe(
+      DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.secondaryBlue,
+    );
+    expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverBackground).not.toBe(
+      DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.mutedWhite,
+    );
+    expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverForeground).not.toBe(
+      DOCS_CHROME_SIDEBAR_FACTORY_DARK.restText,
+    );
   });
 });

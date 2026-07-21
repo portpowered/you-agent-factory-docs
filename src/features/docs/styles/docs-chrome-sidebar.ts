@@ -1,10 +1,12 @@
 /**
  * Shared docs sidebar row chrome highlighting contract.
  *
- * Locked map (story repair-sidebar-active-muted-secondary-001):
- * - resting text = white
- * - hover = primary yellow **background** wide enough to cover outline/padding
+ * Locked map (stories repair-sidebar-active-muted-secondary-001 / 002):
+ * - resting text = white on transparent
+ * - hover = primary yellow **background** + dark text (same chrome hover language;
+ *   never secondary blue, muted white, or a second hover palette)
  * - active/current = muted secondary-blue wash (not primary-yellow)
+ * - focus-visible = `--ring` outline (kept while retargeting active tint)
  *
  * Consume `--docs-chrome-*` roles from `docs-chrome-highlighting-tokens.ts`
  * via `docs-chrome-sidebar.css`. Do not leave muted-foreground rest text or
@@ -47,17 +49,21 @@ export const DOCS_CHROME_SIDEBAR_NON_ACTIVE_SELECTOR = `${DOCS_CHROME_SIDEBAR_RO
 
 /**
  * Semantic CSS values for sidebar rest vs hover background.
- * Hover is a fill background, not a text-only recolor.
+ * Hover is a fill background, not a text-only recolor — and stays primary
+ * yellow even after the active wash moved to secondary blue (story 002).
  */
 export const DOCS_CHROME_SIDEBAR_TOKENS = {
   restText: `var(${DOCS_CHROME_HIGHLIGHTING_CSS_VARS.white})`,
+  /** Locked hover fill — must stay primary yellow, not secondary blue. */
   hoverBackground: `var(${DOCS_CHROME_HIGHLIGHTING_CSS_VARS.primaryYellow})`,
+  /** Dark ink on yellow hover fill (`primary-foreground` / accent ink). */
   hoverForeground: "var(--primary-foreground)",
   /**
    * Active wash keeps current rows visible at rest without matching full
    * hover yellow. Soft secondary-blue tint against transparent chrome.
    */
   activeBackground: `color-mix(in oklch, var(${DOCS_CHROME_HIGHLIGHTING_CSS_VARS.secondaryBlue}) 18%, transparent)`,
+  /** Accessible focus ring — do not drop while changing active tint. */
   focusRing: "var(--ring)",
 } as const;
 
