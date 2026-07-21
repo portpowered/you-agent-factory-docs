@@ -1,11 +1,11 @@
 /**
  * Browser verify for Documentation Program ops/platform intro strip
- * (repair-documentation-program-intro-strip-ops story 003).
+ * (and Opening summary chrome retirement).
  *
  * Proves each owned route has no What It Covers / Key Concepts / #what-it-covers
- * / #key-concepts, no multi-heading Summary overview block, a short purpose lead
- * via DocsOpeningSummary when present, and at least one remaining operational
- * teaching marker.
+ * / #key-concepts, no multi-heading Summary overview block, no bordered Opening
+ * summary chrome ([data-opening-summary] / [data-testid="folded-summary"]), and
+ * at least one remaining operational teaching marker.
  *
  * Routes: logs, metrics, resources, petri, packaged-documents,
  * dashboard-ui-overview, security-trust-boundaries, throttling-and-limits,
@@ -186,8 +186,7 @@ type RouteProbe = {
   whatItCoversIdPresent: boolean;
   keyConceptsIdPresent: boolean;
   openingSummaryPresent: boolean;
-  openingSummaryText: string;
-  openingSummaryHasParagraphBreak: boolean;
+  foldedSummaryPresent: boolean;
   teachingSectionPresent: boolean;
   teachingMarkersPresent: boolean;
   teachingSnippet: string;
@@ -254,12 +253,6 @@ try {
             );
           };
 
-          const openingSummaryEl = document.querySelector(
-            '[data-testid="folded-summary"]',
-          );
-          const openingSummaryText = (openingSummaryEl?.textContent ?? "")
-            .replace(/\s+/g, " ")
-            .trim();
           const teachingSection = teaching.sectionId
             ? document.getElementById(teaching.sectionId)
             : document.body;
@@ -272,8 +265,7 @@ try {
             path,
             hasWhatItCoversHeading: headingText("What It Covers"),
             hasKeyConceptsHeading: headingText("Key Concepts"),
-            // DocsOpeningSummary uses aria-label only — a visible "Summary"
-            // section heading would be leftover informational chrome.
+            // A visible "Summary" section heading would be leftover informational chrome.
             hasSummarySectionHeading: headingText("Summary"),
             whatItCoversIdPresent: Boolean(
               document.getElementById("what-it-covers"),
@@ -283,11 +275,10 @@ try {
             ),
             openingSummaryPresent: Boolean(
               document.querySelector('[data-opening-summary="folded"]') ||
-                document.querySelector('[data-testid="folded-summary"]'),
+                document.querySelector('[aria-label="Opening summary"]'),
             ),
-            openingSummaryText,
-            openingSummaryHasParagraphBreak: Boolean(
-              openingSummaryEl?.textContent?.includes("\n\n"),
+            foldedSummaryPresent: Boolean(
+              document.querySelector('[data-testid="folded-summary"]'),
             ),
             teachingSectionPresent: teaching.sectionId
               ? Boolean(document.getElementById(teaching.sectionId))
@@ -315,13 +306,9 @@ try {
           `${route.path}: visible Summary section heading still present`,
         );
       }
-      if (
-        probe.openingSummaryPresent &&
-        (probe.openingSummaryHasParagraphBreak ||
-          probe.openingSummaryText.length > 320)
-      ) {
+      if (probe.openingSummaryPresent || probe.foldedSummaryPresent) {
         failures.push(
-          `${route.path}: openingSummary is not a short purpose lead`,
+          `${route.path}: folded Opening summary chrome still present`,
         );
       }
       if (!probe.teachingSectionPresent || !probe.teachingMarkersPresent) {
