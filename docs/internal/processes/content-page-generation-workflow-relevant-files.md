@@ -1254,14 +1254,24 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   unless it literally ships those intros. Do not expand this intro strip into
   workers/workstations (separate polish), documentation Program pages, or
   reference schema pages (batch-004).
+  Authored `/docs/factories/**` child pages no longer mount trailing Related /
+  References footer chrome (`Section id="related"` / `id="references"`,
+  `<RelatedDocs />`, Related-only `LocalizedLinkList`, or References
+  `CitationList`). Keep How To Use / schema-section teaching
+  `LocalizedLinkList`s and schema embeds. Tags footer chrome stays where
+  already present. Do not restore Related / References footers on factories
+  pages; do not rewrite shared `RelatedDocs` to force omission; leave registry
+  `relatedIds` alone in the PF-L-strip lane.
   Factories page-local tests assert intro absence the same way as polished
   reference pages: `sections.whatItCovers` / `sections.keyConcepts` are
   `undefined`, `queryByRole` for those headings returns null, and
   `#what-it-covers` / `#key-concepts` ids are absent — while still proving
   teaching headings, ready schema embeds, and lookup links (`openingSummary`
   message fields may remain unused by shell chrome).
-  Do not require How To Use / Limits / Related absence on factories pages that
-  still ship those non-intro sections.
+  After PF-L-strip, factories page tests also assert Related / References
+  footer absence (`Related To` / `References` headings, `section#related`,
+  curated related-footer link queries). Do not require How To Use / Limits
+  absence on factories pages that still ship those non-intro sections.
   Browser-verify Factories intro strip on the five child routes with
   `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1`
   (Turbopack often fails in parent-hoisted worktrees). Fetch SSR HTML and

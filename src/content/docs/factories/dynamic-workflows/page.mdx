@@ -14,9 +14,7 @@ aliases:
 updatedAt: "2026-07-18"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -248,58 +246,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/documentation/dynamic-workflows",
-        labelKey: "links.dynamicWorkflowsOverview",
-      },
-      {
-        href: "/docs/factories/configuration",
-        labelKey: "links.configurationDocs",
-      },
-      {
-        href: "/docs/factories/global-configuration",
-        labelKey: "links.globalConfigurationDocs",
-      },
-      {
-        href: "/docs/factories/packaged",
-        labelKey: "links.packagedDocs",
-      },
-      {
-        href: "/docs/factories/sessions",
-        labelKey: "links.sessionsDocs",
-      },
-      {
-        href: "/docs/documentation/cli",
-        labelKey: "links.cliDocs",
-      },
-      {
-        href: "/docs/documentation/harness-support",
-        labelKey: "links.harnessSupportDocs",
-      },
-      {
-        href: "/docs/workers",
-        labelKey: "links.workersDocs",
-      },
-      {
-        href: "/docs/references/schema",
-        labelKey: "links.fullFactorySchema",
-      },
-      {
-        href: "/docs/references/api",
-        labelKey: "links.fullFactoryApi",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.factories-dynamic-workflows" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.factories-dynamic-workflows" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.factories-dynamic-workflows" />
 </Section>
