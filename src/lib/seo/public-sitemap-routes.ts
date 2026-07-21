@@ -1,6 +1,11 @@
 import type { BuildModeEnv } from "@/lib/build/static-export";
 import { blogPostHref, listBlogSlugs } from "@/lib/content/blog-page-load";
 import { tagPageHref } from "@/lib/content/content-hrefs";
+import {
+  buildLocalizedRoute,
+  defaultLocale,
+  FACTORY_SHIPPED_LOCALES,
+} from "@/lib/content/factory-locale-base-path";
 import { FACTORY_PUBLISHED_TAG_SLUGS } from "@/lib/content/factory-tags-browse";
 import { PUBLISHED_DOCS_SECTIONS } from "@/lib/content/published-docs-registry-contract";
 import { listPublishedDocsEntries } from "@/lib/content/published-docs-registry-ids";
@@ -21,6 +26,15 @@ export const PUBLIC_SITEMAP_SHELL_ROUTES = [
   "/blog",
   "/tags",
 ] as const;
+
+/**
+ * Non-default shipped locale homes derived from {@link FACTORY_SHIPPED_LOCALES}
+ * via {@link buildLocalizedRoute}. Default locale stays the single `/` shell
+ * entry — never invent a duplicate `/en` home.
+ */
+export const PUBLIC_SITEMAP_LOCALE_HOME_ROUTES = FACTORY_SHIPPED_LOCALES.filter(
+  (locale) => locale !== defaultLocale,
+).map((locale) => buildLocalizedRoute({ surface: "home" }, locale));
 
 /**
  * Docs collection index routes (section roots), including architecture.
@@ -82,7 +96,8 @@ function uniqueSortedPaths(paths: readonly string[]): string[] {
 /**
  * Lists app-relative public factory routes for the sitemap. Fail-closed against
  * retired Atlas collections, deleted Atlas blogs, and §10 migration old routes
- * via {@link isCanonicalPublicDiscoveryPath}.
+ * via {@link isCanonicalPublicDiscoveryPath}. Includes shipped non-default
+ * locale homes from {@link PUBLIC_SITEMAP_LOCALE_HOME_ROUTES}.
  */
 export function listPublicSitemapRoutes(): string[] {
   const docsArticles = listPublishedDocsEntries().map((entry) => entry.url);
@@ -91,6 +106,7 @@ export function listPublicSitemapRoutes(): string[] {
 
   const candidates = [
     ...PUBLIC_SITEMAP_SHELL_ROUTES,
+    ...PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
     ...PUBLIC_SITEMAP_DOCS_SECTION_ROUTES,
     ...docsArticles,
     ...blogPosts,
