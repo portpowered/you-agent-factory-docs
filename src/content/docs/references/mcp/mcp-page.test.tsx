@@ -32,8 +32,10 @@ describe("mcp reference page", () => {
 
       expect(loadedPage.frontmatter.kind).toBe("reference");
       expect(loadedPage.frontmatter.registryId).toBe("reference.mcp");
-      expect(loadedPage.messages.title).toBe("You Agent Factory MCP");
-      expect(loadedPage.messages.description).toMatch(/You Agent Factory MCP/i);
+      expect(loadedPage.messages.title).toBe("MCP Reference");
+      expect(loadedPage.messages.description).toMatch(
+        /^Install MCP and look up/i,
+      );
       expect(loadedPage.messages.description).toMatch(
         /without a live Factory host/i,
       );

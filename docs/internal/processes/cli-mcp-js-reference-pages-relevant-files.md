@@ -46,7 +46,7 @@ Do **not**:
 | Path | Role |
 | --- | --- |
 | `src/content/docs/references/mcp/page.mdx` | Published reference page structure (install-first lead, then tool inventory) |
-| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy (`You Agent Factory MCP` title; no What It Covers / Key Concepts) |
+| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy (`MCP Reference` title; no What It Covers / Key Concepts) |
 | `src/content/docs/references/mcp/assets.json` | Empty baseline assets |
 | `src/content/docs/references/mcp/McpInstallDocsLink.tsx` | Page-local Next `Link` to `/docs/documentation/mcp` without using `messages.links` (keeps W11 projection-first `links` undefined) |
 | `src/content/docs/references/mcp/McpReferenceInventory.tsx` | Server mount: load inventory → `McpToolInventory` |
@@ -169,7 +169,7 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   unchanged. Kill the server before exit; prefer a Bun fetch script over shell
   functions when PATH is unreliable in nested functions.
 - MCP polish browser-verify on `/docs/references/mcp` (SSR HTML is enough —
-  inventory mounts server-side): assert `You Agent Factory MCP`,
+  inventory mounts server-side): assert `MCP Reference`,
   `#how-to-install` / `you mcp serve` / `/docs/documentation/mcp`,
   `data-inventory-state="success"`, `data-reference-inventory-filter`,
   `data-mcp-tool-reference` + `data-mcp-input-schema` + `data-mcp-tool-example`;
