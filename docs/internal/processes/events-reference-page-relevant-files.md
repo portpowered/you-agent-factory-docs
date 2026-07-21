@@ -38,6 +38,7 @@ Do **not**:
 | `src/content/docs/references/events/events-schema-ref-link-resolution.test.tsx` | Same-page SchemaRefLink → inlined component-schema anchor proof |
 | `src/content/docs/references/events/events-inlined-component-schema-anchors.test.tsx` | Story 003: success-corpus InferenceOutcome anchor + navigable SchemaRefLink regression |
 | `src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts` | Playwright probe: short Event catalog label, envelope components, suppressed pointer chrome, envelope/payload JSON examples on `/docs/references/events` |
+| `src/content/docs/references/events/assert-events-page-inline-schema-splay-browser.ts` | Playwright probe: `#components-schemas-InferenceOutcome` hash focus + SchemaRefLink click-traverse; reports SSR HTML bytes for focused payload budget |
 | `src/content/registry/references/events.json` | `reference.events` registry record |
 
 ## Additive registry / published-docs wiring
@@ -128,6 +129,15 @@ other W11 reference page lanes):
   `events-inlined-component-schema-anchors.test.tsx` (corpus mount) and the
   published-route success render in `events-page.test.tsx`. Do not invent
   schemas; soft-skip only when the package drops the name.
+- Story 004 browser + budget close-out: run
+  `bun src/content/docs/references/events/assert-events-page-inline-schema-splay-browser.ts`
+  (unique port via `EVENTS_INLINE_SPLAY_PROBE_PORT`, optional
+  `EVENTS_INLINE_SPLAY_PROBE_BASE_URL`, kill server on exit; webpack start for
+  worktrees). Prove hash navigation to `#components-schemas-InferenceOutcome`
+  and SchemaRefLink click-traverse. Intentional linked-component splay grows
+  events SSR HTML (~4.5 MiB observed); raise the focused `references-events`
+  ceiling in `a11y-reference-payload-budget.ts` (~25% headroom) with measured
+  evidence — do not dump unpublished schemas to inflate or shrink the page.
 - Intro-strip browser close-out (story 003): the same probe also asserts
   absence of What It Covers / Key Concepts headings and ids, absence of folded
   Opening summary (`[data-testid="folded-summary"]` /
