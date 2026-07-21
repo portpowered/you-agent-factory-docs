@@ -4,8 +4,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import {
   composeWaveBCarouselSlot,
+  composeWaveBFaqSlot,
   composeWaveBLandingHarnessSlots,
   mapFixtureCarouselToFactoryCarouselProps,
+  mapFixtureFaqToFaqPanelProps,
   WIRED_WAVE_B_SLOTS,
 } from "./compose-wave-b-slots";
 
@@ -62,6 +64,35 @@ describe("composeWaveBCarouselSlot", () => {
   });
 });
 
+describe("composeWaveBFaqSlot", () => {
+  test("maps fixture FAQ items onto FaqPanel public item contract", () => {
+    const props = mapFixtureFaqToFaqPanelProps(fixtureLandingPageData.faq);
+
+    expect(props.items).toHaveLength(fixtureLandingPageData.faq.items.length);
+    expect(props.heading).toBe("FAQ");
+    for (const [index, item] of props.items.entries()) {
+      const fixture = fixtureLandingPageData.faq.items[index];
+      expect(item.id).toBe(fixture?.id);
+      expect(item.question).toBe(fixture?.question);
+      expect(item.answer).toBe(fixture?.answer);
+    }
+  });
+
+  test("composeWaveBFaqSlot renders FaqPanel markers from fixture", () => {
+    const html = renderToStaticMarkup(composeWaveBFaqSlot() as ReactElement);
+
+    expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-faq-parchment=""');
+    expect(html).not.toContain('data-landing-placeholder="faq"');
+
+    for (const item of fixtureLandingPageData.faq.items) {
+      expect(html).toContain(item.question);
+      expect(html).toContain(item.answer);
+      expect(html).toContain(`data-landing-faq-item-id="${item.id}"`);
+    }
+  });
+});
+
 describe("composeWaveBLandingHarnessSlots", () => {
   test("returns only currently wired Wave B slot keys", () => {
     const slots = composeWaveBLandingHarnessSlots();
@@ -69,22 +100,25 @@ describe("composeWaveBLandingHarnessSlots", () => {
 
     expect(keys).toEqual([...WIRED_WAVE_B_SLOTS].sort());
     expect(slots).toHaveProperty("carousel");
-    expect(slots).not.toHaveProperty("faq");
+    expect(slots).toHaveProperty("faq");
     expect(slots).not.toHaveProperty("cta");
     expect(slots).not.toHaveProperty("header");
   });
 
-  test("wired carousel renders FactoryCarousel; aggregate does not invent faq/cta trees", () => {
+  test("wired carousel and faq render public markers; aggregate does not invent cta trees", () => {
     const slots = composeWaveBLandingHarnessSlots();
     const carouselHtml = renderToStaticMarkup(slots.carousel as ReactElement);
+    const faqHtml = renderToStaticMarkup(slots.faq as ReactElement);
 
     expect(carouselHtml).toContain('data-factory-carousel=""');
     expect(carouselHtml).toContain(
       fixtureLandingPageData.carousel.slides[0]?.title ?? "",
     );
-    expect(carouselHtml).not.toContain(
+    expect(faqHtml).toContain('data-landing-faq-panel=""');
+    expect(faqHtml).toContain(
       fixtureLandingPageData.faq.items[0]?.question ?? "",
     );
     expect(carouselHtml).not.toContain(fixtureLandingPageData.cta.headline);
+    expect(faqHtml).not.toContain(fixtureLandingPageData.cta.headline);
   });
 });

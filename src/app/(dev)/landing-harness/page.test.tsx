@@ -89,6 +89,14 @@ describe("LandingHarnessPage", () => {
       expect(html).toContain(slide.command);
     }
 
+    // Wired Wave B faq (FaqPanel) from fixture items
+    expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).not.toContain('data-landing-placeholder="faq"');
+    for (const item of fixtureLandingPageData.faq.items) {
+      expect(html).toContain(item.question);
+      expect(html).toContain(item.answer);
+    }
+
     // Remaining unwired slots stay labeled placeholders
     for (const slot of LANDING_SLOT_ORDER) {
       if (WIRED_SLOT_SET.has(slot)) {
@@ -106,9 +114,6 @@ describe("LandingHarnessPage", () => {
       fixtureLandingPageData.capability.items[0]?.label ?? "",
     );
     expect(html).not.toContain(fixtureLandingPageData.youi.title);
-    expect(html).not.toContain(
-      fixtureLandingPageData.faq.items[0]?.question ?? "",
-    );
     expect(html).not.toContain(fixtureLandingPageData.cta.headline);
     expect(html).not.toContain(fixtureLandingPageData.cta.supporting);
 

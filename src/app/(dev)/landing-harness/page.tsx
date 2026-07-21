@@ -8,8 +8,8 @@ import { composeWaveBLandingHarnessSlots } from "./compose-wave-b-slots";
  *
  * Wave A + incremental Wave B fills: wired slots receive fixture-mapped
  * fills (SiteFooter, WhaleBubblesSection, ParticleSphere + optional Terminal,
- * FactoryCarousel). Remaining unwired slots stay labeled placeholders via
- * LandingPage defaults. Hidden in production unless
+ * FactoryCarousel, FaqPanel). Remaining unwired slots stay labeled
+ * placeholders via LandingPage defaults. Hidden in production unless
  * ENABLE_COMPONENT_EXAMPLES=1. Does not flip production `/`.
  */
 export default function LandingHarnessPage() {
