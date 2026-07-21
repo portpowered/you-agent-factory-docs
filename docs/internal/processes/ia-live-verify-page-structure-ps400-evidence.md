@@ -161,10 +161,35 @@ Limits And Assumptions on each Mode A overview to the matching
 proven locally; tip Pages will show Capability hrefs after this branch deploys.
 No OpenAPI embed on the how-to. No PS-H1 / schema / chrome work.
 
-## Outcome (5)
+## Outcome (5) — Getting Started owns install; install absent from explorer
 
-Deferred to story `005`. This file will append route-level pass/fail when that
-visit completes.
+| Field | Value |
+| --- | --- |
+| Story | `ia-live-verify-page-structure-005` |
+| Visited (UTC) | `2026-07-21T13:04:40Z` |
+| Tip Pages baseline | Post-#240 tip still live after later main deploys; last successful Deploy GitHub Pages before visit: [run 29832455302](https://github.com/portpowered/you-agent-factory-docs/actions/runs/29832455302) (`11930d69`, #242). Prerequisite #240 remaining on tip ancestry. |
+| Routes | `/docs/guides/getting-started/` (`200`); `/docs/documentation/install/` (`200` stub); `/docs/documentation/factory-session/` (`200`, Program expanded for explorer scan) |
+| Method | Fetch tip Pages HTML; confirm Getting Started `#install` teaching ownership; scan `#nd-sidebar` hrefs/labels for `documentation/install` absence; confirm install URL remains a thin compatibility stub |
+
+**Expected:** Guides → Getting Started presents install teaching (OS release
+scripts / platform steps). `documentation/install` is not a sidebar/explorer
+destination under Program or any other top-level folder. A direct visit to the
+published install URL may stub/redirect but must not re-promote Install into
+the explorer.
+
+**Observed:**
+
+| Check | Result |
+| --- | --- |
+| Getting Started `#install` section | PASS — heading `Install`; `install.sh` and `install.ps1` release commands present; `you init` teaching present |
+| Guides explorer children | PASS — Getting Started / Cursor Dynamic Workflows / Using you-agent-factory for loops / Write-review loops only; no Install destination |
+| `#nd-sidebar` on Getting Started | PASS — no `documentation/install` href; no `Install` page label |
+| `#nd-sidebar` on Program-expanded route | PASS — no `documentation/install` href; no `Install` page label under Program or elsewhere |
+| Direct `/docs/documentation/install/` | PASS — `200` thin stub (“Install path”) linking to Getting Started; no `install.sh` / `install.ps1` teaching on the stub |
+
+**Result:** PASS — Getting Started owns install teaching; Install is demoted from
+the explorer while the compatibility stub remains reachable by URL. Notes-only;
+no product code or expect-fix required.
 
 ## Fence
 

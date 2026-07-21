@@ -1013,7 +1013,15 @@ Pages** (not only local `source.pageTree` contracts):
    `/docs/references/api`. Optional reciprocal overview links from depth pages
    are noted when present but are not blocking unless a merged content PR
    required them.
-7. Record route + UTC visit time + pass/fail in the lane evidence note (see
+7. For install demotion, open `/docs/guides/getting-started/` and confirm the
+   article owns install teaching (`#install` with OS release scripts such as
+   `install.sh` / `install.ps1`). Scan `#nd-sidebar` on Getting Started and on a
+   Program-expanded child route for absence of `/docs/documentation/install`
+   hrefs and an `Install` page label. A direct `200` on the install URL is
+   allowed only as a thin compatibility stub that points readers to Getting
+   Started — not as an explorer destination and not as a second full install
+   teaching page.
+8. Record route + UTC visit time + pass/fail in the lane evidence note (see
    [ia-live-verify-page-structure-ps400-evidence.md](./ia-live-verify-page-structure-ps400-evidence.md)).
    Prefer notes-only when live matches locked IA; tiny expect/product fixes only
    when a concrete live defect blocks acceptance.
