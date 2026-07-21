@@ -205,6 +205,33 @@ shared map — not per-control hex hacks.
   empty (`role="status"`) and error (`role="alert"`) states.
 - Do not import package styles from the wrapper module.
 
+## Teaching-ui comparative charts (compose factory-ui only)
+
+- Feature path: `src/features/teaching-ui/charts/**` — domain comparative
+  recipes (`ComparativeBarChart`, `ComparativeLineChart`) compose
+  `@/features/factory-ui/charts` + Recharts. Do not expand
+  `@you-agent-factory/components` or factory-ui wrapper APIs for focus/series
+  models.
+- Public barrel: `src/features/teaching-ui/charts/index.ts` re-exports both
+  charts + prop types. Wave B imports `@/features/teaching-ui/charts` — do not
+  fight W-recipes ownership of a top-level `teaching-ui/index.ts`.
+- Focus presentation lives in chart-local helpers (`focus-colors.ts` /
+  `resolveFocusColor` / `resolveBarFill`) using accent `#f5c76f` and muted
+  whitish `#8aaeb8` until a shared `teaching-ui/focus` helper lands.
+- Prefer a `ChartContainer` footer series key for visible legend labels so
+  tests remain reliable when Recharts `ResponsiveContainer` reports 0×0 under
+  happy-dom.
+- Assert focus via CSS vars on `role="img"` (`--color-<seriesId>`) and/or
+  pure focus helpers; assert a11y with `getByRole("img", { name: title })`.
+- Gated dual-chart harness: `(dev)/teaching-ui-charts-harness` mounts
+  `TeachingUiChartsHarness` with fixture data + focus series/category selects.
+  Gate with `notFound()` when `NODE_ENV === "production"` unless
+  `ENABLE_COMPONENT_EXAMPLES === "1"` (same pattern as footer/code harnesses).
+  Do not expand `REQUIRED_COMPONENT_NAMES` for this surface.
+- Browser-verify harnesses via `http://localhost:<port>/…`, not
+  `http://127.0.0.1:<port>/…`. Next.js Turbopack may block cross-origin HMR /
+  client hydration from `127.0.0.1`, leaving selects SSR-static.
+
 ## Thin factory-ui DataTable and CodePanel wrappers
 
 - Host path: `src/features/factory-ui/data-display.ts` — re-export

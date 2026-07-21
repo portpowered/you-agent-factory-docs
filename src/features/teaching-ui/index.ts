@@ -1,9 +1,18 @@
 /**
  * Public teaching-ui barrel.
  *
- * W-table owns tables/** exports here. Sibling lanes (charts, lists, focus)
- * append their public exports to this barrel without removing table exports.
+ * W-recipes owns focus tokens/helpers. W-table appends tables/** recipe
+ * exports. Chart / list sibling lanes append their public APIs without
+ * removing chassis or table exports.
  */
+
+export {
+  DEFAULT_FOCUS_COLOR_TOKENS,
+  type FocusColorTokens,
+  focusFill,
+  mutedFill,
+  resolveFocusColor,
+} from "./focus";
 
 export {
   type AttributeDef,

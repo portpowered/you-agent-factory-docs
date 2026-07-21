@@ -1,18 +1,17 @@
 import { notFound } from "next/navigation";
+import { TeachingUiHarnessContent } from "./teaching-ui-harness-content";
 import { isTeachingUiHarnessEnabled } from "./teaching-ui-harness-gate";
-import { TeachingUiHarnessView } from "./teaching-ui-harness-view";
 
 /**
- * Non-production teaching-ui harness.
+ * Non-production teaching-ui chassis harness (Graph-pages W-recipes shell).
  *
- * Table section ships fixture orchestrators for W-table. Chart / list sections
- * are placeholders for sibling lanes. Hidden in production unless
- * ENABLE_COMPONENT_EXAMPLES=1.
+ * Focus demo + Chart / List placeholders from chassis; Table section filled by
+ * W-table fixtures. Hidden in production unless ENABLE_COMPONENT_EXAMPLES=1.
  */
 export default function TeachingUiHarnessPage() {
   if (!isTeachingUiHarnessEnabled(process.env)) {
     notFound();
   }
 
-  return <TeachingUiHarnessView />;
+  return <TeachingUiHarnessContent />;
 }

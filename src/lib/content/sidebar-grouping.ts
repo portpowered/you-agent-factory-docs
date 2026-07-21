@@ -117,12 +117,41 @@ export type DocumentationSidebarMembership =
   | DocumentationMembershipWithSecondary;
 
 /**
+ * Published Program documentation slugs that intentionally omit explorer
+ * membership until a dedicated IA lane wires them (PS-300 Interfaces for
+ * `api`). Keep these out of {@link FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG}
+ * and out of the Program documentation explorer tree so page-only lanes can
+ * publish without Lane A map edits. Direct URL, section index, and search
+ * still work for these pages.
+ */
+export const DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS = [
+  "api",
+] as const;
+
+export type DeferredDocumentationExplorerMembershipSlug =
+  (typeof DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS)[number];
+
+const DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUG_SET = new Set<string>(
+  DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS,
+);
+
+/** True when a documentation slug is published but explorer membership is deferred. */
+export function isDeferredDocumentationExplorerMembershipSlug(
+  slug: string,
+): boolean {
+  return DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUG_SET.has(slug);
+}
+
+/**
  * Explicit three-level Program documentation explorer membership by page slug.
  * FAQ is a top-level explorer page and is intentionally omitted here.
  * W18 documentation move-stub slugs (see DOCUMENTATION_ROUTE_MIGRATION_LEDGER)
  * are also omitted — they keep static compatibility HTML but are not explorer
- * destinations. Groups with declared secondaries assign exactly one secondary
- * per slug; other groups place pages directly under the top group.
+ * destinations. Deferred-membership slugs (see
+ * {@link DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS}) are omitted the same
+ * way until their IA lane wires them. Groups with declared secondaries assign
+ * exactly one secondary per slug; other groups place pages directly under the
+ * top group.
  */
 export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
   "harness-support": { group: "system-feature-set" },

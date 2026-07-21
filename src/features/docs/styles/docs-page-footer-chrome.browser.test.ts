@@ -18,6 +18,7 @@ import {
 import {
   closePlaywrightBrowserWithTimeout,
   launchPlaywrightBrowser,
+  PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
 } from "@/lib/verify/launch-playwright-browser";
 
 const FOOTER_CHROME_CSS = readFileSync(
@@ -199,76 +200,84 @@ describe("docs page footer chrome behavioral (always-on)", () => {
     );
   });
 
-  test("Playwright fixture: hover/focus show yellow highlight with dark text and compact sizing", async () => {
-    const browser = await launchPlaywrightBrowser();
-    try {
-      const page = await browser.newPage({
-        viewport: { width: 1024, height: 768 },
-      });
+  test(
+    "Playwright fixture: hover/focus show yellow highlight with dark text and compact sizing",
+    async () => {
+      const browser = await launchPlaywrightBrowser();
       try {
-        await page.setContent(buildFooterChromeFixtureHtml(true), {
-          waitUntil: "load",
+        const page = await browser.newPage({
+          viewport: { width: 1024, height: 768 },
         });
+        try {
+          await page.setContent(buildFooterChromeFixtureHtml(true), {
+            waitUntil: "load",
+          });
 
-        for (const cardKey of ["previous", "next"] as const) {
-          const card = page.locator(`[data-footer-card="${cardKey}"]`);
-          expect(await card.count()).toBe(1);
+          for (const cardKey of ["previous", "next"] as const) {
+            const card = page.locator(`[data-footer-card="${cardKey}"]`);
+            expect(await card.count()).toBe(1);
 
-          const resting = await probeFooterCard(page, cardKey);
-          expect(resting.color).toBe(FOREGROUND_RGB);
-          expect(resting.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
-          expectCompactSizing(resting);
+            const resting = await probeFooterCard(page, cardKey);
+            expect(resting.color).toBe(FOREGROUND_RGB);
+            expect(resting.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+            expectCompactSizing(resting);
 
-          await card.hover();
-          const hovered = await probeFooterCard(page, cardKey);
-          expect(hovered.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-          expect(hovered.color).toBe(PRIMARY_FOREGROUND_RGB);
-          expect(hovered.color).not.toBe(ACCENT_FOREGROUND_RGB);
-          expect(hovered.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
-          expectCompactSizing(hovered);
+            await card.hover();
+            const hovered = await probeFooterCard(page, cardKey);
+            expect(hovered.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+            expect(hovered.color).toBe(PRIMARY_FOREGROUND_RGB);
+            expect(hovered.color).not.toBe(ACCENT_FOREGROUND_RGB);
+            expect(hovered.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
+            expectCompactSizing(hovered);
 
-          await card.focus();
-          const focused = await probeFooterCard(page, cardKey);
-          expect(focused.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-          expect(focused.color).toBe(PRIMARY_FOREGROUND_RGB);
-          expect(focused.color).not.toBe(ACCENT_FOREGROUND_RGB);
-          expect(focused.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
-          expect(parsePx(focused.outlineWidth)).toBeGreaterThanOrEqual(2);
-          expect(focused.boxShadow).toContain(RING_RGB);
-          expectCompactSizing(focused);
+            await card.focus();
+            const focused = await probeFooterCard(page, cardKey);
+            expect(focused.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+            expect(focused.color).toBe(PRIMARY_FOREGROUND_RGB);
+            expect(focused.color).not.toBe(ACCENT_FOREGROUND_RGB);
+            expect(focused.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
+            expect(parsePx(focused.outlineWidth)).toBeGreaterThanOrEqual(2);
+            expect(focused.boxShadow).toContain(RING_RGB);
+            expectCompactSizing(focused);
+          }
+        } finally {
+          await page.close();
         }
       } finally {
-        await page.close();
+        await closePlaywrightBrowserWithTimeout(browser);
       }
-    } finally {
-      await closePlaywrightBrowserWithTimeout(browser);
-    }
-  }, 120_000);
+    },
+    PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
+  );
 
-  test("Playwright fixture without chrome CSS: tall padding and accent title recolor still reproduce", async () => {
-    const browser = await launchPlaywrightBrowser();
-    try {
-      const page = await browser.newPage({
-        viewport: { width: 1024, height: 768 },
-      });
+  test(
+    "Playwright fixture without chrome CSS: tall padding and accent title recolor still reproduce",
+    async () => {
+      const browser = await launchPlaywrightBrowser();
       try {
-        await page.setContent(buildFooterChromeFixtureHtml(false), {
-          waitUntil: "load",
+        const page = await browser.newPage({
+          viewport: { width: 1024, height: 768 },
         });
+        try {
+          await page.setContent(buildFooterChromeFixtureHtml(false), {
+            waitUntil: "load",
+          });
 
-        const card = page.locator('[data-footer-card="next"]');
-        const resting = await probeFooterCard(page, "next");
-        expectTallSizing(resting);
+          const card = page.locator('[data-footer-card="next"]');
+          const resting = await probeFooterCard(page, "next");
+          expectTallSizing(resting);
 
-        await card.hover();
-        const hovered = await probeFooterCard(page, "next");
-        expect(hovered.color).toBe(ACCENT_FOREGROUND_RGB);
-        expectTallSizing(hovered);
+          await card.hover();
+          const hovered = await probeFooterCard(page, "next");
+          expect(hovered.color).toBe(ACCENT_FOREGROUND_RGB);
+          expectTallSizing(hovered);
+        } finally {
+          await page.close();
+        }
       } finally {
-        await page.close();
+        await closePlaywrightBrowserWithTimeout(browser);
       }
-    } finally {
-      await closePlaywrightBrowserWithTimeout(browser);
-    }
-  }, 120_000);
+    },
+    PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
+  );
 });

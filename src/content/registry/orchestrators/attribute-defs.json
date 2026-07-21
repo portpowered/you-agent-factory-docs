@@ -1,0 +1,38 @@
+{
+  "attributes": [
+    {
+      "id": "attr.open-source",
+      "labelKey": "attr.openSource",
+      "type": "boolean",
+      "filterable": true,
+      "sortable": true,
+      "order": 10
+    },
+    {
+      "id": "attr.license",
+      "labelKey": "attr.license",
+      "type": "string",
+      "filterable": true,
+      "sortable": true,
+      "order": 20
+    },
+    {
+      "id": "attr.hosting",
+      "labelKey": "attr.hosting",
+      "type": "single-tag",
+      "tagEnum": ["local", "cloud", "hybrid"],
+      "filterable": true,
+      "sortable": true,
+      "order": 30
+    },
+    {
+      "id": "attr.capabilities",
+      "labelKey": "attr.capabilities",
+      "type": "multi-tag",
+      "tagEnum": ["loops", "worktrees", "mcp", "persistence"],
+      "filterable": true,
+      "sortable": false,
+      "order": 40
+    }
+  ]
+}

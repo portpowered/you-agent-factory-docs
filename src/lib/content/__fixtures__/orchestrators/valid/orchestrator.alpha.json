@@ -1,0 +1,11 @@
+{
+  "id": "orchestrator.alpha",
+  "kind": "orchestrator",
+  "name": "Alpha",
+  "attributes": {
+    "attr.open-source": true,
+    "attr.license": "MIT",
+    "attr.hosting": "local",
+    "attr.capabilities": ["loops"]
+  }
+}

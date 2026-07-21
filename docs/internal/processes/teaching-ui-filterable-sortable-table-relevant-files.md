@@ -33,7 +33,8 @@ lane. Do not expand `@you-agent-factory/components` APIs.
 | `src/features/teaching-ui/tables/__fixtures__/orchestrator-matrix.ts` | Fixture orchestrators + attribute defs (not production registry) |
 | `src/app/(dev)/teaching-ui-harness/page.tsx` | Gated route; `notFound()` in production unless `ENABLE_COMPONENT_EXAMPLES=1` |
 | `src/app/(dev)/teaching-ui-harness/teaching-ui-harness-gate.ts` | Pure enable check (mirrors sphere/code harness) |
-| `src/app/(dev)/teaching-ui-harness/teaching-ui-harness-view.tsx` | Table section demos + chart/list placeholders |
+| `src/app/(dev)/teaching-ui-harness/teaching-ui-harness-content.tsx` | W-recipes chassis shell (focus demo + Chart/List placeholders) |
+| `src/app/(dev)/teaching-ui-harness/teaching-ui-harness-tables-section.tsx` | W-table fixture demos mounted in the Table slot |
 | `src/app/(dev)/teaching-ui-harness/*.test.*` | Gate + harness composition / filter / column-picker tests |
 
 ## Patterns

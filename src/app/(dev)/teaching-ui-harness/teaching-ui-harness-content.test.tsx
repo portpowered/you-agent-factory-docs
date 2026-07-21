@@ -1,74 +1,83 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  AttributeFacetBar,
-  FilterableSortableTable,
-  OrchestratorFeatureMatrix,
-} from "@/features/teaching-ui";
-import { TeachingUiHarnessView } from "./teaching-ui-harness-view";
+import { focusFill, mutedFill } from "@/features/teaching-ui";
+import { TeachingUiHarnessContent } from "./teaching-ui-harness-content";
 
 afterEach(() => {
   cleanup();
 });
 
-describe("teaching-ui public barrel", () => {
-  test("re-exports FilterableSortableTable, AttributeFacetBar, and OrchestratorFeatureMatrix", () => {
-    expect(typeof FilterableSortableTable).toBe("function");
-    expect(typeof AttributeFacetBar).toBe("function");
-    expect(typeof OrchestratorFeatureMatrix).toBe("function");
+describe("TeachingUiHarnessContent", () => {
+  test("renders Chart/List placeholders and filled Table section", () => {
+    const { container } = render(<TeachingUiHarnessContent />);
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Teaching UI harness" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Chart" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "List" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Table" }),
+    ).toBeTruthy();
+
+    expect(
+      screen.getByTestId("teaching-ui-harness-chart-placeholder"),
+    ).toBeTruthy();
+    expect(
+      screen.getByTestId("teaching-ui-harness-list-placeholder"),
+    ).toBeTruthy();
+    expect(
+      screen.queryByTestId("teaching-ui-harness-table-placeholder"),
+    ).toBeNull();
+
+    const tableSection = container.querySelector(
+      '[data-teaching-ui-harness-section="table"]',
+    );
+    expect(tableSection).toBeTruthy();
+    expect(
+      tableSection?.querySelector("[data-filterable-sortable-table]"),
+    ).toBeTruthy();
+    expect(
+      tableSection?.querySelector("[data-orchestrator-feature-matrix]"),
+    ).toBeTruthy();
+    expect(
+      tableSection?.querySelector("[data-matrix-column-picker]"),
+    ).toBeTruthy();
   });
-});
 
-describe("TeachingUiHarnessView", () => {
-  test("renders table section with entity table, matrix, facets, and column picker", () => {
-    const { container } = render(<TeachingUiHarnessView />);
+  test("focus demo shows accent and muted swatches via public helpers", () => {
+    render(<TeachingUiHarnessContent />);
 
-    expect(container.querySelector("[data-teaching-ui-harness]")).toBeTruthy();
     expect(
-      container.querySelector('[data-teaching-ui-harness-section="tables"]'),
-    ).toBeTruthy();
-    expect(
-      container.querySelector('[data-teaching-ui-harness-section="charts"]'),
-    ).toBeTruthy();
-    expect(
-      container.querySelector('[data-teaching-ui-harness-section="lists"]'),
+      screen.getByRole("heading", { level: 2, name: "Focus demo" }),
     ).toBeTruthy();
 
-    const entityDemo = container.querySelector(
-      '[data-teaching-ui-harness-demo="entity-table"]',
+    const accent = screen.getByTestId(
+      "teaching-ui-harness-focus-swatch-primary-series",
     );
-    const matrixDemo = container.querySelector(
-      '[data-teaching-ui-harness-demo="feature-matrix"]',
+    const muted = screen.getByTestId(
+      "teaching-ui-harness-focus-swatch-secondary-series",
     );
-    expect(entityDemo).toBeTruthy();
-    expect(matrixDemo).toBeTruthy();
-    expect(
-      entityDemo?.querySelector("[data-filterable-sortable-table]"),
-    ).toBeTruthy();
-    expect(
-      matrixDemo?.querySelector("[data-orchestrator-feature-matrix]"),
-    ).toBeTruthy();
-    expect(
-      entityDemo?.querySelector("[data-attribute-facet-bar]"),
-    ).toBeTruthy();
-    expect(
-      matrixDemo?.querySelector("[data-matrix-column-picker]"),
-    ).toBeTruthy();
 
-    expect(
-      screen.getByRole("table", { name: "Fixture orchestrator entity table" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("table", {
-        name: "Fixture orchestrator feature matrix",
-      }),
-    ).toBeTruthy();
+    const accentSwatch = accent.querySelector("[data-focus-state='accent']");
+    const mutedSwatch = muted.querySelector("[data-focus-state='muted']");
+
+    expect(accentSwatch).toBeTruthy();
+    expect(mutedSwatch).toBeTruthy();
+    expect((accentSwatch as HTMLElement).style.backgroundColor).toBe(focusFill);
+    expect((mutedSwatch as HTMLElement).style.backgroundColor).toBe(mutedFill);
+    expect(accent.textContent).toContain("(accent)");
+    expect(muted.textContent).toContain("(muted)");
   });
 
   test("column picker hides an orchestrator column in the matrix", async () => {
     const user = userEvent.setup();
-    const { container } = render(<TeachingUiHarnessView />);
+    const { container } = render(<TeachingUiHarnessContent />);
     const matrixDemo = container.querySelector(
       '[data-teaching-ui-harness-demo="feature-matrix"]',
     );
@@ -92,7 +101,7 @@ describe("TeachingUiHarnessView", () => {
 
   test("entity-table multi-tag AND filter narrows visible rows", async () => {
     const user = userEvent.setup();
-    const { container } = render(<TeachingUiHarnessView />);
+    const { container } = render(<TeachingUiHarnessContent />);
     const entityDemo = container.querySelector(
       '[data-teaching-ui-harness-demo="entity-table"]',
     );
