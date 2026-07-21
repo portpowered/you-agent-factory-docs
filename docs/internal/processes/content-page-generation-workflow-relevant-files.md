@@ -44,6 +44,14 @@ errors. Do not revive a presence-expecting test that fails when chrome is
 absent. Site-wide published MDX RelatedDocs strip remains a separate
 PF-L-strip lane; FAQ-only strip remains PF-D2.
 
+Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
+`technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
+longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a
+related-section. `generate-page-bundle` copies those templates, so new page
+MDX stays strip-ready by default. Do not reintroduce RelatedDocs chrome into
+kind templates. Leave unused `sections.related` message keys alone unless a
+template edit needs them; they are not page chrome.
+
 ## Derived page directory contract
 
 Routine canonical pages live under `src/content/docs/<section>/<slug>`. Resolve
