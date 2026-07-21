@@ -44,6 +44,12 @@ export function resolveProductionMetadataBase(
  *
  * Strips a project-site base path when present so callers that still hold a
  * path-prefixed href do not double-prefix against `metadataBase`.
+ *
+ * Non-root results stay without a trailing slash so asset paths (for example
+ * `/images/og-default.png` or `/sitemap.xml`) are not rewritten as directories.
+ * Sitemap `<loc>` emission uses {@link resolveProductionSitemapLocHref}
+ * instead so locs match live trailing-slash canonicals under
+ * `trailingSlash: true`.
  */
 export function resolveProductionMetadataHref(
   href: string,
@@ -56,4 +62,21 @@ export function resolveProductionMetadataHref(
   const metadataBase = resolveProductionMetadataBase(env);
   const joinedPath = path.posix.join(metadataBase.pathname || "", appHref);
   return new URL(joinedPath, metadataBase).href;
+}
+
+/**
+ * Absolute production URL for a public sitemap `<loc>`.
+ *
+ * Builds on {@link resolveProductionMetadataHref}, then ensures a trailing
+ * slash so exported locs match live GitHub Pages / `rel=canonical` landings
+ * under static-export `trailingSlash: true`. Root stays a single trailing
+ * slash (`…/`). Do not use this for file-like absolute URLs (robots sitemap
+ * path, social image assets).
+ */
+export function resolveProductionSitemapLocHref(
+  href: string,
+  env: BuildModeEnv = process.env,
+): string {
+  const absolute = resolveProductionMetadataHref(href, env);
+  return absolute.endsWith("/") ? absolute : `${absolute}/`;
 }

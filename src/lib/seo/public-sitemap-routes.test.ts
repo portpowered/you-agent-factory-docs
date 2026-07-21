@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   PRODUCTION_SITE_ORIGIN,
-  resolveProductionMetadataHref,
+  resolveProductionSitemapLocHref,
 } from "@/lib/seo/production-metadata-base";
 import {
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
@@ -25,20 +25,32 @@ describe("public-sitemap-routes unit", () => {
 
     for (const route of SITEMAP_INCLUSION_PROOF_ROUTES) {
       expect(routes).toContain(route);
-      expect(urls).toContain(
-        resolveProductionMetadataHref(route, PROJECT_SITE_EXPORT_ENV),
+      expect(route === "/" || !route.endsWith("/")).toBe(true);
+      const absolute = resolveProductionSitemapLocHref(
+        route,
+        PROJECT_SITE_EXPORT_ENV,
       );
+      expect(absolute.endsWith("/")).toBe(true);
+      expect(urls).toContain(absolute);
     }
 
-    expect(resolveProductionMetadataHref("/", PROJECT_SITE_EXPORT_ENV)).toBe(
+    expect(resolveProductionSitemapLocHref("/", PROJECT_SITE_EXPORT_ENV)).toBe(
       `${PRODUCTION_SITE_ORIGIN}${BUILT_APP_GITHUB_PAGES_BASE_PATH}/`,
     );
   });
 
-  test("exclusion proofs stay out of the public route list", () => {
+  test("exclusion proofs stay out of app-relative and absolute sitemap inventories", () => {
     const routes = new Set(listPublicSitemapRoutes());
+    const urls = new Set(
+      listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV),
+    );
     for (const route of SITEMAP_EXCLUSION_PROOF_ROUTES) {
       expect(routes.has(route)).toBe(false);
+      expect(
+        urls.has(
+          resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
+        ),
+      ).toBe(false);
     }
   });
 
