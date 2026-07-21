@@ -106,7 +106,7 @@ describe("component-coverage-gate", () => {
     ]);
   });
 
-  test("isAllowedManifestPath accepts component, search UI, and factory-ui paths", () => {
+  test("isAllowedManifestPath accepts component, search UI, factory-ui, and layout paths", () => {
     expect(
       isAllowedManifestPath("src/features/docs/components/Callout.tsx"),
     ).toBe(true);
@@ -117,6 +117,9 @@ describe("component-coverage-gate", () => {
       isAllowedManifestPath("src/features/docs/tags/TagsIndexList.tsx"),
     ).toBe(true);
     expect(isAllowedManifestPath("src/features/factory-ui/graphs.ts")).toBe(
+      true,
+    );
+    expect(isAllowedManifestPath("src/features/layout/docs-header.tsx")).toBe(
       true,
     );
     expect(isAllowedManifestPath("src/components/ui/button.tsx")).toBe(true);

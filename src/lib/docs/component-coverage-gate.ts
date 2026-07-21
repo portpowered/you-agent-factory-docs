@@ -26,6 +26,9 @@ export const DOCS_TAG_LIST_MANIFEST_PREFIX = "src/features/docs/tags/";
 /** Rewrite-era factory-ui thin wrappers for `@you-agent-factory/components`. */
 export const FACTORY_UI_MANIFEST_PREFIX = "src/features/factory-ui/";
 
+/** Site/docs layout chrome package (header, primary nav, canonical layout). */
+export const LAYOUT_MANIFEST_PREFIX = "src/features/layout/";
+
 export type CoverageRow = {
   file: string;
   linePercent: number;
@@ -169,6 +172,9 @@ export function isAllowedManifestPath(file: string): boolean {
   if (file.startsWith(FACTORY_UI_MANIFEST_PREFIX)) {
     return true;
   }
+  if (file.startsWith(LAYOUT_MANIFEST_PREFIX)) {
+    return true;
+  }
   return false;
 }
 
@@ -251,7 +257,7 @@ export function evaluateComponentCoverageGate(options: {
   for (const entry of [...components, ...thinWrappers]) {
     if (!isAllowedManifestPath(entry.file)) {
       errors.push(
-        `Manifest path not allowed (use src/components/**, src/features/**/components/**, ${SEARCH_UI_MANIFEST_PREFIX}, ${DOCS_TAG_LIST_MANIFEST_PREFIX}, or ${FACTORY_UI_MANIFEST_PREFIX}): ${entry.file}`,
+        `Manifest path not allowed (use src/components/**, src/features/**/components/**, ${SEARCH_UI_MANIFEST_PREFIX}, ${DOCS_TAG_LIST_MANIFEST_PREFIX}, ${FACTORY_UI_MANIFEST_PREFIX}, or ${LAYOUT_MANIFEST_PREFIX}): ${entry.file}`,
       );
     }
   }

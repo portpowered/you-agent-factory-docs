@@ -237,7 +237,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   not webpack-hmr click alone). Use a unique port + `next dev --webpack`
   and kill the server on exit; worktree webpack-hmr may fail to hydrate
   click handlers even when chrome SSR is healthy — do not treat that alone
-  as a layout-move regression.
+  as a layout-move regression. Coverage gate allowlist must include
+  `LAYOUT_MANIFEST_PREFIX` (`src/features/layout/`) in
+  `component-coverage-gate.ts` when layout entries live in the reusable
+  coverage manifest.
 * `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
   Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
   routes via shared `withBasePath`.

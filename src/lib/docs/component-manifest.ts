@@ -2,8 +2,9 @@
  * Reusable shared components subject to the manifest-driven coverage gate.
  * Allowed manifest paths: src/components (any depth), src/features/.../components,
  * documented search UI under src/features/docs/search/, tag list UI under
- * src/features/docs/tags/, and rewrite-era factory-ui wrappers under
- * src/features/factory-ui/.
+ * src/features/docs/tags/, rewrite-era factory-ui wrappers under
+ * src/features/factory-ui/, and site/docs layout chrome under
+ * src/features/layout/.
  *
  * Phase inventories below document broader shell/module/search surfaces.
  * `REUSABLE_COVERAGE_COMPONENTS` is the factory-green required set for
