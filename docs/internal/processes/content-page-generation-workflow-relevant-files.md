@@ -620,6 +620,13 @@ those paths only accept collection section refs.
   do not leave an unassigned published page to append after the last top group
   (that leaks into Additional references under `pageEntriesUnderSeparator`).
   Direct URL, documentation section index, and search still include the page.
+- Dual-page API how-to proof (`documentation/api` vs `references/api`): colocate
+  page-local tests under `src/content/docs/documentation/api/api-page.test.tsx`.
+  Assert Mode A how-to identity, default base URL / factory-running / session-flow
+  teaching, a reader-visible `a[href="/docs/references/api"]` (How To Use + Related),
+  and absence of catalog UI markers (`[data-api-reference-projection]`,
+  `[data-api-operation-navigator]`, `[data-api-fumadocs-operations]`). Do not
+  assert explorer sidebar membership or Lane A maps from that page-local proof.
 - `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
   units). When rewriting or consuming that page, retarget program-doc related
   links and `relatedIds` that treated Tokens as the factory/work-token glossary
