@@ -83,9 +83,48 @@ via expanded Program tree on the factory-session route).
 Interfaces API/CLI/MCP how-tos discoverable and open published Program routes.
 No product code or expect-fix required.
 
-## Outcomes (3)–(5)
+## Outcome (3) — Reference nesting
 
-Deferred to stories `003`–`005`. This file will append route-level pass/fail as
+| Field | Value |
+| --- | --- |
+| Story | `ia-live-verify-page-structure-003` |
+| Visited (UTC) | `2026-07-21T12:58:36Z` (tip Pages baseline); local contract re-check after fix |
+| Primary route | `/docs/references/api/` (`200`, Reference expanded) |
+| Also visited | `/docs/references/cli/`, `/docs/references/events/`, `/docs/references/javascript-runtime/`, `/docs/references/mcp-reference/`, `/docs/references/factory-schema/`, `/docs/references/mock-workers-schema/`, `/docs/references/system-config-schema/`, `/docs/documentation/throttling-and-limits/`, `/docs/factories/sessions/`, `/docs/workers/`, `/docs/workstations/` (all `200`) |
+| Method | Fetch static HTML on Reference child routes; parse `#nd-sidebar` separators, page links, and nested folders under expanded Reference; confirm Factories / Workers / Workstations are not top-level peers |
+
+**Expected (locked IA / tip contract):** Under Reference — Contracts (API, CLI,
+Events, MCP catalog, JavaScript Runtime as published), Schemas, Limits
+(throttling), then nested Factories / Workers / Workstations. Those three
+families must not appear as top-level explorer peers.
+
+**Observed on tip Pages (`4515f350`) before fix:**
+
+| Group / nest | Observed |
+| --- | --- |
+| Contracts | API, CLI, Events, JavaScript Runtime |
+| Schemas | Factory schema, Mock-workers schema, System configuration schema |
+| Limits | Throttling and limits |
+| Ungrouped under Reference (after Limits) | **MCP Reference** (`/docs/references/mcp-reference/`) — mis-placed |
+| Nested folders | Factories, Workers, Workstations (not top-level) |
+| Factories children (on `/docs/factories/sessions/`) | Dynamic Workflows, Factory Sessions, Packaged Factories |
+
+**Concrete live defect:** `FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG` keyed Mode B
+MCP as `mcp` (Program how-to slug) instead of published `mcp-reference`, so the
+catalog trailed Limits as an ungrouped Reference leftover instead of sitting
+under Contracts.
+
+**Fix (smallest product change):** map `"mcp-reference": "contracts"` and lock
+placement in `explorer-ia-contract.test.ts`. Local contract tree now places
+`/docs/references/mcp-reference` under Contracts and not under Limits.
+
+**Result:** PASS after fix — nesting matches locked IA; tip Pages will show the
+MCP Contracts placement after this branch deploys. No PS-H1 / schema / chrome
+work.
+
+## Outcomes (4)–(5)
+
+Deferred to stories `004`–`005`. This file will append route-level pass/fail as
 those visits complete.
 
 ## Fence

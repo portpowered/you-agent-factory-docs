@@ -991,7 +991,16 @@ Pages** (not only local `source.pageTree` contracts):
    not `button[aria-expanded]` folders — do not treat missing folder buttons as
    a missing-subgroup defect. Mode A overviews and Interfaces how-tos appear as
    ordinary sidebar page links under the matching separator.
-5. Record route + UTC visit time + pass/fail in the lane evidence note (see
+5. For Reference nesting, open a Reference child route (for example
+   `/docs/references/api/` or `/docs/factories/sessions/`) so Reference is
+   expanded, then read Contracts / Schemas / Limits separator `<p>` labels and
+   nested Factories / Workers / Workstations folder buttons under Reference.
+   Confirm those three families are absent from top-level folder order.
+   Membership keys in `FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG` use the stripped
+   `references/…` slug (for example published `mcp-reference`, not Program
+   how-to `mcp`) — a wrong key leaves the page as an ungrouped leftover after
+   the last separator.
+6. Record route + UTC visit time + pass/fail in the lane evidence note (see
    [ia-live-verify-page-structure-ps400-evidence.md](./ia-live-verify-page-structure-ps400-evidence.md)).
    Prefer notes-only when live matches locked IA; tiny expect/product fixes only
    when a concrete live defect blocks acceptance.
