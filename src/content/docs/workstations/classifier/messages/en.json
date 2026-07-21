@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a CLASSIFIER_WORKSTATION with behavior STANDARD and classificationRoutes. The misuse example borrows outputs from ordinary WorkstationTypes — that field is excluded from CLASSIFIER_WORKSTATION."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -37,12 +31,6 @@
     "minimalExampleLabel": "Minimal valid CLASSIFIER_WORKSTATION workstation:",
     "misuseExampleLabel": "Incompatible misuse — outputs on CLASSIFIER_WORKSTATION:",
     "misuseNote": "outputs, onContinue, and onRejection are excluded from CLASSIFIER_WORKSTATION. Keep label routing on classificationRoutes and failure routing on onFailure only.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingLogicalMove": "Logical move workstation",
-    "siblingInferenceRun": "Inference-run workstation",
-    "siblingAgentRun": "Agent-run workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

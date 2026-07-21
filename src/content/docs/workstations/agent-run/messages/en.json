@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting an AGENT_RUN workstation with behavior STANDARD and an openCodeAgent override. The misuse example borrows operation from MODEL_INVOKE — that field is excluded from AGENT_RUN."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -37,12 +31,6 @@
     "minimalExampleLabel": "Minimal valid AGENT_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — operation on AGENT_RUN:",
     "misuseNote": "operation belongs on MODEL_INVOKE. Keep AGENT_RUN on identity, worker binding, inputs, outputs, routing fields, and optional openCodeAgent overrides only.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingInferenceRun": "Inference-run workstation",
-    "siblingScriptRun": "Script-run workstation",
-    "siblingModelInvoke": "Model-invoke workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

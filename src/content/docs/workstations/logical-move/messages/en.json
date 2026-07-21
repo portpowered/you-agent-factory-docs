@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a LOGICAL_MOVE with behavior STANDARD and optional guards. The misuse example borrows classificationRoutes from CLASSIFIER_WORKSTATION — that field is excluded from LOGICAL_MOVE."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -37,12 +31,6 @@
     "minimalExampleLabel": "Minimal valid LOGICAL_MOVE workstation:",
     "misuseExampleLabel": "Incompatible misuse — classificationRoutes on LOGICAL_MOVE:",
     "misuseNote": "classificationRoutes belongs on CLASSIFIER_WORKSTATION. Keep LOGICAL_MOVE on identity, worker binding, inputs, outputs, routing fields, and optional guards only.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingClassifier": "Classifier workstation",
-    "siblingInferenceRun": "Inference-run workstation",
-    "siblingAgentRun": "Agent-run workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

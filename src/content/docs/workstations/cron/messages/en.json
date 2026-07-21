@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a CRON workstation. The misuse example shows behavior CRON without cron — the schedule field is required on this behavior."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -36,12 +30,6 @@
     "minimalExampleLabel": "Minimal valid CRON workstation:",
     "misuseExampleLabel": "Incompatible misuse — CRON without cron (required):",
     "misuseNote": "cron is required under behavior CRON. Omitting it leaves the schedule undefined. Set cron when the step must run on a schedule.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingStandard": "Standard workstation",
-    "siblingRepeater": "Repeater workstation",
-    "siblingPoller": "Poller workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

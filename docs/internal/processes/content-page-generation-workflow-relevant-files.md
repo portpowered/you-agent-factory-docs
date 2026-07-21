@@ -57,9 +57,11 @@ schema teaching `LocalizedLinkList` mounts and Tags. Do not rewrite shared
 `RelatedDocs` behavior or invent a replacement related surface. When stripping
 MDX, drop colocated page-test assertions that only proved Related-footer
 curated links (for example `Workstations family index` sibling rows); leave
-How To Use teaching link proofs. Clean orphan `sections.related` /
-`sections.references` and Related-only link keys in a follow-on messages story;
-add absence locks (`Related To` / `References` / `#related`) in the tests story.
+How To Use teaching link proofs. In the messages story, remove orphan
+`sections.related` / `sections.references` titles and Related-footer-only link
+keys (`workstationsFamilyIndex`, `sibling*`); keep companion / schema / example
+labels. Add absence locks (`Related To` / `References` / `#related`) in the
+tests story.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
