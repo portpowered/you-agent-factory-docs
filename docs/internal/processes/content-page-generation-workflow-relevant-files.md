@@ -985,7 +985,13 @@ Pages** (not only local `source.pageTree` contracts):
    `button[aria-expanded]` labels in DOM order, then the top-level FAQ page
    link. Collapsed folders omit nested subgroup labels from static HTML — expand
    or open a child route when verifying Program / Reference nesting.
-4. Record route + UTC visit time + pass/fail in the lane evidence note (see
+4. For Program subgroups, open any Program child route so Program documentation
+   is expanded, then read uppercase separator `<p>` labels under `#nd-sidebar`
+   (Orientation → Capabilities → Interfaces → Operations). Those headers are
+   not `button[aria-expanded]` folders — do not treat missing folder buttons as
+   a missing-subgroup defect. Mode A overviews and Interfaces how-tos appear as
+   ordinary sidebar page links under the matching separator.
+5. Record route + UTC visit time + pass/fail in the lane evidence note (see
    [ia-live-verify-page-structure-ps400-evidence.md](./ia-live-verify-page-structure-ps400-evidence.md)).
    Prefer notes-only when live matches locked IA; tiny expect/product fixes only
    when a concrete live defect blocks acceptance.
