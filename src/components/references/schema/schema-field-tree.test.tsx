@@ -168,8 +168,11 @@ describe("SchemaFieldTree", () => {
 
     expect(screen.getByText("$ref →")).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: /schema reference: \/\$defs\/Worker/i }),
+      screen.getByRole("link", { name: /schema reference: Worker/i }),
     ).toBeTruthy();
+    expect(screen.getByTestId("schema-ref-link").textContent).toContain(
+      "Worker",
+    );
     expect(
       screen.queryByRole("button", { name: /Expand fields under worker/i }),
     ).toBeNull();
