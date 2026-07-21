@@ -21,6 +21,16 @@ export type ShellSidebarGroupingResolver = (
   pages: readonly ShellCollectionPageSource[],
 ) => Node[];
 
+/**
+ * Optional override for explorer folder assignment. When it returns a
+ * collection id, that id wins over routeSlug-based placement (used for
+ * Program documentation cross-collection membership such as factories
+ * config pages).
+ */
+export type ShellCollectionIdResolver = (
+  page: ShellCollectionPageSource,
+) => string | undefined;
+
 export type ShellSidebarPageGroup<
   TPage extends ShellCollectionPageSource = ShellCollectionPageSource,
 > = {
@@ -117,7 +127,14 @@ function assignPageToCollection(
   pagesByCollection: Map<string, ShellCollectionPageSource[]>,
   collectionIdByRouteSlug: ReadonlyMap<string, string>,
   page: ShellCollectionPageSource,
+  resolveCollectionId?: ShellCollectionIdResolver,
 ): void {
+  const overrideCollectionId = resolveCollectionId?.(page);
+  if (overrideCollectionId) {
+    pagesByCollection.get(overrideCollectionId)?.push(page);
+    return;
+  }
+
   const [routeSlug] = page.docsSlug.split("/", 1);
   const collectionId = collectionIdByRouteSlug.get(routeSlug);
   if (!collectionId) {
@@ -132,11 +149,13 @@ export function buildShellCollectionPageTreeChildren({
   definitions,
   collectionIds,
   groupingResolvers = {},
+  resolveCollectionId,
 }: {
   pages: readonly ShellCollectionPageSource[];
   definitions: readonly ShellCollectionSidebarDefinition[];
   collectionIds: readonly string[];
   groupingResolvers?: Record<string, ShellSidebarGroupingResolver>;
+  resolveCollectionId?: ShellCollectionIdResolver;
 }): Node[] {
   const definitionsById = new Map(
     definitions.map((definition) => [definition.id, definition]),
@@ -149,7 +168,12 @@ export function buildShellCollectionPageTreeChildren({
   );
 
   for (const page of pages) {
-    assignPageToCollection(pagesByCollection, collectionIdByRouteSlug, page);
+    assignPageToCollection(
+      pagesByCollection,
+      collectionIdByRouteSlug,
+      page,
+      resolveCollectionId,
+    );
   }
 
   const children: Node[] = [];

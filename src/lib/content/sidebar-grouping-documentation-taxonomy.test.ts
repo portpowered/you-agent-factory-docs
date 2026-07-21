@@ -9,11 +9,13 @@ import {
   DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS,
   DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
   DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
+  documentationSidebarMembershipSlug,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
   getDocumentationSidebarMembership,
   getDocumentationSidebarSecondaryIdsForGroup,
   getDocumentationSidebarSecondaryLabel,
+  hasDocumentationSidebarMembership,
   isDeferredDocumentationExplorerMembershipSlug,
   isDocumentationSidebarSecondaryGroup,
   MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
@@ -134,6 +136,28 @@ describe("Program documentation three-level taxonomy", () => {
     expect(isDocumentationSidebarSecondaryGroup("capabilities")).toBe(false);
     expect(isDocumentationSidebarSecondaryGroup("interfaces")).toBe(false);
     expect(isDocumentationSidebarSecondaryGroup("operations")).toBe(true);
+  });
+
+  test("membership slug helper strips documentation prefix and keeps factories docsSlugs", () => {
+    expect(documentationSidebarMembershipSlug("documentation/resources")).toBe(
+      "resources",
+    );
+    expect(documentationSidebarMembershipSlug("factories/configuration")).toBe(
+      "factories/configuration",
+    );
+    expect(hasDocumentationSidebarMembership("documentation/resources")).toBe(
+      true,
+    );
+    expect(hasDocumentationSidebarMembership("factories/configuration")).toBe(
+      true,
+    );
+    expect(
+      hasDocumentationSidebarMembership("factories/global-configuration"),
+    ).toBe(true);
+    expect(hasDocumentationSidebarMembership("factories/sessions")).toBe(false);
+    expect(hasDocumentationSidebarMembership("documentation/install")).toBe(
+      false,
+    );
   });
 
   test("default membership matches the locked Orientation / Capabilities / Interfaces / Operations IA", () => {

@@ -823,8 +823,11 @@ those paths only accept collection section refs.
   `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view.
   `buildDocumentationGroupedNodes` uses membership allowlisting so demotions,
   Mode A pending, and deferred pages do not appear as Program leftovers.
-  Injecting factories config pages into the Program tree (while keeping Factories
-  routes) is a separate render story.
+  Cross-collection factories config pages (`factories/configuration`,
+  `factories/global-configuration`) are routed into the Program documentation
+  explorer folder by `hasDocumentationSidebarMembership` in
+  `docs-sidebar-sections.ts` while keeping published `/docs/factories/...`
+  routes; they no longer appear under the Factories explorer folder.
 - Packaged CLI reference surfaces: place `packaged-documents` under Program
   Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
   Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;

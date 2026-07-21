@@ -10,6 +10,7 @@ import {
   FACTORY_SIDEBAR_COLLECTION_IDS,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
+import { hasDocumentationSidebarMembership } from "@/lib/content/sidebar-grouping";
 import { DIRECT_DOCS_ROUTE_FAMILY_IDS } from "@/lib/docs/collection-definition-contract";
 import {
   collectSidebarPageLinks,
@@ -32,8 +33,8 @@ const SETTLED_FAMILY_PAGE_PROOFS = [
   },
   {
     folderName: FACTORY_EXPLORER_FOLDER_LABELS.factories,
-    url: "/docs/factories/configuration",
-    name: "Configuration",
+    url: "/docs/factories/sessions",
+    name: "Factory Sessions",
   },
   {
     folderName: FACTORY_EXPLORER_FOLDER_LABELS.workers,
@@ -118,7 +119,11 @@ describe("W15 family sidebar discovery", () => {
       const children = getFolderChildren(pageTree, folderName);
       const links = collectSidebarPageLinks(children);
       const publishedFamilyUrls = publishedPages
-        .filter((page) => page.docsSlug.startsWith(`${familyId}/`))
+        .filter(
+          (page) =>
+            page.docsSlug.startsWith(`${familyId}/`) &&
+            !hasDocumentationSidebarMembership(page.docsSlug),
+        )
         .map((page) => page.url)
         .sort();
 

@@ -1,13 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
-import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import {
-  isDeferredDocumentationExplorerMembershipSlug,
-  isModeAProgramOverviewPendingExplorerMembership,
-  PROGRAM_DOCUMENTATION_DEMOTED_SLUGS,
-} from "@/lib/content/sidebar-grouping";
-import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
+import { hasDocumentationSidebarMembership } from "@/lib/content/sidebar-grouping";
 import { source } from "@/lib/source";
 
 const SECTION_FOLDER_NAMES = {
@@ -105,14 +99,12 @@ describe("docs navigation source", () => {
 
   test("generated folder URLs stay within their published section contract without exact inventories", () => {
     const publishedPages = loadPublishedDocsPagesSync("en");
+    const publishedByUrl = new Map(
+      publishedPages.map((page) => [page.url, page] as const),
+    );
 
     for (const [section, folderName] of Object.entries(SECTION_FOLDER_NAMES)) {
       const folderUrls = collectPageUrls(getFolderChildren(folderName));
-      const publishedSectionUrls = new Set(
-        publishedPages
-          .filter((page) => page.docsSlug.startsWith(`${section}/`))
-          .map((page) => page.url),
-      );
       const sectionPrefix = `/docs/${section}/`;
 
       expect(
@@ -121,21 +113,46 @@ describe("docs navigation source", () => {
       ).toBe(folderUrls.length);
 
       for (const url of folderUrls) {
+        const page = publishedByUrl.get(url);
         expect(
-          url.startsWith(sectionPrefix),
-          `${folderName} route ${url} should stay in ${sectionPrefix}`,
-        ).toBe(true);
-        expect(
-          publishedSectionUrls.has(url),
+          page,
           `${folderName} route ${url} should resolve from the published docs runtime`,
-        ).toBe(true);
+        ).toBeDefined();
+        if (!page) {
+          continue;
+        }
+
+        if (section === "documentation") {
+          expect(
+            hasDocumentationSidebarMembership(page.docsSlug),
+            `${folderName} route ${url} should have Program documentation membership`,
+          ).toBe(true);
+        } else {
+          expect(
+            url.startsWith(sectionPrefix),
+            `${folderName} route ${url} should stay in ${sectionPrefix}`,
+          ).toBe(true);
+          expect(
+            hasDocumentationSidebarMembership(page.docsSlug),
+            `${folderName} route ${url} should not be claimed by Program membership`,
+          ).toBe(false);
+        }
+
         expect(
           source.getPage(docsSlugFromUrl(url)),
           `${folderName} route ${url} should resolve through the Fumadocs source`,
         ).toBeDefined();
       }
 
-      if (publishedSectionUrls.size > 0) {
+      if (
+        publishedPages.some(
+          (page) =>
+            page.docsSlug.startsWith(`${section}/`) &&
+            (section === "documentation"
+              ? hasDocumentationSidebarMembership(page.docsSlug)
+              : !hasDocumentationSidebarMembership(page.docsSlug)),
+        )
+      ) {
         expect(
           folderUrls.length,
           `${folderName} should expose published routes`,
@@ -151,25 +168,17 @@ describe("docs navigation source", () => {
       const folderUrls = collectPageUrls(getFolderChildren(folderName));
       const publishedSectionUrls = publishedPages
         .filter((page) => {
+          if (section === "documentation") {
+            return hasDocumentationSidebarMembership(page.docsSlug);
+          }
           if (!page.docsSlug.startsWith(`${section}/`)) {
             return false;
           }
-          if (section !== "documentation") {
-            return true;
-          }
-          // FAQ is top-level; W18 move stubs, Mode A overviews pending
-          // PS-300, deferred-membership pages, and PS-100 demotions keep
-          // published routes without Program explorer membership.
-          const slug = page.docsSlug.slice("documentation/".length);
-          return (
-            !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
-            !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug) &&
-            !isModeAProgramOverviewPendingExplorerMembership(page.docsSlug) &&
-            !isDeferredDocumentationExplorerMembershipSlug(slug) &&
-            !(
-              PROGRAM_DOCUMENTATION_DEMOTED_SLUGS as readonly string[]
-            ).includes(slug)
-          );
+          // Cross-collection Program membership moves tree placement out of
+          // the route-family folder (factories config → Configuring). Mode A
+          // pending / deferred / demoted documentation pages also lack
+          // membership and stay out of Program.
+          return !hasDocumentationSidebarMembership(page.docsSlug);
         })
         .map((page) => page.url);
 
@@ -260,6 +269,8 @@ describe("docs navigation source", () => {
     expect(secondaryFolderNames).not.toContain("Observability");
     expect(pageUrls).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(pageUrls).toContain("/docs/documentation/cli");
+    expect(pageUrls).toContain("/docs/factories/configuration");
+    expect(pageUrls).toContain("/docs/factories/global-configuration");
     expect(pageUrls).not.toContain("/docs/documentation/throttling-and-limits");
     expect(pageUrls).not.toContain("/docs/documentation/install");
     expect(pageUrls).not.toContain("/docs/documentation/mock-workers");

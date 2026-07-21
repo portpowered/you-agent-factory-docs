@@ -3,6 +3,7 @@ import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-
 import type { DocsPageSource } from "@/lib/content/pages";
 import { getConceptById } from "@/lib/content/registry-runtime";
 import {
+  documentationSidebarMembershipSlug,
   getDocumentationSidebarMembership,
   getDocumentationSidebarSecondaryIdsForGroup,
   getDocumentationSidebarSecondaryLabel,
@@ -45,9 +46,7 @@ function createFolder(name: string, children: Node[]): Node {
 }
 
 function documentationPageSlug(page: DocsPageSource): string {
-  return page.docsSlug.startsWith("documentation/")
-    ? page.docsSlug.slice("documentation/".length)
-    : page.docsSlug;
+  return documentationSidebarMembershipSlug(page.docsSlug);
 }
 
 function sortPages(pages: DocsPageSource[]): DocsPageSource[] {

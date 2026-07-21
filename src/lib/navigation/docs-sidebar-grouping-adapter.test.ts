@@ -193,6 +193,11 @@ describe("docs sidebar grouping adapter", () => {
     const allDocumentationPages = loadPublishedDocsPagesSync("en").filter(
       (page) => page.docsSlug.startsWith("documentation/"),
     );
+    const factoriesConfiguringPages = loadPublishedDocsPagesSync("en").filter(
+      (page) =>
+        page.docsSlug === "factories/configuration" ||
+        page.docsSlug === "factories/global-configuration",
+    );
     const pages = allDocumentationPages.filter((page) => {
       if (isDocsExplorerTopLevelFaqPage(page.docsSlug)) {
         return false;
@@ -220,10 +225,10 @@ describe("docs sidebar grouping adapter", () => {
         ] !== undefined
       );
     });
-    const nodes = buildGroupedSidebarNodes(
-      "documentation",
-      allDocumentationPages,
-    );
+    const nodes = buildGroupedSidebarNodes("documentation", [
+      ...allDocumentationPages,
+      ...factoriesConfiguringPages,
+    ]);
     const separators = getSeparatorLabels(nodes);
     const byGroup = collectGroupedPageUrls(nodes);
 
@@ -277,6 +282,10 @@ describe("docs sidebar grouping adapter", () => {
       ).toBe(membership.group);
     }
 
+    for (const page of factoriesConfiguringPages) {
+      expectedByGroup.Operations.push(page.url);
+    }
+
     for (const [label, urls] of Object.entries(expectedByGroup)) {
       expect(byGroup[label]?.slice().sort()).toEqual(urls.slice().sort());
     }
@@ -290,13 +299,26 @@ describe("docs sidebar grouping adapter", () => {
         "packaged-documents",
       ],
       Interfaces: ["cli", "mcp"],
-      Operations: ["logs", "metrics", "dashboard-ui-overview", "resources"],
+      Operations: [
+        "logs",
+        "metrics",
+        "dashboard-ui-overview",
+        "resources",
+        "factories/configuration",
+        "factories/global-configuration",
+      ],
     } as const;
 
     for (const [label, slugs] of Object.entries(exactDirectTopGroupSlugs)) {
       const urls = byGroup[label] ?? [];
       expect(
-        urls.map((url) => url.slice("/docs/documentation/".length)).sort(),
+        urls
+          .map((url) =>
+            url.startsWith("/docs/documentation/")
+              ? url.slice("/docs/documentation/".length)
+              : url.slice("/docs/".length),
+          )
+          .sort(),
       ).toEqual([...slugs].sort());
     }
 
@@ -307,11 +329,13 @@ describe("docs sidebar grouping adapter", () => {
       "Operations",
       configuringLabel,
     );
-    expect(
-      configuringUrls
-        .map((url) => url.slice("/docs/documentation/".length))
-        .sort(),
-    ).toEqual(["resources"]);
+    expect(configuringUrls.sort()).toEqual(
+      [
+        "/docs/documentation/resources",
+        "/docs/factories/configuration",
+        "/docs/factories/global-configuration",
+      ].sort(),
+    );
 
     for (const demoted of [
       "install",
@@ -364,7 +388,9 @@ describe("docs sidebar grouping adapter", () => {
       ).toBe(false);
     }
 
-    expect(countPageNodes(nodes)).toBe(pages.length);
+    expect(countPageNodes(nodes)).toBe(
+      pages.length + factoriesConfiguringPages.length,
+    );
     expect(
       FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
         "faq" as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG

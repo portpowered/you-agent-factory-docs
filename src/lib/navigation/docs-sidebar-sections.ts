@@ -13,6 +13,7 @@ import {
   isModeAProgramOverviewPendingExplorerMembership,
 } from "@/lib/content/sidebar-grouping";
 import { isDocsCollectionSidebarGroupingResolverId } from "@/lib/docs/collection-definition-contract";
+import { resolveProgramDocumentationExplorerCollectionId } from "@/lib/navigation/docs-sidebar-adapter";
 import { buildGroupedSidebarNodes } from "@/lib/navigation/docs-sidebar-grouping-adapter";
 import {
   buildUngroupedShellCollectionPageNodes,
@@ -124,6 +125,15 @@ export function buildDocsSidebarSectionNodes({
       ? page.docsSlug.slice("documentation/".length)
       : page.docsSlug;
     if (isDeferredDocumentationExplorerMembershipSlug(documentationSlug)) {
+      continue;
+    }
+
+    // Cross-collection Program membership (factories config pages) moves tree
+    // placement into Program documentation while keeping published routes.
+    const programCollectionId =
+      resolveProgramDocumentationExplorerCollectionId(page);
+    if (programCollectionId) {
+      pagesByCollection.get(programCollectionId)?.push(page);
       continue;
     }
 

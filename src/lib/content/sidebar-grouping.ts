@@ -184,8 +184,9 @@ export function isDeferredDocumentationExplorerMembershipSlug(
  * them under Reference / Internal architecture / Miscellanea / Guides.
  *
  * Factory configuration pages use full `factories/...` docsSlug keys so
- * Operations → Configuring can nest them without route moves (render injection
- * is a later story).
+ * Operations → Configuring can nest them without route moves. Explorer tree
+ * placement routes those pages into Program documentation via
+ * `hasDocumentationSidebarMembership` in the sidebar section builder.
  *
  * Groups with declared secondaries assign exactly one secondary per slug;
  * other groups place pages directly under the top group.
@@ -349,6 +350,18 @@ export function getDocumentationSidebarSecondaryLabel<
   return DOCUMENTATION_SIDEBAR_SECONDARY_LABELS[groupId][secondaryId] as string;
 }
 
+/**
+ * Membership lookup key for a published docsSlug. Documentation collection
+ * pages strip the `documentation/` prefix; other collections (for example
+ * `factories/configuration`) keep the full docsSlug so cross-collection
+ * Program membership keys stay unique.
+ */
+export function documentationSidebarMembershipSlug(docsSlug: string): string {
+  return docsSlug.startsWith("documentation/")
+    ? docsSlug.slice("documentation/".length)
+    : docsSlug;
+}
+
 export function getDocumentationSidebarMembership(
   slug: string,
 ):
@@ -357,6 +370,18 @@ export function getDocumentationSidebarMembership(
   return FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
     slug as FactoryDocumentationSidebarSlug
   ];
+}
+
+/**
+ * True when a published page is claimed by Program documentation explorer
+ * membership (including cross-collection factories config pages).
+ */
+export function hasDocumentationSidebarMembership(docsSlug: string): boolean {
+  return (
+    getDocumentationSidebarMembership(
+      documentationSidebarMembershipSlug(docsSlug),
+    ) !== undefined
+  );
 }
 
 function createSidebarGroupResolution<

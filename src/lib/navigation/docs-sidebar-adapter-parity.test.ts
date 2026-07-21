@@ -81,12 +81,14 @@ describe("docs sidebar adapter extraction parity", () => {
   test("adapter-wired collection folders match generated tree for factory collections", () => {
     const baseTree = { name: "Docs", children: [] };
     const generatedTree = buildGeneratedDocsPageTree(baseTree);
-    const { definitions, groupingResolvers } = getDocsShellPageTreeSettings();
+    const { definitions, groupingResolvers, resolveCollectionId } =
+      getDocsShellPageTreeSettings();
     const adapterTree = buildShellCollectionPageTree(baseTree, {
       pages: loadPublishedDocsPagesSync("en"),
       definitions,
       collectionIds: [...FACTORY_SIDEBAR_COLLECTION_IDS],
       groupingResolvers,
+      resolveCollectionId,
     });
 
     const factoryFolderNames = [

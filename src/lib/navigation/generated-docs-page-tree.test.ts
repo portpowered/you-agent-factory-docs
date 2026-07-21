@@ -252,6 +252,22 @@ describe("generated docs page tree", () => {
       ),
     ).toBe(true);
     expect(
+      configuringFolder.children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/factories/configuration",
+      ),
+    ).toBe(true);
+    expect(
+      configuringFolder.children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/factories/global-configuration",
+      ),
+    ).toBe(true);
+    expect(
       children.some(
         (node) =>
           node.type === "page" &&

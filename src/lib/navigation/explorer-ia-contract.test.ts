@@ -75,7 +75,8 @@ const R01_PROGRAM_DOCUMENTATION_EXPLORER_PAGES = [
 
 /**
  * Direct Program documentation top groups and their pages under locked PS-100.
- * Operations → Configuring secondary membership is owned by STORY_004_SECONDARY_PAGES.
+ * Operations → Configuring secondary membership is owned by STORY_004_SECONDARY_PAGES;
+ * the Operations list below is direct children only (no Configuring nest).
  */
 const STORY_003_DIRECT_TOP_GROUP_PAGES = {
   orientation: ["what-is-you-agent-factory"],
@@ -86,16 +87,20 @@ const STORY_003_DIRECT_TOP_GROUP_PAGES = {
     "packaged-documents",
   ],
   interfaces: ["cli", "mcp"],
-  operations: ["logs", "metrics", "dashboard-ui-overview", "resources"],
+  operations: ["logs", "metrics", "dashboard-ui-overview"],
 } as const;
 
 /**
- * Operations → Configuring secondary membership (documentation collection only;
- * factory config pages inject in story 002).
+ * Operations → Configuring secondary membership, including cross-collection
+ * factories config pages that keep `/docs/factories/...` routes.
  */
 const STORY_004_SECONDARY_PAGES = {
   operations: {
-    configuring: ["resources"],
+    configuring: [
+      "resources",
+      "factories/configuration",
+      "factories/global-configuration",
+    ],
   },
 } as const;
 
@@ -297,6 +302,23 @@ describe("explorer IA exact-order contract", () => {
       }
 
       const underGroup = pageEntriesUnderSeparator(documentation, groupLabel);
+      if (groupId === "operations") {
+        for (const slug of slugs) {
+          expect(
+            FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+              slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+            ],
+          ).toBe(groupId);
+          expect(
+            underGroup.some((entry) =>
+              urlEndsWithSlug(entry.url, "documentation", slug),
+            ),
+            `${slug} must sit under Program documentation top group ${groupLabel}`,
+          ).toBe(true);
+        }
+        continue;
+      }
+
       const underGroupSlugs = underGroup.map((entry) => {
         const match = entry.url.match(/\/documentation\/([^/]+)$/);
         expect(
@@ -389,12 +411,18 @@ describe("explorer IA exact-order contract", () => {
           secondaryLabel,
         );
         const underSecondarySlugs = underSecondary.map((entry) => {
-          const match = entry.url.match(/\/documentation\/([^/]+)$/);
+          const documentationMatch = entry.url.match(
+            /\/docs\/documentation\/([^/]+)$/,
+          );
+          if (documentationMatch?.[1]) {
+            return documentationMatch[1];
+          }
+          const factoriesMatch = entry.url.match(/\/docs\/(factories\/[^/]+)$/);
           expect(
-            match?.[1],
-            `${entry.url} must be a documentation page`,
+            factoriesMatch?.[1],
+            `${entry.url} must be a documentation or factories config page`,
           ).toBeTruthy();
-          return match?.[1] ?? "";
+          return factoriesMatch?.[1] ?? "";
         });
 
         expect(underSecondarySlugs.sort()).toEqual([...slugs].sort());
@@ -410,9 +438,14 @@ describe("explorer IA exact-order contract", () => {
               ? String(membership.secondary)
               : undefined,
           ).toBe(secondaryId);
+          const slashIndex = slug.indexOf("/");
+          const collection =
+            slashIndex === -1 ? "documentation" : slug.slice(0, slashIndex);
+          const pathSlug =
+            slashIndex === -1 ? slug : slug.slice(slashIndex + 1);
           expect(
             underSecondary.some((entry) =>
-              urlEndsWithSlug(entry.url, "documentation", slug),
+              urlEndsWithSlug(entry.url, collection, pathSlug),
             ),
             `${slug} must sit under ${groupLabel} → ${secondaryLabel}`,
           ).toBe(true);
@@ -522,6 +555,16 @@ describe("explorer IA exact-order contract", () => {
     expect(
       configuringPages.some((entry) =>
         urlEndsWithSlug(entry.url, "documentation", "resources"),
+      ),
+    ).toBe(true);
+    expect(
+      configuringPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "factories", "configuration"),
+      ),
+    ).toBe(true);
+    expect(
+      configuringPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "factories", "global-configuration"),
       ),
     ).toBe(true);
     expect(

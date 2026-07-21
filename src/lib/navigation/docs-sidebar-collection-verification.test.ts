@@ -53,9 +53,14 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     name: "API",
   },
   {
-    folderName: "Factories",
+    folderName: "Program documentation",
     url: "/docs/factories/configuration",
     name: "Configuration",
+  },
+  {
+    folderName: "Factories",
+    url: "/docs/factories/sessions",
+    name: "Factory Sessions",
   },
   {
     folderName: "Workers",
@@ -251,5 +256,20 @@ describe("collection-driven docs sidebar verification", () => {
     expect(secondaryFolderNames).toContain("Configuring you-agent-factory");
     expect(secondaryFolderNames).not.toContain("Workers");
     expect(secondaryFolderNames).not.toContain("Observability");
+    expect(
+      collectSidebarPageLinks(children).some(
+        (link) => link.url === "/docs/factories/configuration",
+      ),
+    ).toBe(true);
+    expect(
+      collectSidebarPageLinks(children).some(
+        (link) => link.url === "/docs/factories/global-configuration",
+      ),
+    ).toBe(true);
+    expect(
+      collectSidebarPageLinks(getFolderChildren(pageTree, "Factories")).some(
+        (link) => link.url === "/docs/factories/configuration",
+      ),
+    ).toBe(false);
   });
 });
