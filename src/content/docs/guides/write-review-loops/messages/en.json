@@ -18,14 +18,8 @@
       "title": "Common Pitfalls",
       "body": "Do not review or submit against a factory that is not live. Do not treat reject-without-a-breaker as safe forever. Do not confuse this use-case guide with the later writer-reviewer technique glossary page."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

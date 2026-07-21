@@ -19,14 +19,8 @@
       "title": "Cạm bẫy thường gặp",
       "body": "Đừng gửi công việc khi không có phiên factory đang sống—xác nhận bằng session list trước, hoặc khởi động lại lần chạy có tên. Đừng coi vòng lặp factory như chat một lần dùng rồi bỏ; factory giữ phiên xuyên các lượt cho đến khi mục tiêu xong hoặc bạn dừng. Đừng dùng vòng lặp thuần khi công việc nên xen kẽ cổng soạn thảo và duyệt—đường đó thuộc về vòng lặp viết-duyệt."
     },
-    "related": {
-      "title": "Liên quan"
-    },
     "tags": {
       "title": "Thẻ"
-    },
-    "references": {
-      "title": "Tài liệu tham khảo"
     }
   },
   "links": {

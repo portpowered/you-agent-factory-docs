@@ -55,8 +55,10 @@ For published guides under `src/content/docs/guides/**/page.mdx`, strip trailing
 teaching-section / common-pitfalls `LocalizedLinkList` mounts (including Getting
 Started install teaching and CLI docs link). Do not rewrite shared `RelatedDocs`
 behavior; leave sibling collections and docs next/prev footer density alone.
-Locale footer title keys and colocated absence assertions are follow-on strip
-stories, not required for the MDX chrome removal itself.
+After MDX strip, remove owned `sections.related` / `sections.references`
+footer title keys from guides `messages/*.json` (all owned locales) so bundles
+match the page. Keep teaching / common-pitfalls / install `links.*` keys.
+Colocated absence assertions remain a follow-on strip story.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no

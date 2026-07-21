@@ -31,14 +31,8 @@
       "title": "Cạm bẫy thường gặp",
       "body": "Đừng gửi công việc trước khi có phiên factory đang chạy. Với ma trận lệnh CLI đầy đủ, dùng tài liệu CLI."
     },
-    "related": {
-      "title": "Liên quan"
-    },
     "tags": {
       "title": "Thẻ"
-    },
-    "references": {
-      "title": "Tham chiếu"
     }
   },
   "links": {

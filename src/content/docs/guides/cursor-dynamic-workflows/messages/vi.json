@@ -19,14 +19,8 @@
       "title": "Cạm bẫy thường gặp",
       "body": "Nếu Cursor không tìm thấy you trên PATH, hãy đặt command thành đường dẫn tuyệt đối tới nhị phân you thay vì dựa vào PATH của shell. Nếu validate hoặc start không giải quyết được nguồn quy trình, hãy kiểm tra cwd là gốc dự án quy trình, không phải gói lồng nhau hoặc thư mục home. Sau khi đổi cấu hình MCP, hãy khởi động lại Cursor hoặc chạy Developer: Reload Window để tiến trình con MCP được tạo lại; chỉ lưu tệp là chưa đủ. Coi hướng dẫn này chỉ là vòng tích hợp Cursor đầu tiên — danh mục công cụ đầy đủ, cờ serve và chi tiết API quy trình động nằm trên các trang tài liệu MCP và quy trình động được liên kết bên dưới."
     },
-    "related": {
-      "title": "Liên quan"
-    },
     "tags": {
       "title": "Thẻ"
-    },
-    "references": {
-      "title": "Tài liệu tham khảo"
     }
   },
   "links": {
