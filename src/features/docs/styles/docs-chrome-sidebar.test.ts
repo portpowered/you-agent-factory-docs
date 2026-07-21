@@ -36,11 +36,12 @@ describe("docs chrome sidebar highlighting", () => {
     window = undefined;
   });
 
-  test("surface roles follow locked white rest and primary-yellow hover background", () => {
+  test("surface roles follow locked white rest, primary-yellow hover, and secondary-blue selected", () => {
     expect(DOCS_CHROME_SIDEBAR_SURFACE_ROLES).toEqual({
       default: "white",
       hoverActive: "primaryYellow",
       hoverActiveKind: "background",
+      selectedActive: "secondaryBlue",
     });
 
     expect(DOCS_CHROME_SIDEBAR_TOKENS.restText).toBe(
