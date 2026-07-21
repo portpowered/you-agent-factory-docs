@@ -61,8 +61,9 @@ const FIXTURE_MESSAGES = {
 
 /**
  * Dev fixture surface for ModelCostPlayground (graph-pages W-cost-playground).
- * Inline pricing subset only — no technique/blog MDX or registry loaders.
- * Story 004 owns full harness review AC (recommendation visibility, etc.).
+ * Inline pricing subset (≥2 distinct-priced models) only — no technique/blog
+ * MDX, orchestrator registry, or inventory loaders. Production gate lives on
+ * the route page (`isModelCostPlaygroundHarnessEnabled`).
  */
 export function ModelCostPlaygroundHarness() {
   return (

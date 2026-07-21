@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ModelCostPlaygroundHarness } from "./ModelCostPlaygroundHarness";
+import { isModelCostPlaygroundHarnessEnabled } from "./model-cost-playground-harness-gate";
 
 /**
  * Non-production harness for ModelCostPlayground (graph-pages W-cost-playground).
@@ -7,10 +8,7 @@ import { ModelCostPlaygroundHarness } from "./ModelCostPlaygroundHarness";
  * technique/blog MDX, orchestrator matrix, or inventory integrate.
  */
 export default function ModelCostPlaygroundHarnessPage() {
-  if (
-    process.env.NODE_ENV === "production" &&
-    process.env.ENABLE_COMPONENT_EXAMPLES !== "1"
-  ) {
+  if (!isModelCostPlaygroundHarnessEnabled(process.env)) {
     notFound();
   }
 

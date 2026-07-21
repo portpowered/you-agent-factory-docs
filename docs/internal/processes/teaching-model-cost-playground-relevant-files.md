@@ -2,7 +2,7 @@
 
 Use these files when extending the page-bespoke `ModelCostPlayground` under
 `src/features/teaching-pages/`. This lane owns the interactive cost widget and
-(later) its gated harness. It does **not** own technique/blog MDX, teaching-ui
+its gated `(dev)` harness. It does **not** own technique/blog MDX, teaching-ui
 chart recipe implementations, orchestrator matrix UI, inventory integrate, or
 `@you-agent-factory/components` API expansion.
 
@@ -38,9 +38,17 @@ chart recipe implementations, orchestrator matrix UI, inventory integrate, or
 
 ## Dev harness
 
-* `src/app/(dev)/model-cost-playground-harness/` — gated fixture mount
-  (`notFound()` when `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"`).
-  Inline `ModelPricingRecord[]` subset; no MDX / registry ownership.
+* `src/app/(dev)/model-cost-playground-harness/` — gated fixture mount for
+  reviewer / technique-page implementers. Inline `ModelPricingRecord[]` subset
+  (≥2 distinct prices); no MDX / registry / inventory ownership.
+* `model-cost-playground-harness-gate.ts` — pure
+  `isModelCostPlaygroundHarnessEnabled` (allow when `NODE_ENV !== "production"`
+  or `ENABLE_COMPONENT_EXAMPLES === "1"`). Prefer this helper over inlining the
+  env check so gate tests stay IO-free.
+* Route page calls `notFound()` when the gate is false; harness client mounts
+  `ModelCostPlayground` with fixture models + resolved message strings.
+* Harness tests cover gate behavior, fixture mount markers (selects, R, chart
+  focus, recommendation), and token-edit → live R calc wiring — not chart pixels.
 
 ## Patterns
 
