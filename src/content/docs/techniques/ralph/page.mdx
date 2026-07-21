@@ -13,9 +13,6 @@ aliases:
 updatedAt: "2026-07-09"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -37,39 +34,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.comparedToNearbyTechniques.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/concepts/loop",
-        labelKey: "links.loopConcept",
-      },
-      {
-        href: "/docs/guides/using-you-agent-factory-for-loops",
-        labelKey: "links.loopsGuide",
-      },
-      {
-        href: "/docs/techniques/planner-executor",
-        labelKey: "links.plannerExecutor",
-      },
-      {
-        href: "/docs/techniques/writer-reviewer",
-        labelKey: "links.writerReviewer",
-      },
-      {
-        href: "/docs/techniques/workqueue-executor",
-        labelKey: "links.workqueueExecutor",
-      },
-    ]}
-  />
-
-  <RelatedDocs registryId="technique.ralph" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="technique.ralph" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="technique.ralph" />
 </Section>
