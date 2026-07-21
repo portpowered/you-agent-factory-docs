@@ -80,9 +80,9 @@ describe("W15 family sidebar discovery", () => {
   test("explorer collection ids keep W15 families after CLI with Reference nesting", () => {
     expect([...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS]).toEqual([
       "guides",
+      "documentation",
       "concepts",
       "techniques",
-      "documentation",
       "references",
     ]);
     expect([...FACTORY_REFERENCE_NESTED_COLLECTION_IDS]).toEqual([
@@ -108,10 +108,12 @@ describe("W15 family sidebar discovery", () => {
 
     expect(folderNames).toEqual([
       FACTORY_EXPLORER_FOLDER_LABELS.guides,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
       FACTORY_EXPLORER_FOLDER_LABELS.concepts,
       FACTORY_EXPLORER_FOLDER_LABELS.techniques,
-      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
       FACTORY_EXPLORER_FOLDER_LABELS.references,
+      "Internal architecture",
+      "Miscellanea",
     ]);
     expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.factories);
     expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.workers);

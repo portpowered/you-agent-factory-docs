@@ -311,10 +311,12 @@ describe("generated docs page tree", () => {
 
     expect(folderNames).toEqual([
       "Guides",
+      "Program documentation",
       "Concepts",
       "Techniques",
-      "Program documentation",
       "Reference",
+      "Internal architecture",
+      "Miscellanea",
     ]);
     expect(folderNames).not.toContain("Glossary");
     expect(folderNames).not.toContain("Factories");

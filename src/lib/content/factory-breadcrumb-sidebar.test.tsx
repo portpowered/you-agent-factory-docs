@@ -88,9 +88,9 @@ describe("factory breadcrumbs and sidebar collections", () => {
     expect([...FACTORY_NAV_COLLECTION_IDS]).toEqual([...DOCS_COLLECTION_IDS]);
     expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
       "guides",
+      "documentation",
       "concepts",
       "techniques",
-      "documentation",
       "references",
       "factories",
       "workers",
@@ -113,9 +113,9 @@ describe("factory breadcrumbs and sidebar collections", () => {
       ),
     ).toEqual([
       "Guides",
+      "Program documentation",
       "Concepts",
       "Techniques",
-      "Program documentation",
       "Reference",
       "Factories",
       "Workers",
@@ -183,9 +183,9 @@ describe("factory breadcrumbs and sidebar collections", () => {
     expect(() =>
       assertFactorySidebarSectionOrder([
         "guides",
+        "documentation",
         "concepts",
         "techniques",
-        "documentation",
         "references",
       ]),
     ).not.toThrow();
@@ -287,11 +287,13 @@ describe("factory breadcrumbs and sidebar collections", () => {
     );
 
     expect(pageTree.name).toBe(DOCS_PAGE_TREE_ROOT_NAME);
-    expect(folderNames).toEqual(
-      FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.map((id) =>
+    expect(folderNames).toEqual([
+      ...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.map((id) =>
         resolveFactorySidebarFolderLabel(id),
       ),
-    );
+      "Internal architecture",
+      "Miscellanea",
+    ]);
     expect(folderNames).toEqual(topLevelFolderNames(source.pageTree));
     expect(folderNames).not.toContain("Glossary");
     expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.factories);

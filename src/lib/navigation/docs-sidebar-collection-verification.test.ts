@@ -9,10 +9,12 @@ import { source } from "@/lib/source";
 
 const EXPECTED_TOP_LEVEL_FOLDER_NAMES = [
   "Guides",
+  "Program documentation",
   "Concepts",
   "Techniques",
-  "Program documentation",
   "Reference",
+  "Internal architecture",
+  "Miscellanea",
 ] as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [

@@ -56,10 +56,12 @@ const DECLARED_DOCUMENTATION_GROUP_ORDER = Object.values(
 
 const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
   FACTORY_EXPLORER_FOLDER_LABELS.guides,
+  FACTORY_EXPLORER_FOLDER_LABELS.documentation,
   FACTORY_EXPLORER_FOLDER_LABELS.concepts,
   FACTORY_EXPLORER_FOLDER_LABELS.techniques,
-  FACTORY_EXPLORER_FOLDER_LABELS.documentation,
   FACTORY_EXPLORER_FOLDER_LABELS.references,
+  "Internal architecture",
+  "Miscellanea",
 ] as const;
 
 /**
@@ -181,13 +183,15 @@ function urlEndsWithSlug(
 }
 
 describe("explorer IA exact-order contract", () => {
-  test("declared top-level section order is collection folders then FAQ", () => {
+  test("declared top-level section order is collection folders, virtual folders, then FAQ", () => {
     expect(FACTORY_EXPLORER_SECTION_ORDER).toEqual([
       { kind: "collection", id: "guides" },
+      { kind: "collection", id: "documentation" },
       { kind: "collection", id: "concepts" },
       { kind: "collection", id: "techniques" },
-      { kind: "collection", id: "documentation" },
       { kind: "collection", id: "references" },
+      { kind: "virtual-folder", id: "internal-architecture" },
+      { kind: "virtual-folder", id: "miscellanea" },
       { kind: "page", docsSlug: "documentation/faq" },
     ]);
   });
@@ -313,6 +317,48 @@ describe("explorer IA exact-order contract", () => {
     expect(topLevelFolderNames(signature)).not.toContain(
       FACTORY_EXPLORER_FOLDER_LABELS.workstations,
     );
+
+    const internalArchitecture = folderSignatureByName(
+      signature,
+      "Internal architecture",
+    );
+    expect(internalArchitecture).toBeTruthy();
+    if (!internalArchitecture) {
+      throw new Error("expected Internal architecture folder");
+    }
+    expect(
+      pageEntriesInFolder(internalArchitecture).map((page) => page.url),
+    ).toEqual([
+      "/docs/documentation/architecture-of-system",
+      "/docs/documentation/petri",
+    ]);
+
+    const miscellanea = folderSignatureByName(signature, "Miscellanea");
+    expect(miscellanea).toBeTruthy();
+    if (!miscellanea) {
+      throw new Error("expected Miscellanea folder");
+    }
+    expect(pageEntriesInFolder(miscellanea).map((page) => page.url)).toEqual([
+      "/docs/documentation/troubleshooting",
+      "/docs/documentation/security-trust-boundaries",
+      "/docs/documentation/contributing-to-these-docs",
+    ]);
+
+    expect(
+      pageEntriesInFolder(documentation).some((page) =>
+        page.url.endsWith("/docs/documentation/install"),
+      ),
+    ).toBe(false);
+    expect(
+      pageEntriesInFolder(internalArchitecture).some((page) =>
+        page.url.endsWith("/docs/documentation/install"),
+      ),
+    ).toBe(false);
+    expect(
+      pageEntriesInFolder(miscellanea).some((page) =>
+        page.url.endsWith("/docs/documentation/install"),
+      ),
+    ).toBe(false);
   });
 
   test("default-locale Program documentation places orientation, capability, interface, and operations pages under declared top groups", async () => {
@@ -731,22 +777,27 @@ describe("explorer IA exact-order contract", () => {
         localizePageTree(source.pageTree, locale, { messages }),
       );
 
-      expect(topLevelFolderNames(signature)).toEqual([
+      const topLevelFolders = topLevelFolderNames(signature);
+      const declaredCollectionFolders = [
         explorer.folders.guides,
+        explorer.folders.documentation,
         explorer.folders.concepts,
         explorer.folders.techniques,
-        explorer.folders.documentation,
         explorer.folders.references,
-      ]);
-      expect(topLevelFolderNames(signature)).not.toContain(
-        explorer.folders.factories,
-      );
-      expect(topLevelFolderNames(signature)).not.toContain(
-        explorer.folders.workers,
-      );
-      expect(topLevelFolderNames(signature)).not.toContain(
-        explorer.folders.workstations,
-      );
+      ];
+      expect(
+        isSubsequence(topLevelFolders, [
+          ...declaredCollectionFolders,
+          "Internal architecture",
+          "Miscellanea",
+        ]),
+      ).toBe(true);
+      expect(
+        topLevelFolders.slice(0, declaredCollectionFolders.length),
+      ).toEqual(declaredCollectionFolders);
+      expect(topLevelFolders).not.toContain(explorer.folders.factories);
+      expect(topLevelFolders).not.toContain(explorer.folders.workers);
+      expect(topLevelFolders).not.toContain(explorer.folders.workstations);
 
       const faq = topLevelPageEntries(signature);
       expect(faq).toHaveLength(1);

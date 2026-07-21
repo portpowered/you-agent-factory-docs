@@ -38,6 +38,21 @@ const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
   "inference-workers",
 ] as const;
 
+function isSubsequence(
+  actual: readonly string[],
+  declared: readonly string[],
+): boolean {
+  let declaredIndex = 0;
+  for (const label of actual) {
+    const next = declared.indexOf(label, declaredIndex);
+    if (next === -1) {
+      return false;
+    }
+    declaredIndex = next + 1;
+  }
+  return true;
+}
+
 async function localizedExplorerSignature(locale: SiteLocale): Promise<{
   messages: Awaited<ReturnType<typeof loadUiMessages>>;
   signature: ExplorerTreeSignature;
@@ -134,25 +149,30 @@ describe("desktop/mobile explorer tree parity", () => {
   test("localized constructed trees share FAQ placement, folder order, and subgroup membership for every locale", async () => {
     for (const locale of supportedLocales) {
       const { messages, signature } = await localizedExplorerSignature(locale);
-
-      expect(signature.rootName).toBe("You Agent Factory");
-      expect(topLevelFolderNames(signature)).toEqual([
+      const folderNames = topLevelFolderNames(signature);
+      const declaredCollectionFolders = [
         messages.explorer.folders.guides,
+        messages.explorer.folders.documentation,
         messages.explorer.folders.concepts,
         messages.explorer.folders.techniques,
-        messages.explorer.folders.documentation,
         messages.explorer.folders.references,
-      ]);
-      expect(topLevelFolderNames(signature)).not.toContain(
-        messages.explorer.folders.factories,
+      ];
+
+      expect(signature.rootName).toBe("You Agent Factory");
+      expect(folderNames.slice(0, declaredCollectionFolders.length)).toEqual(
+        declaredCollectionFolders,
       );
-      expect(topLevelFolderNames(signature)).not.toContain(
-        messages.explorer.folders.workers,
-      );
-      expect(topLevelFolderNames(signature)).not.toContain(
-        messages.explorer.folders.workstations,
-      );
-      expect(topLevelFolderNames(signature)).not.toContain("Glossary");
+      expect(
+        isSubsequence(folderNames, [
+          ...declaredCollectionFolders,
+          "Internal architecture",
+          "Miscellanea",
+        ]),
+      ).toBe(true);
+      expect(folderNames).not.toContain(messages.explorer.folders.factories);
+      expect(folderNames).not.toContain(messages.explorer.folders.workers);
+      expect(folderNames).not.toContain(messages.explorer.folders.workstations);
+      expect(folderNames).not.toContain("Glossary");
 
       const faqEntries = topLevelPageEntries(signature);
       expect(faqEntries).toHaveLength(1);

@@ -834,10 +834,18 @@ those paths only accept collection section refs.
   Contracts / Schemas / Limits live in `SIDEBAR_GROUP_LABELS.references` with
   membership in `FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG` (reference pages strip
   `references/`; Limits uses full `documentation/throttling-and-limits`).
-  `FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS` omits factories/workers/workstations;
+  `FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS` is Guides → Program documentation →
+  Concepts → Techniques → Reference (factories/workers/workstations omitted);
   those nest under Reference via `FACTORY_REFERENCE_NESTED_COLLECTION_IDS` in
   `buildDocsSidebarSectionNodes`. Locale catalogs require
   `explorer.referenceGroups.{contracts,schemas,limits}` fail-closed.
+- Virtual explorer folders (PS-100): `FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS`
+  (`internal-architecture`, `miscellanea`) are `kind: "virtual-folder"` section
+  refs in `FACTORY_EXPLORER_SECTION_ORDER` (after Reference, before FAQ).
+  Membership is `FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP` (full docsSlugs;
+  pages keep `/docs/documentation/...` routes). Install stays demoted from
+  explorer. English labels live in `FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS`
+  (locale catalog keys for these folders are a later story).
 - Packaged CLI reference surfaces: place `packaged-documents` under Program
   Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
   Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;

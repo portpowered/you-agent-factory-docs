@@ -99,10 +99,12 @@ describe("docs sidebar adapter extraction parity", () => {
 
     const factoryFolderNames = [
       "Guides",
+      "Program documentation",
       "Concepts",
       "Techniques",
-      "Program documentation",
       "Reference",
+      "Internal architecture",
+      "Miscellanea",
     ] as const;
 
     expect(getTopLevelFolderNames(generatedTree)).toEqual([
@@ -117,11 +119,16 @@ describe("docs sidebar adapter extraction parity", () => {
       ),
     ).toEqual([
       "guides",
+      "documentation",
       "concepts",
       "techniques",
-      "documentation",
       "references",
     ]);
+    expect(
+      DOCS_SIDEBAR_SECTION_ORDER.filter(
+        (section) => section.kind === "virtual-folder",
+      ).map((section) => section.id),
+    ).toEqual(["internal-architecture", "miscellanea"]);
     expect(DOCS_SIDEBAR_SECTION_ORDER.at(-1)).toEqual({
       kind: "page",
       docsSlug: "documentation/faq",

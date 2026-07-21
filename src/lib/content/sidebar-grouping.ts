@@ -189,8 +189,9 @@ export function isDeferredDocumentationExplorerMembershipSlug(
  *
  * Locked PS-100 demotions (install, throttling-and-limits, architecture-of-system,
  * petri, troubleshooting, security-trust-boundaries, contributing-to-these-docs)
- * are intentionally omitted from Program membership; later Lane A stories place
- * them under Reference / Internal architecture / Miscellanea / Guides.
+ * are intentionally omitted from Program membership. Reference → Limits claims
+ * throttling; Internal architecture / Miscellanea virtual folders claim the
+ * architecture and misc pages; install stays demoted from explorer (PS-200).
  *
  * Factory configuration pages use full `factories/...` docsSlug keys so
  * Operations → Configuring can nest them without route moves. Explorer tree

@@ -324,9 +324,9 @@ describe("factory search and navigation convergence end-to-end", () => {
     ]);
     expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
       "guides",
+      "documentation",
       "concepts",
       "techniques",
-      "documentation",
       "references",
       "factories",
       "workers",
@@ -334,10 +334,12 @@ describe("factory search and navigation convergence end-to-end", () => {
     ]);
     expect(folderNames).toEqual([
       FACTORY_EXPLORER_FOLDER_LABELS.guides,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
       FACTORY_EXPLORER_FOLDER_LABELS.concepts,
       FACTORY_EXPLORER_FOLDER_LABELS.techniques,
-      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
       FACTORY_EXPLORER_FOLDER_LABELS.references,
+      "Internal architecture",
+      "Miscellanea",
     ]);
     expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.factories);
     expect(folderNames).not.toContain("Glossary");

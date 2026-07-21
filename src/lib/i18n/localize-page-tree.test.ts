@@ -83,10 +83,11 @@ describe("localizePageTree", () => {
 
     expect(topLevelFolderNames(localizedTree.children)).toEqual([
       "Hướng dẫn",
+      "Tài liệu chương trình",
       "Khái niệm",
       "Kỹ thuật",
-      "Tài liệu chương trình",
       "Tham chiếu",
+      "Miscellanea",
     ]);
     expect(localizedTree.name).toBe("You Agent Factory");
     expect(localizedTree.children.at(-1)).toMatchObject({
@@ -101,19 +102,20 @@ describe("localizePageTree", () => {
   test("localizes collection, subgroup, and page labels for japanese explorer trees", async () => {
     const messages = await loadUiMessages("ja");
     const localizedTree = localizePageTree(source.pageTree, "ja", { messages });
+    const folderNames = topLevelFolderNames(localizedTree.children);
 
-    expect(topLevelFolderNames(localizedTree.children)).toEqual([
+    expect(folderNames.slice(0, 5)).toEqual([
       messages.explorer.folders.guides,
+      messages.explorer.folders.documentation,
       messages.explorer.folders.concepts,
       messages.explorer.folders.techniques,
-      messages.explorer.folders.documentation,
       messages.explorer.folders.references,
     ]);
+    expect(folderNames).toContain("Miscellanea");
+    expect(folderNames).not.toContain("Internal architecture");
     // Factories / workers / workstations folders prune when no pages are
     // shipped for the locale (current shipped set includes references/api).
-    expect(topLevelFolderNames(localizedTree.children)).not.toContain(
-      messages.explorer.folders.factories,
-    );
+    expect(folderNames).not.toContain(messages.explorer.folders.factories);
 
     const concepts = folderByName(
       localizedTree.children,

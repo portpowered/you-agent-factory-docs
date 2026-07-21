@@ -6,8 +6,12 @@ import {
   FACTORY_EXPLORER_SECTION_ORDER,
   FACTORY_REFERENCE_NESTED_COLLECTION_IDS,
   type FactoryExplorerSectionRef,
+  type FactoryExplorerVirtualFolderId,
   type FactoryReferenceNestedCollectionId,
   isDocsExplorerTopLevelFaqPage,
+  isDocsExplorerVirtualFolderPage,
+  listFactoryExplorerVirtualFolderMembership,
+  resolveFactoryExplorerVirtualFolderLabel,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
 import {
@@ -25,10 +29,10 @@ import {
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 
 /**
- * Reader-visible explorer top-level order: CLI + Reference collection
- * folders, then FAQ as a sibling page outside Program documentation.
- * Factories / Workers / Workstations nest under Reference.
- * Glossary is omitted.
+ * Reader-visible explorer top-level order under locked PS-100: Guides →
+ * Program documentation → Concepts → Techniques → Reference → Internal
+ * architecture → Miscellanea → FAQ. Factories / Workers / Workstations nest
+ * under Reference. Glossary is omitted.
  */
 export const DOCS_SIDEBAR_SECTION_ORDER = FACTORY_EXPLORER_SECTION_ORDER;
 
@@ -146,6 +150,32 @@ function buildReferenceFolderNode({
   } satisfies Node;
 }
 
+function buildVirtualFolderNode({
+  id,
+  pagesByDocsSlug,
+}: {
+  id: FactoryExplorerVirtualFolderId;
+  pagesByDocsSlug: ReadonlyMap<string, DocsPageSource>;
+}): Node {
+  const children: Node[] = [];
+
+  for (const docsSlug of listFactoryExplorerVirtualFolderMembership(id)) {
+    const page = pagesByDocsSlug.get(docsSlug);
+    if (!page) {
+      throw new Error(
+        `Missing published page for explorer virtual folder "${id}": ${docsSlug}`,
+      );
+    }
+    children.push(createShellCollectionPageNode(page));
+  }
+
+  return {
+    type: "folder",
+    name: resolveFactoryExplorerVirtualFolderLabel(id),
+    children,
+  } satisfies Node;
+}
+
 function isReferenceNestedCollectionId(
   id: string,
 ): id is FactoryReferenceNestedCollectionId {
@@ -185,6 +215,9 @@ export function buildDocsSidebarSectionNodes({
 
   for (const page of pages) {
     if (isDocsExplorerTopLevelFaqPage(page.docsSlug)) {
+      continue;
+    }
+    if (isDocsExplorerVirtualFolderPage(page.docsSlug)) {
       continue;
     }
     // W18 move stubs keep static compatibility routes but are not explorer
@@ -233,6 +266,13 @@ export function buildDocsSidebarSectionNodes({
       }
 
       return createShellCollectionPageNode(page);
+    }
+
+    if (sectionRef.kind === "virtual-folder") {
+      return buildVirtualFolderNode({
+        id: sectionRef.id,
+        pagesByDocsSlug,
+      });
     }
 
     const definition = definitionsById.get(sectionRef.id);

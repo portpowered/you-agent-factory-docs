@@ -178,10 +178,12 @@ describe("plan-issues R02 tip reconciliation", () => {
     expect(signature.rootName).toBe("You Agent Factory");
     expect(topLevelFolderNames(signature)).toEqual([
       "Guides",
+      "Program documentation",
       "Concepts",
       "Techniques",
-      "Program documentation",
       "Reference",
+      "Internal architecture",
+      "Miscellanea",
     ]);
     expect(topLevelFolderNames(signature)).not.toContain("Glossary");
     expect(topLevelFolderNames(signature)).not.toContain("Factories");

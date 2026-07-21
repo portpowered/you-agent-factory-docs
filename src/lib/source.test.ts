@@ -6,10 +6,12 @@ import { source } from "@/lib/source";
 
 const TOP_LEVEL_FOLDER_NAMES = {
   guides: "Guides",
+  documentation: "Program documentation",
   concepts: "Concepts",
   techniques: "Techniques",
-  documentation: "Program documentation",
   references: "Reference",
+  "internal-architecture": "Internal architecture",
+  miscellanea: "Miscellanea",
 } as const;
 
 const NESTED_REFERENCE_FOLDER_NAMES = {
@@ -131,7 +133,11 @@ describe("docs navigation source", () => {
     for (const [section, folderName] of Object.entries(
       TOP_LEVEL_FOLDER_NAMES,
     )) {
-      if (section === "references") {
+      if (
+        section === "references" ||
+        section === "internal-architecture" ||
+        section === "miscellanea"
+      ) {
         continue;
       }
 
@@ -229,7 +235,11 @@ describe("docs navigation source", () => {
     for (const [section, folderName] of Object.entries(
       TOP_LEVEL_FOLDER_NAMES,
     )) {
-      if (section === "references") {
+      if (
+        section === "references" ||
+        section === "internal-architecture" ||
+        section === "miscellanea"
+      ) {
         continue;
       }
 
