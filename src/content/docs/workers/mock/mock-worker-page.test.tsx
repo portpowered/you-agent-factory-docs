@@ -159,18 +159,15 @@ describe("workers mock page", () => {
         .getAttribute("href"),
     ).toBe("/docs/references/mock-workers-schema");
     expect(
-      screen
-        .getByRole("link", { name: "Workers family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers");
+      screen.queryByRole("link", { name: "Workers family index" }),
+    ).toBeNull();
     expect(
-      screen
-        .getByRole("link", { name: "Mock workers CLI reference" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers/mock");
-    expect(
-      screen.getByRole("link", { name: "Agent worker" }).getAttribute("href"),
-    ).toBe("/docs/workers/agent");
+      screen.queryByRole("link", { name: "Mock workers CLI reference" }),
+    ).toBeNull();
+    expect(screen.queryByRole("link", { name: "Agent worker" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.querySelector("section#related")).toBeNull();
 
     expect(screen.getByText("Minimal valid mock-workers config:")).toBeTruthy();
     expect(

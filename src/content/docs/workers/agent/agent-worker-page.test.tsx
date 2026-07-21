@@ -127,7 +127,7 @@ describe("workers agent page", () => {
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(
       screen.queryByRole("heading", { name: "Operational Cautions" }),
     ).toBeNull();
@@ -173,21 +173,10 @@ describe("workers agent page", () => {
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
 
-    const relatedSection = document.querySelector("section#related");
-    expect(relatedSection).toBeTruthy();
+    expect(document.querySelector("section#related")).toBeNull();
     expect(
-      relatedSection?.querySelector('[data-testid="curated-related-docs"]'),
-    ).toBeTruthy();
-    expect(
-      relatedSection?.querySelector('a[href="/docs/workers/inference"]'),
-    ).toBeTruthy();
-    expect(
-      relatedSection?.querySelector('a[href="/docs/concepts/tool-calling"]'),
-    ).toBeTruthy();
-    expect(
-      relatedSection?.querySelector('a[href="/docs/workstations"]'),
-    ).toBeTruthy();
-    expect(relatedSection?.querySelector("ul.mt-3.list-disc")).toBeNull();
+      document.querySelector('[data-testid="curated-related-docs"]'),
+    ).toBeNull();
 
     expect(screen.getByText("Minimal valid AGENT_WORKER:")).toBeTruthy();
     expect(

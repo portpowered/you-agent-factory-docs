@@ -193,13 +193,12 @@ describe("workers hosted page", () => {
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
     expect(
-      screen
-        .getByRole("link", { name: "Workers family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers");
-    expect(
-      screen.getByRole("link", { name: "Poller worker" }).getAttribute("href"),
-    ).toBe("/docs/workers/poller");
+      screen.queryByRole("link", { name: "Workers family index" }),
+    ).toBeNull();
+    expect(screen.queryByRole("link", { name: "Poller worker" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.querySelector("section#related")).toBeNull();
 
     expect(screen.getByText("Minimal valid HOSTED_WORKER:")).toBeTruthy();
     expect(

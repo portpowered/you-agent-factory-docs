@@ -198,10 +198,11 @@ describe("workers model page", () => {
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
     expect(
-      screen
-        .getByRole("link", { name: "Workers family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers");
+      screen.queryByRole("link", { name: "Workers family index" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.querySelector("section#related")).toBeNull();
 
     expect(screen.getByText("Minimal valid MODEL_WORKER:")).toBeTruthy();
     expect(
