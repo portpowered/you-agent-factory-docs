@@ -240,5 +240,11 @@ describe("retired-ai-content-infrastructure-denylist", () => {
     expect(RETIRED_AI_CONTENT_OWNED_PATHS).toContain(
       "src/lib/content/__generate-fixtures__",
     );
+    // Teaching model-pricing JSON reuses this path; keep it off the owned-path
+    // denylist while Atlas page routes/kinds stay banned.
+    expect(RETIRED_AI_CONTENT_OWNED_PATHS).not.toContain(
+      "src/content/registry/models",
+    );
+    expect(RETIRED_AI_CONTENT_OWNED_PATHS).toContain("src/content/docs/models");
   });
 });
