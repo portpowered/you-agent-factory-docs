@@ -204,7 +204,12 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    restored route becomes its own canonical discovery destination again;
    Mode B family pages stay published as Reference depth. Update ledger
    expected-mapping tests, R02 demoted-stub inventories when the route was
-   listed there, and process notes in the same change.
+   listed there, and process notes in the same change. When adding the
+   optional reciprocal “what it is” pointer, put a LocalizedLinkList entry
+   on the Mode B Related list first (for example
+   `/docs/factories/sessions` → `/docs/documentation/factory-session`) and
+   assert the href in the Mode B page-owned test; do not change schema embeds
+   or Mode B depth body copy for that discovery link alone.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and
