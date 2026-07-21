@@ -2,13 +2,17 @@
  * Docs sidebar row highlighting token map.
  *
  * Overrides muted-foreground rest text and accent/surface hover fills:
- * - resting text → white (`--docs-chrome-white`)
- * - hover → wide primary yellow background (`--docs-chrome-primary-yellow`)
- * - active → soft primary-yellow wash (distinguishable from rest, not full hover)
+ * - resting text → white (`--docs-chrome-white`) on transparent
+ * - hover → wide primary yellow background + dark text (locked; not secondary
+ *   blue — active ≠ hover)
+ * - active → muted secondary-blue wash (`--docs-chrome-secondary-blue`)
+ * - focus-visible → `--ring` outline (kept across active-tint repairs)
  *
  * Keep selectors aligned with docs-chrome-sidebar.ts.
  * Live in @layer utilities with !important so they beat Tailwind color /
  * hover utilities (same cascade pattern as TOC chrome).
+ * Hover rules follow active so `:hover` wins over the active wash when both
+ * apply (same specificity).
  */
 @layer utilities {
   #nd-sidebar .docs-chrome-sidebar-row,
@@ -21,7 +25,7 @@
   [data-mobile-docs-drawer] .docs-chrome-sidebar-row[data-active="true"] {
     background-color: color-mix(
       in oklch,
-      var(--docs-chrome-primary-yellow) 18%,
+      var(--docs-chrome-secondary-blue) 18%,
       transparent
     ) !important;
     color: var(--docs-chrome-white) !important;
@@ -36,6 +40,8 @@
   }
 
   @media (hover: hover) {
+    /* Same yellow hover language for resting and active rows — do not invent
+       a secondary-blue or muted-white hover palette here. */
     #nd-sidebar .docs-chrome-sidebar-row:hover,
     [data-mobile-docs-drawer] .docs-chrome-sidebar-row:hover {
       background-color: var(--docs-chrome-primary-yellow) !important;

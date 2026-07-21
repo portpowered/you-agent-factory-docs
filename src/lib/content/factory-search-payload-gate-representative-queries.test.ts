@@ -109,7 +109,8 @@ describe("factory search payload gate and representative queries (W16-008)", () 
     expect(
       tool.some(
         (result) =>
-          result.url === "/docs/references/mcp#you.factory_session.get",
+          result.url ===
+          "/docs/references/mcp-reference#you.factory_session.get",
       ),
     ).toBe(true);
   });

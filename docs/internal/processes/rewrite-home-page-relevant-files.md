@@ -77,6 +77,24 @@ Default en hrefs: `/docs/guides`, `/browse`, `/blog`.
 | `src/tests/content/home-page.test.tsx` | Asserts identity, CTAs, why/features, featured links, and non-en section structure |
 | `src/tests/layout/localized-route-metadata.test.ts` | Localized home metadata must use you-agent-factory identity (not Model Atlas) |
 
+## Shared code / terminal primitives (homepage-2 W-code)
+
+Homepage Wave B / integrate should import command presentation from
+`src/features/code/**`, not from docs `DocsCodeBlock` or
+`src/components/home/home-command-block.tsx`.
+
+| File | Role |
+| --- | --- |
+| `src/features/code/index.ts` | Public barrel: re-exports `CodeBlock`, `Terminal`, prop types, and copy-label constants |
+| `src/features/code/CodeBlock.tsx` | Content-first `{ code, title? }` block with `pre`/`code` + named copy (`Copy` / `Copied`) |
+| `src/features/code/CodeBlock.test.tsx` | Clipboard write + accessible-name unit coverage |
+| `src/features/code/Terminal.tsx` | Chromed `{ lines, chips?, variant?: "install" \| "dark" }` shell (yellow install vs dark pill) + named copy of joined lines |
+| `src/features/code/Terminal.test.tsx` | Joined-line clipboard write, accessible-name, chip chrome, and install/dark distinctness |
+| `src/app/(dev)/code-harness/page.tsx` | Gated fixture route: both Terminal variants + CodeBlock examples; `notFound()` in production unless `ENABLE_COMPONENT_EXAMPLES=1` |
+
+Do not couple this package to `src/features/landing-page/**` or production `/`
+while Wave A ships. Wave B / integrate should import from `@/features/code`.
+
 ## Patterns
 
 - Product identity on `/` is message-driven (`messages.home.*`), not `siteConfig.brand`.
@@ -114,3 +132,24 @@ Default en hrefs: `/docs/guides`, `/browse`, `/blog`.
   `renderToStaticMarkup(HomeArticle)` + `generateMetadata()` for identity checks
   when `bun run dev` cannot start in the worktree.
 - This lane must not edit Makefile or CI workflow files.
+
+## Landing SiteFooter (homepage-2 W-footer) — not docs chrome
+
+| File | Role |
+| --- | --- |
+| `src/features/footer/SiteFooter.tsx` | Column groups + meta row + optional opaque `art?: ReactNode` slot |
+| `src/features/footer/site-footer.types.ts` | `FooterColumn` / `FooterLink` / `FooterMeta` / `SiteFooterProps` |
+| `src/features/footer/index.ts` | Public barrel for SiteFooter + types |
+| `src/app/(dev)/footer-harness/page.tsx` | Gated fixture harness (`/footer-harness`); production `notFound()` unless `ENABLE_COMPONENT_EXAMPLES=1` |
+
+Patterns:
+
+- Landing SiteFooter is under `src/features/footer/**`. Do **not** edit docs
+  next/prev chrome (`docs-page-footer-chrome*`, `FamilyDocsFooterNeighbors`) for
+  this surface.
+- Decorative art is caller-owned (`art?: ReactNode`). Do not embed seadragon /
+  `LandingFooterArt` inside the footer package.
+- Optional art renders only when provided; omit the slot entirely when `art` is
+  absent (no empty placeholder surface).
+- Harness gating matches other `(dev)` routes: `notFound()` when
+  `NODE_ENV === "production"` unless `ENABLE_COMPONENT_EXAMPLES === "1"`.

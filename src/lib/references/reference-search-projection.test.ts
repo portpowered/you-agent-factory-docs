@@ -40,6 +40,9 @@ describe("referencePagePathForFamily / referenceAnchorUrl", () => {
       "/docs/references/javascript-runtime",
     );
     expect(REFERENCE_FAMILY_PAGE_PATHS.cli).toBe("/docs/references/cli");
+    expect(REFERENCE_FAMILY_PAGE_PATHS.mcp).toBe(
+      "/docs/references/mcp-reference",
+    );
     expect(REFERENCE_FAMILY_PAGE_PATHS.events).toBe("/docs/references/events");
   });
 

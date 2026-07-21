@@ -89,10 +89,11 @@ export type SchemaDefinitionProps = {
    */
   showFieldPathWhenDistinct?: boolean;
   /**
-   * When false, hide visible `components/schemas/.../properties/...` pointer
-   * breadcrumbs and compact `$ref` labels to the leaf schema name while keeping
-   * copyable deep links. Default true preserves shared schema chrome; events
-   * catalog views opt out via EventsSchemaDefinition.
+   * When true, show full `components/schemas/.../properties/...` pointer
+   * breadcrumbs and full-pointer `$ref` labels. Default false prefers the leaf
+   * field name and a compact `$ref` label while keeping copyable deep links.
+   * Events catalog views also pass false via EventsSchemaDefinition (redundant
+   * after the shared default flip; not a regression).
    */
   showPointerPathChrome?: boolean;
   className?: string;
@@ -139,7 +140,7 @@ export function SchemaDefinition({
   defaultExpanded = false,
   showPointerBreadcrumb = true,
   showFieldPathWhenDistinct = false,
-  showPointerPathChrome = true,
+  showPointerPathChrome = false,
   className,
   "data-testid": testId = "schema-definition",
 }: SchemaDefinitionProps) {

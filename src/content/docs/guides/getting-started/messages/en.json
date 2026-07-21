@@ -13,7 +13,7 @@
     },
     "install": {
       "title": "Install",
-      "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system."
+      "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system. After the script finishes, confirm you is available in your shell. Then scaffold a factory."
     },
     "firstYou": {
       "title": "First You",
@@ -29,7 +29,7 @@
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
-      "body": "Do not submit work before a factory session is running. For OS-specific install edge cases, use the install deep-dive. For the full CLI command matrix, use the CLI docs."
+      "body": "Do not submit work before a factory session is running. For the full CLI command matrix, use the CLI docs."
     },
     "related": {
       "title": "Related To"
@@ -44,17 +44,20 @@
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
+    "claudeInitLabel": "Claude-backed scaffold",
     "firstYouNamedRunLabel": "Named run",
     "firstYouDefaultStartLabel": "Default factory start",
     "firstYouSessionListLabel": "Confirm a live factory",
     "firstSubmitUnaryLabel": "Unary submit",
     "firstSubmitBatchLabel": "Batch submit",
-    "installDeepDive": "Install deep-dive",
     "cliDocs": "CLI docs"
   },
   "callouts": {
-    "installDeepDive": {
-      "body": "These commands cover a basic install. OS-specific edge cases, custom install locations, and pinned versions live on the install deep-dive; you do not need that page open to finish a standard install."
+    "confirmYouAvailable": {
+      "body": "After install, open a new terminal if needed so PATH reloads, then confirm you is available in your shell before you continue."
+    },
+    "scaffoldChoice": {
+      "body": "Omitting --executor keeps the default Codex-backed starter scaffold. Pass --executor claude when you want a Claude-backed default scaffold instead."
     },
     "firstYouSessionCheck": {
       "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."

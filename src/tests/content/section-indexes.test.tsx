@@ -530,7 +530,7 @@ describe("W05 direct route-family section index pages", () => {
       "/docs/references/system-config-schema",
       "/docs/references/mock-workers-schema",
       "/docs/references/cli",
-      "/docs/references/mcp",
+      "/docs/references/mcp-reference",
       "/docs/references/javascript-runtime",
     ]) {
       expect(html).toContain(`href="${href}"`);

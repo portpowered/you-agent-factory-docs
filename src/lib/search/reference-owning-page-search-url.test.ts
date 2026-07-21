@@ -8,7 +8,9 @@ import {
 describe("isReferenceOwningPageSearchUrl", () => {
   test("accepts the references family index and family owning pages", () => {
     expect(isReferenceOwningPageSearchUrl("/docs/references")).toBe(true);
-    expect(isReferenceOwningPageSearchUrl("/docs/references/mcp")).toBe(true);
+    expect(
+      isReferenceOwningPageSearchUrl("/docs/references/mcp-reference"),
+    ).toBe(true);
     expect(isReferenceOwningPageSearchUrl("/docs/references/api")).toBe(true);
     expect(
       isReferenceOwningPageSearchUrl("/docs/references/javascript-runtime"),
@@ -18,7 +20,7 @@ describe("isReferenceOwningPageSearchUrl", () => {
   test("rejects inventory item deep links and non-reference pages", () => {
     expect(
       isReferenceOwningPageSearchUrl(
-        "/docs/references/mcp#factory_session_start",
+        "/docs/references/mcp-reference#factory_session_start",
       ),
     ).toBe(false);
     expect(
@@ -27,7 +29,9 @@ describe("isReferenceOwningPageSearchUrl", () => {
       ),
     ).toBe(false);
     expect(
-      isReferenceOwningPageSearchUrl("/docs/references/mcp#heading-0"),
+      isReferenceOwningPageSearchUrl(
+        "/docs/references/mcp-reference#heading-0",
+      ),
     ).toBe(false);
     expect(isReferenceOwningPageSearchUrl("/docs/concepts/harness")).toBe(
       false,
@@ -42,7 +46,7 @@ describe("isReferenceInventoryItemSearchUrl", () => {
   test("accepts registry-anchor deep links under /docs/references/**", () => {
     expect(
       isReferenceInventoryItemSearchUrl(
-        "/docs/references/mcp#you.factory_session.get",
+        "/docs/references/mcp-reference#you.factory_session.get",
       ),
     ).toBe(true);
     expect(
@@ -61,32 +65,38 @@ describe("isReferenceInventoryItemSearchUrl", () => {
   });
 
   test("rejects owning pages, auto-heading fragments, and non-reference URLs", () => {
-    expect(isReferenceInventoryItemSearchUrl("/docs/references/mcp")).toBe(
-      false,
-    );
     expect(
-      isReferenceInventoryItemSearchUrl("/docs/references/mcp#heading-0"),
+      isReferenceInventoryItemSearchUrl("/docs/references/mcp-reference"),
     ).toBe(false);
     expect(
-      isReferenceInventoryItemSearchUrl("/docs/references/mcp#heading-12"),
+      isReferenceInventoryItemSearchUrl(
+        "/docs/references/mcp-reference#heading-0",
+      ),
+    ).toBe(false);
+    expect(
+      isReferenceInventoryItemSearchUrl(
+        "/docs/references/mcp-reference#heading-12",
+      ),
     ).toBe(false);
     expect(
       isReferenceInventoryItemSearchUrl("/docs/concepts/harness#overview"),
     ).toBe(false);
-    expect(isReferenceInventoryItemSearchUrl("/docs/references/mcp#")).toBe(
-      false,
-    );
+    expect(
+      isReferenceInventoryItemSearchUrl("/docs/references/mcp-reference#"),
+    ).toBe(false);
   });
 });
 
 describe("shouldSuppressReferenceStandaloneSearchHeadings", () => {
   test("suppresses owning pages and inventory item deep links", () => {
     expect(
-      shouldSuppressReferenceStandaloneSearchHeadings("/docs/references/mcp"),
+      shouldSuppressReferenceStandaloneSearchHeadings(
+        "/docs/references/mcp-reference",
+      ),
     ).toBe(true);
     expect(
       shouldSuppressReferenceStandaloneSearchHeadings(
-        "/docs/references/mcp#you.factory_session.get",
+        "/docs/references/mcp-reference#you.factory_session.get",
       ),
     ).toBe(true);
   });
@@ -97,7 +107,7 @@ describe("shouldSuppressReferenceStandaloneSearchHeadings", () => {
     ).toBe(false);
     expect(
       shouldSuppressReferenceStandaloneSearchHeadings(
-        "/docs/references/mcp#heading-0",
+        "/docs/references/mcp-reference#heading-0",
       ),
     ).toBe(false);
   });

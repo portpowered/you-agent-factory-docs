@@ -1,5 +1,5 @@
 /**
- * Page-local MCP inventory mount for `/docs/references/mcp`.
+ * Page-local MCP inventory mount for `/docs/references/mcp-reference`.
  *
  * Resolves the package MCP contract at build/static-render time (W03 → W04)
  * and passes already-normalized inventory props into the public W10
