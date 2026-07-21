@@ -36,8 +36,13 @@ sections stay page-local and are unrelated to that retired shell chrome.
 `<RelatedDocs />` or a related-section. Strip-ready generated/template pages
 without that chrome must validate for RelatedDocs presence rules. Do not
 reintroduce a fail-closed RelatedDocs presence gate in generation validation.
-Site-wide published MDX RelatedDocs strip remains a separate PF-L-strip lane;
-FAQ-only strip remains PF-D2.
+
+Proofs live in `validate-generated-canonical-docs.test.ts`: kind-specific and
+full `validateGeneratedCanonicalDocs` both assert strip-ready concept MDX
+(without RelatedDocs / related-section) passes with zero RelatedDocs-presence
+errors. Do not revive a presence-expecting test that fails when chrome is
+absent. Site-wide published MDX RelatedDocs strip remains a separate
+PF-L-strip lane; FAQ-only strip remains PF-D2.
 
 ## Derived page directory contract
 
