@@ -137,7 +137,8 @@ describe("faq documentation page", () => {
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
     expect(document.getElementById("limits-and-assumptions")).toBeNull();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
@@ -215,22 +216,16 @@ describe("faq documentation page", () => {
 
     const relatedSection = document.getElementById("related");
     expect(relatedSection).toBeTruthy();
-    const relatedQueries = within(relatedSection as HTMLElement);
+    // Related footer is curated-only (RelatedDocs); no Related To heading and
+    // no hardcoded LocalizedLinkList sibling stack under #related.
     expect(
-      relatedQueries
-        .getByRole("link", { name: "Troubleshooting" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/troubleshooting");
+      relatedSection?.querySelector('[data-testid="curated-related-docs"]'),
+    ).toBeTruthy();
     expect(
-      relatedQueries
-        .getByRole("link", { name: "What is you-agent-factory" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/what-is-you-agent-factory");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Getting Started" })
-        .getAttribute("href"),
-    ).toBe("/docs/guides/getting-started");
+      within(relatedSection as HTMLElement).queryByRole("heading", {
+        name: "Related To",
+      }),
+    ).toBeNull();
   });
 
   test("loads ja locale messages with the same section structure", async () => {

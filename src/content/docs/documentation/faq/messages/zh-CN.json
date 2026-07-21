@@ -27,9 +27,6 @@
       "title": "Something Failed—Where Do I Recover?",
       "body": "When install, run, configuration, MCP, or dynamic-workflow steps fail, open Troubleshooting for symptom-scoped recovery that links into the owning canonical docs. Use this FAQ for common how-to questions; use Troubleshooting when you already have a failure symptom."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
     },

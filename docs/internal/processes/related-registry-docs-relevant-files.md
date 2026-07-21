@@ -83,6 +83,12 @@ and the shared related-registry-docs component/blog wrapper.
 
 * Live docs related headings use factory wording **`Related To`**
   (`sections.related.title` in page messages).
+* Page-formatting Q1 curated-only exception: when a lane must ship an
+  **unlabeled** Related block (no Related To heading), do not blank
+  `sections.related.title` to `""` (`pageSectionSchema` rejects empty
+  titles). Drop the heading instead: plain `<section id="related">` +
+  `<RelatedDocs />`, and omit `sections.related` from page messages. See
+  `content-page-generation-workflow-relevant-files.md` §5b.
 * Do not reintroduce Atlas chrome **`Related Concepts And Modules`** in concept
   (or other) page messages, `docs/templates/concept.messages.en.json`, or
   `docs/templates/glossary.messages.en.json`. The retired path

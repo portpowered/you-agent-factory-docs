@@ -97,6 +97,14 @@ Before the first authored page under a rewrite-era CLI collection can pass
    missing MDX message keys. Draft documentation scaffolds must use
    non-empty placeholder bodies (even before story copy lands); do not
    leave `""` for keys referenced by `<T k="sections.*.body" />`.
+5b. Unlabeled Related blocks (page-formatting Q1 curated-only): do **not**
+   blank `sections.related.title` to `""` — `pageSectionSchema` requires
+   `title: z.string().min(1)` and empty titles fail published-docs registry
+   generation / page load. To drop the Related heading while keeping
+   `#related` + `<RelatedDocs />`, use a plain `<section id="related">`
+   (no `Section` / `titleKey`) and remove `sections.related` from locale
+   messages. Keep answer-section `LocalizedLinkList` mounts; strip only the
+   Related-footer hardcoded sibling list.
 6. Browser verify with `bun run start` serves the last production build.
    After editing page MDX or colocated messages, run `bun run build` (or
    use `bun run dev`) before curling the route, or the HTML will still show
