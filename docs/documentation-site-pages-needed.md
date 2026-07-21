@@ -113,3 +113,18 @@ commit-only teaching registries (validated via `make validate-data` / registry C
 - orchestrator feature registry — `src/content/registry/orchestrators/**`
   (`attribute-defs.json` + `orchestrator.*.json`), loaders / agreement
   validation in `src/lib/content/orchestrators.ts`
+
+## Wave B teaching customer pages (soft-inventory)
+
+Inventory only when the route already exists on the base branch (`main`). Do
+**not** invent coming-soon rows or sibling-owned MDX from this integrate lane.
+
+techniques (beside `planner-executor`)
+- `planner-executor-in-action` (`/docs/techniques/planner-executor-in-action/`) —
+  **soft-skipped** (2026-07-21 UTC): not present on `main` / this integrate
+  HEAD; sibling worktrees may land it later — re-check before cross-linking
+
+blog (beside comparing agent factories)
+- `comparing-orchestrators` (`/blog/comparing-orchestrators/`) — **soft-skipped**
+  (2026-07-21 UTC): not present on `main` / this integrate HEAD; sibling
+  worktrees may land it later — re-check before cross-linking

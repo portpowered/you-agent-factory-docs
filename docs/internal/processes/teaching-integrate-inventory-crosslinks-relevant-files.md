@@ -29,12 +29,17 @@ page-formatting / homepage-2 / SEO work.
 
 ## Soft-wire destinations (inventory / link only when present)
 
-| Route | Content / registry cue |
-| --- | --- |
-| `/docs/techniques/planner-executor-in-action/` | Technique content bundle + registry entry when landed |
-| `/blog/comparing-orchestrators/` | Blog content bundle + registry entry when landed |
-| `/docs/techniques/planner-executor/` | Existing glossary technique (cross-link source) |
-| `/blog/comparing-agent-factories/` (or nearest comparison slug) | Existing comparison post (cross-link peer) |
+| Route | Content / registry cue | Integrate status (re-check each pass) |
+| --- | --- | --- |
+| `/docs/techniques/planner-executor-in-action/` | Technique content bundle + registry entry when landed | Soft-skipped 2026-07-21 UTC — absent from `main` |
+| `/blog/comparing-orchestrators/` | Blog content bundle + registry entry when landed | Soft-skipped 2026-07-21 UTC — absent from `main` |
+| `/docs/techniques/planner-executor/` | Existing glossary technique (cross-link source) | Present |
+| `/blog/comparing-agent-factories/` (or nearest comparison slug) | Existing comparison post (cross-link peer) | Present (`comparing-agent-factories`) |
+
+Sibling branches may exist (`teaching-technique-planner-executor-in-action`,
+`teaching-blog-comparing-orchestrators`) while still off `main`. Soft-inventory
+and soft-wire only after those routes land on the base branch — never invent
+MDX or done inventory rows from in-flight sibling worktrees.
 
 ## Patterns
 
