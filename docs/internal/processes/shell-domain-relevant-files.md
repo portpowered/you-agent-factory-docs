@@ -240,10 +240,11 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   as a layout-move regression. Coverage gate allowlist must include
   `LAYOUT_MANIFEST_PREFIX` (`src/features/layout/`) in
   `component-coverage-gate.ts` when layout entries live in the reusable
-  coverage manifest. Same pattern for home ownership moves: add
-  `HOME_MANIFEST_PREFIX` (`src/features/home/`) when home package entries
-  leave `src/components/home` for the features tree — otherwise
-  `isAllowedManifestPath` rejects the relocated manifest paths.
+  coverage manifest. Same pattern for home ownership: home package entries
+  live under `HOME_MANIFEST_PREFIX` (`src/features/home/`); relocating out of
+  `src/components/` requires that features prefix in the coverage-gate
+  allowlist — otherwise `isAllowedManifestPath` rejects the relocated
+  manifest paths.
 * Layout + providers/i18n ownership-lane merge conflicts: when `main` has
   already moved `@/features/providers/*` and `@/features/i18n/*` while this
   lane moved `@/features/layout/*`, resolve the three shell layouts
