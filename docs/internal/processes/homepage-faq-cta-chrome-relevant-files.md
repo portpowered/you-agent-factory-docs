@@ -1,0 +1,43 @@
+# Homepage FAQ / CTA / Chrome (W-faq-cta) — relevant files
+
+Use these files when working on Homepage-2 **W-faq-cta** (Wave B): landing
+header, bespoke FAQ panel, CTA band, footer art, and the gated faq-cta harness.
+Do **not** flip production `/` here — that belongs to W-integrate. Do **not**
+edit `src/features/footer/**` or create `src/features/faq/**`.
+
+Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
+`README.md`, `workstreams.md`, `contracts.md`.
+
+## Components (this lane)
+
+| File | Role |
+| --- | --- |
+| `src/features/landing-page/components/LandingHeader.tsx` | Brand + resolving nav links + optional `search` slot; semantic `<header>` / labeled `<nav>` |
+| `src/features/landing-page/components/LandingHeader.test.tsx` | Fixture labels/hrefs, empty items, optional search presence |
+| `src/features/landing-page/components/FaqPanel.tsx` | (story 002) Bespoke parchment FAQ — not docs FAQ chrome |
+| `src/features/landing-page/components/CtaBand.tsx` | (story 003) Fogged install CTA band |
+| `src/features/landing-page/components/LandingFooterArt.tsx` | (story 004) Decorative art node for `SiteFooter` `art` slot |
+| `src/app/(dev)/faq-cta-harness/page.tsx` | (story 005) Gated harness: header → faq → cta → footer art |
+
+## Shared stubs (owned by W-skeleton; consume, do not reinvent schemas)
+
+| File | Role |
+| --- | --- |
+| `src/features/landing-page/landing-page.data.ts` | `LandingNavItem` / `LandingFaqItem` / `LandingCtaContent` shapes + fixtures |
+| `src/features/landing-page/landing-page.assets.ts` | `/home/...` asset paths for footer art when staged |
+| `src/features/footer/SiteFooter.tsx` | Consumer of opaque `art?: ReactNode` — import in harness only; do not edit |
+
+## Patterns
+
+- Nav props are component types only (`{ label, href }[]` + optional `id`); use
+  fixture paths like `/browse`, `/docs/guides`, `/blog`, `/docs/references`.
+- Optional search is a **slot** (`search?: ReactNode`). Omit the prop entirely
+  when unused — do not reserve an empty broken search control.
+- Use real `<a>` anchors (or `Link`) with visible `focus-visible:ring-*` styles;
+  landmarks: `<header>` + `<nav aria-label="…">`.
+- Any enter motion stays inside each component — no shared `SectionReveal`.
+- Fence vs docs FAQ (#190 / PF-D2): landing `FaqPanel` only; no `features/faq`.
+- Harness gating matches other `(dev)` routes: `notFound()` when
+  `NODE_ENV === "production"` unless `ENABLE_COMPONENT_EXAMPLES === "1"`.
+- Do not implement carousel, hero portrait/capability/youi, whale/sphere, or
+  production `/` flip in this lane.
