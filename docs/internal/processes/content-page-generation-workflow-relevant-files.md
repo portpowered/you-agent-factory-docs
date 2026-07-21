@@ -16,6 +16,18 @@ need `documentation` in `LOCAL_DOCS_SECTIONS` plus
 `documentation-page.ts` / `documentation-page-load.ts` so
 `DocsPageProviders` wraps the compiled MDX (same pattern as concepts/systems).
 
+## Shared docs shell: Opening summary chrome retired
+
+`src/app/docs/docs-slug-renderer.tsx` no longer mounts `DocsOpeningSummary` /
+`DocsFoldedSummary` bordered Opening summary chrome (`aria-label="Opening
+summary"`, `data-opening-summary="folded"`, `data-testid="folded-summary"`).
+Title + description + normal article body remain; do not revive What It Covers /
+Key Concepts (or equivalent) intro chrome as a replacement. Message fields named
+`openingSummary` may remain in content for non-chrome reuse (for example the
+references family-index plain `<p>` purpose lead in
+`ReferencesFamilyIndex.tsx`). Workers/workstations intentional `#how-to-use`
+sections stay page-local and are unrelated to that retired shell chrome.
+
 ## Derived page directory contract
 
 Routine canonical pages live under `src/content/docs/<section>/<slug>`. Resolve
@@ -824,10 +836,12 @@ migration guidance and prefer the current public names for new configs.
 ### Documentation workers ownership, examples, and core fields (page-local)
 
 Authored `/docs/workers/*` and `/docs/workstations/*` pages (family indexes +
-variant pages, including `/docs/workers/mock`) use purpose-lead chrome:
-`openingSummary` via `DocsOpeningSummary`, then `#how-to-use`, then
+variant pages, including `/docs/workers/mock`) use purpose/howto teaching:
+`#how-to-use`, then
 `#schema-reference` (messages `sections.schemaReference`, not “Variant
-Fields”) and `#examples`. Do not restore `#what-it-covers` /
+Fields”) and `#examples`. Do not restore bordered Opening summary shell chrome
+(`DocsOpeningSummary` / `data-opening-summary`) — the shared docs slug renderer
+no longer mounts it. Do not restore `#what-it-covers` /
 `#key-concepts` summary intro sections on those trees. Fold discriminator
 identity into `#how-to-use` (label + value line) rather than a separate Key
 Concepts section. Workstation family index follows the same intro shape;
@@ -938,10 +952,12 @@ For Documentation Program **core product** pages under
 
 - Remove `#what-it-covers` / `#key-concepts` Sections from `page.mdx` and delete
   `sections.whatItCovers` / `sections.keyConcepts` from all locale messages.
-- Keep a short purpose `openingSummary` (add one sentence only when the page
-  would otherwise open with no useful lead). Do not clear it to `""` the way
-  Events/JS reference intro-strips do — Documentation Program pages still use
-  `DocsOpeningSummary` as the purpose lead.
+- Keep a short purpose `openingSummary` message when useful for non-chrome reuse
+  (add one sentence only when the page would otherwise open with no useful
+  lead). Do not clear it to `""` the way Events/JS reference intro-strips do —
+  but the shared docs slug renderer no longer mounts `DocsOpeningSummary` as a
+  bordered Opening summary lead box; do not revive What It Covers / Key Concepts
+  chrome as a replacement.
 - Strip `#how-to-use` / `sections.howToUse` only when it is opening meta reading
   guidance before real teaching. Keep it when it holds the page’s primary
   procedure (for example install commands, contributing steps) or when it sits
@@ -961,9 +977,10 @@ For Documentation Program **core product** pages under
   `bun src/content/docs/documentation/assert-documentation-program-core-intro-strip-browser.ts`
   (webpack `next dev` via `scripts/run-next.ts`, unique port 3587 default,
   Playwright; kill server on exit). Assert absent What It Covers / Key Concepts
-  headings and `#what-it-covers` / `#key-concepts`; present purpose lead via
-  `[data-opening-summary="folded"]` / `[data-testid="folded-summary"]` (unlike
-  Events/JS/CLI reference intro-strips that clear `openingSummary`); at least
+  headings and `#what-it-covers` / `#key-concepts`; absent bordered Opening
+  summary shell markers (`[data-opening-summary="folded"]` /
+  `[data-testid="folded-summary"]` / `aria-label="Opening summary"`) because the
+  shared renderer no longer mounts that chrome; at least
   one teaching section id still mounted; `#how-to-use` absent on pages where it
   was stripped as opening boilerplate (what-is, cli, faq, troubleshooting,
   submitting-work). Prefer `DOC_PROGRAM_CORE_INTRO_STRIP_PROBE_BASE_URL` when a
@@ -1136,11 +1153,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   embeds outside W07 JSON Schema package models).
   Factories authored child pages
   (`configuration` / `global-configuration` / `packaged` / `dynamic-workflows` /
-  `sessions`) use purpose-lead chrome: keep a short `openingSummary` for
-  `DocsOpeningSummary`, then open MDX on the first teaching section (for
+  `sessions`) keep a short `openingSummary` message when useful for non-chrome
+  reuse, then open MDX on the first teaching section (for
   example `#what-lives-where`, `#operator-model-defaults`,
   `#discovery-and-resolution`, `#orchestrator-schema`, or
-  `#factory-relationship`). Do not restore `#what-it-covers` /
+  `#factory-relationship`). Do not restore bordered Opening summary shell chrome
+  via the shared docs slug renderer, and do not restore `#what-it-covers` /
   `#key-concepts` or `sections.whatItCovers` / `sections.keyConcepts` on those
   trees. Leave the factories family index overview / root summary embed alone
   unless it literally ships those intros. Do not expand this intro strip into
@@ -1150,15 +1168,17 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   reference pages: `sections.whatItCovers` / `sections.keyConcepts` are
   `undefined`, `queryByRole` for those headings returns null, and
   `#what-it-covers` / `#key-concepts` ids are absent — while still proving
-  `openingSummary`, teaching headings, ready schema embeds, and lookup links.
+  teaching headings, ready schema embeds, and lookup links (`openingSummary`
+  message fields may remain unused by shell chrome).
   Do not require How To Use / Limits / Related absence on factories pages that
   still ship those non-intro sections.
   Browser-verify Factories intro strip on the five child routes with
   `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1`
   (Turbopack often fails in parent-hoisted worktrees). Fetch SSR HTML and
   assert: no `What It Covers` / `Key Concepts` headings, no
-  `#what-it-covers` / `#key-concepts`, `data-opening-summary` present with
-  the page lead, and the first teaching section id/title visible
+  `#what-it-covers` / `#key-concepts`, no bordered Opening summary markers
+  (`data-opening-summary` / `data-testid="folded-summary"`), and the first
+  teaching section id/title visible
   (`#what-lives-where`, `#operator-model-defaults`,
   `#discovery-and-resolution`, `#orchestrator-schema` titled
   Orchestrator Identity, `#factory-relationship`). Kill the server before
@@ -1855,9 +1875,11 @@ For the nine ops/platform Documentation Program trees under
 
 - Remove `#what-it-covers` / `#key-concepts` Sections from `page.mdx` and drop
   `sections.whatItCovers` / `sections.keyConcepts` from every shipped locale.
-- Keep at most one short purpose lead via `openingSummary` (rendered by
-  `DocsOpeningSummary`); omit or empty it when the first remaining body section
-  already opens usefully. Do not ship a multi-paragraph Summary section heading.
+- Keep at most one short purpose lead via `openingSummary` message fields when
+  useful for non-chrome reuse; omit or empty it when the first remaining body
+  section already opens usefully. The shared docs slug renderer no longer mounts
+  bordered `DocsOpeningSummary` chrome. Do not ship a multi-paragraph Summary
+  section heading.
   Purpose leads must be product-first: the topic/behavior is the subject (for
   example “Local you-agent-factory trust boundaries define…” or
   “you-agent-factory can capture live runs as replay artifacts…”). Reject
@@ -1887,8 +1909,9 @@ For the nine ops/platform Documentation Program trees under
   `bun src/content/docs/documentation/logs/assert-ops-platform-intro-strip-browser.ts`
   (webpack `next dev`, unique port 3681 default, Playwright; kill server on
   exit). Assert absent What It Covers / Key Concepts / `#what-it-covers` /
-  `#key-concepts` / visible `Summary` section heading; allow short purpose
-  lead via `DocsOpeningSummary` (`[data-opening-summary="folded"]`); assert
+  `#key-concepts` / visible `Summary` section heading; absent bordered Opening
+  summary shell markers (`[data-opening-summary="folded"]` /
+  `[data-testid="folded-summary"]`); assert
   one operational teaching marker per route (logs retention, metrics
   `factoryState`/`runtimeStatus`, resources ownership/pool, petri `task:init`,
   packaged `you docs`, dashboard/security bind URLs, throttling surface table,
