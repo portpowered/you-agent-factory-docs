@@ -149,6 +149,13 @@ describe("workstations script-run type page", () => {
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
 
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
+    expect(document.querySelector("[data-related-group]")).toBeNull();
+    expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+
     expect(
       screen.getByText(
         (_content, element) =>

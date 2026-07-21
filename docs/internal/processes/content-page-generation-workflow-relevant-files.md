@@ -60,8 +60,10 @@ curated links (for example `Workstations family index` sibling rows); leave
 How To Use teaching link proofs. In the messages story, remove orphan
 `sections.related` / `sections.references` titles and Related-footer-only link
 keys (`workstationsFamilyIndex`, `sibling*`); keep companion / schema / example
-labels. Add absence locks (`Related To` / `References` / `#related`) in the
-tests story.
+labels. Colocated workstations page tests lock absence with
+`Related To` / `References` heading queries, `#related` / `#references`,
+`[data-related-group]`, and `curated-related-docs` (keep How To Use teaching
+proofs; leave Tags alone).
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
