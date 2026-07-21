@@ -63,6 +63,18 @@ customer routes — do not invent browser smoke fiction for unlanded pages.
 When a soft-skipped customer route later lands on the base branch, re-run a short
 live-route load + keyboard smoke for that page and append a new row here.
 
+### Components API fence pass log
+
+Confirm Wave A/B teaching integrate work did not expand
+`@you-agent-factory/components`. Teaching stays under `src/features/teaching-ui/`
++ page-local composers.
+
+| Check | Outcome | UTC check |
+| --- | --- | --- |
+| Lane diff vs `origin/main` | **Docs-only** — `documentation-site-pages-needed.md` + this process note; no `packages/`, no `node_modules/@you-agent-factory/components` edits, no `src/features/teaching-ui/` recipe rewrites | 2026-07-21 11:20 UTC |
+| Sibling-owned MDX / PF strip / homepage-2 / SEO | **None mixed in** — soft-skipped destinations remain documented skips, not invented pages | 2026-07-21 11:20 UTC |
+| Soft-skipped Wave B steps | Documented as **skipped** (not blocked) in inventory Wave B section + soft-wire / smoke pass logs above | 2026-07-21 11:20 UTC |
+
 ## Patterns
 
 * Inventory unfinished Wave B siblings as **skipped**, never as invented done rows.

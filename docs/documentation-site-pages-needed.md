@@ -143,3 +143,14 @@ Maintainer verify trail for this stream (detail in
   (2026-07-21 11:16 UTC): destinations still absent on base branch.
 - Model pricing + orchestrator registries — `make validate-data` **passed**
   (2026-07-21 11:16 UTC); same registry validation hook runs under `make ci`.
+
+### Components API fence (W-integrate)
+
+Lane diff review (2026-07-21 UTC): this integrate branch only updates the
+committed inventory + process note above. No `@you-agent-factory/components`
+public exports, package API growth, or promotion of teaching recipes into that
+package. Teaching remains site-internal under `src/features/teaching-ui/` +
+page-local composers. Soft-skipped Wave B sibling steps are documented as
+**skipped** (not blocked). No teaching-ui recipe/registry schema rewrites, no
+sibling-owned MDX creation, and no page-formatting / homepage-2 / SEO helper
+churn mixed in.
