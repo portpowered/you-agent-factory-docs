@@ -5,27 +5,18 @@ import {
   docsResourceCardLinkClassName,
 } from "@/features/docs/components/list-decoration";
 import type { PageMessages } from "@/lib/content/schemas";
-import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
-import type { ReferencesFamilyFreshnessSummary } from "./load-references-family-freshness";
-import { ReferencesFamilyFreshnessSummaryView } from "./ReferencesFamilyFreshnessSummary";
 import { resolveReferenceFamilyDiscoverabilityCards } from "./resolve-reference-family-discoverability";
 
 type ReferencesFamilyIndexProps = {
   messages: PageMessages;
-  freshness: ReferencesFamilyFreshnessSummary;
-  /** Localized reference chrome for freshness field labels (W17). */
-  chrome: ReferenceChromeMessages;
 };
 
 /**
- * Authored `/docs/references` family index: short openingSummary purpose lead,
- * discoverability cards for all eight planned reference routes, and a
- * package/version freshness summary from the public API manifest.
+ * Authored `/docs/references` family index: short openingSummary purpose lead
+ * and discoverability cards for all eight planned reference routes.
  */
 export function ReferencesFamilyIndex({
   messages,
-  freshness,
-  chrome,
 }: ReferencesFamilyIndexProps) {
   const discoverability = messages.sections?.discoverability;
   const openingSummary = messages.openingSummary;
@@ -45,11 +36,6 @@ export function ReferencesFamilyIndex({
       {openingSummary ? (
         <p className="text-base text-muted-foreground">{openingSummary}</p>
       ) : null}
-      <ReferencesFamilyFreshnessSummaryView
-        chrome={chrome}
-        freshness={freshness}
-        messages={messages}
-      />
       <section
         aria-labelledby={discoverabilityHeadingId}
         className="mt-8"

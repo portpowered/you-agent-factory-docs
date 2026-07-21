@@ -1418,25 +1418,22 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   resolver (`resolve-reference-family-discoverability.ts` — message sections
   keyed by route id supply title/body; hrefs stay on planned
   `/docs/references/...` paths even when sibling bodies are unpublished),
-  package freshness summary (`load-references-family-freshness.ts` via W03
-  `loadApiPackageManifest` / `@you-agent-factory/api/manifest`, with a
-  worktree-safe parent-walk `resolveExport` for Next/webpack — do not use
-  `createRequire(import.meta.url)` or bare `import.meta.resolve` on this
-  surface; rendered by `ReferencesFamilyFreshnessSummary.tsx` with shared
-  `ReferenceErrorState` on failure), ownership fence helpers (`ownership.ts` —
-  allowed family-index root vs forbidden sibling page / foreign renderer /
-  factories-workers-workstations roots; prove with path helpers, not source
-  inventory scans), and colocated tests. Do not put sibling W11 page bodies
-  (`api/`, `events/`, …) in this lane. After the intro strip, the landing is
-  `openingSummary` + Package freshness + Contract surfaces — not
-  `sections.introduction` / What this family covers. Browser-verify with
+  ownership fence helpers (`ownership.ts` — allowed family-index root vs
+  forbidden sibling page / foreign renderer / factories-workers-workstations
+  roots; prove with path helpers, not source inventory scans), and colocated
+  tests. Do not put sibling W11 page bodies (`api/`, `events/`, …) in this
+  lane. Do not remount Package freshness on this landing — the exclusive
+  freshness loader/view were removed; keep `openingSummary` (plain paragraph)
+  + Contract surfaces only, not `sections.introduction` / What this family
+  covers and not `sections.freshness` / `#package-freshness`. Browser-verify
+  with
   `bun src/content/docs/references/family-index/assert-references-family-index-intro-strip-browser.ts`
   (webpack `bun run next` via `scripts/run-next.ts`, unique port default
   `3589`, or `REFERENCES_FAMILY_INDEX_INTRO_STRIP_PROBE_BASE_URL` when a server
   is already warm). The probe asserts introduction absence, purpose lead,
   eight discoverability hrefs including System configuration schema →
-  `/docs/references/system-config-schema` (#177), and no empty-collection /
-  you-config revival.
+  `/docs/references/system-config-schema` (#177), Package freshness absence,
+  and no empty-collection / you-config revival.
 * `src/content/registry/references/`
   First `reference` registry collection. Wire new records through
   `REGISTRY_COLLECTIONS`, `registry.ts` directories, and
@@ -1449,7 +1446,8 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   frontmatter kind alone — required because factories/workers/workstations
   reuse `documentation` kind while keeping an independent public route.
   `renderReferencesFamilyIndexPage` loads the family-index ownership surface
-  and package freshness for `/docs/references`.
+  for `/docs/references` (purpose lead + Contract surfaces only — no Package
+  freshness load).
 * `src/lib/docs/section-collection-index.test.ts` /
   `src/tests/content/section-indexes.test.tsx`
   Empty-state + localized metadata proofs for still-empty family indexes;
@@ -1461,7 +1459,7 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Empty-state + localized metadata proofs for still-empty family indexes
   (workstations); factories authored-entry + overview assertions; workers
   family-index proofs; references family index asserts purpose lead +
-  Contract surfaces + Package freshness and absence of
+  Contract surfaces and absence of Package freshness /
   `sections.introduction` / What this family covers chrome; factories must
   not list documentation child pages.
 * `src/lib/content/docs-catch-all-static-params.ts`

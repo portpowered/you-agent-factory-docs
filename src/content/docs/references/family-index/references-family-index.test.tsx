@@ -1,9 +1,8 @@
 /**
  * Page-owned behavioral proof for the `/docs/references` family index.
  * Asserts short openingSummary purpose lead, eight discoverability hrefs,
- * package/version freshness success + unavailable treatments, ownership-path
- * helpers, and absence of leftover introduction chrome — not sibling page
- * bodies, foreign renderer catalogs, or shared inventories.
+ * ownership-path helpers, and absence of leftover introduction chrome — not
+ * sibling page bodies, foreign renderer catalogs, or shared inventories.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { existsSync } from "node:fs";
@@ -11,9 +10,6 @@ import { join } from "node:path";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { MessageLoadError } from "@/lib/content/page-messages-load";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
-import { loadUiMessages } from "@/lib/content/ui-messages";
-import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
-import { loadReferencesFamilyFreshnessSummary } from "./load-references-family-freshness";
 import { loadReferencesFamilyIndex } from "./load-references-family-index";
 import {
   isForbiddenReferencesFamilyRendererPath,
@@ -37,11 +33,6 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-async function englishChrome() {
-  const messages = await loadUiMessages("en");
-  return resolveReferenceChromeMessages(messages);
-}
-
 describe("references family index", () => {
   afterEach(() => {
     cleanup();
@@ -60,12 +51,8 @@ describe("references family index", () => {
     expect(loaded.messages.openingSummary).toContain("contract surfaces");
     expect(loaded.messages.openingSummary?.length).toBeGreaterThan(0);
     expect(loaded.messages.sections?.introduction).toBeUndefined();
-    expect(loaded.messages.sections?.freshness?.title).toBe(
-      "Package freshness",
-    );
-    expect(loaded.messages.callouts?.freshnessUnavailable?.title).toContain(
-      "unavailable",
-    );
+    expect(loaded.messages.sections?.freshness).toBeUndefined();
+    expect(loaded.messages.callouts?.freshnessUnavailable).toBeUndefined();
   });
 
   test("loads localized family-index page chrome without English silent fallback", async () => {
@@ -80,9 +67,7 @@ describe("references family index", () => {
       expect(
         loaded.messages.sections?.discoverability?.title?.length,
       ).toBeGreaterThan(0);
-      expect(
-        loaded.messages.sections?.freshness?.title?.length,
-      ).toBeGreaterThan(0);
+      expect(loaded.messages.sections?.freshness).toBeUndefined();
     }
 
     expect(ja.messages.title).toBe("リファレンス");
@@ -90,10 +75,6 @@ describe("references family index", () => {
     expect(ja.messages.sections?.discoverability?.title).toBe("コントラクト面");
     expect(ja.messages.sections?.discoverability?.title).not.toBe(
       en.messages.sections?.discoverability?.title,
-    );
-    expect(ja.messages.sections?.freshness?.title).toBe("パッケージの鮮度");
-    expect(ja.messages.sections?.freshness?.title).not.toBe(
-      en.messages.sections?.freshness?.title,
     );
     expect(zh.messages.title).toBe("参考");
     expect(zh.messages.title).not.toBe(en.messages.title);
@@ -110,47 +91,14 @@ describe("references family index", () => {
     ).rejects.toBeInstanceOf(MessageLoadError);
   });
 
-  test("loads package freshness from the public API manifest", () => {
-    const freshness = loadReferencesFamilyFreshnessSummary();
-
-    expect(freshness.status).toBe("ready");
-    if (freshness.status !== "ready") {
-      throw new Error("expected ready freshness summary");
-    }
-    expect(freshness.packageId.length).toBeGreaterThan(0);
-    expect(freshness.packageVersion.length).toBeGreaterThan(0);
-    expect(freshness.sourceCommit.length).toBeGreaterThan(0);
-    expect(freshness.publicArtifactId).toBe("@you-agent-factory/api/manifest");
-  });
-
-  test("returns an explicit unavailable freshness result when the manifest cannot be read", () => {
-    const freshness = loadReferencesFamilyFreshnessSummary({
-      resolveExport: () => {
-        throw new Error("manifest export missing in fixture");
-      },
-    });
-
-    expect(freshness.status).toBe("unavailable");
-    if (freshness.status !== "unavailable") {
-      throw new Error("expected unavailable freshness summary");
-    }
-    expect(freshness.reason).toContain("manifest");
-  });
-
   test("renders the purpose lead instead of empty-collection or introduction chrome", async () => {
     const loaded = await loadReferencesFamilyIndex();
-    const freshness = loadReferencesFamilyFreshnessSummary();
-    const chrome = await englishChrome();
 
     render(
       <main>
         <h1>{loaded.messages.title}</h1>
         <p>{loaded.messages.description}</p>
-        <ReferencesFamilyIndex
-          chrome={chrome}
-          freshness={freshness}
-          messages={loaded.messages}
-        />
+        <ReferencesFamilyIndex messages={loaded.messages} />
       </main>,
     );
 
@@ -170,15 +118,13 @@ describe("references family index", () => {
     expect(screen.queryByText("No reference entries yet")).toBeNull();
   });
 
-  test("keeps discoverability / freshness only—no introduction or child-page boilerplate chrome", async () => {
+  test("keeps discoverability only—no introduction, freshness, or child-page boilerplate chrome", async () => {
     const loaded = await loadReferencesFamilyIndex();
-    const freshness = loadReferencesFamilyFreshnessSummary();
-    const chrome = await englishChrome();
     const sectionKeys = Object.keys(loaded.messages.sections ?? {});
 
     expect(sectionKeys).not.toContain("introduction");
     expect(sectionKeys).toContain("discoverability");
-    expect(sectionKeys).toContain("freshness");
+    expect(sectionKeys).not.toContain("freshness");
     for (const key of [
       "howToUse",
       "limitsAndAssumptions",
@@ -191,11 +137,7 @@ describe("references family index", () => {
 
     render(
       <main>
-        <ReferencesFamilyIndex
-          chrome={chrome}
-          freshness={freshness}
-          messages={loaded.messages}
-        />
+        <ReferencesFamilyIndex messages={loaded.messages} />
       </main>,
     );
 
@@ -213,99 +155,22 @@ describe("references family index", () => {
       screen.getByRole("heading", { name: "Contract surfaces" }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Package freshness" }),
-    ).toBeTruthy();
-  });
-
-  test("renders package freshness summary on the success path", async () => {
-    const loaded = await loadReferencesFamilyIndex();
-    const freshness = loadReferencesFamilyFreshnessSummary();
-    const chrome = await englishChrome();
-
-    expect(freshness.status).toBe("ready");
-    if (freshness.status !== "ready") {
-      throw new Error("expected ready freshness summary");
-    }
-
-    render(
-      <main>
-        <ReferencesFamilyIndex
-          chrome={chrome}
-          freshness={freshness}
-          messages={loaded.messages}
-        />
-      </main>,
-    );
-
-    expect(
-      screen.getByRole("heading", { name: "Package freshness" }),
-    ).toBeTruthy();
-    expect(screen.getByText(chrome.badge.package)).toBeTruthy();
-    expect(screen.getByText(chrome.badge.sourceCommit)).toBeTruthy();
-    const summary = document.querySelector(
-      "[data-references-family-freshness-summary]",
-    );
-    expect(summary).toBeTruthy();
-    expect(summary?.getAttribute("data-package-id")).toBe(freshness.packageId);
-    expect(summary?.getAttribute("data-package-version")).toBe(
-      freshness.packageVersion,
-    );
-    expect(summary?.getAttribute("data-source-commit")).toBe(
-      freshness.sourceCommit,
-    );
-    expect(screen.getByText(freshness.packageId)).toBeTruthy();
-    expect(screen.getByText(freshness.packageVersion)).toBeTruthy();
-    expect(screen.getByText(freshness.sourceCommit)).toBeTruthy();
-    expect(
-      document.querySelector("[data-freshness-status='ready']"),
-    ).toBeTruthy();
-  });
-
-  test("keeps purpose lead and discoverability links when freshness is unavailable", async () => {
-    const loaded = await loadReferencesFamilyIndex();
-    const freshness = loadReferencesFamilyFreshnessSummary({
-      resolveExport: () => {
-        throw new Error("manifest export missing in fixture");
-      },
-    });
-    const cards = resolveReferenceFamilyDiscoverabilityCards(loaded.messages);
-    const chrome = await englishChrome();
-
-    render(
-      <main>
-        <ReferencesFamilyIndex
-          chrome={chrome}
-          freshness={freshness}
-          messages={loaded.messages}
-        />
-      </main>,
-    );
-
-    expect(screen.getByText(loaded.messages.openingSummary ?? "")).toBeTruthy();
-    expect(
-      screen.queryByRole("heading", { name: "What this family covers" }),
+      screen.queryByRole("heading", { name: "Package freshness" }),
     ).toBeNull();
     expect(
-      document.querySelector("[data-freshness-status='unavailable']"),
-    ).toBeTruthy();
-    expect(document.querySelector("[data-reference-error-state]")).toBeTruthy();
-    expect(screen.getByText("Package freshness unavailable")).toBeTruthy();
-    expect(screen.getByText(/manifest could not be read/i)).toBeTruthy();
-
-    const list = screen.getByRole("list", { name: "Contract surfaces" });
-    for (const card of cards) {
-      const link = within(list).getByRole("link", {
-        name: new RegExp(escapeRegExp(card.title)),
-      });
-      expect(link.getAttribute("href")).toBe(card.href);
-    }
+      document.querySelector("[data-references-family-freshness]"),
+    ).toBeNull();
+    expect(document.querySelector("#package-freshness")).toBeNull();
+    expect(document.querySelector("[data-freshness-status]")).toBeNull();
+    expect(
+      document.querySelector("[data-references-family-freshness-summary]"),
+    ).toBeNull();
+    expect(screen.queryByText(/Package freshness unavailable/i)).toBeNull();
   });
 
   test("renders discoverability links for all eight planned reference routes", async () => {
     const loaded = await loadReferencesFamilyIndex();
-    const freshness = loadReferencesFamilyFreshnessSummary();
     const cards = resolveReferenceFamilyDiscoverabilityCards(loaded.messages);
-    const chrome = await englishChrome();
 
     expect(REFERENCE_FAMILY_DISCOVERABILITY_ROUTES).toHaveLength(8);
     expect(cards.map((card) => card.href)).toEqual([
@@ -334,11 +199,7 @@ describe("references family index", () => {
 
     render(
       <main>
-        <ReferencesFamilyIndex
-          chrome={chrome}
-          freshness={freshness}
-          messages={loaded.messages}
-        />
+        <ReferencesFamilyIndex messages={loaded.messages} />
       </main>,
     );
 
@@ -369,17 +230,10 @@ describe("references family index", () => {
 
   test("renders localized Japanese family-index chrome with untranslated CLI/MCP/API tokens", async () => {
     const loaded = await loadReferencesFamilyIndex("ja");
-    const freshness = loadReferencesFamilyFreshnessSummary();
-    const ui = await loadUiMessages("ja");
-    const chrome = resolveReferenceChromeMessages(ui);
 
     render(
       <main>
-        <ReferencesFamilyIndex
-          chrome={chrome}
-          freshness={freshness}
-          messages={loaded.messages}
-        />
+        <ReferencesFamilyIndex messages={loaded.messages} />
       </main>,
     );
 
@@ -390,10 +244,8 @@ describe("references family index", () => {
       screen.getByRole("heading", { name: "コントラクト面" }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "パッケージの鮮度" }),
-    ).toBeTruthy();
-    expect(screen.getByText(chrome.badge.package)).toBeTruthy();
-    expect(screen.getByText(chrome.badge.sourceCommit)).toBeTruthy();
+      screen.queryByRole("heading", { name: "パッケージの鮮度" }),
+    ).toBeNull();
     expect(screen.queryByText("What this family covers")).toBeNull();
     expect(screen.queryByText("Contract surfaces")).toBeNull();
     expect(screen.getByText(loaded.messages.openingSummary ?? "")).toBeTruthy();

@@ -7,10 +7,6 @@
       "title": "契约面",
       "body": "每张卡片打开一个契约族。标签在窄视口上仍保持可读。"
     },
-    "freshness": {
-      "title": "软件包新鲜度",
-      "body": "本系列记录下方已安装的公开 API 软件包标识。版本与源提交来自已发布的软件包清单——不是手抄字符串。"
-    },
     "api": {
       "title": "HTTP API",
       "body": "工厂 HTTP 面的 OpenAPI 操作与请求/响应契约。"
@@ -42,12 +38,6 @@
     "javascript-runtime": {
       "title": "JavaScript 运行时",
       "body": "用于嵌入工厂工作的 JavaScript 运行时绑定与软件包面。"
-    }
-  },
-  "callouts": {
-    "freshnessUnavailable": {
-      "title": "无法获取软件包新鲜度",
-      "body": "此构建无法读取已发布的 API 软件包清单。下方的契约面卡片仍可用；清单解析成功后，软件包标识与版本会显示在此处。"
     }
   }
 }
