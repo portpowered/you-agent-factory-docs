@@ -71,5 +71,7 @@ describe("useful-factory-links blog post (001–002)", () => {
     expect(html).toContain('href="/docs/concepts/harness"');
     expect(html).not.toContain("Give the compact version first");
     expect(html).not.toContain("Created from the blog-post MDX template");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/bottlenecks"');
   });
 });

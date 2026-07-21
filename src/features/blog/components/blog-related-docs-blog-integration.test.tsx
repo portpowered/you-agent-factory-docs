@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import { renderToStaticMarkup } from "react-dom/server";
+import { renderBlogPostPage } from "@/app/(site)/site-renderers";
 import {
   blogPostHref,
   loadBlogPostFromDisk,
@@ -41,5 +43,24 @@ describe("blog related docs integration", () => {
     expect(html).toContain('href="/docs/concepts/harness"');
     expect(html).not.toContain("documentation.what-is-you-agent-factory");
     expect(html).not.toContain("concept.harness");
+  });
+
+  test("full post render exposes next-post for mid-list and omits it for last", async () => {
+    const bottlenecksHtml = renderToStaticMarkup(
+      await renderBlogPostPage(BOTTLENECKS_BLOG_SLUG),
+    );
+    const comparingHtml = renderToStaticMarkup(
+      await renderBlogPostPage(COMPARING_BLOG_SLUG),
+    );
+
+    expect(bottlenecksHtml).not.toContain('data-testid="blog-related-docs"');
+    expect(bottlenecksHtml).not.toContain(">Summary</");
+    expect(bottlenecksHtml).toContain('data-testid="blog-next-post"');
+    expect(bottlenecksHtml).toContain('aria-label="Next blog post"');
+    expect(bottlenecksHtml).toContain('href="/blog/comparing-agent-factories"');
+
+    expect(comparingHtml).not.toContain('data-testid="blog-related-docs"');
+    expect(comparingHtml).not.toContain(">Summary</");
+    expect(comparingHtml).not.toContain('data-testid="blog-next-post"');
   });
 });

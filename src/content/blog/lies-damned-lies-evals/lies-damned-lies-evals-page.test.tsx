@@ -102,5 +102,7 @@ describe("lies-damned-lies-evals related factory docs (003)", () => {
     expect(html).toContain('href="/docs/concepts/bottlenecks"');
     expect(html).toContain("metrics documentation");
     expect(html).toContain("bottlenecks");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/useful-factory-links"');
   });
 });

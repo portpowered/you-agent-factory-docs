@@ -65,5 +65,7 @@ describe("changelog blog hub (001)", () => {
     expect(html).toContain("not automated governance CI");
     expect(html).not.toContain("Give the compact version first");
     expect(html).not.toContain("Created from the blog-post MDX template");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/factories-building-factory-docs"');
   });
 });

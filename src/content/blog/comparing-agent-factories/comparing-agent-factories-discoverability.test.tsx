@@ -93,11 +93,13 @@ describe("comparing-agent-factories blog discoverability (004)", () => {
     { timeout: 20_000 },
   );
 
-  test("published post still renders narrative, related docs, and factory-ui DataTable", async () => {
+  test("published post renders narrative, prose docs links, and omits next-post as last", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
 
     expect(html).toContain(BLOG_TITLE);
+    expect(html.match(/<h1\b/g)?.length).toBe(1);
+    expect(html).not.toContain(">Summary</");
     expect(html).toContain("Why a lightweight agent factory exists");
     expect(html).toContain("agent-factories-comparison-table");
     expect(html).toContain("you-agent-factory");
@@ -105,6 +107,8 @@ describe("comparing-agent-factories blog discoverability (004)", () => {
     expect(html).toContain("/docs/concepts/harness");
     expect(html).not.toContain('data-testid="blog-related-docs"');
     expect(html).not.toContain("Related reference pages");
+    // Last in newest-first published order — no dead next-post href.
+    expect(html).not.toContain('data-testid="blog-next-post"');
   });
 
   test("post title is a relative self-link for Pages representative nav hrefs", async () => {

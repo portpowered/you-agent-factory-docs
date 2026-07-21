@@ -128,6 +128,14 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   newest-first index order from `listPublishedBlogPosts`. Omit the control
   (no dead href) when the post is last. Do not reintroduce `BlogRelatedDocs`
   lists for neighbor navigation.
+* Blog chrome-repair convergence (discoverability / page / integration /
+  a11y): assert repaired single chrome (no related-docs, no Summary, one
+  `h1`, no `tag-pill-list`) **and** next-post presence/absence on the same
+  SSR or Testing Library surface. Representative mid-list proof:
+  `/blog/cursor-composer-six-billion-tokens` → `/blog/changelog`; last-post
+  omit proof: `/blog/comparing-agent-factories`. Prefer
+  `renderBlogPostPage` + `renderToStaticMarkup` over inventing source
+  inventories.
 * Historical note: `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve
   related-doc kinds wired through `getRegistryRecordById` (concept, module,
   model, and other tagged kinds in that lookup). Published `documentation.*`
