@@ -1,4 +1,10 @@
 {
   "title": "Planner-Executor In Action",
-  "description": "Practice planner-executor as a multi-model cost tradeoff: when a larger planner and smaller executor win over one shared model."
+  "description": "Practice planner-executor as a multi-model cost tradeoff: when a larger planner and smaller executor win over one shared model.",
+  "sections": {
+    "intro": {
+      "title": "Single Model Versus Split Roles",
+      "body": "Planner-executor is a technique that separates planning from execution: a planner turns a customer ask into reviewable work slices, and executors implement those slices. Most factories start with a single-model setup—the same model handles both roles. That default is simple: one configuration, one price sheet, and no role-to-model mapping to maintain. A multi-model setup keeps the same planner-executor pattern but assigns a larger planner model and a smaller executor model. The split can win on cost when planning needs heavier judgment than routine execution, or on quality when a stronger planner produces cleaner slices while a lighter executor still finishes the work well enough. Choose the split when those gains outweigh the extra model wiring; keep one shared model when they do not."
+    }
+  }
 }

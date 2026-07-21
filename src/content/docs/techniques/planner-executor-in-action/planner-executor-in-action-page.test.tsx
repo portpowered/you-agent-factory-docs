@@ -69,6 +69,17 @@ describe("planner-executor-in-action technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Planner-Executor In Action" }),
     ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "Single Model Versus Split Roles",
+      }),
+    ).toBeTruthy();
+    expect(document.getElementById("intro")).toBeTruthy();
+    expect(document.body.textContent ?? "").toMatch(/single-model/i);
+    expect(document.body.textContent ?? "").toMatch(/multi-model/i);
+    expect(document.body.textContent ?? "").toMatch(
+      /larger planner model and a smaller executor model/i,
+    );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
     expect(document.getElementById("related")).toBeNull();
