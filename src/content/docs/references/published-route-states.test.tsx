@@ -23,7 +23,7 @@ import { REFERENCE_FAMILY_PAGE_PATHS } from "@/lib/references/reference-search-p
 import { source } from "@/lib/source";
 import { CliReferenceInventory } from "./cli/CliReferenceInventory";
 import { JavascriptRuntimeReferenceInventory } from "./javascript-runtime/JavascriptRuntimeReferenceInventory";
-import { McpReferenceInventory } from "./mcp/McpReferenceInventory";
+import { McpReferenceInventory } from "./mcp-reference/McpReferenceInventory";
 
 const PAGE_RENDER_TIMEOUT_MS = 45_000;
 
@@ -36,8 +36,8 @@ const PUBLISHED_ROUTES = [
     countAttr: "data-cli-command-count",
   },
   {
-    slug: "mcp",
-    url: REFERENCE_FAMILY_PAGE_PATHS.mcp,
+    slug: "mcp-reference",
+    url: "/docs/references/mcp-reference",
     registryId: "reference.mcp",
     inventorySelector: "[data-mcp-tool-inventory]",
     countAttr: "data-mcp-tool-count",
@@ -308,6 +308,9 @@ describe("W11 published route states and ownership fences", () => {
     for (const route of PUBLISHED_ROUTES) {
       expect(source.getPage(["references", route.slug])?.url).toBe(route.url);
     }
+
+    // Old MCP inventory slug must not remain published beside mcp-reference.
+    expect(source.getPage(["references", "mcp"])).toBeUndefined();
 
     // Parallel W11 API/schema/events pages coexist on the same family; this
     // lane must not delete or re-own them.

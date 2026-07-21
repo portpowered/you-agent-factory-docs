@@ -1,0 +1,63 @@
+/**
+ * Production API reference accent remaps (locked Q3).
+ *
+ * Under `[data-api-reference-theme]`, retarget Fumadocs language tabs, response
+ * status chips, and MethodLabel chrome so selected/emphasis uses secondary
+ * blue and quieter/unselected uses muted secondary — never primary yellow.
+ *
+ * Same cascade pattern as `docs-chrome-toc.css`: `@layer utilities` +
+ * `!important` so remaps beat Tailwind `data-[state=active]:text-fd-primary`
+ * / `border-fd-primary` / MethodLabel greens-blues-yellows.
+ *
+ * Do not patch `node_modules`. Do not invent page-only hex/rgb/hsl/oklch.
+ * Keep remaps scoped to tabs / method badges / status chips — do not blanket
+ * remap every `text-fd-primary` under the theme (schema field names stay).
+ */
+
+@layer utilities {
+  /*
+   * Code-panel language tabs + response status chips (Fumadocs TabsTrigger /
+   * CodeBlockTabsTrigger). Selected → secondary; quiet → muted-foreground.
+   */
+  [data-api-reference-theme] [role="tab"][data-state="active"] {
+    color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+  }
+
+  [data-api-reference-theme] [role="tab"]:not([data-state="active"]) {
+    color: var(--muted-foreground) !important;
+  }
+
+  /* CodeBlockTabsTrigger active underline (`group-data-[state=active]:bg-fd-primary`). */
+  [data-api-reference-theme]
+    [role="tab"][data-state="active"]
+    .bg-fd-primary,
+  [data-api-reference-theme]
+    [role="tab"].group[data-state="active"]
+    > .absolute {
+    background-color: var(--secondary) !important;
+  }
+
+  @media (hover: hover) {
+    [data-api-reference-theme] [role="tab"]:hover {
+      color: var(--secondary) !important;
+    }
+  }
+
+  /*
+   * Fumadocs MethodLabel uses Tailwind greens/blues/yellows/oranges/reds.
+   * Remap all method tones to secondary blue (meaning stays in uppercase text).
+   */
+  [data-api-reference-theme] .text-green-600,
+  [data-api-reference-theme] .dark\:text-green-400,
+  [data-api-reference-theme] .text-blue-600,
+  [data-api-reference-theme] .dark\:text-blue-400,
+  [data-api-reference-theme] .text-yellow-600,
+  [data-api-reference-theme] .dark\:text-yellow-400,
+  [data-api-reference-theme] .text-orange-600,
+  [data-api-reference-theme] .dark\:text-orange-400,
+  [data-api-reference-theme] .text-red-600,
+  [data-api-reference-theme] .dark\:text-red-400 {
+    color: var(--secondary) !important;
+  }
+}

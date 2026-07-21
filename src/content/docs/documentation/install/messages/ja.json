@@ -1,31 +1,14 @@
 {
   "title": "you-agent-factory のインストール",
-  "description": "リリースのインストールスクリプトで macOS、Linux、または Windows に you-agent-factory CLI を入れ、ファクトリーをスキャフォールドします。",
-  "openingSummary": "Install the you-agent-factory CLI with the published release scripts for your operating system, then scaffold a factory.",
+  "description": "you-agent-factory のインストール手順は「はじめに」にあります。OS インストールスクリプト、you の確認、スタータースキャフォールドはそちらへ進んでください。",
+  "openingSummary": "you-agent-factory CLI は「はじめに」からインストールします。",
   "sections": {
-    "howToUse": {
-      "title": "使い方",
-      "body": "お使いの OS 向けのインストールコマンドを実行します。どちらの経路も、ホームのインストール CTA と同じ GitHub Releases アセットを使います。スクリプトが終わったら、シェルで you が使えることを確認します。その後、ファクトリーをスキャフォールドします。--executor を省略するとデフォルトの Codex ベースのスタータースキャフォールドのままです。Claude ベースのデフォルトスキャフォールドが欲しいときは --executor claude を渡します。インストール後は、はじめに で最初の実行と投入ループへ進むか、より広いコマンド一覧が必要なときは CLI ドキュメントを開きます。"
-    },
-    "limitsAndAssumptions": {
-      "title": "限界と前提",
-      "body": "このページはインストールリファレンスのみです。はじめのクイックスタートでも、完全な CLI コマンド一覧でもなく、パッケージ化された you docs のトピックの代わりにもなりません。インストール後のエージェントとファクトリーの向き合い方は you docs agents を実行してください。より深い CLI とファクトリーの契約は、パッケージ化された you docs と隣接するドキュメントページにあります。"
-    },
-    "related": {
-      "title": "関連"
-    },
-    "tags": {
-      "title": "タグ"
-    },
-    "references": {
-      "title": "参考文献"
+    "installPath": {
+      "title": "インストールの経路",
+      "body": "「はじめに」が you-agent-factory のインストール全体を教えます。OS リリーススクリプト、シェルで you が使えることの確認、スタータースキャフォールドの選択です。インストールと実行はそちらへ進んでください。"
     }
   },
   "links": {
-    "macosLinuxLabel": "macOS / Linux",
-    "windowsLabel": "Windows (PowerShell)",
-    "claudeInitLabel": "Claude ベースのスキャフォールド",
-    "gettingStarted": "はじめに",
-    "cliDocs": "CLI ドキュメント"
+    "gettingStarted": "はじめに"
   }
 }

@@ -1,31 +1,14 @@
 {
   "title": "Cài đặt you-agent-factory",
-  "description": "Cài đặt CLI you-agent-factory trên macOS, Linux hoặc Windows bằng script cài đặt phát hành, rồi scaffold một factory.",
-  "openingSummary": "Install the you-agent-factory CLI with the published release scripts for your operating system, then scaffold a factory.",
+  "description": "Nội dung hướng dẫn cài đặt you-agent-factory nằm trong Bắt đầu. Tiếp tục ở đó cho script cài đặt theo OS, xác nhận you, và scaffold khởi đầu.",
+  "openingSummary": "Cài đặt CLI you-agent-factory từ Bắt đầu.",
   "sections": {
-    "howToUse": {
-      "title": "Cách dùng",
-      "body": "Chạy lệnh cài đặt cho hệ điều hành của bạn. Cả hai đường đều dùng cùng tài nguyên GitHub Releases như CTA cài đặt trên trang chủ. Sau khi script xong, xác nhận you có sẵn trong shell. Rồi scaffold một factory. Bỏ qua --executor giữ scaffold starter mặc định dựa trên Codex. Truyền --executor claude khi bạn muốn scaffold mặc định dựa trên Claude. Sau khi cài đặt, tiếp tục với Bắt đầu cho vòng chạy và gửi đầu tiên, hoặc mở tài liệu CLI khi bạn cần ma trận lệnh rộng hơn."
-    },
-    "limitsAndAssumptions": {
-      "title": "Giới hạn và giả định",
-      "body": "Trang này chỉ là tài liệu tham chiếu cài đặt. Nó không phải hướng dẫn nhanh Bắt đầu, không phải ma trận lệnh CLI đầy đủ, và không thay thế các chủ đề you docs đã đóng gói. Để định hướng agent và factory sau khi cài đặt, chạy you docs agents. Các hợp đồng CLI và factory sâu hơn nằm trong you docs đã đóng gói và các trang tài liệu liền kề."
-    },
-    "related": {
-      "title": "Liên quan"
-    },
-    "tags": {
-      "title": "Thẻ"
-    },
-    "references": {
-      "title": "Tài liệu tham khảo"
+    "installPath": {
+      "title": "Đường dẫn cài đặt",
+      "body": "Bắt đầu dạy toàn bộ đường dẫn cài đặt you-agent-factory: script phát hành theo OS, xác nhận you có sẵn trong shell, và lựa chọn scaffold khởi đầu. Tiếp tục ở đó để cài đặt và chạy."
     }
   },
   "links": {
-    "macosLinuxLabel": "macOS / Linux",
-    "windowsLabel": "Windows (PowerShell)",
-    "claudeInitLabel": "Scaffold dựa trên Claude",
-    "gettingStarted": "Bắt đầu",
-    "cliDocs": "Tài liệu CLI"
+    "gettingStarted": "Bắt đầu"
   }
 }

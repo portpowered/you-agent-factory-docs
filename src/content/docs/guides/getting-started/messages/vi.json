@@ -13,7 +13,7 @@
     },
     "install": {
       "title": "Cài đặt",
-      "body": "Cài đặt CLI you bằng các lệnh giống trang chủ. Chọn đường phù hợp với hệ điều hành của bạn."
+      "body": "Cài đặt CLI you bằng các lệnh giống trang chủ. Chọn đường phù hợp với hệ điều hành của bạn. Sau khi script xong, xác nhận you có sẵn trong shell, rồi scaffold một factory."
     },
     "firstYou": {
       "title": "Lần you đầu tiên",
@@ -29,7 +29,7 @@
     },
     "commonPitfalls": {
       "title": "Cạm bẫy thường gặp",
-      "body": "Đừng gửi công việc trước khi có phiên factory đang chạy. Với các trường hợp cài đặt theo hệ điều hành, dùng trang cài đặt chi tiết. Với ma trận lệnh CLI đầy đủ, dùng tài liệu CLI."
+      "body": "Đừng gửi công việc trước khi có phiên factory đang chạy. Với ma trận lệnh CLI đầy đủ, dùng tài liệu CLI."
     },
     "related": {
       "title": "Liên quan"
@@ -44,17 +44,20 @@
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
+    "claudeInitLabel": "Scaffold dựa trên Claude",
     "firstYouNamedRunLabel": "Chạy có tên",
     "firstYouDefaultStartLabel": "Khởi động factory mặc định",
     "firstYouSessionListLabel": "Xác nhận factory đang chạy",
     "firstSubmitUnaryLabel": "Gửi đơn lẻ",
     "firstSubmitBatchLabel": "Gửi theo batch",
-    "installDeepDive": "Cài đặt chi tiết",
     "cliDocs": "Tài liệu CLI"
   },
   "callouts": {
-    "installDeepDive": {
-      "body": "Các lệnh này phủ một lần cài đặt cơ bản. Các trường hợp biên theo hệ điều hành, vị trí cài đặt tùy chỉnh, và phiên bản ghim nằm trên trang cài đặt chi tiết; bạn không cần mở trang đó để hoàn tất cài đặt tiêu chuẩn."
+    "confirmYouAvailable": {
+      "body": "Sau khi cài đặt, mở terminal mới nếu cần để PATH tải lại, rồi xác nhận you có sẵn trong shell trước khi tiếp tục."
+    },
+    "scaffoldChoice": {
+      "body": "Bỏ qua --executor giữ scaffold starter mặc định dựa trên Codex. Truyền --executor claude khi bạn muốn scaffold mặc định dựa trên Claude."
     },
     "firstYouSessionCheck": {
       "body": "Xác nhận factory đang chạy bằng session list trước khi gửi. Nếu không có phiên hoạt động, khởi động lại factory rồi kiểm tra lại."

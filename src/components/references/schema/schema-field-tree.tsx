@@ -32,8 +32,9 @@ export type SchemaFieldTreeProps = {
    */
   showFieldPathWhenDistinct?: boolean;
   /**
-   * When false, hide OpenAPI pointer breadcrumbs and compact `$ref` labels.
-   * Forwarded to each {@link SchemaFieldRow}. Default true.
+   * When true, show full OpenAPI pointer breadcrumbs and full-pointer `$ref`
+   * labels. Forwarded to each {@link SchemaFieldRow}. Default false prefers
+   * leaf names and compact `$ref` labels while keeping copyable deep links.
    */
   showPointerPathChrome?: boolean;
   className?: string;
@@ -53,7 +54,7 @@ export function SchemaFieldTree({
   defaultExpanded = false,
   pagePath,
   showFieldPathWhenDistinct = false,
-  showPointerPathChrome = true,
+  showPointerPathChrome = false,
   className,
   "data-testid": testId = "schema-field-tree",
 }: SchemaFieldTreeProps) {

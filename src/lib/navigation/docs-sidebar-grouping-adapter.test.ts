@@ -8,6 +8,7 @@ import {
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
   getSidebarGroupLabel,
+  isDeferredDocumentationExplorerMembershipSlug,
   isModeAProgramOverviewPendingExplorerMembership,
 } from "@/lib/content/sidebar-grouping";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
@@ -187,16 +188,23 @@ describe("docs sidebar grouping adapter", () => {
     expect(countPageNodes(nodes)).toBe(pages.length);
   });
 
-  test("Program documentation emits three-level nesting without FAQ, W18 stubs, or pending Mode A overviews", () => {
+  test("Program documentation emits three-level nesting without FAQ, W18 stubs, pending Mode A overviews, or deferred-membership pages", () => {
     const allDocumentationPages = loadPublishedDocsPagesSync("en").filter(
       (page) => page.docsSlug.startsWith("documentation/"),
     );
-    const pages = allDocumentationPages.filter(
-      (page) =>
-        !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
-        !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug) &&
-        !isModeAProgramOverviewPendingExplorerMembership(page.docsSlug),
-    );
+    const pages = allDocumentationPages.filter((page) => {
+      if (isDocsExplorerTopLevelFaqPage(page.docsSlug)) {
+        return false;
+      }
+      if (isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)) {
+        return false;
+      }
+      if (isModeAProgramOverviewPendingExplorerMembership(page.docsSlug)) {
+        return false;
+      }
+      const slug = page.docsSlug.slice("documentation/".length);
+      return !isDeferredDocumentationExplorerMembershipSlug(slug);
+    });
     const nodes = buildGroupedSidebarNodes(
       "documentation",
       allDocumentationPages,
@@ -242,6 +250,7 @@ describe("docs sidebar grouping adapter", () => {
     for (const page of pages) {
       const slug = page.docsSlug.slice("documentation/".length);
       expect(slug).not.toBe("faq");
+      expect(isDeferredDocumentationExplorerMembershipSlug(slug)).toBe(false);
       const membership =
         FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
           slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG

@@ -6,6 +6,7 @@ import { describe, expect, test } from "bun:test";
 import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import {
+  DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS,
   DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
   DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
@@ -13,6 +14,7 @@ import {
   getDocumentationSidebarMembership,
   getDocumentationSidebarSecondaryIdsForGroup,
   getDocumentationSidebarSecondaryLabel,
+  isDeferredDocumentationExplorerMembershipSlug,
   isDocumentationSidebarSecondaryGroup,
   MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
   SIDEBAR_GROUP_LABELS,
@@ -162,7 +164,7 @@ describe("Program documentation three-level taxonomy", () => {
     }
   });
 
-  test("every published documentation page except FAQ, W18 move stubs, and Mode A overviews pending explorer membership has exactly one membership path", () => {
+  test("every published documentation page except FAQ, W18 move stubs, Mode A overviews pending explorer membership, and deferred-membership pages has exactly one membership path", () => {
     const publishedSlugs = loadPublishedDocsPagesSync("en")
       .filter((page) => page.docsSlug.startsWith("documentation/"))
       .map((page) => page.docsSlug.slice("documentation/".length));
@@ -196,12 +198,25 @@ describe("Program documentation three-level taxonomy", () => {
       expect(moveStubSlugSet.has(overviewSlug)).toBe(false);
     }
 
+    for (const deferredSlug of DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS) {
+      expect(membershipSlugs).not.toContain(deferredSlug);
+      expect(getDocumentationSidebarMembership(deferredSlug)).toBeUndefined();
+      expect(isDeferredDocumentationExplorerMembershipSlug(deferredSlug)).toBe(
+        true,
+      );
+      expect(publishedSlugs).toContain(deferredSlug);
+    }
+
     for (const slug of publishedSlugs) {
       if (isDocsExplorerTopLevelFaqPage(`documentation/${slug}`)) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }
       if (moveStubSlugSet.has(slug) || pendingExplorerSlugSet.has(slug)) {
+        expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
+        continue;
+      }
+      if (isDeferredDocumentationExplorerMembershipSlug(slug)) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }

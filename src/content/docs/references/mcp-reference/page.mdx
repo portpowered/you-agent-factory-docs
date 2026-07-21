@@ -1,0 +1,39 @@
+---
+title: "MCP Reference"
+description: "Install MCP and look up published tool input schemas and examples from the package MCP contract without a live Factory host."
+kind: "reference"
+registryId: "reference.mcp"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "MCP"
+  - "MCP reference"
+  - "You Agent Factory MCP"
+  - "Factory Session tools"
+  - "package MCP contract"
+  - "you-agent-factory MCP reference"
+updatedAt: "2026-07-19"
+---
+
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+
+
+<Section id="how-to-install" titleKey="sections.howToInstall.title">
+  <T k="sections.howToInstall.body" />
+
+```bash
+you mcp serve
+```
+
+  <p>
+    <McpInstallDocsLink />
+  </p>
+</Section>
+
+<Section id="tool-inventory" titleKey="sections.toolInventory.title">
+  <T k="sections.toolInventory.body" />
+  <McpReferenceInventory />
+</Section>

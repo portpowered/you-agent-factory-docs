@@ -1,6 +1,6 @@
 ---
 title: "Install you-agent-factory"
-description: "Install the you-agent-factory CLI on macOS, Linux, or Windows with the release install scripts, then scaffold a factory."
+description: "Install teaching for you-agent-factory lives in Getting Started."
 kind: "documentation"
 registryId: "documentation.install"
 messageNamespace: "local"
@@ -11,63 +11,23 @@ aliases:
   - "install"
   - "install you-agent-factory"
   - "CLI install"
-updatedAt: "2026-07-09"
+updatedAt: "2026-07-21"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
+{/* PS-200 thin compatibility stub: preserves the inbound URL and points install teaching at Getting Started. Static-export-safe — no redirects. */}
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
-import { TagPillList } from "@/features/docs/components/TagPillList";
 
 
-<Section id="how-to-use" titleKey="sections.howToUse.title">
-  <T k="sections.howToUse.body" />
-  <p>
-    <T k="links.macosLinuxLabel" />
-  </p>
-  ```sh
-  curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh
-  ```
-  <p>
-    <T k="links.windowsLabel" />
-  </p>
-  ```powershell
-  irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex
-  ```
-  <p>
-    <T k="links.claudeInitLabel" />
-  </p>
-  ```sh
-  you init --executor claude
-  ```
+<Section id="install-path" titleKey="sections.installPath.title">
+  <T k="sections.installPath.body" />
   <LocalizedLinkList
     items={[
       {
         href: "/docs/guides/getting-started",
         labelKey: "links.gettingStarted",
       },
-      {
-        href: "/docs/documentation/cli",
-        labelKey: "links.cliDocs",
-      },
     ]}
   />
-</Section>
-
-<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
-  <T k="sections.limitsAndAssumptions.body" />
-</Section>
-
-<Section id="related" titleKey="sections.related.title">
-  <RelatedDocs registryId="documentation.install" />
-</Section>
-
-<Section id="tags" titleKey="sections.tags.title">
-  <TagPillList registryId="documentation.install" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.install" />
 </Section>

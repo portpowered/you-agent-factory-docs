@@ -94,8 +94,10 @@ export type DocsChromeHighlightingSurface =
   (typeof DOCS_CHROME_HIGHLIGHTING_SURFACES)[number];
 
 /**
- * Per-surface default and hover/active overlay roles from the locked map.
+ * Per-surface default and hover overlay roles from the locked map.
  * Sidebar hover is a primary-yellow **background** (not text-only recolor).
+ * Sidebar selected/active is a separate muted secondary-blue wash — do not
+ * conflate it with hover yellow (`selectedActive` on sidebarRow only).
  */
 export const DOCS_CHROME_HIGHLIGHTING_SURFACE_ROLES = {
   searchGlobeGitHub: {
@@ -117,6 +119,8 @@ export const DOCS_CHROME_HIGHLIGHTING_SURFACE_ROLES = {
     default: "white",
     hoverActive: "primaryYellow",
     hoverActiveKind: "background",
+    /** Selected/active wash — muted secondary blue, not primary yellow. */
+    selectedActive: "secondaryBlue",
   },
   headerTextIcons: {
     default: "white",
@@ -134,6 +138,7 @@ export const DOCS_CHROME_HIGHLIGHTING_SURFACE_ROLES = {
     default: DocsChromeHighlightingRoleName;
     hoverActive: DocsChromeHighlightingRoleName;
     hoverActiveKind: "overlay" | "background";
+    selectedActive?: DocsChromeHighlightingRoleName;
   }
 >;
 

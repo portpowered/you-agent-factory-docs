@@ -237,7 +237,7 @@ is never treated as an inventory item (`resolveReferenceItemDeepLinkUrl`).
 `rerankSearchResults` must boost **every** page-level title/slug/alias match
 (score ≥ 90), not only the single best seeded URL. Otherwise a generic query
 like `mcp` keeps `/docs/concepts/mcp` on top while
-`/docs/documentation/mcp` and `/docs/references/mcp` sink below the inventory
+`/docs/documentation/mcp` and `/docs/references/mcp-reference` sink below the inventory
 item flood (`#you.factory_session.*`, `you mcp`, …). Exact inventory title /
 direct-alias matches (score ≥ 95) still outrank incidental owning-page body
 hits. Residual `type: "heading"` / `#heading-N` rows under

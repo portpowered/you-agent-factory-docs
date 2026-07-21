@@ -105,6 +105,10 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
       hoverActiveKind: "background",
       restProofs: ["#f7f2e8"],
       hoverActiveProof: "#f5c76f",
+      selectedActiveRole: "secondaryBlue",
+      selectedActiveProof: "#507f8c",
+      selectedActiveBackgroundToken:
+        "color-mix(in oklch, var(--docs-chrome-secondary-blue) 18%, transparent)",
     });
 
     expect(DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.headerTextIcons).toEqual({
@@ -125,17 +129,38 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
       hoverActiveProof: "#f5c76f",
     });
 
-    // Sidebar is the only surface whose hover is a fill background.
+    // Sidebar is the only surface whose hover is a fill background and whose
+    // selected/active wash is muted secondary blue (not yellow).
     expect(
       DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.hoverActiveKind,
     ).toBe("background");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.selectedActiveRole,
+    ).toBe("secondaryBlue");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow
+        .selectedActiveBackgroundToken,
+    ).toContain("--docs-chrome-secondary-blue");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow
+        .selectedActiveBackgroundToken,
+    ).not.toContain("--docs-chrome-primary-yellow");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.hoverActiveProof,
+    ).not.toBe(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.selectedActiveProof,
+    );
     for (const surface of DOCS_CHROME_TOKEN_MAP_SURFACES) {
       if (surface === "sidebarRow") {
         continue;
       }
+      const expectation = DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS[surface];
+      expect(expectation.hoverActiveKind).toBe("overlay");
       expect(
-        DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS[surface].hoverActiveKind,
-      ).toBe("overlay");
+        "selectedActiveRole" in expectation
+          ? expectation.selectedActiveRole
+          : undefined,
+      ).toBeUndefined();
     }
   });
 
@@ -174,6 +199,14 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
     sidebar.style.color = expectations.sidebarRow.restProofs[0];
     sidebar.style.backgroundColor = "transparent";
 
+    const sidebarActive = document.createElement("a");
+    sidebarActive.className = "docs-chrome-sidebar-row";
+    sidebarActive.href = "/docs/concepts/harness";
+    sidebarActive.setAttribute("data-active", "true");
+    sidebarActive.style.color = expectations.sidebarRow.restProofs[0];
+    // Soft secondary-blue wash at rest (happy-dom may not retain color-mix).
+    sidebarActive.style.backgroundColor = "rgba(80, 127, 140, 0.18)";
+
     const headerText = document.createElement("a");
     headerText.className = "docs-chrome-header-text";
     headerText.href = "/";
@@ -189,6 +222,7 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
       tocCurrent,
       tocNonCurrent,
       sidebar,
+      sidebarActive,
       headerText,
       breadcrumb,
     );
@@ -199,6 +233,17 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
     expect(normalizeHex(tocCurrent.style.color)).toBe(proofs.secondaryBlue);
     expect(normalizeHex(tocNonCurrent.style.color)).toBe(proofs.mutedWhite);
     expect(normalizeHex(sidebar.style.color)).toBe(proofs.white);
+    expect(sidebar.style.backgroundColor).toBe("transparent");
+    expect(normalizeHex(sidebarActive.style.color)).toBe(proofs.white);
+    expect(sidebarActive.style.backgroundColor).toContain("80");
+    expect(sidebarActive.style.backgroundColor).toContain("127");
+    expect(sidebarActive.style.backgroundColor).toContain("140");
+    expect(expectations.sidebarRow.selectedActiveProof).toBe(
+      proofs.secondaryBlue,
+    );
+    expect(expectations.sidebarRow.selectedActiveBackgroundToken).toContain(
+      "--docs-chrome-secondary-blue",
+    );
     expect(normalizeHex(headerText.style.color)).toBe(proofs.white);
     expect(normalizeHex(breadcrumb.style.color)).toBe(proofs.mutedWhite);
 
@@ -207,6 +252,8 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
     tocCurrent.style.color = expectations.toc.hoverActiveProof;
     tocNonCurrent.style.color = expectations.toc.hoverActiveProof;
     sidebar.style.backgroundColor = expectations.sidebarRow.hoverActiveProof;
+    sidebarActive.style.backgroundColor =
+      expectations.sidebarRow.hoverActiveProof;
     headerText.style.color = expectations.headerTextIcons.hoverActiveProof;
     breadcrumb.style.color = expectations.breadcrumb.hoverActiveProof;
 
@@ -216,6 +263,9 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
     expect(normalizeHex(tocCurrent.style.color)).toBe(proofs.primaryYellow);
     expect(normalizeHex(tocNonCurrent.style.color)).toBe(proofs.primaryYellow);
     expect(normalizeHex(sidebar.style.backgroundColor)).toBe(
+      proofs.primaryYellow,
+    );
+    expect(normalizeHex(sidebarActive.style.backgroundColor)).toBe(
       proofs.primaryYellow,
     );
     expect(normalizeHex(headerText.style.color)).toBe(proofs.primaryYellow);
