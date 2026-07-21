@@ -191,6 +191,39 @@ the explorer.
 the explorer while the compatibility stub remains reachable by URL. Notes-only;
 no product code or expect-fix required.
 
+## Outcome (6) — Visit evidence published; only concrete defects filed
+
+| Field | Value |
+| --- | --- |
+| Story | `ia-live-verify-page-structure-006` |
+| Closed (UTC) | `2026-07-21T13:07:05Z` |
+| Evidence surface | This note + PR description / conversation for branch `ia-live-verify-page-structure` |
+| Method | Consolidate outcomes (1)–(5); classify in-lane fixes vs non-blocking notes; confirm fence |
+
+### Outcomes (1)–(5) rollup against locked IA
+
+| # | Outcome | Result | Product / expect change? |
+| --- | --- | --- | --- |
+| 1 | Top-level explorer order | PASS (live tip Pages) | Notes-only |
+| 2 | Program subgroups + Mode A discoverability | PASS (live tip Pages) | Notes-only |
+| 3 | Reference nesting | PASS after in-lane fix | Yes — `mcp-reference` Contracts membership + explorer-ia-contract |
+| 4 | Dual-link Mode A ↔ Mode B | PASS after in-lane fix | Yes — Capability overview `<LocalizedLinkList>` + page-local href tests |
+| 5 | Getting Started owns install; install absent from explorer | PASS (live tip Pages) | Notes-only |
+
+### Concrete defects handled in-lane (not deferred)
+
+1. **MCP Mode B catalog ungrouped after Limits** — membership keyed `mcp` instead of published `mcp-reference`. Fixed in story `003`; tip Pages will show Contracts placement after this branch deploys.
+2. **Capability overviews lacked Mode B hrefs** — prose-only “X reference”. Fixed in story `004`; tip Pages will show Capability dual links after this branch deploys.
+
+### Explicitly not filed as follow-up slices
+
+- Optional reciprocal overview links from `/docs/factories/*` depth pages were absent on tip Pages and are **not** treated as blocking for PS-400 (acceptance allows missing optional reciprocal unless a merged content PR required them). Filing that as polish would be silent scope creep.
+- No PS-H1…H5, schema invention, page-formatting / homepage-2 / graph-pages / SEO ownership, or sidebar active CSS retints started or queued from this lane.
+
+### Verification-first posture
+
+Lane shipped notes-first. Product/expect edits landed only when live evidence blocked acceptance criteria (outcomes 3 and 4). Quality gate for those surfaces: typecheck / lint / touched tests pass on this branch before merge.
+
 ## Fence
 
 No PS-H1…H5, schema invention, page-formatting / homepage-2 / graph-pages / SEO

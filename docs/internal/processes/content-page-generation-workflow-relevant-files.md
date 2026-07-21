@@ -1025,6 +1025,11 @@ Pages** (not only local `source.pageTree` contracts):
    [ia-live-verify-page-structure-ps400-evidence.md](./ia-live-verify-page-structure-ps400-evidence.md)).
    Prefer notes-only when live matches locked IA; tiny expect/product fixes only
    when a concrete live defect blocks acceptance.
+9. Close the lane with an outcomes rollup in the same evidence note: pass/fail for
+   each locked outcome, which defects were fixed in-lane vs intentionally not
+   filed, and an explicit fence statement. Do not invent follow-up slices for
+   optional / non-blocking polish (for example optional reciprocal dual links)
+   when acceptance already treats them as non-blocking.
 
 ## PR-head mergeability for page branches (process executors)
 
