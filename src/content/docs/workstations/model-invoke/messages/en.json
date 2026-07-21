@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a MODEL_INVOKE with behavior STANDARD, an operation, and optional operationBindings. The misuse example borrows outcomeFormat from MODEL_WORKSTATION — that field is excluded from MODEL_INVOKE."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -37,12 +31,6 @@
     "minimalExampleLabel": "Minimal valid MODEL_INVOKE workstation:",
     "misuseExampleLabel": "Incompatible misuse — outcomeFormat on MODEL_INVOKE:",
     "misuseNote": "outcomeFormat belongs on MODEL_WORKSTATION. Keep MODEL_INVOKE on identity, worker binding, inputs, outputs, routing fields, and operation / operationBindings only.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingModelWorkstation": "Model workstation",
-    "siblingInferenceRun": "Inference-run workstation",
-    "siblingAgentRun": "Agent-run workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

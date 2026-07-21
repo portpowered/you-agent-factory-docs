@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a POLLER_RUN workstation with behavior POLLER. The misuse example collapses the axes by putting POLLER_RUN on the behavior field — POLLER_RUN is a WorkstationType value, not a WorkstationKind."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -38,12 +32,6 @@
     "minimalExampleLabel": "Minimal valid POLLER_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — POLLER_RUN as behavior (axis collapse):",
     "misuseNote": "POLLER_RUN is a WorkstationType value, not a WorkstationKind. Put POLLER_RUN on type, and use behavior POLLER when long-lived poller scheduling is required.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingInferenceRun": "Inference-run workstation",
-    "siblingAgentRun": "Agent-run workstation",
-    "siblingScriptRun": "Script-run workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

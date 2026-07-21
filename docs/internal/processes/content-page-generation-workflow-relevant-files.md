@@ -65,6 +65,36 @@ Other published collections may still mount RelatedDocs until their
 PF-L-strip lane removes it; that remaining chrome is not a contracts-lane
 failure. FAQ-only strip remains PF-D2.
 
+### PF-L-strip: workstations collection (stop-mount)
+
+For `src/content/docs/workstations/**`, strip by **stop-mounting** trailing
+`Section id="related"` / `id="references"` chrome (including `<RelatedDocs />`,
+Related-only `LocalizedLinkList`, and References `CitationList`) from variant
+`page.mdx` and `WorkstationsFamilyIndexContent`. Keep How To Use / companion /
+schema teaching `LocalizedLinkList` mounts and Tags. Do not rewrite shared
+`RelatedDocs` behavior or invent a replacement related surface. When stripping
+MDX, drop colocated page-test assertions that only proved Related-footer
+curated links (for example `Workstations family index` sibling rows); leave
+How To Use teaching link proofs. In the messages story, remove orphan
+`sections.related` / `sections.references` titles and Related-footer-only link
+keys (`workstationsFamilyIndex`, `sibling*`); keep companion / schema / example
+labels. Colocated workstations page tests lock absence with
+`Related To` / `References` heading queries, `#related` / `#references`,
+`[data-related-group]`, and `curated-related-docs` (keep How To Use teaching
+proofs; leave Tags alone).
+
+Browser-verify the strip with webpack `dev` on a unique port in 3100–3999
+(`bun ./scripts/run-next.ts dev --webpack -p <PORT> -H 127.0.0.1`), curl SSR
+HTML for `/docs/workstations` and a representative variant such as
+`/docs/workstations/standard`, then kill the server before exit. Assert
+`#how-to-use` / `How To Use` present, companion / schema teaching hrefs
+present, and footer absence via `#related` / `#references`, `Related To`,
+`data-related-group`, and `curated-related-docs`. Do not treat bare
+`>References<` in SSR HTML as footer chrome — site chrome still links the
+`/docs/references` nav folder. In zsh, never assign to `path` (aliases
+`PATH`). Warm first compiles with `--max-time 180`; assertion curls may use
+`--max-time 60`.
+
 ### Guides collection PF-L-strip (published MDX)
 
 For published guides under `src/content/docs/guides/**/page.mdx`, strip trailing

@@ -26,9 +26,6 @@
     "workstationSchema": {
       "title": "Workstation Schema",
       "body": "The embed shows the live Factory Workstation base definition from the installed package. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this index."
-    },
-    "related": {
-      "title": "Related To"
     }
   },
   "links": {
@@ -105,9 +102,6 @@
     "sharedOnFailureRole": "Failure routing target shared across variants",
     "sharedLimitsField": "limits",
     "sharedLimitsRole": "Capacity and concurrency bounds for the step",
-    "fullFactorySchema": "Full Factory schema reference",
-    "siblingWorkers": "Workers",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

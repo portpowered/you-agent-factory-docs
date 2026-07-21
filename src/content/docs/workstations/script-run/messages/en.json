@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a SCRIPT_RUN workstation with behavior STANDARD. The misuse example borrows promptFile from MODEL_WORKSTATION — that field is excluded from SCRIPT_RUN."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -37,12 +31,6 @@
     "minimalExampleLabel": "Minimal valid SCRIPT_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — promptFile on SCRIPT_RUN:",
     "misuseNote": "promptFile belongs on MODEL_WORKSTATION. Keep SCRIPT_RUN on identity, worker binding, inputs, outputs, and routing fields only.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingInferenceRun": "Inference-run workstation",
-    "siblingAgentRun": "Agent-run workstation",
-    "siblingModelWorkstation": "Model workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

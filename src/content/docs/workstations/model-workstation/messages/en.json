@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a MODEL_WORKSTATION with behavior STANDARD, a promptFile, and outcome parse fields. The misuse example borrows operation from MODEL_INVOKE — that field is excluded from MODEL_WORKSTATION."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -37,12 +31,6 @@
     "minimalExampleLabel": "Minimal valid MODEL_WORKSTATION workstation:",
     "misuseExampleLabel": "Incompatible misuse — operation on MODEL_WORKSTATION:",
     "misuseNote": "operation belongs on MODEL_INVOKE. Keep MODEL_WORKSTATION on identity, worker binding, inputs, outputs, routing fields, and promptFile / outcomeFormat / outputSchema / stopWords only.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingModelInvoke": "Model-invoke workstation",
-    "siblingInferenceRun": "Inference-run workstation",
-    "siblingAgentRun": "Agent-run workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

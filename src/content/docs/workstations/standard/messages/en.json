@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a STANDARD workstation. The misuse example shows cron on STANDARD — cron belongs on behavior CRON and is excluded from STANDARD."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -36,12 +30,6 @@
     "minimalExampleLabel": "Minimal valid STANDARD workstation:",
     "misuseExampleLabel": "Incompatible misuse — cron on STANDARD (excluded):",
     "misuseNote": "cron is a CRON scheduling field. STANDARD excludes it. Use behavior CRON when the step must run on a schedule.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workstationsFamilyIndex": "Workstations family index",
-    "siblingRepeater": "Repeater workstation",
-    "siblingCron": "Cron workstation",
-    "siblingPoller": "Poller workstation",
-    "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

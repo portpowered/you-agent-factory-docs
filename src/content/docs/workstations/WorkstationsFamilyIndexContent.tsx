@@ -364,25 +364,6 @@ export function WorkstationsFamilyIndexContent() {
           ]}
         />
       </Section>
-
-      <Section id="related" titleKey="sections.related.title">
-        <LocalizedLinkList
-          items={[
-            {
-              href: "/docs/workers",
-              labelKey: "links.siblingWorkers",
-            },
-            {
-              href: "/docs/factories/configuration",
-              labelKey: "links.siblingConfiguration",
-            },
-            {
-              href: "/docs/documentation/resources",
-              labelKey: "links.siblingResources",
-            },
-          ]}
-        />
-      </Section>
     </div>
   );
 }

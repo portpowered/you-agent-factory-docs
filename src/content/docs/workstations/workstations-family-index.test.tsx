@@ -112,6 +112,13 @@ describe("workstations family index", () => {
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
 
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
+    expect(document.querySelector("[data-related-group]")).toBeNull();
+    expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+
     const typeSelection = document.querySelector(
       "[data-workstations-type-selection-table]",
     );
@@ -219,6 +226,12 @@ describe("workstations family index", () => {
     expect(html).not.toContain("Key Concepts");
     expect(html).not.toContain("Operational Cautions");
     expect(html).not.toContain("Limits And Assumptions");
+    expect(html).not.toContain("Related To");
+    expect(html).not.toContain(">References<");
+    expect(html).not.toContain('id="related"');
+    expect(html).not.toContain('id="references"');
+    expect(html).not.toContain("data-related-group");
+    expect(html).not.toContain("curated-related-docs");
     expect(html).toContain('data-workstations-family-index=""');
     expect(html).toContain('data-workstations-type-selection-table=""');
     expect(html).toContain('data-workstations-behavior-selection-table=""');

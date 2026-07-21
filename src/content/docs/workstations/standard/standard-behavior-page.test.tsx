@@ -139,6 +139,13 @@ describe("workstations standard behavior page", () => {
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
 
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
+    expect(document.querySelector("[data-related-group]")).toBeNull();
+    expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+
     expect(
       screen.getByText(
         (_content, element) =>
@@ -181,11 +188,6 @@ describe("workstations standard behavior page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-    expect(
-      screen
-        .getByRole("link", { name: "Workstations family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations");
 
     expect(
       screen.getByText("Minimal valid STANDARD workstation:"),
