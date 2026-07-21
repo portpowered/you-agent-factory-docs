@@ -34,9 +34,9 @@ page-formatting / homepage-2 / SEO work.
 | Route | Content / registry cue | Integrate status (re-check each pass) |
 | --- | --- | --- |
 | `/docs/techniques/planner-executor-in-action/` | `src/content/docs/techniques/planner-executor-in-action/` | **Present** (landed #233, 2026-07-21 UTC) — soft-wire glossary→in-action **done** (Wave B landed `002`) |
-| `/blog/comparing-orchestrators/` | `src/content/blog/comparing-orchestrators/` | **Present** (landed #232, 2026-07-21 UTC) — soft-wire reciprocal hop ready (follow-up story) |
+| `/blog/comparing-orchestrators/` | `src/content/blog/comparing-orchestrators/` | **Present** (landed #232, 2026-07-21 UTC) — reciprocal in-body hop from agent-factories **done** (Wave B landed `003`) |
 | `/docs/techniques/planner-executor/` | Existing glossary technique (cross-link source) | Present — LocalizedLinkList hop to in-action **done** (Wave B landed `002`) |
-| `/blog/comparing-agent-factories/` (or nearest comparison slug) | Existing comparison post (cross-link peer) | Present — add reciprocal hop to comparing-orchestrators (destination now present) |
+| `/blog/comparing-agent-factories/` (or nearest comparison slug) | Existing comparison post (cross-link peer) | Present — in-body hop to comparing-orchestrators **done** (Wave B landed `003`) |
 
 Prior soft-skip rows (2026-07-21 ~11:11 UTC) that treated Wave B customer routes as
 absent from `main` are **superseded**. Destinations landed via #232 / #233;
@@ -51,6 +51,7 @@ integrate follow-up once inventory marks destinations present.
 | `004` comparing-orchestrators ↔ comparing-agent-factories | Soft-skipped — destination absent on `origin/main`; no blog MDX edits | 2026-07-21 11:11 UTC |
 | Wave B landed follow-up inventory | Destinations **present** on `main` (#232 / #233); soft-wire still pending follow-up stories (glossary→in-action; agent-factories→orchestrators) | 2026-07-21 11:55 UTC |
 | Wave B landed `002` glossary→in-action | **Done** — `/docs/techniques/planner-executor/` LocalizedLinkList → `/docs/techniques/planner-executor-in-action/`; reverse back-link left intact | 2026-07-21 12:05 UTC |
+| Wave B landed `003` agent-factories→orchestrators | **Done** — `/blog/comparing-agent-factories/` in-body hop → `/blog/comparing-orchestrators/`; reverse in-body link left intact (`relatedDocIds` stay docs-only) | 2026-07-21 12:15 UTC |
 
 ### Live-route / a11y smoke + registry CI pass log
 
