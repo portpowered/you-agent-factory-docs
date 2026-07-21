@@ -113,8 +113,18 @@ describe("blog accessibility", () => {
     expect(structure.headingLevels[0]).toBe(1);
     expect(structure.headingLevels).toContain(2);
     expect(
-      screen.getByRole("heading", { level: 2, name: "Summary" }),
+      screen.queryByRole("heading", { level: 2, name: "Summary" }),
+    ).toBeNull();
+    expect(
+      screen.getByText(
+        /A practical comparison of you-agent-factory with custom scripts/,
+      ),
     ).toBeTruthy();
+    expect(
+      screen.queryByText(
+        /Use you-agent-factory when you want a lightweight, file-first orchestrator/,
+      ),
+    ).toBeNull();
     expect(
       screen.getByRole("heading", {
         level: 2,

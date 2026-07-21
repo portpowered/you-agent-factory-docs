@@ -18,7 +18,9 @@ describe("useful-factory-links blog post (001–002)", () => {
     expect(html).toContain(
       "When you already run (or are evaluating) you-agent-factory",
     );
-    expect(html).toContain(
+    expect(html).toContain("A curated list of factory-focused destinations");
+    expect(html).not.toContain(">Summary</");
+    expect(html).not.toContain(
       "Use this shortlist to reach the CLI, supported-runtime, technique, MCP, and ecosystem pages",
     );
 

@@ -106,6 +106,12 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   while still checking in-prose hrefs (for example `/docs/concepts/...`). The
   `BlogRelatedDocs` component may remain for unit/contract coverage of the
   wrapper itself; do not reintroduce it on published post bodies.
+* Published blog posts no longer render `## Summary` / `<T k="takeaway" />`
+  chrome that duplicates renderer `DocsDescription`. Keep optional `takeaway`
+  in `messages/*.json` for search indexing; SSR/page tests should assert
+  `DocsDescription` (description) once and absence of a Summary heading /
+  takeaway body block. Do not edit DocsOpeningSummary / docs-slug-renderer
+  opening-summary chrome from blog lanes.
 * Historical note: `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve
   related-doc kinds wired through `getRegistryRecordById` (concept, module,
   model, and other tagged kinds in that lookup). Published `documentation.*`

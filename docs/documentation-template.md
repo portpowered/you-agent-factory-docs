@@ -176,6 +176,8 @@ Blog posts should include:
   documentation, glossary) as in-prose MDX links
 * optional frontmatter `relatedDocIds` for metadata (do not render
   `BlogRelatedDocs` / Related reference pages chrome on published posts)
+* do not render `## Summary` / `<T k="takeaway" />` chrome that duplicates
+  renderer `DocsDescription`; keep optional `takeaway` in messages for search
 
 Blog posts may use `blog-post.content.md` as an outline, but unlike canonical
 docs pages they may keep narrative prose in the MDX file when localization is
@@ -193,7 +195,8 @@ dedicated factory teaching surfaces:
   documentation page needs a fixed teaching matrix
 
 Do not add blog `BlogRelatedDocs` / Related reference pages chrome on published
-posts; point readers at canonical docs with in-prose links instead.
+posts; point readers at canonical docs with in-prose links instead. Do not add
+a body Summary/takeaway block that duplicates `DocsDescription`.
 
 Use message components for localized user-facing text. Use asset components or
 resolved asset props for page-specific media. Do not hard-code localized body

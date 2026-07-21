@@ -34,13 +34,15 @@ describe("lies-damned-lies-evals blog post shell (001)", () => {
     expect(post?.messages.description).toContain("operational evidence");
   });
 
-  test("renders post shell with title, context, takeaway, and related docs", async () => {
+  test("renders post shell with title, context, DocsDescription, and no Summary chrome", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
 
     expect(html).toContain(BLOG_TITLE);
     expect(html).toContain("A high model benchmark score does not tell you");
-    expect(html).toContain(
+    expect(html).toContain("judge workflow health from operational evidence");
+    expect(html).not.toContain(">Summary</");
+    expect(html).not.toContain(
       "Evaluate agent-factory workflows with live operational signals",
     );
     expect(html).toContain("The wrong scoreboard");

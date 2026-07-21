@@ -21,6 +21,10 @@ describe("changelog blog hub (001)", () => {
       "When you need to see what changed in you-agent-factory",
     );
     expect(html).toContain(
+      "A docs-site hub for recent you-agent-factory product releases",
+    );
+    expect(html).not.toContain(">Summary</");
+    expect(html).not.toContain(
       "Scan recent you-agent-factory release changes on this hub",
     );
 
