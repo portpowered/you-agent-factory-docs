@@ -58,7 +58,10 @@ behavior; leave sibling collections and docs next/prev footer density alone.
 After MDX strip, remove owned `sections.related` / `sections.references`
 footer title keys from guides `messages/*.json` (all owned locales) so bundles
 match the page. Keep teaching / common-pitfalls / install `links.*` keys.
-Colocated absence assertions remain a follow-on strip story.
+Colocated guides `*-page.test.tsx` files must assert Related / References /
+RelatedDocs footer absence (`Related To` / `References` headings, `#related` /
+`#references`, `curated-related-docs` / `derived-related-docs` test ids) while
+keeping install-merge and teaching / common-pitfalls link proofs.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no

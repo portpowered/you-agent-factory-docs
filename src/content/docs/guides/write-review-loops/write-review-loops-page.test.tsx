@@ -16,12 +16,23 @@ const SUBMIT =
   "you submit --name my-write-review-work --work-type-name task --payload ./payload.md";
 const SUBMIT_BATCH = "you submit batch ./batch.json";
 
+/** PF-L-strip: trailing Related / References / RelatedDocs footer chrome must stay gone. */
+function assertNoRelatedReferencesFooterChrome(): void {
+  expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Related" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+  expect(document.getElementById("related")).toBeNull();
+  expect(document.getElementById("references")).toBeNull();
+  expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+  expect(screen.queryByTestId("derived-related-docs")).toBeNull();
+}
+
 describe("write-review-loops guide page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("renders English write-review guide identity, commands, and related href", async () => {
+  test("renders English write-review guide identity, commands, and teaching href without Related footer chrome", async () => {
     const loadedPage = await loadLocalDocsPage({
       section: "guides",
       slug: "write-review-loops",
@@ -59,6 +70,7 @@ describe("write-review-loops guide page", () => {
     expect(writerReviewer.getAttribute("href")).toBe(
       "/docs/techniques/writer-reviewer",
     );
+    assertNoRelatedReferencesFooterChrome();
   });
 
   test.each([
@@ -127,5 +139,6 @@ describe("write-review-loops guide page", () => {
     expect(document.body.textContent ?? "").not.toContain(
       "A write-review loop is a factory workflow",
     );
+    assertNoRelatedReferencesFooterChrome();
   });
 });

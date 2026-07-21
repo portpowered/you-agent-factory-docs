@@ -15,12 +15,23 @@ const SUBMIT =
   "you submit --name loop-pass --work-type-name idea --payload ./payload.md";
 const SUBMIT_BATCH = "you submit batch ./batch.json";
 
+/** PF-L-strip: trailing Related / References / RelatedDocs footer chrome must stay gone. */
+function assertNoRelatedReferencesFooterChrome(): void {
+  expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Related" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+  expect(document.getElementById("related")).toBeNull();
+  expect(document.getElementById("references")).toBeNull();
+  expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+  expect(screen.queryByTestId("derived-related-docs")).toBeNull();
+}
+
 describe("using-you-agent-factory-for-loops guide page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("renders English loop guide identity, commands, and related hrefs", async () => {
+  test("renders English loop guide identity, commands, and teaching hrefs without Related footer chrome", async () => {
     const loadedPage = await loadLocalDocsPage({
       section: "guides",
       slug: "using-you-agent-factory-for-loops",
@@ -63,6 +74,7 @@ describe("using-you-agent-factory-for-loops guide page", () => {
     expect(writeReview.getAttribute("href")).toBe(
       "/docs/guides/write-review-loops",
     );
+    assertNoRelatedReferencesFooterChrome();
   });
 
   test.each([
@@ -136,5 +148,6 @@ describe("using-you-agent-factory-for-loops guide page", () => {
     expect(document.body.textContent ?? "").not.toContain(
       "A factory loop is work that keeps iterating",
     );
+    assertNoRelatedReferencesFooterChrome();
   });
 });
