@@ -94,10 +94,6 @@ describe("dynamic-workflows documentation Mode A overview", () => {
         /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
       );
 
-      expect(loadedPage.messages.links?.dynamicWorkflowsDepth).toMatch(
-        /Dynamic Workflows reference/i,
-      );
-
       render(
         <main>
           <DocsPageProviders
@@ -126,17 +122,19 @@ describe("dynamic-workflows documentation Mode A overview", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
 
       const whatItIsSection = document.getElementById("what-it-is");
       expect(whatItIsSection?.textContent).toMatch(/JavaScript/i);
       expect(whatItIsSection?.textContent).toMatch(/Factory Session/i);
 
-      const depthLink = screen.getByRole("link", {
-        name: "Dynamic Workflows reference",
-      });
-      expect(depthLink.getAttribute("href")).toBe(
-        "/docs/factories/dynamic-workflows",
+      const limitsSection = document.getElementById("limits-and-assumptions");
+      expect(limitsSection?.textContent).toMatch(
+        /Dynamic Workflows reference/i,
       );
     },
     PAGE_RENDER_TIMEOUT_MS,

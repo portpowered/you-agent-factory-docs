@@ -45,6 +45,12 @@ async function loadBlogPostMdxComponents(slug: string): Promise<MDXComponents> {
       );
       return mod.pageMdxComponents ?? {};
     }
+    case "comparing-orchestrators": {
+      const mod = await import(
+        "@/content/blog/comparing-orchestrators/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
     default:
       return {};
   }

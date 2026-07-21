@@ -6,9 +6,19 @@ Use these files when extending the default English blog surface at `/blog` and
 ## Blog-owned route and feature surface
 
 * `src/app/(site)/blog/page.tsx`
-  English blog index route; delegates to `renderBlogIndexPage`.
+  English blog index route; delegates to `renderBlogIndexPage`. Metadata uses
+  `englishOnlyCanonicalAlternates` (canonical `/blog` only — no false
+  ja/zh-CN/vi hreflang until blog locales ship).
+* `src/app/[locale]/blog/page.tsx`
+  Locale-prefixed blog index shell; same English-only alternate policy (canonical
+  stays `/blog`).
 * `src/app/(site)/blog/[slug]/page.tsx`
-  English blog post route (story 003).
+  English blog post route (story 003); canonical-only alternates (no language map).
+* `src/app/[locale]/blog/[slug]/page.tsx`
+  Localized blog post route; fail-closed via `hasBlogPostMessagesForLocale`;
+  English canonical when a post does render.
+* `src/lib/i18n/route-locale.ts`
+  `englishOnlyCanonicalAlternates` — blog English-only alternate helper.
 * `src/app/(site)/site-renderers.tsx`
   `renderBlogIndexPage` and `renderBlogPostPage` for docs-shell blog surfaces.
   Post titles are self-links (`blogPostHref`) so project-site exports emit a
@@ -64,6 +74,11 @@ Use these files when extending the default English blog surface at `/blog` and
 * `bun test src/content/blog/comparing-agent-factories/comparing-agent-factories-discoverability.test.tsx`
   Blog-local index + prose/title search + post SSR proof for empty-tag posts
   (no tag-landing assertions when `tags: []`).
+* `bun test src/content/blog/comparing-orchestrators/comparing-orchestrators-discoverability.test.tsx`
+  Blog-local index + prose/title search + English-only locale contract + post
+  SSR proof for the orchestrator feature-matrix post (`tags: []`). Pair with
+  `comparing-orchestrators-validation.test.tsx` and `make validate-data` for
+  lane closeout.
 * `bun test src/content/blog/useful-factory-links/useful-factory-links-discoverability.test.tsx`
   Blog-local index + prose/title search + English-only locale contract + post
   SSR proof for the curated useful-links listicle (`tags: []`).

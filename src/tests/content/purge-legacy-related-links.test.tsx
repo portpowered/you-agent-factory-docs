@@ -43,6 +43,7 @@ describe("purge legacy related links and registries (005)", () => {
     expect(html).toContain('href="/blog/bottlenecks"');
     expect(html).toContain('href="/blog/changelog"');
     expect(html).toContain('href="/blog/comparing-agent-factories"');
+    expect(html).toContain('href="/blog/comparing-orchestrators"');
     expect(html).toContain('href="/blog/cursor-composer-six-billion-tokens"');
     expect(html).toContain('href="/blog/factories-building-factory-docs"');
     expect(html).toContain('href="/blog/lies-damned-lies-evals"');
@@ -55,6 +56,7 @@ describe("purge legacy related links and registries (005)", () => {
       "bottlenecks",
       "changelog",
       "comparing-agent-factories",
+      "comparing-orchestrators",
       "cursor-composer-six-billion-tokens",
       "factories-building-factory-docs",
       "lies-damned-lies-evals",

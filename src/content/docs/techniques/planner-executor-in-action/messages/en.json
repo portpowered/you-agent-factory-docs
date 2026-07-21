@@ -1,0 +1,41 @@
+{
+  "title": "Planner-Executor In Action",
+  "description": "Practice planner-executor as a multi-model cost tradeoff: when a larger planner and smaller executor win over one shared model.",
+  "sections": {
+    "intro": {
+      "title": "Single Model Versus Split Roles",
+      "body": "Planner-executor is a technique that separates planning from execution: a planner turns a customer ask into reviewable work slices, and executors implement those slices. Most factories start with a single-model setup—the same model handles both roles. That default is simple: one configuration, one price sheet, and no role-to-model mapping to maintain. A multi-model setup keeps the same planner-executor pattern but assigns a larger planner model and a smaller executor model. The split can win on cost when planning needs heavier judgment than routine execution, or on quality when a stronger planner produces cleaner slices while a lighter executor still finishes the work well enough. Choose the split when those gains outweigh the extra model wiring; keep one shared model when they do not."
+    },
+    "patternList": {
+      "title": "The Multi-Model Pattern",
+      "body": "In the multi-model form of planner-executor, a larger model owns planning and a smaller model owns execution. The roles stay the same; only the model mapping changes. Scan the pattern below before comparing costs."
+    },
+    "playground": {
+      "title": "Try Model And Token Choices",
+      "body": "A model-cost playground lets you pick primary and secondary models and token budgets, then see the resulting cost for the same planner-executor roles. Practice those choices when the interactive widget is available; otherwise the labeled model-cost playground marker shows where that practice fits after the pattern list."
+    },
+    "compareChart": {
+      "title": "Compare Single-Model And Split Cost",
+      "body": "Compare one shared model priced for all planner and executor tokens against a split where a larger planner model handles planning tokens and a smaller executor model handles execution tokens. Focus follows the split series so you can see when the multi-model mapping lowers total USD for the same work shape."
+    },
+    "recommendation": {
+      "title": "What We Recommend",
+      "body": "We think you should assign a larger planner model and a smaller executor model when planning needs heavier judgment than routine execution and the cost or quality gains outweigh the extra model wiring. Keep one shared model when the work shape is uniform or the split does not pay for itself. Read the planner-executor technique for the pattern itself—roles, slices, and parallel lanes—before you change model mappings."
+    }
+  },
+  "links": {
+    "patternListLabel": "Multi-model planner-executor pattern",
+    "patternLargerPlannerTitle": "Larger model plans",
+    "patternLargerPlannerDescription": "A stronger planner model turns the customer ask into reviewable work slices and keeps the overall factory direction coherent.",
+    "patternSmallerExecutorTitle": "Smaller model executes",
+    "patternSmallerExecutorDescription": "A lighter executor model implements those slices without carrying the full planning load on every step.",
+    "patternSameRolesTitle": "Same roles, split models",
+    "patternSameRolesDescription": "Planner and executor stay distinct jobs; the multi-model win comes from assigning different models to those jobs, not from inventing new roles.",
+    "compareChartTitle": "Single-model versus split planner-executor cost",
+    "compareChartCategoryTotal": "Total USD",
+    "compareChartSingleModelLabel": "Single shared model",
+    "compareChartSplitLabel": "Larger planner / smaller executor",
+    "compareChartYLabel": "USD",
+    "plannerExecutor": "Planner-Executor"
+  }
+}

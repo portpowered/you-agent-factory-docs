@@ -158,6 +158,48 @@ mounting trailing Related / References footer chrome:
   (Metrics documentation / Bottlenecks / Tokens) still visible. Prefer
   `CONCEPTS_RELATED_STRIP_PROBE_BASE_URL` when a server is already warm.
 
+### Documentation collection PF-L-strip (published MDX, minus FAQ)
+
+For published non-FAQ documentation under
+`src/content/docs/documentation/**/page.mdx` (except `documentation/faq/**`):
+
+- Strip trailing `Section id="related"` / `id="references"` footer chrome and
+  drop unused `RelatedDocs` / References `CitationList` / Related-only
+  `LocalizedLinkList` imports.
+- Keep Tags (`TagPillList`) and teaching-section `LocalizedLinkList` mounts
+  (for example limits-and-assumptions links on what-is-you-agent-factory, or
+  per-scenario lists on troubleshooting).
+- Leave `documentation/faq/**` unchanged — FAQ Related chrome stays for
+  `#190` / PF-D2.
+- Prefer stop-mounting over rewriting shared `RelatedDocs` behavior; do not
+  invent a replacement related surface.
+- Colocated documentation page / discoverability tests that required Related To
+  / References headings or `#related` curated links must assert absence (or
+  drop those asserts) in the same lane as the MDX strip so CI stays green;
+  keep teaching-body link asserts.
+- Formalize absence on every non-FAQ documentation `*-page.test.tsx` English
+  render proof for stripped pages: `queryByRole("heading", { name: "Related
+  To"|"References" })` null, `#related` / `#references` DOM null, and Tags
+  heading present. Keep FAQ page tests on Related presence until `#190` /
+  PF-D2. Pages that had no colocated test (for example cli, resources,
+  what-is-you-agent-factory) get a lean page-owned render proof with the same
+  absence block.
+- After MDX strip, clean owned non-FAQ `messages/*.json`: remove
+  `sections.related` / `sections.references` footer titles; drop link / label
+  keys used only by stripped Related-footer lists; keep teaching-body link
+  keys and `sections.tags`. Leave `documentation/faq/**/messages` unchanged.
+  Align every owned locale (en and present ja / zh-CN / vi) for the stripped
+  keys.
+- Browser-verify stripped documentation routes with
+  `bun src/content/docs/documentation/assert-documentation-related-chrome-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3591 default,
+  Playwright; kill server on exit). Fail closed on Related / Related To /
+  References footer headings and `#related` / `#references` mounts while
+  proving at least one teaching section id remains. Prefer
+  `DOC_RELATED_CHROME_STRIP_PROBE_BASE_URL` when a server is already warm. Do
+  not include `documentation/faq` in the absence probe (FAQ stays fenced for
+  `#190` / PF-D2).
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a
@@ -769,17 +811,62 @@ those paths only accept collection section refs.
   `sidebarGrouping.concepts` is for exceptions not covered by that map.
   `generation-and-diffusion` remains glossary-only.
 - Program documentation explorer membership is driven by
-  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (seven top groups with
-  optional secondaries under Factory Configuration and System Operations;
-  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view).
-  FAQ is omitted from that map because it is a top-level explorer
-  page outside the Program documentation folder.
-- Packaged CLI reference surfaces: place `packaged-documents` and
-  `packaged-factories` under the `packaged-factories` top group; place
-  `cli` / `cli-command-index` / `api-doc` / `mcp` under `interfaces`. Wire
-  documentation→documentation discovery with page-local `<LocalizedLinkList>`
-  plus aligned registry `relatedIds`; `<RelatedDocs />` alone will not render
-  documentation-kind siblings.
+  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (four top groups
+  Orientation → Capabilities → Interfaces → Operations; Operations nests
+  secondary `configuring` = “Configuring you-agent-factory” and may also list
+  direct children such as logs/metrics/dashboard). Factory config pages use
+  full `factories/...` docsSlug keys in that map; `PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`
+  and FAQ are omitted from Program membership.
+  Mode A overviews in `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS`
+  and deferred membership slugs in `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS`
+  are likewise omitted until their IA lanes wire them.
+  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view.
+  `buildDocumentationGroupedNodes` uses membership allowlisting so demotions,
+  Mode A pending, and deferred pages do not appear as Program leftovers.
+  Cross-collection factories config pages (`factories/configuration`,
+  `factories/global-configuration`) are routed into the Program documentation
+  explorer folder by `hasDocumentationSidebarMembership` /
+  `resolveDocsExplorerCollectionId` in `docs-sidebar-sections.ts` while keeping
+  published `/docs/factories/...` routes; they no longer appear under the
+  Factories explorer folder.
+- Reference explorer nesting (PS-100): top-level folder label is singular
+  `Reference` (`FACTORY_SIDEBAR_FOLDER_LABELS.references`). Subgroups
+  Contracts / Schemas / Limits live in `SIDEBAR_GROUP_LABELS.references` with
+  membership in `FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG` (reference pages strip
+  `references/`; Limits uses full `documentation/throttling-and-limits`).
+  `FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS` is Guides → Program documentation →
+  Concepts → Techniques → Reference (factories/workers/workstations omitted);
+  those nest under Reference via `FACTORY_REFERENCE_NESTED_COLLECTION_IDS` in
+  `buildDocsSidebarSectionNodes`. Locale catalogs require
+  `explorer.referenceGroups.{contracts,schemas,limits}` fail-closed.
+- Virtual explorer folders (PS-100): `FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS`
+  (`internal-architecture`, `miscellanea`) are `kind: "virtual-folder"` section
+  refs in `FACTORY_EXPLORER_SECTION_ORDER` (after Reference, before FAQ).
+  Membership is `FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP` (full docsSlugs;
+  pages keep `/docs/documentation/...` routes). Install stays demoted from
+  explorer. English defaults live in `FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS`;
+  shipped locales require `explorer.virtualFolders.{internal-architecture,miscellanea}`
+  fail-closed via `assertExplorerMessages`, and `localizePageTree` remaps them
+  through `buildDefaultVirtualFolderLabelLocalizer` (empty virtual folders still
+  prune when no locale-shipped pages remain).
+- Explorer IA / taxonomy / folder-order contracts (PS-100 story 006): keep
+  locked expects in `explorer-ia-contract.test.ts`,
+  `sidebar-grouping-documentation-taxonomy.test.ts`, generated page-tree /
+  adapter / collection verification, and `plan-issues-r02-reconciliation` /
+  related r02 suites that assert folder order. Reject former Program separator
+  labels (Basics→Additional reference and System feature set / Factory
+  Configuration / System Operations / Additional references) as absence
+  expects only — never require them. Signature helper unit fixtures in
+  `explorer-tree-signature.test.ts` should use the locked Orientation /
+  Capabilities / Interfaces / Operations + Configuring shape, not retired
+  taxonomy names.
+- Packaged CLI reference surfaces: place `packaged-documents` under Program
+  Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
+  Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;
+  retired move stubs (`cli-command-index`, `api-doc`, etc.) stay out of the
+  explorer. Wire documentation→documentation discovery with page-local
+  `<LocalizedLinkList>` plus aligned registry `relatedIds`; `<RelatedDocs />`
+  alone will not render documentation-kind siblings.
 - Deferred Program documentation explorer membership (page-only lanes such as
   PS-220 `/docs/documentation/api`): publish the page bundle + registry with
   status `published`, add the slug to
@@ -787,10 +874,9 @@ those paths only accept collection section refs.
   `src/lib/content/sidebar-grouping.ts`, and keep
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` unchanged until the IA lane
   (PS-300) wires Interfaces membership. The sidebar adapter omits deferred
-  slugs from the explorer tree the same way it omits FAQ and W18 move stubs;
-  do not leave an unassigned published page to append after the last top group
-  (that leaks into Additional references under `pageEntriesUnderSeparator`).
-  Direct URL, documentation section index, and search still include the page.
+  slugs from the explorer tree the same way it omits FAQ, W18 move stubs, Mode A
+  pending overviews, and PS-100 demotions (membership allowlist). Direct URL,
+  documentation section index, and search still include the page.
 - Dual-page API how-to proof (`documentation/api` vs `references/api`): colocate
   page-local tests under `src/content/docs/documentation/api/api-page.test.tsx`.
   Assert Mode A how-to identity, default base URL / factory-running / session-flow

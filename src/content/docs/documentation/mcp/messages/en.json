@@ -23,24 +23,15 @@
       "title": "Limits And Assumptions",
       "body": "MCP covers stdio serve, host configuration, and Factory Session tool discovery. It is not HTTP or SSE transport documentation, not a multi-host UI parity matrix, not a sync of packaged you docs mcp topics, not the Cursor dynamic-workflows use-case guide, and not the dynamic-workflows API deep page."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
     "serveCommandLabel": "Canonical serve command",
     "hostJsonLabel": "Generic MCP host JSON",
     "runtimeHostJsonLabel": "Runtime-backed MCP host JSON",
-    "primaryToolsLabel": "Primary Factory Session tools",
-    "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows guide",
-    "cliDocs": "CLI docs",
-    "toolConcept": "Tool concept"
+    "primaryToolsLabel": "Primary Factory Session tools"
   },
   "callouts": {
     "stdioTransport": {

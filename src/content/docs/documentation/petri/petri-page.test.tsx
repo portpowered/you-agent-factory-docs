@@ -124,19 +124,18 @@ describe("petri documentation page", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
       expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
 
       expect(document.getElementById("how-to-use")).toBeTruthy();
       expect(document.getElementById("limits-and-assumptions")).toBeTruthy();
-      expect(document.getElementById("related")).toBeTruthy();
+      expect(document.getElementById("related")).toBeNull();
       expect(document.getElementById("tags")).toBeTruthy();
-      expect(document.getElementById("references")).toBeTruthy();
+      expect(document.getElementById("references")).toBeNull();
 
       const howToUseSection = document.getElementById("how-to-use");
       const limitsSection = document.getElementById("limits-and-assumptions");
-      const relatedSection = document.getElementById("related");
       expect(howToUseSection?.textContent).toMatch(/task:init/);
       expect(howToUseSection?.textContent).toMatch(/colored token/i);
       expect(howToUseSection?.textContent).toMatch(/marking/i);
@@ -163,37 +162,6 @@ describe("petri documentation page", () => {
       expect(diagram?.querySelector("figcaption")?.textContent).toMatch(
         /Token flow/i,
       );
-
-      expect(
-        relatedSection?.querySelector('a[href="/docs/concepts/tokens"]'),
-      ).toBeNull();
-      expect(
-        relatedSection?.querySelector(
-          'a[href="/docs/factories/configuration"]',
-        ),
-      ).toBeTruthy();
-      expect(
-        relatedSection?.querySelector('a[href="/docs/workstations"]'),
-      ).toBeTruthy();
-      expect(
-        relatedSection?.querySelector(
-          'a[href="/docs/documentation/architecture-of-system"]',
-        ),
-      ).toBeTruthy();
-      expect(
-        relatedSection?.querySelector('a[href="/docs/factories/sessions"]'),
-      ).toBeTruthy();
-      expect(
-        relatedSection?.querySelector(
-          'a[href="/docs/documentation/submitting-work"]',
-        ),
-      ).toBeTruthy();
-      expect(relatedSection?.textContent).not.toMatch(/Tokens concept/i);
-      expect(relatedSection?.textContent).toMatch(/Configuration/i);
-      expect(relatedSection?.textContent).toMatch(/Workstations/i);
-      expect(relatedSection?.textContent).toMatch(/Architecture of system/i);
-      expect(relatedSection?.textContent).toMatch(/Factory session/i);
-      expect(relatedSection?.textContent).toMatch(/Submitting work/i);
 
       expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
     },

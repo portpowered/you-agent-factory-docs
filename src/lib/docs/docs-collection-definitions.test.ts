@@ -179,7 +179,12 @@ describe("docs collection definitions config", () => {
   });
 
   test("identifies sidebar grouping resolver ids for grouped collections", () => {
-    const groupedIds = ["glossary", "concepts", "documentation"] as const;
+    const groupedIds = [
+      "glossary",
+      "concepts",
+      "documentation",
+      "references",
+    ] as const;
 
     for (const id of groupedIds) {
       const definition = getDocsCollectionDefinition(id);
@@ -198,7 +203,6 @@ describe("docs collection definitions config", () => {
     const ungroupedIds = new Set<string>([
       "guides",
       "techniques",
-      "references",
       "factories",
       "workers",
       "workstations",
@@ -219,7 +223,7 @@ describe("docs collection definitions config", () => {
       }
 
       expect(definition.sidebarGroupingResolverId).toBe(
-        id as "glossary" | "concepts" | "documentation",
+        id as "glossary" | "concepts" | "documentation" | "references",
       );
     }
   });

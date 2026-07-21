@@ -10,21 +10,9 @@
       "title": "Limits And Assumptions",
       "body": "The local operator dashboard is the current you-agent-factory browser surface for live Factory Session inspection. It is not a rebuilt in-docs dashboard UI, not a full CLI flag dump, and not ownership of factory-session or metrics depth. Autonomous agents must not treat dashboard submit as their control path; CLI submit remains the autonomous ingress. Broader MCP status and event tool parity with every dashboard inspection surface remains roadmap or follow-up scope unless a shipped MCP surface documents it. Quiet or CI-oriented runs that start with quiet mode suppress dashboard output, so the default dashboard URL is not guaranteed for those starts. The product does not rebuild the factory dashboard UI; the dashboard remains the local operator surface served by the running factory host."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "securityTrustBoundariesDocs": "Security / Trust Boundaries",
-    "factorySessionDocs": "Factory Session",
-    "metricsDocs": "Metrics",
-    "configurationDocs": "Configuration"
   },
   "openingSummary": "The local operator dashboard is the you-agent-factory browser surface for live Factory Session inspection on a running host."
 }

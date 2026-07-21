@@ -10,18 +10,15 @@ import { source } from "@/lib/source";
 const REQUIRED_SUBGROUP_LABELS = {
   Concepts: ["Harnesses", "Industrial engineering", "Model inference"],
   "Program documentation": [
-    "System feature set",
+    "Orientation",
+    "Capabilities",
     "Interfaces",
-    "Packaged factories",
-    "Factory Configuration",
-    "System Operations",
-    "Internal Architecture",
-    "Additional references",
+    "Operations",
   ],
 } as const;
 
-/** Former flat Program documentation separators rejected by story 006. */
-const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
+/** Former Program documentation separators rejected by story 006. */
+const FORMER_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Basics",
   "Feature support",
   "Functions",
@@ -32,6 +29,11 @@ const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Operational",
   "Internal architecture",
   "Additional reference",
+  "System feature set",
+  "Packaged factories",
+  "Factory Configuration",
+  "System Operations",
+  "Additional references",
 ] as const;
 
 const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
@@ -52,8 +54,18 @@ const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   },
   {
     folderName: "Program documentation",
-    separator: "System feature set",
+    separator: "Orientation",
+    url: "/docs/documentation/what-is-you-agent-factory",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Capabilities",
     url: "/docs/documentation/harness-support",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Capabilities",
+    url: "/docs/documentation/packaged-documents",
   },
   {
     folderName: "Program documentation",
@@ -67,42 +79,12 @@ const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   },
   {
     folderName: "Program documentation",
-    separator: "Packaged factories",
-    url: "/docs/documentation/packaged-documents",
-  },
-  {
-    folderName: "Program documentation",
-    separator: "Internal Architecture",
-    url: "/docs/documentation/architecture-of-system",
-  },
-  {
-    folderName: "Program documentation",
-    separator: "Internal Architecture",
-    url: "/docs/documentation/petri",
-  },
-  {
-    folderName: "Program documentation",
-    separator: "Additional references",
-    url: "/docs/documentation/what-is-you-agent-factory",
-  },
-  {
-    folderName: "Program documentation",
-    separator: "Additional references",
-    url: "/docs/documentation/install",
-  },
-  {
-    folderName: "Program documentation",
-    separator: "Factory Configuration",
-    url: "/docs/documentation/throttling-and-limits",
-  },
-  {
-    folderName: "Program documentation",
-    separator: "System Operations",
+    separator: "Operations",
     url: "/docs/documentation/logs",
   },
   {
     folderName: "Program documentation",
-    separator: "System Operations",
+    separator: "Operations",
     url: "/docs/documentation/metrics",
   },
 ] as const;
@@ -219,7 +201,7 @@ describe("generated docs page tree", () => {
     expect(separators).toEqual([
       ...REQUIRED_SUBGROUP_LABELS["Program documentation"],
     ]);
-    for (const former of FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS) {
+    for (const former of FORMER_PROGRAM_DOCUMENTATION_SEPARATORS) {
       expect(separators).not.toContain(former);
     }
     expect(
@@ -236,65 +218,76 @@ describe("generated docs page tree", () => {
       url: "/docs/documentation/faq",
     });
 
-    const factoryConfigurationIndex = expectIndex(
-      "Factory Configuration separator",
-      findNodeIndex(children, { name: "Factory Configuration" }),
+    const operationsIndex = expectIndex(
+      "Operations separator",
+      findNodeIndex(children, { name: "Operations" }),
     );
-    const systemOperationsIndex = expectIndex(
-      "System Operations separator",
-      findNodeIndex(children, { name: "System Operations" }),
+    const configuringFolder = children.find(
+      (node) =>
+        node.type === "folder" && node.name === "Configuring you-agent-factory",
     );
-    const resourcesFolder = children.find(
-      (node) => node.type === "folder" && node.name === "Resources",
-    );
-    expect(resourcesFolder?.type).toBe("folder");
-    if (resourcesFolder?.type !== "folder") {
+    expect(configuringFolder?.type).toBe("folder");
+    if (configuringFolder?.type !== "folder") {
       throw new Error(
-        "expected Resources secondary under Factory Configuration",
+        "expected Configuring you-agent-factory secondary under Operations",
       );
     }
-    const resourcesIndex = expectIndex(
-      "Resources secondary",
-      findNodeIndex(children, { name: "Resources" }),
+    const configuringIndex = expectIndex(
+      "Configuring you-agent-factory secondary",
+      findNodeIndex(children, { name: "Configuring you-agent-factory" }),
     );
     expect(
       children.some(
         (node) => node.type === "folder" && node.name === "Workers",
       ),
     ).toBe(false);
-    const observabilityFolder = children.find(
-      (node) => node.type === "folder" && node.name === "Observability",
-    );
-    expect(observabilityFolder?.type).toBe("folder");
-    if (observabilityFolder?.type !== "folder") {
-      throw new Error(
-        "expected Observability secondary under System Operations",
-      );
-    }
-    const observabilityIndex = expectIndex(
-      "Observability secondary",
-      findNodeIndex(children, { name: "Observability" }),
-    );
-
-    expect(resourcesIndex).toBeGreaterThan(factoryConfigurationIndex);
-    expect(resourcesIndex).toBeLessThan(systemOperationsIndex);
-    expect(observabilityIndex).toBeGreaterThan(systemOperationsIndex);
     expect(
-      resourcesFolder.children.some(
+      children.some(
+        (node) => node.type === "folder" && node.name === "Observability",
+      ),
+    ).toBe(false);
+
+    expect(configuringIndex).toBeGreaterThan(operationsIndex);
+    expect(
+      configuringFolder.children.some(
         (node) =>
           node.type === "page" &&
           "url" in node &&
-          node.url === "/docs/documentation/throttling-and-limits",
+          node.url === "/docs/documentation/resources",
       ),
     ).toBe(true);
     expect(
-      observabilityFolder.children.some(
+      configuringFolder.children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/factories/configuration",
+      ),
+    ).toBe(true);
+    expect(
+      configuringFolder.children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/factories/global-configuration",
+      ),
+    ).toBe(true);
+    expect(
+      children.some(
         (node) =>
           node.type === "page" &&
           "url" in node &&
           node.url === "/docs/documentation/logs",
       ),
     ).toBe(true);
+    expect(
+      children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/documentation/throttling-and-limits",
+      ),
+    ).toBe(false);
   });
 
   test("representative subgroup pages appear after the correct separator", () => {
@@ -323,15 +316,15 @@ describe("generated docs page tree", () => {
 
     expect(folderNames).toEqual([
       "Guides",
+      "Program documentation",
       "Concepts",
       "Techniques",
-      "Program documentation",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
+      "Reference",
+      "Internal architecture",
+      "Miscellanea",
     ]);
     expect(folderNames).not.toContain("Glossary");
+    expect(folderNames).not.toContain("Factories");
     expect(source.pageTree.name).toBe("You Agent Factory");
     for (const retired of [
       "Modules",

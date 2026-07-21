@@ -9,13 +9,12 @@ import { source } from "@/lib/source";
 
 const EXPECTED_TOP_LEVEL_FOLDER_NAMES = [
   "Guides",
+  "Program documentation",
   "Concepts",
   "Techniques",
-  "Program documentation",
-  "References",
-  "Factories",
-  "Workers",
-  "Workstations",
+  "Reference",
+  "Internal architecture",
+  "Miscellanea",
 ] as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [
@@ -45,25 +44,30 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     folderName: "Program documentation",
     url: "/docs/documentation/what-is-you-agent-factory",
     name: "What is you-agent-factory",
-    separatorLabel: "Additional references",
+    separatorLabel: "Orientation",
   },
   {
-    folderName: "References",
+    folderName: "Reference",
     url: "/docs/references/api",
     name: "API",
   },
   {
-    folderName: "Factories",
+    folderName: "Program documentation",
     url: "/docs/factories/configuration",
     name: "Configuration",
   },
   {
-    folderName: "Workers",
+    folderName: "Reference",
+    url: "/docs/factories/sessions",
+    name: "Factory Sessions",
+  },
+  {
+    folderName: "Reference",
     url: "/docs/workers/agent",
     name: "Agent worker",
   },
   {
-    folderName: "Workstations",
+    folderName: "Reference",
     url: "/docs/workstations/inference-run",
     name: "Inference-run workstation",
   },
@@ -219,13 +223,10 @@ describe("collection-driven docs sidebar verification", () => {
       .map((node) => String(node.name));
 
     expect(getSeparatorLabels(children)).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
     for (const former of [
       "Basics",
@@ -238,6 +239,11 @@ describe("collection-driven docs sidebar verification", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
+      "System feature set",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Additional references",
     ] as const) {
       expect(getSeparatorLabels(children)).not.toContain(former);
     }
@@ -251,8 +257,30 @@ describe("collection-driven docs sidebar verification", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).toContain("Configuring you-agent-factory");
     expect(secondaryFolderNames).not.toContain("Workers");
-    expect(secondaryFolderNames).toContain("Observability");
+    expect(secondaryFolderNames).not.toContain("Observability");
+    expect(
+      collectSidebarPageLinks(children).some(
+        (link) => link.url === "/docs/factories/configuration",
+      ),
+    ).toBe(true);
+    expect(
+      collectSidebarPageLinks(children).some(
+        (link) => link.url === "/docs/factories/global-configuration",
+      ),
+    ).toBe(true);
+    const referenceChildren = getFolderChildren(pageTree, "Reference");
+    const factoriesFolder = referenceChildren.find(
+      (node) => node.type === "folder" && node.name === "Factories",
+    );
+    expect(factoriesFolder?.type).toBe("folder");
+    if (factoriesFolder?.type === "folder") {
+      expect(
+        collectSidebarPageLinks(factoriesFolder.children).some(
+          (link) => link.url === "/docs/factories/configuration",
+        ),
+      ).toBe(false);
+    }
   });
 });

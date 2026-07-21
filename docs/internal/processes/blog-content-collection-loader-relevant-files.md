@@ -145,6 +145,28 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
   switch as concept SPC graphs: relative imports in `page.mdx` do not resolve
   under `compileMDX`. Keep the component out of shared `blog-mdx-components.tsx`.
+* Interactive orchestrator feature matrix posts (`comparing-orchestrators`): keep
+  a **server** entry that calls `listOrchestrators()` / `listAttributeDefs()` from
+  `@/lib/content/orchestrators`, then pass serializable props into a **"use
+  client"** composer that owns `visibleOrchestratorIds`, `AttributeFilterState`,
+  sort, and `focusColumnId` / `focusRowId` and renders `OrchestratorFeatureMatrix`
+  from `@/features/teaching-ui`. Do not call registry fs loaders from the client
+  module; do not expand teaching-ui package APIs. Attribute labels belong in
+  colocated `messages/en.json` (host `labels` map keyed by attribute id). Focus
+  controls stay page-local—the matrix recipe consumes focus ids but does not
+  ship a focus picker.
+* Optional NotesList on the same post: colocate a thin wrapper that imports
+  `TeachingList` from `@/features/teaching-ui/lists` (not the top-level
+  teaching-ui barrel), pass messages-owned `items` + required `listLabel`, and
+  export it from the post `page-mdx-components.tsx` beside the matrix composer.
+  MDX section order is Intro prose → matrix composer → Reading notes
+  (`TeachingList`). Do not register NotesList in shared `blog-mdx-components.tsx`.
+* Published blog MDX must stay customer-facing: rewrite PRD / acceptance-criteria
+  leftovers (for example “URL-synced … optional”, “first pass”, “should show an
+  accessible empty state”) into reader teaching prose. Expand recurring acronyms
+  such as Model Context Protocol (MCP) on the first narrative mention; registry
+  tag values like `mcp` can stay short. Smoke tests can assert the expanded form
+  and reject leftover authoring phrases.
 * Empty `tags: []` is valid when no published tag fits. Discoverability then
   relies on the blog index card plus prose/title search documents (not tag
   landings). Keep that proof colocated under

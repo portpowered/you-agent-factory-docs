@@ -261,13 +261,27 @@ describe("loadUiMessages shell keys", () => {
         string,
         unknown
       >;
-      expect(Object.keys(secondaries).sort()).toEqual([
-        "observability",
-        "resources",
-      ]);
+      expect(Object.keys(secondaries).sort()).toEqual(["configuring"]);
+      expect(secondaries).not.toHaveProperty("resources");
+      expect(secondaries).not.toHaveProperty("observability");
       expect(secondaries).not.toHaveProperty("workers");
       expect(secondaries).not.toHaveProperty("workstations");
       expect(secondaries).not.toHaveProperty("factories");
+
+      const virtualFolders = messages.explorer.virtualFolders as Record<
+        string,
+        unknown
+      >;
+      expect(Object.keys(virtualFolders).sort()).toEqual([
+        "internal-architecture",
+        "miscellanea",
+      ]);
+      expect(
+        String(virtualFolders["internal-architecture"]).trim().length,
+      ).toBeGreaterThan(0);
+      expect(String(virtualFolders.miscellanea).trim().length).toBeGreaterThan(
+        0,
+      );
 
       // Residual glossary labels stay for breadcrumbs / search kind chrome.
       expect(messages.nav.glossary.trim().length).toBeGreaterThan(0);

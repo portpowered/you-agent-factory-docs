@@ -40,27 +40,35 @@ const PAGE_COPY: Record<
       ja: "/ja",
       "zh-CN": "/zh-CN",
       vi: "/vi",
+      "x-default": "/",
     },
   },
   "/search": {
     title: "Search",
     description: "Search factory docs",
-    languages: { en: "/search" },
+    languages: { en: "/search", "x-default": "/search" },
   },
   "/docs/concepts/harness": {
     title: "Harness",
     description: "Persistent workspaces",
-    languages: { en: "/docs/concepts/harness" },
+    languages: {
+      en: "/docs/concepts/harness",
+      "x-default": "/docs/concepts/harness",
+    },
   },
   "/blog/bottlenecks": {
     title: "Bottlenecks",
     description: "Where agent work stalls",
-    languages: { en: "/blog/bottlenecks" },
+    // English-only blog policy: canonical only — no language alternates.
+    languages: {},
   },
   "/docs/concepts/task-queue": {
     title: "Task queue",
     description: "Queued agent work",
-    languages: { en: "/docs/concepts/task-queue" },
+    languages: {
+      en: "/docs/concepts/task-queue",
+      "x-default": "/docs/concepts/task-queue",
+    },
   },
 };
 
@@ -236,12 +244,74 @@ describe("verifyExportSeoDiscovery", () => {
     }
   });
 
-  test("discovery fixture does not invent hreflang x-default", () => {
-    for (const copy of Object.values(PAGE_COPY)) {
-      expect(Object.keys(copy.languages)).not.toContain("x-default");
+  test("discovery fixture emits x-default on multi-locale pages and keeps blog English-only", () => {
+    const home = PAGE_COPY["/"];
+    expect(home?.languages["x-default"]).toBe("/");
+    expect(PAGE_COPY["/docs/concepts/task-queue"]?.languages["x-default"]).toBe(
+      "/docs/concepts/task-queue",
+    );
+    expect(PAGE_COPY["/blog/bottlenecks"]?.languages).toEqual({});
+
+    const homeHtml = pageHtml("/");
+    expect(homeHtml).toMatch(/hreflang=["']x-default["']/i);
+    expect(pageHtml("/blog/bottlenecks")).not.toMatch(
+      /hreflang=["'](ja|zh-CN|vi)["']/i,
+    );
+  });
+
+  test("fails when home omits hreflang x-default", () => {
+    const dir = mkdtempSync(join(tmpdir(), "seo-discovery-no-x-default-"));
+    try {
+      writeDiscoveryFixture(dir);
+      writeFileSync(
+        join(dir, "index.html"),
+        pageHtml("/").replace(
+          /\s*<link rel="alternate" hreflang="x-default"[^>]*>/i,
+          "",
+        ),
+      );
+      const result = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.gate).toBe("localized-alternates");
+        expect(result.reason).toMatch(/x-default/i);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
     }
-    const html = pageHtml("/");
-    expect(html).not.toMatch(/hreflang=["']x-default["']/i);
+  });
+
+  test("fails when blog proof advertises a false non-English locale alternate", () => {
+    const dir = mkdtempSync(join(tmpdir(), "seo-discovery-false-blog-locale-"));
+    try {
+      writeDiscoveryFixture(dir);
+      const blogRelative = exportHtmlRelativePath("/blog/bottlenecks");
+      const falseJa = resolveProductionMetadataHref(
+        "/ja/blog/bottlenecks",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      writeFileSync(
+        join(dir, blogRelative),
+        pageHtml("/blog/bottlenecks").replace(
+          "</head>",
+          `<link rel="alternate" hreflang="ja" href="${falseJa}" />\n</head>`,
+        ),
+      );
+      const result = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.gate).toBe("localized-alternates");
+        expect(result.reason).toMatch(/blog\/bottlenecks|hreflang/i);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   test("fails when sitemap lists a §10 documentation-migration exclusion route", () => {

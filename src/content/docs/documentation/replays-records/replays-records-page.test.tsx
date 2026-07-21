@@ -7,7 +7,7 @@
  * the ordinary page-owned + locale-shipping surface for this lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 
@@ -59,7 +59,11 @@ describe("replays-records documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const howToUseSection = document.getElementById("how-to-use");
     expect(howToUseSection).toBeTruthy();
@@ -95,25 +99,6 @@ describe("replays-records documentation page", () => {
     expect(limitsSection?.textContent).not.toMatch(
       /This page is|on this page|web .+ reference|reader.?shortcut/i,
     );
-
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection).toBeTruthy();
-    const relatedQueries = within(relatedSection as HTMLElement);
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "CLI docs" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/cli");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Configuration" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/configuration");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Submitting Work" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/submitting-work");
   });
 
   test("loads ja locale messages with the same section structure", async () => {

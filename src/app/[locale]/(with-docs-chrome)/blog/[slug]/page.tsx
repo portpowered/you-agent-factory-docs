@@ -56,8 +56,10 @@ export async function generateMetadata({
     title: published.messages.title,
     description: published.messages.description,
     alternates: {
+      // English canonical only until blog locales ship real translated posts.
+      // Unshipped locale variants fail closed above via hasBlogPostMessagesForLocale.
       // App-relative: root metadataBase owns production origin + base path.
-      canonical: blogPostHref(slug, locale),
+      canonical: blogPostHref(slug),
     },
   });
 }

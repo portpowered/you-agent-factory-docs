@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  englishOnlyCanonicalAlternates,
   generateStaticLocaleParams,
   localizedRouteAlternates,
   localizedShippedDocsPageAlternates,
@@ -24,7 +25,7 @@ describe("route-locale", () => {
     ]);
   });
 
-  test("publishes alternates for every supported locale", () => {
+  test("publishes alternates for every supported locale plus x-default", () => {
     expect(
       localizedRouteAlternates({
         surface: "docs-page",
@@ -37,11 +38,12 @@ describe("route-locale", () => {
         ja: "/ja/docs/modules/grouped-query-attention",
         "zh-CN": "/zh-CN/docs/modules/grouped-query-attention",
         vi: "/vi/docs/modules/grouped-query-attention",
+        "x-default": "/docs/modules/grouped-query-attention",
       },
     });
   });
 
-  test("filters docs-page alternates to shipped locales only", () => {
+  test("filters docs-page alternates to shipped locales only and keeps x-default", () => {
     expect(localizedShippedDocsPageAlternates("references")).toEqual({
       canonical: "/docs/references",
       languages: {
@@ -49,6 +51,7 @@ describe("route-locale", () => {
         ja: "/ja/docs/references",
         "zh-CN": "/zh-CN/docs/references",
         vi: "/vi/docs/references",
+        "x-default": "/docs/references",
       },
     });
     expect(localizedShippedDocsPageAlternates("references/api")).toEqual({
@@ -58,12 +61,14 @@ describe("route-locale", () => {
         ja: "/ja/docs/references/api",
         "zh-CN": "/zh-CN/docs/references/api",
         vi: "/vi/docs/references/api",
+        "x-default": "/docs/references/api",
       },
     });
     expect(localizedShippedDocsPageAlternates("references/cli")).toEqual({
       canonical: "/docs/references/cli",
       languages: {
         en: "/docs/references/cli",
+        "x-default": "/docs/references/cli",
       },
     });
   });
@@ -77,6 +82,7 @@ describe("route-locale", () => {
           ja: "/ja/docs/references/api",
           "zh-CN": "/zh-CN/docs/references/api",
           vi: "/vi/docs/references/api",
+          "x-default": "/docs/references/api",
         },
       },
     );
@@ -86,6 +92,7 @@ describe("route-locale", () => {
       canonical: "/docs/references/cli",
       languages: {
         en: "/docs/references/cli",
+        "x-default": "/docs/references/cli",
       },
     });
   });
@@ -98,11 +105,12 @@ describe("route-locale", () => {
         ja: "/ja/browse",
         "zh-CN": "/zh-CN/browse",
         vi: "/vi/browse",
+        "x-default": "/browse",
       },
     });
   });
 
-  test("keeps metadata alternates app-relative for home and blog surfaces", () => {
+  test("keeps metadata alternates app-relative for home and multi-locale surfaces", () => {
     // Production origin + project-site base path live on root metadataBase;
     // these hrefs must stay unprefixed so Next.js does not double-prefix.
     expect(localizedRouteAlternates({ surface: "home" })).toEqual({
@@ -112,8 +120,17 @@ describe("route-locale", () => {
         ja: "/ja",
         "zh-CN": "/zh-CN",
         vi: "/vi",
+        "x-default": "/",
       },
     });
+  });
+
+  test("english-only helper omits language alternates for unshipped blog surfaces", () => {
+    expect(englishOnlyCanonicalAlternates({ surface: "blog-index" })).toEqual({
+      canonical: "/blog",
+    });
+    // Shared multi-locale builder still emits a full map — blog routes must
+    // not call it until blog locales ship.
     expect(localizedRouteAlternates({ surface: "blog-index" })).toEqual({
       canonical: "/blog",
       languages: {
@@ -121,8 +138,23 @@ describe("route-locale", () => {
         ja: "/ja/blog",
         "zh-CN": "/zh-CN/blog",
         vi: "/vi/blog",
+        "x-default": "/blog",
       },
     });
+  });
+
+  test("x-default matches the English canonical for the same destination", () => {
+    const home = localizedRouteAlternates({ surface: "home" });
+    expect(String(home.languages?.["x-default"])).toBe(String(home.canonical));
+    expect(String(home.languages?.["x-default"])).toBe(
+      String(home.languages?.en),
+    );
+
+    const docs = localizedShippedDocsPageAlternates("concepts/harness");
+    expect(String(docs.languages?.["x-default"])).toBe(String(docs.canonical));
+    expect(String(docs.languages?.["x-default"])).toBe(
+      String(docs.languages?.en),
+    );
   });
 
   test("accepts japanese and chinese route locales", () => {

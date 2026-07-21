@@ -9,60 +9,65 @@ import {
   DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS,
   DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
   DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
+  documentationSidebarMembershipSlug,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
   getDocumentationSidebarMembership,
   getDocumentationSidebarSecondaryIdsForGroup,
   getDocumentationSidebarSecondaryLabel,
+  hasDocumentationSidebarMembership,
   isDeferredDocumentationExplorerMembershipSlug,
   isDocumentationSidebarSecondaryGroup,
   MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
+  PROGRAM_DOCUMENTATION_DEMOTED_SLUGS,
   SIDEBAR_GROUP_LABELS,
 } from "@/lib/content/sidebar-grouping";
 
 const DECLARED_TOP_GROUP_ORDER = [
-  "system-feature-set",
+  "orientation",
+  "capabilities",
   "interfaces",
+  "operations",
+] as const;
+
+const DECLARED_TOP_GROUP_LABELS = [
+  "Orientation",
+  "Capabilities",
+  "Interfaces",
+  "Operations",
+] as const;
+
+const EXPECTED_MEMBERSHIP = {
+  "what-is-you-agent-factory": { group: "orientation" },
+  "harness-support": { group: "capabilities" },
+  "submitting-work": { group: "capabilities" },
+  "replays-records": { group: "capabilities" },
+  "packaged-documents": { group: "capabilities" },
+  cli: { group: "interfaces" },
+  mcp: { group: "interfaces" },
+  logs: { group: "operations" },
+  metrics: { group: "operations" },
+  "dashboard-ui-overview": { group: "operations" },
+  resources: { group: "operations", secondary: "configuring" },
+  "factories/configuration": {
+    group: "operations",
+    secondary: "configuring",
+  },
+  "factories/global-configuration": {
+    group: "operations",
+    secondary: "configuring",
+  },
+} as const;
+
+/** Former Program taxonomy ids that must not remain in the locked map. */
+const RETIRED_PROGRAM_TOP_GROUP_IDS = [
+  "system-feature-set",
   "packaged-factories",
   "factory-configuration",
   "system-operations",
   "internal-architecture",
   "additional-references",
 ] as const;
-
-const DECLARED_TOP_GROUP_LABELS = [
-  "System feature set",
-  "Interfaces",
-  "Packaged factories",
-  "Factory Configuration",
-  "System Operations",
-  "Internal Architecture",
-  "Additional references",
-] as const;
-
-const EXPECTED_MEMBERSHIP = {
-  "harness-support": { group: "system-feature-set" },
-  "replays-records": { group: "system-feature-set" },
-  "submitting-work": { group: "system-feature-set" },
-  cli: { group: "interfaces" },
-  mcp: { group: "interfaces" },
-  "packaged-documents": { group: "packaged-factories" },
-  resources: { group: "factory-configuration", secondary: "resources" },
-  "throttling-and-limits": {
-    group: "factory-configuration",
-    secondary: "resources",
-  },
-  logs: { group: "system-operations", secondary: "observability" },
-  metrics: { group: "system-operations", secondary: "observability" },
-  "architecture-of-system": { group: "internal-architecture" },
-  petri: { group: "internal-architecture" },
-  "what-is-you-agent-factory": { group: "additional-references" },
-  install: { group: "additional-references" },
-  "contributing-to-these-docs": { group: "additional-references" },
-  "dashboard-ui-overview": { group: "additional-references" },
-  "security-trust-boundaries": { group: "additional-references" },
-  troubleshooting: { group: "additional-references" },
-} as const;
 
 /** W18 ledger move-stub slugs — published for compatibility, not explorer members. */
 const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
@@ -79,45 +84,45 @@ const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
   "workstations",
 ] as const;
 
+/** Membership keys that are factories collection docsSlugs, not documentation/*. */
+const FACTORIES_CONFIG_MEMBERSHIP_SLUGS = [
+  "factories/configuration",
+  "factories/global-configuration",
+] as const;
+
 describe("Program documentation three-level taxonomy", () => {
-  test("declares seven top groups in stable order with default-locale labels", () => {
+  test("declares four top groups in stable order with default-locale labels", () => {
     expect(Object.keys(SIDEBAR_GROUP_LABELS.documentation)).toEqual([
       ...DECLARED_TOP_GROUP_ORDER,
     ]);
     expect(Object.values(SIDEBAR_GROUP_LABELS.documentation)).toEqual([
       ...DECLARED_TOP_GROUP_LABELS,
     ]);
+    for (const retiredId of RETIRED_PROGRAM_TOP_GROUP_IDS) {
+      expect(SIDEBAR_GROUP_LABELS.documentation).not.toHaveProperty(retiredId);
+    }
   });
 
-  test("Factory Configuration and System Operations declare required secondaries", () => {
+  test("Operations declares Configuring secondary; former secondaries are retired", () => {
+    expect(getDocumentationSidebarSecondaryIdsForGroup("operations")).toEqual([
+      "configuring",
+    ]);
     expect(
-      getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
-    ).toEqual(["resources"]);
-    expect(
-      getDocumentationSidebarSecondaryLabel(
-        "factory-configuration",
-        "resources",
-      ),
-    ).toBe("Resources");
-
-    expect(
-      getDocumentationSidebarSecondaryIdsForGroup("system-operations"),
-    ).toEqual(["observability"]);
-    expect(
-      getDocumentationSidebarSecondaryLabel(
-        "system-operations",
-        "observability",
-      ),
-    ).toBe("Observability");
+      getDocumentationSidebarSecondaryLabel("operations", "configuring"),
+    ).toBe("Configuring you-agent-factory");
 
     expect(Object.keys(DOCUMENTATION_SIDEBAR_SECONDARY_LABELS)).toEqual([
-      "factory-configuration",
-      "system-operations",
+      "operations",
     ]);
     expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).toEqual({
-      resources: "Resources",
-      observability: "Observability",
+      configuring: "Configuring you-agent-factory",
     });
+    expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).not.toHaveProperty(
+      "resources",
+    );
+    expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).not.toHaveProperty(
+      "observability",
+    );
     expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).not.toHaveProperty(
       "workers",
     );
@@ -127,24 +132,35 @@ describe("Program documentation three-level taxonomy", () => {
     expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).not.toHaveProperty(
       "factories",
     );
-    expect(
-      getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
-    ).not.toContain("workers");
-    expect(
-      getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
-    ).not.toContain("workstations");
-    expect(
-      getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
-    ).not.toContain("factories");
-    expect(isDocumentationSidebarSecondaryGroup("system-feature-set")).toBe(
-      false,
+    expect(isDocumentationSidebarSecondaryGroup("orientation")).toBe(false);
+    expect(isDocumentationSidebarSecondaryGroup("capabilities")).toBe(false);
+    expect(isDocumentationSidebarSecondaryGroup("interfaces")).toBe(false);
+    expect(isDocumentationSidebarSecondaryGroup("operations")).toBe(true);
+  });
+
+  test("membership slug helper strips documentation prefix and keeps factories docsSlugs", () => {
+    expect(documentationSidebarMembershipSlug("documentation/resources")).toBe(
+      "resources",
     );
-    expect(isDocumentationSidebarSecondaryGroup("factory-configuration")).toBe(
+    expect(documentationSidebarMembershipSlug("factories/configuration")).toBe(
+      "factories/configuration",
+    );
+    expect(hasDocumentationSidebarMembership("documentation/resources")).toBe(
       true,
+    );
+    expect(hasDocumentationSidebarMembership("factories/configuration")).toBe(
+      true,
+    );
+    expect(
+      hasDocumentationSidebarMembership("factories/global-configuration"),
+    ).toBe(true);
+    expect(hasDocumentationSidebarMembership("factories/sessions")).toBe(false);
+    expect(hasDocumentationSidebarMembership("documentation/install")).toBe(
+      false,
     );
   });
 
-  test("default membership matches the declared three-level IA map", () => {
+  test("default membership matches the locked Orientation / Capabilities / Interfaces / Operations IA", () => {
     expect(FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG).toEqual(
       EXPECTED_MEMBERSHIP,
     );
@@ -164,7 +180,7 @@ describe("Program documentation three-level taxonomy", () => {
     }
   });
 
-  test("every published documentation page except FAQ, W18 move stubs, Mode A overviews pending explorer membership, and deferred-membership pages has exactly one membership path", () => {
+  test("Program membership omits FAQ, W18 stubs, locked PS-100 demotions, Mode A overviews, and deferred pages", () => {
     const publishedSlugs = loadPublishedDocsPagesSync("en")
       .filter((page) => page.docsSlug.startsWith("documentation/"))
       .map((page) => page.docsSlug.slice("documentation/".length));
@@ -173,9 +189,7 @@ describe("Program documentation three-level taxonomy", () => {
       FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
     );
     const moveStubSlugSet = new Set<string>(W18_DOCUMENTATION_MOVE_STUB_SLUGS);
-    const pendingExplorerSlugSet = new Set<string>(
-      MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
-    );
+    const demotedSlugSet = new Set<string>(PROGRAM_DOCUMENTATION_DEMOTED_SLUGS);
 
     expect(membershipSlugs).not.toContain("faq");
     expect(getDocumentationSidebarMembership("faq")).toBeUndefined();
@@ -184,6 +198,11 @@ describe("Program documentation three-level taxonomy", () => {
         "faq" as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
       ],
     ).toBeUndefined();
+
+    for (const demoted of PROGRAM_DOCUMENTATION_DEMOTED_SLUGS) {
+      expect(membershipSlugs).not.toContain(demoted);
+      expect(getDocumentationSidebarMembership(demoted)).toBeUndefined();
+    }
 
     for (const stubSlug of W18_DOCUMENTATION_MOVE_STUB_SLUGS) {
       expect(membershipSlugs).not.toContain(stubSlug);
@@ -207,12 +226,52 @@ describe("Program documentation three-level taxonomy", () => {
       expect(publishedSlugs).toContain(deferredSlug);
     }
 
-    for (const slug of publishedSlugs) {
+    expect([...demotedSlugSet].sort()).toEqual(
+      [...PROGRAM_DOCUMENTATION_DEMOTED_SLUGS].sort(),
+    );
+  });
+
+  test("every published documentation page is FAQ, W18 stub, demotion, Mode A pending, deferred, or exactly one membership path", () => {
+    const publishedDocumentationSlugs = loadPublishedDocsPagesSync("en")
+      .filter((page) => page.docsSlug.startsWith("documentation/"))
+      .map((page) => page.docsSlug.slice("documentation/".length));
+
+    const publishedDocsSlugs = new Set(
+      loadPublishedDocsPagesSync("en").map((page) => page.docsSlug),
+    );
+
+    const membershipSlugs = Object.keys(
+      FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
+    );
+    const moveStubSlugSet = new Set<string>(W18_DOCUMENTATION_MOVE_STUB_SLUGS);
+    const demotedSlugSet = new Set<string>(PROGRAM_DOCUMENTATION_DEMOTED_SLUGS);
+    const pendingExplorerSlugSet = new Set<string>(
+      MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
+    );
+
+    for (const stubSlug of W18_DOCUMENTATION_MOVE_STUB_SLUGS) {
+      expect(publishedDocumentationSlugs).toContain(stubSlug);
+    }
+
+    for (const demoted of PROGRAM_DOCUMENTATION_DEMOTED_SLUGS) {
+      expect(publishedDocumentationSlugs).toContain(demoted);
+    }
+
+    for (const factoriesSlug of FACTORIES_CONFIG_MEMBERSHIP_SLUGS) {
+      expect(publishedDocsSlugs.has(factoriesSlug)).toBe(true);
+      expect(publishedDocumentationSlugs).not.toContain(factoriesSlug);
+    }
+
+    for (const slug of publishedDocumentationSlugs) {
       if (isDocsExplorerTopLevelFaqPage(`documentation/${slug}`)) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }
-      if (moveStubSlugSet.has(slug) || pendingExplorerSlugSet.has(slug)) {
+      if (
+        moveStubSlugSet.has(slug) ||
+        demotedSlugSet.has(slug) ||
+        pendingExplorerSlugSet.has(slug)
+      ) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }
@@ -234,28 +293,29 @@ describe("Program documentation three-level taxonomy", () => {
         membership.group,
       );
 
-      if (isDocumentationSidebarSecondaryGroup(membership.group)) {
+      if ("secondary" in membership) {
         expect(
-          "secondary" in membership,
-          `${slug} under ${membership.group} must declare a secondary`,
+          isDocumentationSidebarSecondaryGroup(membership.group),
+          `${slug} secondary requires a group that declares secondaries`,
         ).toBe(true);
-        if (!("secondary" in membership)) {
+        if (!isDocumentationSidebarSecondaryGroup(membership.group)) {
           continue;
         }
         const secondaryIds = getDocumentationSidebarSecondaryIdsForGroup(
           membership.group,
         ) as readonly string[];
         expect(secondaryIds).toContain(membership.secondary);
-      } else {
-        expect(
-          "secondary" in membership,
-          `${slug} under ${membership.group} must not declare a secondary`,
-        ).toBe(false);
       }
     }
 
     for (const slug of membershipSlugs) {
-      expect(publishedSlugs).toContain(slug);
+      if (
+        (FACTORIES_CONFIG_MEMBERSHIP_SLUGS as readonly string[]).includes(slug)
+      ) {
+        expect(publishedDocsSlugs.has(slug)).toBe(true);
+        continue;
+      }
+      expect(publishedDocumentationSlugs).toContain(slug);
     }
   });
 });

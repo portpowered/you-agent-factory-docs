@@ -105,6 +105,7 @@ describe("collection definition contract", () => {
     expect(isDocsCollectionSidebarGroupingResolverId("documentation")).toBe(
       true,
     );
+    expect(isDocsCollectionSidebarGroupingResolverId("references")).toBe(true);
     expect(isDocsCollectionSidebarGroupingResolverId("modules")).toBe(false);
     expect(isDocsCollectionSidebarGroupingResolverId("models")).toBe(false);
     expect(isDocsCollectionSidebarGroupingResolverId("guides")).toBe(false);
@@ -112,6 +113,7 @@ describe("collection definition contract", () => {
       "glossary",
       "concepts",
       "documentation",
+      "references",
     ]);
   });
 });

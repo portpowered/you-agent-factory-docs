@@ -47,7 +47,9 @@ describe("planner-executor technique page", () => {
     expect(loadedPage.messages.sections?.related).toBeUndefined();
     expect(loadedPage.messages.sections?.tags?.title).toBe("Tags");
     expect(loadedPage.messages.sections?.references).toBeUndefined();
-    expect(loadedPage.messages.links).toBeUndefined();
+    expect(loadedPage.messages.links?.plannerExecutorInAction).toBe(
+      "Planner-Executor In Action",
+    );
     const whatItIsBody = String(
       loadedPage.messages.sections?.whatItIs?.body ?? "",
     );
@@ -155,8 +157,16 @@ describe("planner-executor technique page", () => {
       document.getElementById("compared-to-nearby-techniques")?.textContent ??
         "",
     ).toMatch(/Classify-execute/i);
+    const inActionLink = screen.getByRole("link", {
+      name: "Planner-Executor In Action",
+    });
+    expect(inActionLink.getAttribute("href")).toBe(
+      "/docs/techniques/planner-executor-in-action",
+    );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
+    expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+    expect(screen.queryByTestId("derived-related-docs")).toBeNull();
   });
 
   test("loads ja locale with technique section structure", async () => {

@@ -11,23 +11,13 @@
       "title": "Limits And Assumptions",
       "body": "Packaged documents covers packaged you docs topics. It is not a full topic dump, not a sync of packaged markdown into the site, not factory-local factory/docs authorship, and not the CLI install or command-matrix deep page. Sibling documentation links aid discovery only."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
     "indexCommandLabel": "Print the quick-start blurb and packaged topic index:",
-    "topicCommandLabel": "Print one authored topic (agents is the orientation topic):",
-    "configurationDocs": "Configuration",
-    "dynamicWorkflowsDocs": "Dynamic workflows",
-    "cliDocs": "CLI",
-    "packagedFactoriesDocs": "Packaged factories"
+    "topicCommandLabel": "Print one authored topic (agents is the orientation topic):"
   },
   "callouts": {
     "discovery": {

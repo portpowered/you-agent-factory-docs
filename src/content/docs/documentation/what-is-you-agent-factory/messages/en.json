@@ -7,14 +7,8 @@
       "title": "Limits And Assumptions",
       "body": "Product framing stops at the overview. It is not a full architecture reference, component inventory, or runtime internals guide. you-agent-factory is not Model Atlas, an attention-reference sheet, a benchmark leaderboard, or a paper-download mirror. Readers who need install steps should use getting started; readers who need system structure should use architecture of system when that documentation is available."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

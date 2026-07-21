@@ -39,14 +39,8 @@
       "title": "Limits And Assumptions",
       "body": "Troubleshooting is a recovery lookup for you-agent-factory failure modes. It is not the install command matrix, not the getting-started quickstart, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short recovery actions here."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -58,7 +52,6 @@
     "globalConfigurationFactories": "Global Configuration Factories",
     "mcpDocs": "MCP",
     "dynamicWorkflows": "Dynamic Workflows",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows guide",
-    "faq": "FAQ"
+    "cursorDynamicWorkflows": "Cursor dynamic workflows guide"
   }
 }

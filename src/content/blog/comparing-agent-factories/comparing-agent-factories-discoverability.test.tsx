@@ -105,6 +105,7 @@ describe("comparing-agent-factories blog discoverability (004)", () => {
     expect(html).toContain("you-agent-factory");
     expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(html).toContain("/docs/concepts/harness");
+    expect(html).toContain('href="/blog/comparing-orchestrators"');
     expect(html).not.toContain('data-testid="blog-related-docs"');
     expect(html).not.toContain("Related reference pages");
     // Last in newest-first published order — no dead next-post href.

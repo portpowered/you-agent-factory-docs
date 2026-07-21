@@ -74,17 +74,22 @@
       "model-inference": "モデル推論"
     },
     "documentationGroups": {
-      "system-feature-set": "システム機能セット",
+      "orientation": "オリエンテーション",
+      "capabilities": "機能",
       "interfaces": "インターフェース",
-      "packaged-factories": "パッケージ済みファクトリー",
-      "factory-configuration": "ファクトリー設定",
-      "system-operations": "システム運用",
-      "internal-architecture": "内部アーキテクチャ",
-      "additional-references": "追加リファレンス"
+      "operations": "運用"
     },
     "documentationSecondaries": {
-      "resources": "リソース",
-      "observability": "オブザーバビリティ"
+      "configuring": "you-agent-factory の設定"
+    },
+    "referenceGroups": {
+      "contracts": "コントラクト",
+      "schemas": "スキーマ",
+      "limits": "制限"
+    },
+    "virtualFolders": {
+      "internal-architecture": "内部アーキテクチャ",
+      "miscellanea": "その他"
     }
   },
   "referenceChrome": {

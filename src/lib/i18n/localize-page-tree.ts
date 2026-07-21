@@ -13,6 +13,7 @@ import {
   buildDefaultFolderLabelToIdMap,
   buildDefaultGroupLabelLocalizer,
   buildDefaultSecondaryLabelLocalizer,
+  buildDefaultVirtualFolderLabelLocalizer,
   resolveExplorerMessages,
 } from "@/lib/i18n/explorer-labels";
 import {
@@ -34,6 +35,7 @@ type LocalizationContext = {
   folderLabelToId: Map<string, keyof ExplorerFolderMessages>;
   groupLabelLocalizer: Map<string, string>;
   secondaryLabelLocalizer: Map<string, string>;
+  virtualFolderLabelLocalizer: Map<string, string>;
   pageTitlesBySlug: Map<string, string>;
   explorer: ExplorerMessages;
 };
@@ -101,10 +103,11 @@ function localizeNode(
     const defaultName = String(node.name);
     const folderId = context.folderLabelToId.get(defaultName);
     // Prefer Program documentation secondary catalogs when the English default
-    // matches a secondary (Resources / Observability). Collection folders still
-    // resolve via explorer.folders when no secondary applies.
+    // matches a secondary (Configuring). Collection folders resolve via
+    // explorer.folders; virtual folders via explorer.virtualFolders.
     const localizedFolderName =
       context.secondaryLabelLocalizer.get(defaultName) ??
+      context.virtualFolderLabelLocalizer.get(defaultName) ??
       (folderId ? context.explorer.folders[folderId] : node.name);
 
     const children = trimEmptySeparators(
@@ -166,6 +169,8 @@ function buildLocalizationContext(
     folderLabelToId: buildDefaultFolderLabelToIdMap(),
     groupLabelLocalizer: buildDefaultGroupLabelLocalizer(explorer),
     secondaryLabelLocalizer: buildDefaultSecondaryLabelLocalizer(explorer),
+    virtualFolderLabelLocalizer:
+      buildDefaultVirtualFolderLabelLocalizer(explorer),
     pageTitlesBySlug,
     explorer,
   };

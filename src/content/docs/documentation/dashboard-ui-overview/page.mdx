@@ -16,13 +16,9 @@ aliases:
 updatedAt: "2026-07-11"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
@@ -32,34 +28,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/documentation/security-trust-boundaries",
-        labelKey: "links.securityTrustBoundariesDocs",
-      },
-      {
-        href: "/docs/factories/sessions",
-        labelKey: "links.factorySessionDocs",
-      },
-      {
-        href: "/docs/documentation/metrics",
-        labelKey: "links.metricsDocs",
-      },
-      {
-        href: "/docs/factories/configuration",
-        labelKey: "links.configurationDocs",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.dashboard-ui-overview" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.dashboard-ui-overview" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.dashboard-ui-overview" />
 </Section>

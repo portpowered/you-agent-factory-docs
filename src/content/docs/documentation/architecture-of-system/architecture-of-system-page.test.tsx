@@ -105,9 +105,11 @@ describe("architecture-of-system documentation page", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
       expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
       expect(screen.getAllByText(/factory\.json/i).length).toBeGreaterThan(0);
       expect(screen.getByText(/Petri framing/i)).toBeTruthy();
       expect(
