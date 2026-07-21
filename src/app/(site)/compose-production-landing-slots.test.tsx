@@ -10,6 +10,7 @@ import {
 import {
   composeProductionCapabilitySlot,
   composeProductionCarouselSlot,
+  composeProductionFaqSlot,
   composeProductionFooterSlot,
   composeProductionHeaderSlot,
   composeProductionHeroSlot,
@@ -19,6 +20,7 @@ import {
   mapFixtureCarouselToFactoryCarouselProps,
   mapFixtureCommandsToTerminalLines,
   mapFixtureCommandsToTerminalProps,
+  mapFixtureFaqToFaqPanelProps,
   mapFixtureFooterToSiteFooterProps,
   mapFixtureHeaderToLandingHeaderProps,
   mapFixtureWhaleBubblesToSectionProps,
@@ -161,6 +163,37 @@ describe("composeProductionCarouselSlot", () => {
   });
 });
 
+describe("composeProductionFaqSlot", () => {
+  test("maps fixture FAQ items onto FaqPanel public item contract", () => {
+    const props = mapFixtureFaqToFaqPanelProps(fixtureLandingPageData.faq);
+
+    expect(props.heading).toBe("FAQ");
+    expect(props.items).toHaveLength(fixtureLandingPageData.faq.items.length);
+    for (const [index, item] of props.items.entries()) {
+      const fixture = fixtureLandingPageData.faq.items[index];
+      expect(item.id).toBe(fixture?.id);
+      expect(item.question).toBe(fixture?.question);
+      expect(item.answer).toBe(fixture?.answer);
+    }
+  });
+
+  test("composeProductionFaqSlot renders FaqPanel markers from fixture", () => {
+    const html = renderToStaticMarkup(
+      composeProductionFaqSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-faq-parchment=""');
+    expect(html).not.toContain('data-landing-placeholder="faq"');
+
+    for (const item of fixtureLandingPageData.faq.items) {
+      expect(html).toContain(item.question);
+      expect(html).toContain(item.answer);
+      expect(html).toContain(`data-landing-faq-item-id="${item.id}"`);
+    }
+  });
+});
+
 describe("composeProductionWhaleBubblesSlot", () => {
   test("maps fixture whaleSrc and bubbles onto WhaleBubblesSection props", () => {
     const props = mapFixtureWhaleBubblesToSectionProps(
@@ -234,11 +267,11 @@ describe("composeProductionLandingSlots", () => {
 
     expect(keys).toEqual([...WIRED_PRODUCTION_LANDING_SLOTS].sort());
     expect(slots).toHaveProperty("carousel");
-    expect(slots).not.toHaveProperty("faq");
+    expect(slots).toHaveProperty("faq");
     expect(slots).not.toHaveProperty("cta");
   });
 
-  test("LandingPage mounts wired fills including carousel and keeps faq/cta placeholders", () => {
+  test("LandingPage mounts wired fills including carousel and faq and keeps cta placeholder", () => {
     const html = renderToStaticMarkup(
       <LandingPage {...composeProductionLandingSlots()} />,
     );
@@ -250,10 +283,11 @@ describe("composeProductionLandingSlots", () => {
     expect(html).toContain('data-capability-strip=""');
     expect(html).toContain('data-youi-showcase=""');
     expect(html).toContain('data-factory-carousel=""');
+    expect(html).toContain('data-landing-faq-panel=""');
     expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-testid="site-footer"');
     expect(html).not.toContain('data-landing-placeholder="carousel"');
-    expect(html).toContain('data-landing-placeholder="faq"');
+    expect(html).not.toContain('data-landing-placeholder="faq"');
     expect(html).toContain('data-landing-placeholder="cta"');
     expect(html).not.toContain('data-landing-placeholder="header"');
     expect(html).not.toContain('data-landing-placeholder="hero"');
@@ -263,6 +297,11 @@ describe("composeProductionLandingSlots", () => {
       expect(html).toContain(slide.title);
       expect(html).toContain(slide.blurb);
       expect(html).toContain(slide.command);
+    }
+
+    for (const item of fixtureLandingPageData.faq.items) {
+      expect(html).toContain(item.question);
+      expect(html).toContain(item.answer);
     }
   });
 });

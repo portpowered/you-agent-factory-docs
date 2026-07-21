@@ -6,6 +6,9 @@ import {
   FactoryCarousel,
   type FactoryCarouselProps,
   type FactorySlideData,
+  FaqPanel,
+  type FaqPanelItem,
+  type FaqPanelProps,
   HeroSection,
   LandingFooterArt,
   LandingHeader,
@@ -22,6 +25,7 @@ import {
   type LandingCapabilityData,
   type LandingCarouselData,
   type LandingCtaContent,
+  type LandingFaqData,
   type LandingFooterData,
   type LandingHeaderData,
   type LandingHeroData,
@@ -34,10 +38,13 @@ import {
   WHALE_BUBBLES_FIXTURE_SRC,
 } from "@/features/landing-page/whale-bubbles.fixtures";
 
+/** Compose-local FAQ heading — same default as harness Wave B / faq-cta-harness. */
+const FAQ_PANEL_HEADING = "FAQ";
+
 /**
  * Production `/` LandingPage slots filled from MERGED public exports.
- * FAQ / CTA stay omitted so LandingPage keeps labeled placeholders until
- * those Wave B surfaces are wired in follow-on stories.
+ * CTA stays omitted so LandingPage keeps a labeled placeholder until the
+ * Wave B CTA surface is wired in a follow-on story.
  */
 export const WIRED_PRODUCTION_LANDING_SLOTS = [
   "header",
@@ -45,6 +52,7 @@ export const WIRED_PRODUCTION_LANDING_SLOTS = [
   "capability",
   "youi",
   "carousel",
+  "faq",
   "whaleBubbles",
   "footer",
 ] as const satisfies ReadonlyArray<keyof LandingPageSlots>;
@@ -204,6 +212,30 @@ export function composeProductionCarouselSlot(
 }
 
 /**
+ * Map landing fixture FAQ items onto the public FaqPanel / FaqPanelItem
+ * contract (id / question / answer). No invented FAQ schemas. Mirrored from
+ * harness Wave B — do not import from (dev)/landing-harness/**.
+ */
+export function mapFixtureFaqToFaqPanelProps(
+  faq: LandingFaqData = fixtureLandingPageData.faq,
+): Pick<FaqPanelProps, "items" | "heading"> {
+  const items: FaqPanelItem[] = faq.items.map((item) => ({
+    id: item.id,
+    question: item.question,
+    answer: item.answer,
+  }));
+
+  return { items, heading: FAQ_PANEL_HEADING };
+}
+
+/** Real production faq slot: FaqPanel from fixture items. */
+export function composeProductionFaqSlot(
+  faq: LandingFaqData = fixtureLandingPageData.faq,
+): ReactNode {
+  return <FaqPanel {...mapFixtureFaqToFaqPanelProps(faq)} />;
+}
+
+/**
  * Map landing fixture whale/bubbles data onto WhaleBubblesSection props.
  * Falls back to `WHALE_BUBBLES_FIXTURE_*` when fixture fields are empty.
  */
@@ -266,8 +298,8 @@ export function composeProductionFooterSlot(
 
 /**
  * Aggregate production LandingPage slot props from MERGED public exports.
- * Returns only wired keys — faq / cta stay on LandingPage placeholder
- * defaults until follow-on Wave B stories wire them. Props map from
+ * Returns only wired keys — cta stays on LandingPage placeholder defaults
+ * until a follow-on Wave B story wires it. Props map from
  * `fixtureLandingPageData` (or optional override) onto public component
  * contracts only; no CMS schemas.
  */
@@ -283,6 +315,7 @@ export function composeProductionLandingSlots(
     capability: composeProductionCapabilitySlot(data.capability),
     youi: composeProductionYouiSlot(data.youi),
     carousel: composeProductionCarouselSlot(data.carousel),
+    faq: composeProductionFaqSlot(data.faq),
     whaleBubbles: composeProductionWhaleBubblesSlot(data.whaleBubbles),
     footer: composeProductionFooterSlot(data.footer),
   };
