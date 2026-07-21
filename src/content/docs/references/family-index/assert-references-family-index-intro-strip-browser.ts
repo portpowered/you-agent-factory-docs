@@ -1,9 +1,9 @@
 /**
- * Browser verify for `/docs/references` after stripping What this family covers
- * (repair-references-family-index-intro-strip story 003).
+ * Browser verify for `/docs/references` after stripping Package freshness
+ * (repair-references-index-strip-package-freshness story 003).
  *
- * Proves: no introduction chrome; short openingSummary purpose lead; Package
- * freshness + Contract surfaces cards; System configuration schema →
+ * Proves: no introduction chrome; short openingSummary purpose lead; Contract
+ * surfaces cards only (no Package freshness); System configuration schema →
  * `/docs/references/system-config-schema` (#177); no you-config revival; no
  * empty-collection copy.
  *
@@ -143,9 +143,6 @@ try {
     await page.waitForSelector("[data-references-family-discoverability]", {
       timeout: 60_000,
     });
-    await page.waitForSelector("[data-references-family-freshness]", {
-      timeout: 60_000,
-    });
 
     const probe = await page.evaluate((expectedHrefs: string[]) => {
       const headingText = (name: string) => {
@@ -196,6 +193,15 @@ try {
         hasFreshness: Boolean(
           document.querySelector("[data-references-family-freshness]"),
         ),
+        hasFreshnessStatus: Boolean(
+          document.querySelector("[data-freshness-status]"),
+        ),
+        hasFreshnessSummary: Boolean(
+          document.querySelector("[data-references-family-freshness-summary]"),
+        ),
+        hasFreshnessUnavailableCallout: /Package freshness unavailable/i.test(
+          indexText,
+        ),
         contractSurfacesIdPresent: Boolean(
           document.getElementById("contract-surfaces"),
         ),
@@ -243,11 +249,14 @@ try {
       failures.push("Contract surfaces section missing");
     }
     if (
-      !probe.hasPackageFreshnessHeading ||
-      !probe.hasFreshness ||
-      !probe.packageFreshnessIdPresent
+      probe.hasPackageFreshnessHeading ||
+      probe.hasFreshness ||
+      probe.packageFreshnessIdPresent ||
+      probe.hasFreshnessStatus ||
+      probe.hasFreshnessSummary ||
+      probe.hasFreshnessUnavailableCallout
     ) {
-      failures.push("Package freshness section missing");
+      failures.push("Package freshness section still present");
     }
     if (probe.missingExpectedHrefs.length > 0) {
       failures.push(
