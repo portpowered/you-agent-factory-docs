@@ -1216,4 +1216,70 @@ describe("rerankSearchResults", () => {
       ),
     ).toBe(SEARCH_COLLECTION_BAND.referenceSubfield);
   });
+
+  test("PS-300: Program documentation pages band as other; Limits throttling bands as Reference", () => {
+    const programUrl = "/docs/documentation/factory-session";
+    const limitsUrl = "/docs/documentation/throttling-and-limits";
+    const program = documentForUrl(programUrl, {
+      kind: "documentation",
+      title: "Factory Sessions",
+      facets: { kind: "documentation", tags: [] },
+    });
+    const limits = documentForUrl(limitsUrl, {
+      kind: "documentation",
+      title: "Throttling and limits",
+      facets: { kind: "documentation", tags: [] },
+    });
+
+    expect(
+      searchCollectionBand(
+        {
+          id: programUrl,
+          type: "page",
+          url: programUrl,
+          content: program.title,
+        },
+        program,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.other);
+    expect(
+      searchCollectionBand(
+        {
+          id: limitsUrl,
+          type: "page",
+          url: limitsUrl,
+          content: limits.title,
+        },
+        limits,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.curatedReferencePage);
+
+    // Non-exact tie: Reference Limits must outrank Program documentation other.
+    const results = rerankSearchResults(
+      "persistence",
+      [
+        {
+          id: programUrl,
+          type: "page",
+          url: programUrl,
+          content: program.title,
+        },
+        {
+          id: limitsUrl,
+          type: "page",
+          url: limitsUrl,
+          content: limits.title,
+        },
+      ],
+      new Map([
+        [programUrl, program],
+        [limitsUrl, limits],
+      ]),
+    );
+
+    expect(results.map((result) => result.url)).toEqual([
+      limitsUrl,
+      programUrl,
+    ]);
+  });
 });

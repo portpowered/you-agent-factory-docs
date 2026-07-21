@@ -865,7 +865,12 @@ those paths only accept collection section refs.
   must treat `factory-session`, `dynamic-workflows`, `packaged-factories`, and
   `api` as `explorerMember: true` (not published-but-explorer-omitted), and
   taxonomy / explorer IA contracts must fail closed when Mode A pending or
-  deferred exemption lists re-exempt those slugs. Reject former Program
+  deferred exemption lists re-exempt those slugs. Search ranking smoke for the
+  same finish lives in `rerank-search-results.test.ts` +
+  `collection-ranking-policy.test.ts`: Program overview/how-to pages band as
+  `SEARCH_COLLECTION_BAND.other` (Program documentation under the locked
+  ladder); Limits `throttling-and-limits` bands as `curatedReferencePage` via
+  `hasReferenceSidebarMembership` — do not rewrite ladder constants. Reject former Program
   separator labels (Basics→Additional reference and System feature set /
   Factory Configuration / System Operations / Additional references) as
   absence expects only — never require them. Signature helper unit fixtures in
