@@ -57,9 +57,6 @@ describe("faq documentation page", () => {
     const somethingFailed = String(
       loadedPage.messages.sections?.somethingFailed?.body ?? "",
     );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(whatIsYouAgentFactory).toMatch(/you-agent-factory/i);
     expect(whatIsYouAgentFactory).toMatch(/Getting Started|first-run/i);
@@ -87,11 +84,7 @@ describe("faq documentation page", () => {
 
     expect(somethingFailed).toMatch(/Troubleshooting/i);
     expect(somethingFailed).toMatch(/failure|recover/i);
-
-    expect(limits).toMatch(/FAQ answers common you-agent-factory questions/i);
-    expect(limits).toMatch(/not the install command matrix/i);
-    expect(limits).toMatch(/not a full CLI flag dump/i);
-    expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
 
     render(
       <main>
@@ -141,8 +134,9 @@ describe("faq documentation page", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Limits And Assumptions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(document.getElementById("limits-and-assumptions")).toBeNull();
     expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
@@ -258,9 +252,7 @@ describe("faq documentation page", () => {
     expect(loadedPage.messages.sections?.somethingFailed?.title).toBe(
       "Something Failed—Where Do I Recover?",
     );
-    expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
-      "Limits And Assumptions",
-    );
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
 
     render(
       <main>
