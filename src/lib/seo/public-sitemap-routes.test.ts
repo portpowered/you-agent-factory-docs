@@ -23,15 +23,14 @@ import {
   PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
   SITEMAP_EXCLUSION_PROOF_ROUTES,
   SITEMAP_INCLUSION_PROOF_ROUTES,
+  SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
+  SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG,
 } from "@/lib/seo/public-sitemap-routes";
 
 const PROJECT_SITE_EXPORT_ENV = {
   NEXT_STATIC_EXPORT: "1",
   GITHUB_PAGES_BASE_PATH: BUILT_APP_GITHUB_PAGES_BASE_PATH,
 } as const;
-
-/** Known shipped localized docs article used as an inclusion proof. */
-const SHIPPED_LOCALIZED_DOCS_PROOF_SLUG = "concepts/harness";
 
 /** Published English docs slug that is not shipped for non-default locales. */
 const UNSHIPPED_LOCALIZED_DOCS_PROOF_SLUG = "workstations/poller";
@@ -55,6 +54,50 @@ describe("public-sitemap-routes unit", () => {
     expect(resolveProductionSitemapLocHref("/", PROJECT_SITE_EXPORT_ENV)).toBe(
       `${PRODUCTION_SITE_ORIGIN}${BUILT_APP_GITHUB_PAGES_BASE_PATH}/`,
     );
+  });
+
+  test("inclusion proofs require locale homes and a shipped localized docs route", () => {
+    const routes = listPublicSitemapRoutes();
+    const urls = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+    const proofSet = new Set<string>(SITEMAP_INCLUSION_PROOF_ROUTES);
+
+    expect(PUBLIC_SITEMAP_LOCALE_HOME_ROUTES).toEqual(["/ja", "/zh-CN", "/vi"]);
+    for (const home of PUBLIC_SITEMAP_LOCALE_HOME_ROUTES) {
+      expect(proofSet.has(home)).toBe(true);
+      expect(routes).toContain(home);
+      const absolute = resolveProductionSitemapLocHref(
+        home,
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      expect(absolute.endsWith("/")).toBe(true);
+      expect(urls).toContain(absolute);
+    }
+
+    expect(
+      isShippedLocalizedDocsSlug(
+        SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG,
+        "ja",
+      ),
+    ).toBe(true);
+    expect(SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE).toBe(
+      "/ja/docs/concepts/harness",
+    );
+    expect(proofSet.has(SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE)).toBe(true);
+    expect(routes).toContain(SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE);
+    expect(urls).toContain(
+      resolveProductionSitemapLocHref(
+        SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
+        PROJECT_SITE_EXPORT_ENV,
+      ),
+    );
+
+    // Inclusion proofs must not invent unshipped locale×page combinations.
+    const unshippedGhost = buildLocalizedRoute(
+      { surface: "docs-page", slug: UNSHIPPED_LOCALIZED_DOCS_PROOF_SLUG },
+      "ja",
+    );
+    expect(proofSet.has(unshippedGhost)).toBe(false);
+    expect(routes).not.toContain(unshippedGhost);
   });
 
   test("includes every non-default FACTORY_SHIPPED_LOCALES home via buildLocalizedRoute", () => {
@@ -93,7 +136,10 @@ describe("public-sitemap-routes unit", () => {
     );
 
     expect(
-      isShippedLocalizedDocsSlug(SHIPPED_LOCALIZED_DOCS_PROOF_SLUG, "ja"),
+      isShippedLocalizedDocsSlug(
+        SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG,
+        "ja",
+      ),
     ).toBe(true);
     expect(
       isShippedLocalizedDocsSlug(UNSHIPPED_LOCALIZED_DOCS_PROOF_SLUG, "ja"),
@@ -108,7 +154,10 @@ describe("public-sitemap-routes unit", () => {
       }
 
       const shippedProof = buildLocalizedRoute(
-        { surface: "docs-page", slug: SHIPPED_LOCALIZED_DOCS_PROOF_SLUG },
+        {
+          surface: "docs-page",
+          slug: SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG,
+        },
         locale,
       );
       expect(routes).toContain(shippedProof);

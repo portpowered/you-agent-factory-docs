@@ -65,7 +65,26 @@ export const PUBLIC_SITEMAP_DOCS_SECTION_ROUTES = [
 ] as const;
 
 /**
+ * Known shipped localized docs slug used as a sitemap inclusion proof.
+ * Must stay in the shipped-localized-docs manifest for a non-default locale
+ * (currently `ja`); never invent unshipped locale×slug ghosts here.
+ */
+export const SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG = "concepts/harness";
+
+/**
+ * Representative shipped localized docs route that inclusion proofs require
+ * (built via {@link buildLocalizedRoute}, not a hard-coded ghost path).
+ */
+export const SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE = buildLocalizedRoute(
+  { surface: "docs-page", slug: SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG },
+  "ja",
+);
+
+/**
  * Representative live factory routes that export sitemap proofs must include.
+ * Includes non-default locale homes from {@link PUBLIC_SITEMAP_LOCALE_HOME_ROUTES}
+ * and at least one shipped localized docs route
+ * ({@link SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE}).
  */
 export const SITEMAP_INCLUSION_PROOF_ROUTES = [
   "/",
@@ -76,6 +95,8 @@ export const SITEMAP_INCLUSION_PROOF_ROUTES = [
   "/blog/bottlenecks",
   "/docs/concepts",
   "/docs/concepts/harness",
+  ...PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
+  SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
 ] as const;
 
 /**
