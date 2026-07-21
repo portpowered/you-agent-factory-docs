@@ -141,6 +141,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   (`list-none ps-0`) in `src/features/docs/components/list-decoration.ts` —
   DocsBody `prose` adds `padding-inline-start` to `ul` even when markers are
   removed; never fake alignment with negative margins.
+* Collection resource-card hover (`docsResourceCardLinkClassName`): marker
+  `docs-resource-card-link` + `docs-resource-card-hover.css` (imported from
+  `globals.css`). Hover/focus-visible = `--docs-chrome-primary-yellow` fill
+  and `--primary-foreground` (dark accent ink) on the card and descendants so
+  child `text-foreground` / `text-muted-foreground` / `text-primary` yield
+  without per-page hover one-offs. Keep resting `bg-card/40`, no-underline,
+  and `focus-visible:ring-2`. Do not restyle `searchInlineResultsListClassName`
+  or the header search trigger here. Prove with `list-decoration.test.ts` and
+  `docs-resource-card-hover.browser.test.ts` (Playwright fixture; no Next
+  build).
 * `src/components/home/home-article-alignment.test.tsx`
   Locks home article/Browse shared left-edge contract (surface marker, no
   nested inset, `ps-0` bulletless lists, no negative-margin compensation).

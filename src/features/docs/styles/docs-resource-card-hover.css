@@ -1,0 +1,32 @@
+/**
+ * Collection resource-card hover/focus: primary yellow fill + dark ink text.
+ *
+ * Marker class `docs-resource-card-link` is owned by
+ * `docsResourceCardLinkClassName` in list-decoration.ts. Child title/body
+ * utilities (`text-foreground`, `text-muted-foreground`, `text-primary`) must
+ * yield to accent ink on the yellow highlight — same cascade pattern as
+ * sidebar chrome (`!important` in @layer utilities).
+ */
+@layer utilities {
+  a.docs-resource-card-link:focus-visible {
+    background-color: var(--docs-chrome-primary-yellow) !important;
+    border-color: var(--docs-chrome-primary-yellow) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  a.docs-resource-card-link:focus-visible * {
+    color: var(--primary-foreground) !important;
+  }
+
+  @media (hover: hover) {
+    a.docs-resource-card-link:hover {
+      background-color: var(--docs-chrome-primary-yellow) !important;
+      border-color: var(--docs-chrome-primary-yellow) !important;
+      color: var(--primary-foreground) !important;
+    }
+
+    a.docs-resource-card-link:hover * {
+      color: var(--primary-foreground) !important;
+    }
+  }
+}

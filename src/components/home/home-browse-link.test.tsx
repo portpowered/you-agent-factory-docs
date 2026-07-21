@@ -37,7 +37,8 @@ describe("HomeBrowseLink", () => {
     const withoutNoUnderline = html.replaceAll("no-underline", "");
     expect(withoutNoUnderline).not.toMatch(/\bunderline\b/);
     expect(html).toContain("focus-visible:ring-2");
-    expect(html).toContain("hover:border-ring");
+    expect(html).toContain("docs-resource-card-link");
+    expect(html).not.toContain("hover:border-ring");
     expect(html).toContain("Architecture");
   });
 });

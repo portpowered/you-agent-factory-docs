@@ -3,6 +3,8 @@ import {
   bulletlessListBaseClassName,
   bulletlessListClassName,
   bulletlessListMarkersClassName,
+  DOCS_RESOURCE_CARD_HOVER_TOKENS,
+  DOCS_RESOURCE_CARD_LINK_MARKER_CLASS,
   docsResourceCardLinkClassName,
   searchInlineResultsListClassName,
 } from "@/features/docs/components/list-decoration";
@@ -42,10 +44,25 @@ describe("list decoration classes", () => {
     expect(bulletlessListClassName("mt-4")).not.toMatch(/(?:^|\s)-m[trblxy]?-/);
   });
 
-  test("docsResourceCardLinkClassName omits underline utilities", () => {
+  test("docsResourceCardLinkClassName uses yellow + dark-text hover chrome", () => {
     expectNoUnderlineUtilities(docsResourceCardLinkClassName);
     expect(docsResourceCardLinkClassName).toContain("focus-visible:ring-2");
-    expect(docsResourceCardLinkClassName).toContain("hover:border-ring");
+    expect(docsResourceCardLinkClassName).toContain(
+      DOCS_RESOURCE_CARD_LINK_MARKER_CLASS,
+    );
+    expect(docsResourceCardLinkClassName).toContain("bg-card/40");
+    expect(docsResourceCardLinkClassName).not.toContain("hover:border-ring");
+    expect(docsResourceCardLinkClassName).not.toContain("hover:bg-card");
+
+    expect(DOCS_RESOURCE_CARD_HOVER_TOKENS.hoverBackground).toBe(
+      "var(--docs-chrome-primary-yellow)",
+    );
+    expect(DOCS_RESOURCE_CARD_HOVER_TOKENS.hoverBorder).toBe(
+      "var(--docs-chrome-primary-yellow)",
+    );
+    expect(DOCS_RESOURCE_CARD_HOVER_TOKENS.hoverForeground).toBe(
+      "var(--primary-foreground)",
+    );
   });
 
   test("searchInlineResultsListClassName omits list markers", () => {
