@@ -54,6 +54,13 @@ describe("landing-page.data", () => {
     expect(fixtureLandingPageData.whaleBubbles.whaleSrc).toBe(
       "/home/mid-end-whale.png",
     );
+    expect(fixtureLandingPageData.hero.portraitSrc).toBe(
+      "/home/woman-head.png",
+    );
+    expect(fixtureLandingPageData.youi.imageSrc).toBe("/home/monkey.png");
+    expect(fixtureLandingPageData.footer.artSrc).toBe(
+      "/home/seadragon-crop.png",
+    );
     expect(
       fixtureLandingPageData.footer.columns[0]?.links.length,
     ).toBeGreaterThan(0);

@@ -5,6 +5,8 @@
  * enough for placeholders and later slot fill. No CMS or schema system.
  */
 
+import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
+
 export type LandingNavItem = {
   id: string;
   label: string;
@@ -158,7 +160,7 @@ export const fixtureLandingPageData: LandingPageData = {
     title: "Agent factory workflows that stay persistent",
     subtitle:
       "Install the CLI, run named workflows, keep long-running work alive.",
-    portraitSrc: "/home/hero-portrait.png",
+    portraitSrc: landingHomeAssets.womanHead,
   },
   capability: {
     items: [
@@ -198,7 +200,7 @@ export const fixtureLandingPageData: LandingPageData = {
   },
   youi: {
     title: "Youi showcase",
-    imageSrc: "/home/youi-showcase.png",
+    imageSrc: landingHomeAssets.monkey,
   },
   faq: {
     items: [
@@ -217,7 +219,7 @@ export const fixtureLandingPageData: LandingPageData = {
     ],
   },
   whaleBubbles: {
-    whaleSrc: "/home/mid-end-whale.png",
+    whaleSrc: landingHomeAssets.midEndWhale,
     bubbles: [
       { id: "bubble-harness", label: "Harness" },
       { id: "bubble-loop", label: "Loop" },
@@ -253,6 +255,6 @@ export const fixtureLandingPageData: LandingPageData = {
       copyright: "© you-agent-factory",
       tagline: "Persistent agent factory workflows",
     },
-    artSrc: "/home/footer-art.png",
+    artSrc: landingHomeAssets.seadragonCrop,
   },
 };
