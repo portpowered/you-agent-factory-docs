@@ -16,8 +16,8 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 | --- | --- |
 | `src/features/landing-page/components/FactorySlide.tsx` | One slide: `{ id, title, blurb, command, art?: ReactNode }` + real `Terminal` from `@/features/code` |
 | `src/features/landing-page/components/FactorySlide.test.tsx` | Title/blurb/Terminal render; optional art omit; empty/whitespace command still mounts chrome |
-| `src/features/landing-page/components/FactoryCarousel.tsx` | Depth carousel: `slides` + optional `activeIndex`/`initialIndex`; neighbors via `getCarouselSlideDepth` |
-| `src/features/landing-page/components/FactoryCarousel.test.tsx` | Empty state; FactorySlide compose; active/neighbor/far scale·opacity·z; controlled `activeIndex` |
+| `src/features/landing-page/components/FactoryCarousel.tsx` | Depth carousel + wrap nav: prev/next, ArrowLeft/Right, pointer drag (`wrapCarouselIndex`, `dragThresholdPx`) |
+| `src/features/landing-page/components/FactoryCarousel.test.tsx` | Empty state; depth markers; controlled index; next/prev wrap; keyboard; drag threshold; a11y names |
 | `src/features/landing-page/landing-page.data.ts` | Re-exports `FactorySlideData` from FactorySlide; fixture slides omit `art` |
 | `src/features/code/Terminal.tsx` | Command chrome (`lines`, optional `chips`, `install` \| `dark`) — prefer this over stubs |
 
@@ -39,8 +39,12 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
   theme)` maps distance → `active` / `neighbor` / `far` with scale, opacity, z,
   and translateX. DOM hooks: `data-carousel-slide`, `data-carousel-depth`,
   `data-active`.
-- Depth story uses controlled `activeIndex` (or `initialIndex`) to change the
-  primary slide; drag/buttons/keyboard land in the navigation story.
+- Navigation wraps via `wrapCarouselIndex`. Controls: `data-carousel-prev` /
+  `data-carousel-next` (accessible names "Previous slide" / "Next slide"),
+  ArrowLeft/ArrowRight on the focused carousel region (`tabIndex={0}`), and
+  pointer drag on `data-carousel-track` using `theme.dragThresholdPx` (drag
+  right → previous, drag left → next). Optional `onActiveIndexChange` for
+  controlled parents.
 - `slides: []` renders a stable empty region (`data-carousel-empty`) — no throw.
 - Worktree browser verify: when `node_modules` is hoisted at the main checkout,
   prefer `bun ./scripts/run-next.ts dev --webpack -p <unique-port>`; always trap

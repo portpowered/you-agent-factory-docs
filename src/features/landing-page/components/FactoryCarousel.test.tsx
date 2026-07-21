@@ -1,7 +1,12 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { landingPageTheme } from "@/features/landing-page/landing-page.theme";
-import { FactoryCarousel, getCarouselSlideDepth } from "./FactoryCarousel";
+import {
+  FactoryCarousel,
+  getCarouselSlideDepth,
+  wrapCarouselIndex,
+} from "./FactoryCarousel";
 import type { FactorySlideData } from "./FactorySlide";
 
 const fixtureSlides: FactorySlideData[] = [
@@ -173,5 +178,100 @@ describe("FactoryCarousel", () => {
     expect(slideEl("slide-loop").getAttribute("data-carousel-depth")).toBe(
       "neighbor",
     );
+  });
+
+  test("next and previous buttons change which slide is active and wrap", async () => {
+    const user = userEvent.setup();
+    render(<FactoryCarousel slides={fixtureSlides} initialIndex={0} />);
+
+    const root = document.querySelector("[data-factory-carousel]");
+    expect(root?.getAttribute("data-carousel-active-index")).toBe("0");
+    expect(slideEl("slide-install").getAttribute("data-active")).toBe("true");
+
+    await user.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(root?.getAttribute("data-carousel-active-index")).toBe("1");
+    expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
+    expect(slideEl("slide-install").getAttribute("data-active")).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Previous slide" }));
+    expect(root?.getAttribute("data-carousel-active-index")).toBe("0");
+    expect(slideEl("slide-install").getAttribute("data-active")).toBe("true");
+
+    await user.click(screen.getByRole("button", { name: "Previous slide" }));
+    expect(root?.getAttribute("data-carousel-active-index")).toBe("3");
+    expect(slideEl("slide-harness").getAttribute("data-active")).toBe("true");
+  });
+
+  test("ArrowLeft and ArrowRight on the focused carousel change the active slide", async () => {
+    const user = userEvent.setup();
+    render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    root.focus();
+    expect(document.activeElement).toBe(root);
+    expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
+
+    await user.keyboard("{ArrowRight}");
+    expect(root.getAttribute("data-carousel-active-index")).toBe("2");
+    expect(slideEl("slide-worktree").getAttribute("data-active")).toBe("true");
+
+    await user.keyboard("{ArrowLeft}");
+    expect(root.getAttribute("data-carousel-active-index")).toBe("1");
+    expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
+  });
+
+  test("pointer drag past threshold changes the active slide", () => {
+    render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
+
+    const track = document.querySelector(
+      "[data-carousel-track]",
+    ) as HTMLElement;
+    const root = document.querySelector("[data-factory-carousel]");
+    const threshold = landingPageTheme.carousel.dragThresholdPx;
+
+    fireEvent.pointerDown(track, {
+      button: 0,
+      pointerId: 1,
+      clientX: 200,
+    });
+    fireEvent.pointerUp(track, {
+      pointerId: 1,
+      clientX: 200 - (threshold + 10),
+    });
+
+    expect(root?.getAttribute("data-carousel-active-index")).toBe("2");
+    expect(slideEl("slide-worktree").getAttribute("data-active")).toBe("true");
+
+    fireEvent.pointerDown(track, {
+      button: 0,
+      pointerId: 2,
+      clientX: 200,
+    });
+    fireEvent.pointerUp(track, {
+      pointerId: 2,
+      clientX: 200 + (threshold + 10),
+    });
+
+    expect(root?.getAttribute("data-carousel-active-index")).toBe("1");
+    expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
+  });
+
+  test("exposes carousel semantics and labeled prev/next controls", () => {
+    render(<FactoryCarousel slides={fixtureSlides} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    expect(root.getAttribute("aria-roledescription")).toBe("carousel");
+    expect(screen.getByRole("button", { name: "Previous slide" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Next slide" })).toBeTruthy();
+    expect(screen.getByText(/Slide 1 of 4: Install/)).toBeTruthy();
+  });
+});
+
+describe("wrapCarouselIndex", () => {
+  test("wraps forward and backward across ends", () => {
+    expect(wrapCarouselIndex(0, 4, -1)).toBe(3);
+    expect(wrapCarouselIndex(3, 4, 1)).toBe(0);
+    expect(wrapCarouselIndex(1, 4, 1)).toBe(2);
+    expect(wrapCarouselIndex(0, 0, 1)).toBe(0);
   });
 });
