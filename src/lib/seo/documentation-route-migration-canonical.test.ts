@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { generateMetadata as generateWorkersMetadata } from "@/app/(site)/docs/workers/page";
-import { generateMetadata as generateWorkstationsMetadata } from "@/app/(site)/docs/workstations/page";
+import { generateMetadata as generateWorkersMetadata } from "@/app/(site)/(with-docs-chrome)/docs/workers/page";
+import { generateMetadata as generateWorkstationsMetadata } from "@/app/(site)/(with-docs-chrome)/docs/workstations/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { localizedShippedDocsPageAlternates } from "@/lib/i18n/route-locale";
 import {

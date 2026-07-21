@@ -5,7 +5,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, within } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import DocumentationIndexPage from "@/app/(site)/docs/documentation/page";
+import DocumentationIndexPage from "@/app/(site)/(with-docs-chrome)/docs/documentation/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";

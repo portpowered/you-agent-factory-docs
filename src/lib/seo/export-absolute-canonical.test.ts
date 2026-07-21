@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { generateMetadata as generateBlogPostMetadata } from "@/app/(site)/blog/[slug]/page";
+import { generateMetadata as generateBlogPostMetadata } from "@/app/(site)/(with-docs-chrome)/blog/[slug]/page";
 import { generateMetadata as generateHomeMetadata } from "@/app/(site)/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";

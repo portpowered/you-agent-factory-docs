@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
-import { generateStaticParams as generateLocalizedDocsStaticParams } from "@/app/[locale]/docs/[[...slug]]/page";
+import { generateStaticParams as generateLocalizedDocsStaticParams } from "@/app/[locale]/(with-docs-chrome)/docs/[[...slug]]/page";
 import { generateStaticParams as generateDefaultDocsStaticParams } from "@/app/docs/[[...slug]]/page";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
 import DocsNotFound from "@/app/docs/not-found";

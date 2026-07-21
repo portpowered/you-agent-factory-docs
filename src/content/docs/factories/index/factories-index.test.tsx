@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import FactoriesIndexPage from "@/app/(site)/docs/factories/page";
-import LocalizedFactoriesIndexPage from "@/app/[locale]/docs/factories/page";
+import FactoriesIndexPage from "@/app/(site)/(with-docs-chrome)/docs/factories/page";
+import LocalizedFactoriesIndexPage from "@/app/[locale]/(with-docs-chrome)/docs/factories/page";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 
 afterEach(() => {

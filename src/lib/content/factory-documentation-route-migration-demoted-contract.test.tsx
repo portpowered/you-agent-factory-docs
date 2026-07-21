@@ -10,7 +10,7 @@ import { describe, expect, test } from "bun:test";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
-import DocumentationIndexPage from "@/app/(site)/docs/documentation/page";
+import DocumentationIndexPage from "@/app/(site)/(with-docs-chrome)/docs/documentation/page";
 import { FACTORY_EXPLORER_FOLDER_LABELS } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPages } from "@/lib/content/pages";
 import { loadRegistry } from "@/lib/content/registry";

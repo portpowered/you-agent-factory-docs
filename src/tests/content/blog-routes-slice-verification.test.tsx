@@ -12,8 +12,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import {
   generateMetadata as generateBlogPostMetadata,
   generateStaticParams as generateBlogPostStaticParams,
-} from "@/app/(site)/blog/[slug]/page";
-import { generateMetadata as generateBlogIndexMetadata } from "@/app/(site)/blog/page";
+} from "@/app/(site)/(with-docs-chrome)/blog/[slug]/page";
+import { generateMetadata as generateBlogIndexMetadata } from "@/app/(site)/(with-docs-chrome)/blog/page";
 import {
   renderBlogIndexPage,
   renderBlogPostPage,

@@ -1,15 +1,15 @@
 import { describe, expect, it, setDefaultTimeout } from "bun:test";
+import { generateMetadata as generateSearchMetadata } from "@/app/(site)/(with-docs-chrome)/search/page";
+import { generateMetadata as generateTagMetadata } from "@/app/(site)/(with-docs-chrome)/tags/[slug]/page";
 import { generateMetadata as generateHomeMetadata } from "@/app/(site)/page";
-import { generateMetadata as generateSearchMetadata } from "@/app/(site)/search/page";
-import { generateMetadata as generateTagMetadata } from "@/app/(site)/tags/[slug]/page";
 import {
   generateMetadata as generateLocalizedDocsMetadata,
   generateStaticParams as generateLocalizedDocsStaticParams,
-} from "@/app/[locale]/docs/[[...slug]]/page";
-import { generateMetadata as generateLocalizedArchitectureMetadata } from "@/app/[locale]/docs/architecture/page";
+} from "@/app/[locale]/(with-docs-chrome)/docs/[[...slug]]/page";
+import { generateMetadata as generateLocalizedArchitectureMetadata } from "@/app/[locale]/(with-docs-chrome)/docs/architecture/page";
+import { generateMetadata as generateLocalizedSearchMetadata } from "@/app/[locale]/(with-docs-chrome)/search/page";
+import { generateMetadata as generateLocalizedTagsMetadata } from "@/app/[locale]/(with-docs-chrome)/tags/page";
 import { generateMetadata as generateLocalizedHomeMetadata } from "@/app/[locale]/page";
-import { generateMetadata as generateLocalizedSearchMetadata } from "@/app/[locale]/search/page";
-import { generateMetadata as generateLocalizedTagsMetadata } from "@/app/[locale]/tags/page";
 import { generateMetadata as generateDocsMetadata } from "@/app/docs/[[...slug]]/page";
 
 setDefaultTimeout(15_000);

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { RootDocument, siteMetadata } from "@/app/root-layout.shared";
 import { RouteLocaleEffect } from "@/features/i18n/RouteLocaleEffect";
-import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import { AppProviders } from "@/features/providers/app-providers";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale } from "@/lib/i18n/locale-routing";
@@ -24,10 +23,8 @@ export default async function SiteLayout({
   return (
     <RootDocument lang={defaultLocale}>
       <AppProviders metaByUrl={metaByUrl} messages={messages}>
-        <CanonicalDocsLayout messages={messages} locale={defaultLocale}>
-          <RouteLocaleEffect locale={defaultLocale} />
-          {children}
-        </CanonicalDocsLayout>
+        <RouteLocaleEffect locale={defaultLocale} />
+        {children}
       </AppProviders>
     </RootDocument>
   );
