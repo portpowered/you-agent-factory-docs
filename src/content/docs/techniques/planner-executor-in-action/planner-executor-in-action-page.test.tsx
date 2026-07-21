@@ -105,6 +105,45 @@ describe("planner-executor-in-action technique page", () => {
     expect(document.body.textContent ?? "").not.toMatch(
       /PatternList placeholder/i,
     );
+
+    expect(
+      screen.getByRole("heading", { name: "Try Model And Token Choices" }),
+    ).toBeTruthy();
+    expect(document.getElementById("playground")).toBeTruthy();
+    expect(
+      screen.getByTestId("model-cost-playground-placeholder"),
+    ).toBeTruthy();
+    expect(document.body.textContent ?? "").toMatch(/Model cost playground/i);
+    expect(loadedPage.messages.sections?.playground?.title).toBe(
+      "Try Model And Token Choices",
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Compare Single-Model And Split Cost",
+      }),
+    ).toBeTruthy();
+    expect(document.getElementById("compare-chart")).toBeTruthy();
+    expect(loadedPage.messages.sections?.compareChart?.title).toBe(
+      "Compare Single-Model And Split Cost",
+    );
+    expect(loadedPage.messages.links?.compareChartTitle).toBe(
+      "Single-model versus split planner-executor cost",
+    );
+    expect(screen.getByTestId("comparative-bar-chart")).toBeTruthy();
+    expect(
+      screen.queryByTestId("comparative-cost-chart-placeholder"),
+    ).toBeNull();
+    expect(
+      screen.getByRole("img", {
+        name: "Single-model versus split planner-executor cost",
+      }),
+    ).toBeTruthy();
+    expect(document.body.textContent ?? "").toMatch(/Single shared model/i);
+    expect(document.body.textContent ?? "").toMatch(
+      /Larger planner \/ smaller executor/i,
+    );
+
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
     expect(document.getElementById("related")).toBeNull();

@@ -9,6 +9,14 @@
     "patternList": {
       "title": "The Multi-Model Pattern",
       "body": "In the multi-model form of planner-executor, a larger model owns planning and a smaller model owns execution. The roles stay the same; only the model mapping changes. Scan the pattern below before comparing costs."
+    },
+    "playground": {
+      "title": "Try Model And Token Choices",
+      "body": "A model-cost playground lets you pick primary and secondary models and token budgets, then see the resulting cost for the same planner-executor roles. Practice those choices when the interactive widget is available; otherwise the labeled model-cost playground marker shows where that practice fits after the pattern list."
+    },
+    "compareChart": {
+      "title": "Compare Single-Model And Split Cost",
+      "body": "Compare one shared model priced for all planner and executor tokens against a split where a larger planner model handles planning tokens and a smaller executor model handles execution tokens. Focus follows the split series so you can see when the multi-model mapping lowers total USD for the same work shape."
     }
   },
   "links": {
@@ -18,6 +26,11 @@
     "patternSmallerExecutorTitle": "Smaller model executes",
     "patternSmallerExecutorDescription": "A lighter executor model implements those slices without carrying the full planning load on every step.",
     "patternSameRolesTitle": "Same roles, split models",
-    "patternSameRolesDescription": "Planner and executor stay distinct jobs; the multi-model win comes from assigning different models to those jobs, not from inventing new roles."
+    "patternSameRolesDescription": "Planner and executor stay distinct jobs; the multi-model win comes from assigning different models to those jobs, not from inventing new roles.",
+    "compareChartTitle": "Single-model versus split planner-executor cost",
+    "compareChartCategoryTotal": "Total USD",
+    "compareChartSingleModelLabel": "Single shared model",
+    "compareChartSplitLabel": "Larger planner / smaller executor",
+    "compareChartYLabel": "USD"
   }
 }
