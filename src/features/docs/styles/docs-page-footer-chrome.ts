@@ -43,3 +43,9 @@ export const docsPageFooterCompactPadding = "0.5rem 0.75rem";
  * Keep in sync with FOOTER_COMPACT_GAP in docs-page-footer-contract.
  */
 export const docsPageFooterCompactGap = "0.25rem";
+
+/**
+ * Title underline must stay off at rest and hover (prose/DocsBody underlines
+ * anchors). Keep in sync with docs-page-footer-chrome.css.
+ */
+export const docsPageFooterTitleTextDecoration = "none";

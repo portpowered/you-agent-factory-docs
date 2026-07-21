@@ -9,6 +9,7 @@ import {
   docsPageFooterFamilyCardSelector,
   docsPageFooterHoverStateSelector,
   docsPageFooterMutedSublabelSelector,
+  docsPageFooterTitleTextDecoration,
 } from "@/features/docs/styles/docs-page-footer-chrome";
 import {
   assertDocsFooterChromeCssConvergence,
@@ -49,6 +50,7 @@ describe("docs page footer chrome CSS contract", () => {
     expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverForeground).toBe(
       "var(--primary-foreground)",
     );
+    expect(docsPageFooterTitleTextDecoration).toBe("none");
   });
 
   test("shared chrome stylesheet converges on yellow+dark-text and compact sizing together", () => {
@@ -70,6 +72,25 @@ describe("docs page footer chrome CSS contract", () => {
     expect(footerChromeCss).not.toContain(
       "background-color: color-mix(in oklch, var(--color-fd-accent)",
     );
+  });
+
+  test("shared chrome stylesheet strips title underline and keeps focus-visible ring", () => {
+    expect(footerChromeCss).toContain(
+      `text-decoration: ${docsPageFooterTitleTextDecoration} !important`,
+    );
+    expect(footerChromeCss).toContain("text-decoration-line: none !important");
+    expect(footerChromeCss).toContain("border-bottom-width: 0 !important");
+    expect(footerChromeCss).toContain("outline-style: none");
+    // Focus ring retained on both accent-hover and live family footer cards.
+    expect(footerChromeCss).toContain("a:focus-visible");
+    expect(footerChromeCss).toContain("outline-style: solid !important");
+    expect(footerChromeCss).toContain("outline-width: 2px");
+    expect(footerChromeCss).toContain("box-shadow: 0 0 0 2px var(--ring)");
+    // Must not invent a second hover palette while polishing underlines.
+    expect(footerChromeCss).toContain(
+      "background-color: var(--docs-chrome-primary-yellow)",
+    );
+    expect(footerChromeCss).toContain("color: var(--primary-foreground)");
   });
 
   test("selector exports stay wired into the shared chrome stylesheet", () => {

@@ -326,21 +326,25 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Shared DocsPage Previous/Next footer **chrome** (hover/focus primary yellow
   fill via `--docs-chrome-primary-yellow` + dark accent-ink text via
   `--primary-foreground`; accessible focus ring; compact `padding`/`gap`
-  overrides for tall `p-4`/`gap-2`). Compact density covers both the
+  overrides for tall `p-4`/`gap-2`; no title underline / border-under-title at
+  rest or hover). Compact density and underline stripping cover both the
   Fumadocs accent-hover fixture selector and the live
   `[data-testid="family-docs-footer-neighbors"] a` surface (docs pages
-  disable Fumadocs Footer and render `FamilyDocsFooterNeighbors`). Supersedes
-  the post-#155 stable-inherit / no-text-recolor title rule so neighbor cards
-  match collection-card hover. Prefer CSS/token overrides on those footer
-  card selectors over redesigning footer neighbor data.
+  disable Fumadocs Footer and render `FamilyDocsFooterNeighbors` inside
+  DocsBody prose, which otherwise underlines anchors). Focus-visible ring
+  applies to both surfaces. Supersedes the post-#155 stable-inherit /
+  no-text-recolor title rule so neighbor cards match collection-card hover.
+  Prefer CSS/token overrides on those footer card selectors over redesigning
+  footer neighbor data.
 * `src/features/docs/styles/docs-page-footer-chrome.browser.test.ts`
   Always-on Playwright behavioral gate: embeds the real chrome CSS in a
   minimal `#nd-page` prev/next fixture (no Next build / `bun run dev`),
   probes `getComputedStyle` on hover and focus-visible for yellow fill + dark
-  ink (title and directional sublabel), focus-ring affordances, and compact
-  padding/gap (`8px/12px` + `4px`) on both accent-hover and family-footer
-  cards. Includes a negative fixture (chrome CSS omitted) that still
-  reproduces tall `p-4`/`gap-2` and accent title recolor.
+  ink (title and directional sublabel), focus-ring affordances, compact
+  padding/gap (`8px/12px` + `4px`), and title underline / border-under-title
+  absence on both accent-hover and family-footer cards. Includes a negative
+  fixture (chrome CSS omitted) that still reproduces tall `p-4`/`gap-2`,
+  accent title recolor, and prose underline / title border-bottom.
   Pattern mirrors `a11y-content-column-left-edge-geometry.test.ts`
   (`page.setContent`).
 * `src/features/docs/styles/docs-card-and-footer-hover-shared-feel.browser.test.ts`

@@ -10,9 +10,13 @@
  * Fumadocs Footer), so compact padding/gap must cover that surface too —
  * otherwise density overrides only match unused accent-hover fixtures.
  *
- * Color + spacing overrides live in @layer utilities with !important so they
- * win over the Tailwind hover:bg-fd-accent / hover:text-fd-accent-foreground /
- * p-4 / gap-2 utilities at runtime.
+ * Family footer cards render inside DocsBody prose, which underlines anchors.
+ * Strip text-decoration (and any title border-under-text) at rest and hover
+ * while keeping the accessible focus-visible ring on the card frame.
+ *
+ * Color + spacing + underline overrides live in @layer utilities with
+ * !important so they win over Tailwind hover:bg-fd-accent /
+ * hover:text-fd-accent-foreground / p-4 / gap-2 / prose underline utilities.
  */
 @layer utilities {
   /* Compact card chrome: shorter than tall p-4 (1rem) / gap-2 (0.5rem). */
@@ -21,6 +25,22 @@
   #nd-page [data-testid="family-docs-footer-neighbors"] a {
     padding: 0.5rem 0.75rem !important;
     gap: 0.25rem !important;
+    /* Prose/DocsBody underlines anchors; footer titles must stay clean. */
+    text-decoration: none !important;
+    text-decoration-line: none !important;
+    /* Resting outline stays off; focus-visible rule below restores the ring. */
+    outline-style: none;
+  }
+
+  #nd-page
+    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]
+    *,
+  #nd-page [data-testid="family-docs-footer-neighbors"] a * {
+    text-decoration: none !important;
+    text-decoration-line: none !important;
+    /* Remove stray border-under-title without dropping the card frame border. */
+    border-bottom-style: none !important;
+    border-bottom-width: 0 !important;
   }
 
   #nd-page
@@ -30,6 +50,8 @@
     ) {
     background-color: var(--docs-chrome-primary-yellow) !important;
     color: var(--primary-foreground) !important;
+    text-decoration: none !important;
+    text-decoration-line: none !important;
   }
 
   #nd-page
@@ -39,10 +61,15 @@
     )
     * {
     color: var(--primary-foreground) !important;
+    text-decoration: none !important;
+    text-decoration-line: none !important;
   }
 
   #nd-page
-    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:focus-visible {
+    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:focus-visible,
+  #nd-page
+    [data-testid="family-docs-footer-neighbors"]
+    a:focus-visible {
     outline-style: solid !important;
     outline-width: 2px !important;
     outline-color: var(--ring) !important;
