@@ -65,6 +65,18 @@ labels. Colocated workstations page tests lock absence with
 `[data-related-group]`, and `curated-related-docs` (keep How To Use teaching
 proofs; leave Tags alone).
 
+Browser-verify the strip with webpack `dev` on a unique port in 3100–3999
+(`bun ./scripts/run-next.ts dev --webpack -p <PORT> -H 127.0.0.1`), curl SSR
+HTML for `/docs/workstations` and a representative variant such as
+`/docs/workstations/standard`, then kill the server before exit. Assert
+`#how-to-use` / `How To Use` present, companion / schema teaching hrefs
+present, and footer absence via `#related` / `#references`, `Related To`,
+`data-related-group`, and `curated-related-docs`. Do not treat bare
+`>References<` in SSR HTML as footer chrome — site chrome still links the
+`/docs/references` nav folder. In zsh, never assign to `path` (aliases
+`PATH`). Warm first compiles with `--max-time 180`; assertion curls may use
+`--max-time 60`.
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a
