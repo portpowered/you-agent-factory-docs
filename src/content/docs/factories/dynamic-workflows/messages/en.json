@@ -27,14 +27,8 @@
       "title": "Limits And Assumptions",
       "body": "This page is the web reference for JavaScript dynamic-workflow API and configuration relationship. It is not the Cursor first-loop guide, not the full Model Context Protocol (MCP) host catalog deep dive beyond dynamic-workflow needs, not a duplicated OpenAPI or operation inventory, and not the Petri factory.json topology overview owned by the factories configuration page. Sibling links aid discovery only. Exhaustive orchestrator, invocation, and session inventories live on the schema and API reference pages linked from the schema sections."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -71,15 +65,11 @@
     "serveModeRuntimeName": "Runtime-backed",
     "serveModeRuntimeArgs": "mcp serve --runtime",
     "serveModeRuntimePurpose": "Shared durable JavaScript runtime for live INLINE_WORKFLOW execution with real async start, status polling, and result reads.",
-    "dynamicWorkflowsOverview": "What Dynamic Workflows are",
     "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows",
     "configurationDocs": "Configuration (factory.json topology)",
     "globalConfigurationDocs": "Global configuration",
-    "packagedDocs": "Packaged factories",
-    "sessionsDocs": "Factory sessions",
     "cliDocs": "CLI",
-    "harnessSupportDocs": "Harness support",
-    "workersDocs": "Workers"
+    "harnessSupportDocs": "Harness support"
   },
   "callouts": {
     "cliSurface": {

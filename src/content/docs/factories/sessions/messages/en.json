@@ -31,14 +31,8 @@
       "title": "Limits And Assumptions",
       "body": "This page is a web Factory Session reference for identity, discovery, inspect, lifecycle, Factory relationship, and durable overview. It is not a full CLI flag dump, not a sync of packaged you docs, not Model Context Protocol (MCP) host setup, not dynamic-workflow authoring, not submitting-work batch schema, and not the OpenAPI, schema, or events reference. Exhaustive FactorySession, Dispatch, artifact, and event inventories stay on the schema, API, and events reference pages linked from the Factory relationship section."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -57,16 +51,10 @@
     "workflowStatusLabel": "Read lifecycle status and progress for that same session id:",
     "workflowResultLabel": "Read the final or partial result for that same session id:",
     "durableInspectionNounsNote": "Dispatch, FactoryArtifact, and FactoryEvent records for child work all point back to the same Factory Session id returned at start. Keep validate → start → status/result on one session; MCP host setup and full dynamic-workflow authoring stay on sibling pages.",
-    "factorySessionsOverview": "What Factory Sessions are",
     "cliDocs": "CLI docs",
     "submittingWorkDocs": "Submitting work",
     "dynamicWorkflowsDocs": "Dynamic workflows",
     "configurationDocs": "Configuration (factory.json topology)",
-    "globalConfigurationDocs": "Global configuration",
-    "packagedDocs": "Packaged factories",
-    "workersDocs": "Workers",
-    "workstationsDocs": "Workstations",
-    "resourcesDocs": "Resources",
     "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows"
   },
   "callouts": {

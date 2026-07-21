@@ -1259,9 +1259,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `<RelatedDocs />`, Related-only `LocalizedLinkList`, or References
   `CitationList`). Keep How To Use / schema-section teaching
   `LocalizedLinkList`s and schema embeds. Tags footer chrome stays where
-  already present. Do not restore Related / References footers on factories
-  pages; do not rewrite shared `RelatedDocs` to force omission; leave registry
-  `relatedIds` alone in the PF-L-strip lane.
+  already present. After strip, factories owned locale messages drop
+  `sections.related` / `sections.references` and link labels used only by the
+  stripped Related footer (for example overview “What … are” labels and
+  sibling docs keys that no teaching section still mounts). Keep keys still
+  referenced by How To Use / schema-section lists. Do not restore Related /
+  References footers on factories pages; do not rewrite shared `RelatedDocs`
+  to force omission; leave registry `relatedIds` alone in the PF-L-strip lane.
   Factories page-local tests assert intro absence the same way as polished
   reference pages: `sections.whatItCovers` / `sections.keyConcepts` are
   `undefined`, `queryByRole` for those headings returns null, and

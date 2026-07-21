@@ -23,14 +23,8 @@
       "title": "Limits And Assumptions",
       "body": "This page is the web reference for first-party @you/* packaged factories. It is not a sync of packaged CLI markdown, not operator-defaults depth, not factory.json topology, and not a per-factory invocation-signature deep dive. Sibling factories and documentation links aid discovery only. Exhaustive metadata, sourceDirectory, and Factory field inventories live on the schema and API reference pages linked from the schema sections."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -39,15 +33,7 @@
     "helpCommandLabel": "Inspect factory-defined arguments for a packaged name:",
     "globalRootLabel": "Global shared factories root where packaged built-ins materialize:",
     "fullFactorySchema": "Full Factory schema",
-    "fullFactoryApi": "Factory API reference",
-    "packagedFactoriesOverview": "What Packaged Factories are",
-    "configurationDocs": "Configuration (factory.json topology)",
-    "globalConfigurationDocs": "Global configuration",
-    "dynamicWorkflowsDocs": "Dynamic workflows",
-    "sessionsDocs": "Factory sessions",
-    "cliDocs": "CLI",
-    "packagedDocumentsDocs": "Packaged documents",
-    "workersDocs": "Workers"
+    "fullFactoryApi": "Factory API reference"
   },
   "callouts": {
     "freshnessAndPortability": {
