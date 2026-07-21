@@ -19,7 +19,9 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 | `src/features/landing-page/components/FactoryCarousel.tsx` | Depth carousel + wrap nav; `prefers-reduced-motion` → static active-only (`data-carousel-motion`) |
 | `src/features/landing-page/components/FactoryCarousel.test.tsx` | Depth markers; nav; matchMedia reduce vs no-preference; reduced-motion buttons/keyboard |
 | `src/features/landing-page/landing-page.data.ts` | Re-exports `FactorySlideData` from FactorySlide; fixture slides omit `art` |
+| `src/features/landing-page/index.ts` | Public barrel: exports `FactoryCarousel`, `FactorySlide`, slide types (+ whale-bubbles) |
 | `src/features/code/Terminal.tsx` | Command chrome (`lines`, optional `chips`, `install` \| `dark`) — prefer this over stubs |
+| `src/app/(dev)/factory-carousel-harness/` | Gated carousel-only harness (gate + view + page); 4 fixture slides on neutral bg |
 
 ## Patterns
 
@@ -31,8 +33,11 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 - Import Terminal from `@/features/code` (Wave A merged). Local TerminalStub only
   if the import would otherwise block.
 - Own only `FactoryCarousel*` / `FactorySlide*` under
-  `src/features/landing-page/components/` plus a dedicated `(dev)/…-harness`
-  (story 005). Do not expand closed component-examples inventory unless required.
+  `src/features/landing-page/components/` plus
+  `(dev)/factory-carousel-harness`. Export from `landing-page/index.ts` for
+  skeleton integrate. Gate with `isFactoryCarouselHarnessEnabled` (same rule as
+  sphere / component-examples). Do not expand closed component-examples
+  inventory unless required.
 - Chassis carousel theme knobs live in `landing-page.theme.ts`
   (`activeScale`, `neighborScale`, `neighborOpacity`, `farScale`, `farOpacity`,
   `transitionMs`, `dragThresholdPx`). `getCarouselSlideDepth(index, activeIndex,
