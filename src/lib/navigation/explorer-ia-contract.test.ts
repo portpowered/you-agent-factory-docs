@@ -60,9 +60,6 @@ const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
   FACTORY_EXPLORER_FOLDER_LABELS.techniques,
   FACTORY_EXPLORER_FOLDER_LABELS.documentation,
   FACTORY_EXPLORER_FOLDER_LABELS.references,
-  FACTORY_EXPLORER_FOLDER_LABELS.factories,
-  FACTORY_EXPLORER_FOLDER_LABELS.workers,
-  FACTORY_EXPLORER_FOLDER_LABELS.workstations,
 ] as const;
 
 /**
@@ -191,9 +188,6 @@ describe("explorer IA exact-order contract", () => {
       { kind: "collection", id: "techniques" },
       { kind: "collection", id: "documentation" },
       { kind: "collection", id: "references" },
-      { kind: "collection", id: "factories" },
-      { kind: "collection", id: "workers" },
-      { kind: "collection", id: "workstations" },
       { kind: "page", docsSlug: "documentation/faq" },
     ]);
   });
@@ -268,6 +262,57 @@ describe("explorer IA exact-order contract", () => {
         `${oldRoute} must not appear in Program documentation explorer`,
       ).toBe(false);
     }
+
+    const reference = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    );
+    expect(reference).toBeTruthy();
+    if (!reference) {
+      throw new Error("expected Reference folder");
+    }
+    expect(FACTORY_EXPLORER_FOLDER_LABELS.references).toBe("Reference");
+    expect(separatorNamesInFolder(reference)).toEqual([
+      ...Object.values(SIDEBAR_GROUP_LABELS.references),
+    ]);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.limits,
+      ).some((page) =>
+        page.url.endsWith("/docs/documentation/throttling-and-limits"),
+      ),
+    ).toBe(true);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.contracts,
+      ).some((page) => page.url.endsWith("/docs/references/api")),
+    ).toBe(true);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.schemas,
+      ).some((page) => page.url.endsWith("/docs/references/factory-schema")),
+    ).toBe(true);
+
+    const nestedFolderNames = reference.children
+      .filter((node) => node.type === "folder")
+      .map((node) => node.name);
+    expect(nestedFolderNames).toEqual([
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    ]);
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    );
   });
 
   test("default-locale Program documentation places orientation, capability, interface, and operations pages under declared top groups", async () => {
@@ -692,14 +737,16 @@ describe("explorer IA exact-order contract", () => {
         explorer.folders.techniques,
         explorer.folders.documentation,
         explorer.folders.references,
-        ...(locale === "en"
-          ? [
-              explorer.folders.factories,
-              explorer.folders.workers,
-              explorer.folders.workstations,
-            ]
-          : []),
       ]);
+      expect(topLevelFolderNames(signature)).not.toContain(
+        explorer.folders.factories,
+      );
+      expect(topLevelFolderNames(signature)).not.toContain(
+        explorer.folders.workers,
+      );
+      expect(topLevelFolderNames(signature)).not.toContain(
+        explorer.folders.workstations,
+      );
 
       const faq = topLevelPageEntries(signature);
       expect(faq).toHaveLength(1);
@@ -824,6 +871,7 @@ describe("explorer IA fail-closed locale contract", () => {
         interfaces: "",
       },
       documentationSecondaries: messages.explorer.documentationSecondaries,
+      referenceGroups: messages.explorer.referenceGroups,
     };
 
     expect(() =>
@@ -841,10 +889,29 @@ describe("explorer IA fail-closed locale contract", () => {
         ...messages.explorer.documentationSecondaries,
         configuring: "",
       },
+      referenceGroups: messages.explorer.referenceGroups,
     };
 
     expect(() =>
       resolveExplorerMessages({ ...messages, explorer: incomplete }),
     ).toThrow(/documentationSecondaries\.configuring/);
+  });
+
+  test("assertExplorerMessages rejects incomplete Reference group catalogs", async () => {
+    const messages = await loadUiMessages("en");
+    const incomplete = {
+      folders: messages.explorer.folders,
+      conceptsGroups: messages.explorer.conceptsGroups,
+      documentationGroups: messages.explorer.documentationGroups,
+      documentationSecondaries: messages.explorer.documentationSecondaries,
+      referenceGroups: {
+        ...messages.explorer.referenceGroups,
+        contracts: "",
+      },
+    };
+
+    expect(() =>
+      resolveExplorerMessages({ ...messages, explorer: incomplete }),
+    ).toThrow(/referenceGroups\.contracts/);
   });
 });

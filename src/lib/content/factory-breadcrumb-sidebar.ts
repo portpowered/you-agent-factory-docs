@@ -1,5 +1,4 @@
 import {
-  DIRECT_DOCS_ROUTE_FAMILY_IDS,
   DOCS_COLLECTION_IDS,
   type DocsCollectionId,
 } from "@/lib/docs/collection-definition-contract";
@@ -7,14 +6,33 @@ import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-accepta
 import { isDeletedAiSearchUrl } from "@/lib/search/factory-search-deleted-records";
 
 /**
- * Reader-visible docs explorer folder order: CLI collections, then W15 route
- * families in topology order (references → factories → workers →
- * workstations). Glossary stays reachable via browse, search, and direct
- * routes but is not an explorer folder.
+ * Reader-visible docs explorer folder order: CLI collections, then Reference.
+ * Factories / Workers / Workstations nest under Reference (not top-level peers).
+ * Glossary stays reachable via browse, search, and direct routes but is not an
+ * explorer folder.
+ */
+export const FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS = [
+  ...CLI_DOCS_COLLECTION_IDS,
+  "references",
+] as const satisfies readonly DocsCollectionId[];
+
+/**
+ * W15 route-family collections nested under the Reference explorer folder.
+ */
+export const FACTORY_REFERENCE_NESTED_COLLECTION_IDS = [
+  "factories",
+  "workers",
+  "workstations",
+] as const satisfies readonly DocsCollectionId[];
+
+/**
+ * All collection ids that appear as explorer folders (top-level or nested under
+ * Reference). Used for sidebar definitions / folder labels; top-level order is
+ * `FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS`.
  */
 export const FACTORY_SIDEBAR_COLLECTION_IDS = [
-  ...CLI_DOCS_COLLECTION_IDS,
-  ...DIRECT_DOCS_ROUTE_FAMILY_IDS,
+  ...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS,
+  ...FACTORY_REFERENCE_NESTED_COLLECTION_IDS,
 ] as const satisfies readonly DocsCollectionId[];
 
 /**
@@ -26,6 +44,12 @@ export const FACTORY_NAV_COLLECTION_IDS = DOCS_COLLECTION_IDS;
 
 export type FactorySidebarCollectionId =
   (typeof FACTORY_SIDEBAR_COLLECTION_IDS)[number];
+
+export type FactoryExplorerTopLevelCollectionId =
+  (typeof FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS)[number];
+
+export type FactoryReferenceNestedCollectionId =
+  (typeof FACTORY_REFERENCE_NESTED_COLLECTION_IDS)[number];
 
 export type FactoryNavCollectionId = DocsCollectionId;
 
@@ -41,7 +65,7 @@ export const DOCS_EXPLORER_TOP_LEVEL_FAQ_URL =
 
 export type FactoryExplorerCollectionSectionRef = {
   kind: "collection";
-  id: FactorySidebarCollectionId;
+  id: FactoryExplorerTopLevelCollectionId;
 };
 
 export type FactoryExplorerPageSectionRef = {
@@ -54,11 +78,13 @@ export type FactoryExplorerSectionRef =
   | FactoryExplorerPageSectionRef;
 
 /**
- * Full explorer top-level order: CLI + W15 family collection folders, then
- * FAQ as a sibling page entry outside Program documentation.
+ * Full explorer top-level order: CLI + Reference collection folders, then FAQ
+ * as a sibling page entry outside Program documentation. Factories / Workers /
+ * Workstations are nested under Reference (see
+ * `FACTORY_REFERENCE_NESTED_COLLECTION_IDS`).
  */
 export const FACTORY_EXPLORER_SECTION_ORDER = [
-  ...FACTORY_SIDEBAR_COLLECTION_IDS.map(
+  ...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.map(
     (id) =>
       ({
         kind: "collection",
@@ -80,8 +106,9 @@ export const DOCS_PAGE_TREE_ROOT_NAME = "You Agent Factory" as const;
 /**
  * Sidebar folder labels and breadcrumb collection crumb labels for factory
  * docs collections. Retired Atlas folder names are not part of this map.
- * Documentation's explorer label is Program documentation; glossary keeps a
- * crumb label for direct glossary routes outside the explorer folder list.
+ * Documentation's explorer label is Program documentation; Reference (singular)
+ * is the locked PS-100 folder label; glossary keeps a crumb label for direct
+ * glossary routes outside the explorer folder list.
  */
 export const FACTORY_SIDEBAR_FOLDER_LABELS = {
   guides: "Guides",
@@ -89,13 +116,13 @@ export const FACTORY_SIDEBAR_FOLDER_LABELS = {
   techniques: "Techniques",
   documentation: "Program documentation",
   glossary: "Glossary",
-  references: "References",
+  references: "Reference",
   factories: "Factories",
   workers: "Workers",
   workstations: "Workstations",
 } as const satisfies Record<FactoryNavCollectionId, string>;
 
-/** Explorer folder labels only (no Glossary folder). */
+/** Explorer folder labels (top-level + nested under Reference; no Glossary). */
 export const FACTORY_EXPLORER_FOLDER_LABELS = {
   guides: FACTORY_SIDEBAR_FOLDER_LABELS.guides,
   concepts: FACTORY_SIDEBAR_FOLDER_LABELS.concepts,
@@ -213,23 +240,24 @@ export function assertFactoryBreadcrumbSegments(
 
 /**
  * Fail closed when sidebar collection-folder order drifts from the explorer
- * folder contract (CLI + W15 families; Glossary is not an explorer folder).
+ * top-level folder contract (CLI + Reference; Glossary is not an explorer
+ * folder; Factories / Workers / Workstations nest under Reference).
  */
 export function assertFactorySidebarSectionOrder(
   sectionIds: readonly string[],
 ): void {
-  if (sectionIds.length !== FACTORY_SIDEBAR_COLLECTION_IDS.length) {
+  if (sectionIds.length !== FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.length) {
     throw new Error(
-      `Docs sidebar section order length ${sectionIds.length} does not match factory explorer collections (${FACTORY_SIDEBAR_COLLECTION_IDS.join(", ")}).`,
+      `Docs sidebar section order length ${sectionIds.length} does not match factory explorer top-level collections (${FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.join(", ")}).`,
     );
   }
 
   for (
     let index = 0;
-    index < FACTORY_SIDEBAR_COLLECTION_IDS.length;
+    index < FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.length;
     index += 1
   ) {
-    const expected = FACTORY_SIDEBAR_COLLECTION_IDS[index];
+    const expected = FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS[index];
     const actual = sectionIds[index];
     if (actual !== expected) {
       throw new Error(

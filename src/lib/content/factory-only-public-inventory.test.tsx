@@ -69,10 +69,7 @@ const FACTORY_SIDEBAR_FOLDER_NAMES = [
   "Concepts",
   "Techniques",
   "Program documentation",
-  "References",
-  "Factories",
-  "Workers",
-  "Workstations",
+  "Reference",
 ] as const;
 
 const FACTORY_SECTION_INDEX_CASES = [

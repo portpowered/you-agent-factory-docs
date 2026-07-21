@@ -825,9 +825,19 @@ those paths only accept collection section refs.
   Mode A pending, and deferred pages do not appear as Program leftovers.
   Cross-collection factories config pages (`factories/configuration`,
   `factories/global-configuration`) are routed into the Program documentation
-  explorer folder by `hasDocumentationSidebarMembership` in
-  `docs-sidebar-sections.ts` while keeping published `/docs/factories/...`
-  routes; they no longer appear under the Factories explorer folder.
+  explorer folder by `hasDocumentationSidebarMembership` /
+  `resolveDocsExplorerCollectionId` in `docs-sidebar-sections.ts` while keeping
+  published `/docs/factories/...` routes; they no longer appear under the
+  Factories explorer folder.
+- Reference explorer nesting (PS-100): top-level folder label is singular
+  `Reference` (`FACTORY_SIDEBAR_FOLDER_LABELS.references`). Subgroups
+  Contracts / Schemas / Limits live in `SIDEBAR_GROUP_LABELS.references` with
+  membership in `FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG` (reference pages strip
+  `references/`; Limits uses full `documentation/throttling-and-limits`).
+  `FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS` omits factories/workers/workstations;
+  those nest under Reference via `FACTORY_REFERENCE_NESTED_COLLECTION_IDS` in
+  `buildDocsSidebarSectionNodes`. Locale catalogs require
+  `explorer.referenceGroups.{contracts,schemas,limits}` fail-closed.
 - Packaged CLI reference surfaces: place `packaged-documents` under Program
   Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
   Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;

@@ -4,7 +4,9 @@ import {
   assertFactorySidebarFolderLabels,
   assertFactorySidebarPageUrls,
   FACTORY_EXPLORER_SECTION_ORDER,
+  FACTORY_REFERENCE_NESTED_COLLECTION_IDS,
   type FactoryExplorerSectionRef,
+  type FactoryReferenceNestedCollectionId,
   isDocsExplorerTopLevelFaqPage,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
@@ -13,7 +15,7 @@ import {
   isModeAProgramOverviewPendingExplorerMembership,
 } from "@/lib/content/sidebar-grouping";
 import { isDocsCollectionSidebarGroupingResolverId } from "@/lib/docs/collection-definition-contract";
-import { resolveProgramDocumentationExplorerCollectionId } from "@/lib/navigation/docs-sidebar-adapter";
+import { resolveDocsExplorerCollectionId } from "@/lib/navigation/docs-sidebar-adapter";
 import { buildGroupedSidebarNodes } from "@/lib/navigation/docs-sidebar-grouping-adapter";
 import {
   buildUngroupedShellCollectionPageNodes,
@@ -23,8 +25,9 @@ import {
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 
 /**
- * Reader-visible explorer top-level order: CLI + W15 family collection
+ * Reader-visible explorer top-level order: CLI + Reference collection
  * folders, then FAQ as a sibling page outside Program documentation.
+ * Factories / Workers / Workstations nest under Reference.
  * Glossary is omitted.
  */
 export const DOCS_SIDEBAR_SECTION_ORDER = FACTORY_EXPLORER_SECTION_ORDER;
@@ -44,6 +47,31 @@ function collectSidebarPageUrls(nodes: Node[]): string[] {
   return urls;
 }
 
+function buildCollectionFolderChildren({
+  definition,
+  collectionPages,
+  groupingResolvers,
+}: {
+  definition: ShellCollectionSidebarDefinition;
+  collectionPages: readonly DocsPageSource[];
+  groupingResolvers: Record<
+    string,
+    (pages: readonly DocsPageSource[]) => Node[]
+  >;
+}): Node[] {
+  return definition.sidebarGroupingResolverId &&
+    isDocsCollectionSidebarGroupingResolverId(
+      definition.sidebarGroupingResolverId,
+    )
+    ? (groupingResolvers[definition.sidebarGroupingResolverId]?.(
+        collectionPages,
+      ) ??
+        buildGroupedSidebarNodes(definition.sidebarGroupingResolverId, [
+          ...collectionPages,
+        ]))
+    : buildUngroupedShellCollectionPageNodes(collectionPages);
+}
+
 function buildCollectionFolderNode({
   definition,
   collectionPages,
@@ -56,24 +84,74 @@ function buildCollectionFolderNode({
     (pages: readonly DocsPageSource[]) => Node[]
   >;
 }): Node {
-  const children =
-    definition.sidebarGroupingResolverId &&
-    isDocsCollectionSidebarGroupingResolverId(
-      definition.sidebarGroupingResolverId,
-    )
-      ? (groupingResolvers[definition.sidebarGroupingResolverId]?.(
-          collectionPages,
-        ) ??
-        buildGroupedSidebarNodes(definition.sidebarGroupingResolverId, [
-          ...collectionPages,
-        ]))
-      : buildUngroupedShellCollectionPageNodes(collectionPages);
+  return {
+    type: "folder",
+    name: definition.sidebarLabel,
+    children: buildCollectionFolderChildren({
+      definition,
+      collectionPages,
+      groupingResolvers,
+    }),
+  } satisfies Node;
+}
+
+function buildReferenceFolderNode({
+  definition,
+  referencePages,
+  nestedPagesByCollection,
+  definitionsById,
+  groupingResolvers,
+}: {
+  definition: ShellCollectionSidebarDefinition;
+  referencePages: readonly DocsPageSource[];
+  nestedPagesByCollection: ReadonlyMap<string, readonly DocsPageSource[]>;
+  definitionsById: ReadonlyMap<string, ShellCollectionSidebarDefinition>;
+  groupingResolvers: Record<
+    string,
+    (pages: readonly DocsPageSource[]) => Node[]
+  >;
+}): Node {
+  const children = buildCollectionFolderChildren({
+    definition,
+    collectionPages: referencePages,
+    groupingResolvers,
+  });
+
+  for (const nestedId of FACTORY_REFERENCE_NESTED_COLLECTION_IDS) {
+    const nestedDefinition = definitionsById.get(nestedId);
+    if (!nestedDefinition) {
+      throw new Error(
+        `Missing collection definition for nested Reference folder: ${nestedId}`,
+      );
+    }
+
+    const nestedPages = nestedPagesByCollection.get(nestedId) ?? [];
+    if (nestedPages.length === 0) {
+      continue;
+    }
+
+    children.push(
+      buildCollectionFolderNode({
+        definition: nestedDefinition,
+        collectionPages: nestedPages,
+        groupingResolvers,
+      }),
+    );
+  }
 
   return {
     type: "folder",
     name: definition.sidebarLabel,
     children,
   } satisfies Node;
+}
+
+function isReferenceNestedCollectionId(
+  id: string,
+): id is FactoryReferenceNestedCollectionId {
+  return (
+    FACTORY_REFERENCE_NESTED_COLLECTION_IDS as readonly string[]
+  ).includes(id);
 }
 
 export function buildDocsSidebarSectionNodes({
@@ -128,12 +206,11 @@ export function buildDocsSidebarSectionNodes({
       continue;
     }
 
-    // Cross-collection Program membership (factories config pages) moves tree
-    // placement into Program documentation while keeping published routes.
-    const programCollectionId =
-      resolveProgramDocumentationExplorerCollectionId(page);
-    if (programCollectionId) {
-      pagesByCollection.get(programCollectionId)?.push(page);
+    // Cross-collection explorer membership (Program factories config, Reference
+    // Limits throttling) moves tree placement while keeping published routes.
+    const overrideCollectionId = resolveDocsExplorerCollectionId(page);
+    if (overrideCollectionId) {
+      pagesByCollection.get(overrideCollectionId)?.push(page);
       continue;
     }
 
@@ -162,6 +239,22 @@ export function buildDocsSidebarSectionNodes({
     if (!definition) {
       throw new Error(
         `Missing collection definition for sidebar id: ${sectionRef.id}`,
+      );
+    }
+
+    if (sectionRef.id === "references") {
+      return buildReferenceFolderNode({
+        definition,
+        referencePages: pagesByCollection.get("references") ?? [],
+        nestedPagesByCollection: pagesByCollection,
+        definitionsById,
+        groupingResolvers,
+      });
+    }
+
+    if (isReferenceNestedCollectionId(sectionRef.id)) {
+      throw new Error(
+        `Reference-nested collection "${sectionRef.id}" must not appear as a top-level explorer section.`,
       );
     }
 

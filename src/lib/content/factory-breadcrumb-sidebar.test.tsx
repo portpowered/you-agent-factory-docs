@@ -24,6 +24,7 @@ import {
   DOCS_PAGE_TREE_ROOT_NAME,
   FACTORY_EXPLORER_FOLDER_LABELS,
   FACTORY_EXPLORER_SECTION_ORDER,
+  FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS,
   FACTORY_NAV_COLLECTION_IDS,
   FACTORY_SIDEBAR_COLLECTION_IDS,
   FACTORY_SIDEBAR_FOLDER_LABELS,
@@ -115,7 +116,7 @@ describe("factory breadcrumbs and sidebar collections", () => {
       "Concepts",
       "Techniques",
       "Program documentation",
-      "References",
+      "Reference",
       "Factories",
       "Workers",
       "Workstations",
@@ -125,7 +126,7 @@ describe("factory breadcrumbs and sidebar collections", () => {
       "Concepts",
       "Techniques",
       "Program documentation",
-      "References",
+      "Reference",
       "Factories",
       "Workers",
       "Workstations",
@@ -133,6 +134,7 @@ describe("factory breadcrumbs and sidebar collections", () => {
     expect(FACTORY_SIDEBAR_FOLDER_LABELS.documentation).toBe(
       "Program documentation",
     );
+    expect(FACTORY_SIDEBAR_FOLDER_LABELS.references).toBe("Reference");
     expect(FACTORY_SIDEBAR_FOLDER_LABELS.glossary).toBe("Glossary");
     expect(DOCS_PAGE_TREE_ROOT_NAME).toBe("You Agent Factory");
 
@@ -179,8 +181,17 @@ describe("factory breadcrumbs and sidebar collections", () => {
       assertFactorySidebarPageUrls(["/docs/concepts/harness"]),
     ).not.toThrow();
     expect(() =>
-      assertFactorySidebarSectionOrder([...FACTORY_SIDEBAR_COLLECTION_IDS]),
+      assertFactorySidebarSectionOrder([
+        "guides",
+        "concepts",
+        "techniques",
+        "documentation",
+        "references",
+      ]),
     ).not.toThrow();
+    expect(() =>
+      assertFactorySidebarSectionOrder([...FACTORY_SIDEBAR_COLLECTION_IDS]),
+    ).toThrow(/section order/);
     expect(() =>
       assertFactorySidebarSectionOrder([...FACTORY_NAV_COLLECTION_IDS]),
     ).toThrow(/section order/);
@@ -277,12 +288,17 @@ describe("factory breadcrumbs and sidebar collections", () => {
 
     expect(pageTree.name).toBe(DOCS_PAGE_TREE_ROOT_NAME);
     expect(folderNames).toEqual(
-      FACTORY_SIDEBAR_COLLECTION_IDS.map((id) =>
+      FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.map((id) =>
         resolveFactorySidebarFolderLabel(id),
       ),
     );
     expect(folderNames).toEqual(topLevelFolderNames(source.pageTree));
     expect(folderNames).not.toContain("Glossary");
+    expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.factories);
+    expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.workers);
+    expect(folderNames).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    );
     assertFactorySidebarFolderLabels(folderNames);
     expect(topLevelFaq).toEqual({
       type: "page",

@@ -81,6 +81,11 @@
     },
     "documentationSecondaries": {
       "configuring": "Cấu hình you-agent-factory"
+    },
+    "referenceGroups": {
+      "contracts": "Hợp đồng",
+      "schemas": "Lược đồ",
+      "limits": "Giới hạn"
     }
   },
   "referenceChrome": {

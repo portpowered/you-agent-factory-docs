@@ -1,6 +1,5 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
-import { FACTORY_SIDEBAR_COLLECTION_IDS } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import {
   getDocsShellPageTreeSettings,
@@ -10,9 +9,11 @@ import {
   collectSidebarPageLinks,
   findSidebarPageLink,
 } from "@/lib/navigation/docs-sidebar-contract";
-import { DOCS_SIDEBAR_SECTION_ORDER } from "@/lib/navigation/docs-sidebar-sections";
+import {
+  buildDocsSidebarSectionNodes,
+  DOCS_SIDEBAR_SECTION_ORDER,
+} from "@/lib/navigation/docs-sidebar-sections";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
-import { buildShellCollectionPageTree } from "@/lib/navigation/shell-collection-page-tree";
 import {
   buildNonAiShellFixturePageTree,
   listNonAiShellFixtureCollectionDefinitions,
@@ -83,38 +84,50 @@ describe("docs sidebar adapter extraction parity", () => {
     const generatedTree = buildGeneratedDocsPageTree(baseTree);
     const { definitions, groupingResolvers, resolveCollectionId } =
       getDocsShellPageTreeSettings();
-    const adapterTree = buildShellCollectionPageTree(baseTree, {
-      pages: loadPublishedDocsPagesSync("en"),
-      definitions,
-      collectionIds: [...FACTORY_SIDEBAR_COLLECTION_IDS],
-      groupingResolvers,
-      resolveCollectionId,
-    });
+    // Canonical explorer nesting lives in buildDocsSidebarSectionNodes; shell
+    // remains a flat collection builder for generic fixtures. Parity compares
+    // generated tree against the same section-builder path wired from settings.
+    const adapterTree = {
+      ...baseTree,
+      name: "You Agent Factory",
+      children: buildDocsSidebarSectionNodes({
+        pages: loadPublishedDocsPagesSync("en"),
+        definitions,
+        groupingResolvers,
+      }),
+    };
 
     const factoryFolderNames = [
       "Guides",
       "Concepts",
       "Techniques",
       "Program documentation",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
+      "Reference",
     ] as const;
 
     expect(getTopLevelFolderNames(generatedTree)).toEqual([
+      ...factoryFolderNames,
+    ]);
+    expect(getTopLevelFolderNames(adapterTree)).toEqual([
       ...factoryFolderNames,
     ]);
     expect(
       DOCS_SIDEBAR_SECTION_ORDER.flatMap((section) =>
         section.kind === "collection" ? [section.id] : [],
       ),
-    ).toEqual([...FACTORY_SIDEBAR_COLLECTION_IDS]);
+    ).toEqual([
+      "guides",
+      "concepts",
+      "techniques",
+      "documentation",
+      "references",
+    ]);
     expect(DOCS_SIDEBAR_SECTION_ORDER.at(-1)).toEqual({
       kind: "page",
       docsSlug: "documentation/faq",
     });
     expect(getTopLevelFolderNames(generatedTree)).not.toContain("Glossary");
+    expect(getTopLevelFolderNames(generatedTree)).not.toContain("Factories");
     expect(generatedTree.name).toBe("You Agent Factory");
     expect(generatedTree.children.at(-1)).toEqual({
       type: "page",
@@ -129,14 +142,20 @@ describe("docs sidebar adapter extraction parity", () => {
 
     for (const folderName of factoryFolderNames) {
       const generatedLinks = getFolderPageLinks(generatedTree, folderName);
-      const adapterLinks = getFolderPageLinks(adapterTree, folderName).filter(
-        (link) =>
-          folderName !== "Program documentation" ||
-          link.url !== "/docs/documentation/faq",
-      );
+      const adapterLinks = getFolderPageLinks(adapterTree, folderName);
 
       expect(generatedLinks).toEqual(adapterLinks);
     }
+
+    // resolveCollectionId remains wired for Program + Reference overrides.
+    expect(resolveCollectionId({ docsSlug: "factories/configuration" })).toBe(
+      "documentation",
+    );
+    expect(
+      resolveCollectionId({
+        docsSlug: "documentation/throttling-and-limits",
+      }),
+    ).toBe("references");
   });
 
   test("grouped concepts folder keeps separator label and representative page placement", () => {

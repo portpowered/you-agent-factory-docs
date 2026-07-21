@@ -332,7 +332,14 @@ describe("factory search and navigation convergence end-to-end", () => {
       "workers",
       "workstations",
     ]);
-    expect(folderNames).toEqual(Object.values(FACTORY_EXPLORER_FOLDER_LABELS));
+    expect(folderNames).toEqual([
+      FACTORY_EXPLORER_FOLDER_LABELS.guides,
+      FACTORY_EXPLORER_FOLDER_LABELS.concepts,
+      FACTORY_EXPLORER_FOLDER_LABELS.techniques,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    ]);
+    expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.factories);
     expect(folderNames).not.toContain("Glossary");
     expect(pageTree.name).toBe("You Agent Factory");
     for (const label of RETIRED_ATLAS_NAV_FOLDER_LABELS) {

@@ -142,14 +142,16 @@ describe("desktop/mobile explorer tree parity", () => {
         messages.explorer.folders.techniques,
         messages.explorer.folders.documentation,
         messages.explorer.folders.references,
-        ...(locale === "en"
-          ? [
-              messages.explorer.folders.factories,
-              messages.explorer.folders.workers,
-              messages.explorer.folders.workstations,
-            ]
-          : []),
       ]);
+      expect(topLevelFolderNames(signature)).not.toContain(
+        messages.explorer.folders.factories,
+      );
+      expect(topLevelFolderNames(signature)).not.toContain(
+        messages.explorer.folders.workers,
+      );
+      expect(topLevelFolderNames(signature)).not.toContain(
+        messages.explorer.folders.workstations,
+      );
       expect(topLevelFolderNames(signature)).not.toContain("Glossary");
 
       const faqEntries = topLevelPageEntries(signature);

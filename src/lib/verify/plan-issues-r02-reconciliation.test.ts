@@ -181,12 +181,10 @@ describe("plan-issues R02 tip reconciliation", () => {
       "Concepts",
       "Techniques",
       "Program documentation",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
+      "Reference",
     ]);
     expect(topLevelFolderNames(signature)).not.toContain("Glossary");
+    expect(topLevelFolderNames(signature)).not.toContain("Factories");
     expect(topLevelPageEntries(signature).map((page) => page.url)).toContain(
       DOCS_EXPLORER_TOP_LEVEL_FAQ_URL,
     );

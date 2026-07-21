@@ -81,6 +81,11 @@
     },
     "documentationSecondaries": {
       "configuring": "配置 you-agent-factory"
+    },
+    "referenceGroups": {
+      "contracts": "合约",
+      "schemas": "模式",
+      "limits": "限制"
     }
   },
   "referenceChrome": {

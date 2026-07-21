@@ -155,6 +155,10 @@ describe("docs sidebar navigation accessibility", () => {
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
       context.messages.explorer.folders.references,
+    ] as const) {
+      await openExplorerFolder(sidebar, folderName);
+    }
+    for (const folderName of [
       context.messages.explorer.folders.factories,
       context.messages.explorer.folders.workers,
       context.messages.explorer.folders.workstations,

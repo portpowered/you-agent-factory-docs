@@ -81,6 +81,11 @@
     },
     "documentationSecondaries": {
       "configuring": "you-agent-factory の設定"
+    },
+    "referenceGroups": {
+      "contracts": "コントラクト",
+      "schemas": "スキーマ",
+      "limits": "制限"
     }
   },
   "referenceChrome": {

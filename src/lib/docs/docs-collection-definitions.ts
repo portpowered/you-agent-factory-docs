@@ -90,6 +90,7 @@ export const DOCS_COLLECTION_DEFINITIONS = [
     frontmatterKind: "reference",
     starterSlugs: [],
     messageKeys: collectionMessageKeys("references", "references"),
+    sidebarGroupingResolverId: "references",
   },
   {
     id: "factories",

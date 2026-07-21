@@ -89,11 +89,19 @@ export type ExplorerDocumentationSecondaryMessages = {
   configuring: string;
 };
 
+/** Reference subgroup separator labels (Contracts / Schemas / Limits). */
+export type ExplorerReferenceGroupMessages = {
+  contracts: string;
+  schemas: string;
+  limits: string;
+};
+
 export type ExplorerMessages = {
   folders: ExplorerFolderMessages;
   conceptsGroups: ExplorerConceptsGroupMessages;
   documentationGroups: ExplorerDocumentationGroupMessages;
   documentationSecondaries: ExplorerDocumentationSecondaryMessages;
+  referenceGroups: ExplorerReferenceGroupMessages;
 };
 
 /**

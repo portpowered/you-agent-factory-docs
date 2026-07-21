@@ -21,6 +21,15 @@ export const SIDEBAR_GROUP_LABELS = {
     interfaces: "Interfaces",
     operations: "Operations",
   },
+  /**
+   * Locked PS-100 Reference subgroups. Factories / Workers / Workstations nest
+   * as collection folders under Reference (not subgroup separators here).
+   */
+  references: {
+    contracts: "Contracts",
+    schemas: "Schemas",
+    limits: "Limits",
+  },
 } as const;
 
 /**
@@ -216,6 +225,7 @@ export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
 /**
  * Published documentation slugs intentionally demoted from Program explorer
  * membership under locked PS-100 (still published at existing routes).
+ * `throttling-and-limits` is claimed by Reference → Limits instead.
  */
 export const PROGRAM_DOCUMENTATION_DEMOTED_SLUGS = [
   "install",
@@ -229,6 +239,30 @@ export const PROGRAM_DOCUMENTATION_DEMOTED_SLUGS = [
 
 export type FactoryDocumentationSidebarSlug =
   keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG;
+
+type ReferenceSidebarGroupId =
+  keyof (typeof SIDEBAR_GROUP_LABELS)["references"];
+
+/**
+ * Explicit Reference explorer subgroup membership by page slug.
+ * Reference collection pages strip the `references/` prefix; cross-collection
+ * Limits membership keeps the full docsSlug (`documentation/throttling-and-limits`)
+ * so tree placement can move throttling under Reference without a route change.
+ */
+export const FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG = {
+  api: "contracts",
+  cli: "contracts",
+  mcp: "contracts",
+  events: "contracts",
+  "javascript-runtime": "contracts",
+  "factory-schema": "schemas",
+  "system-config-schema": "schemas",
+  "mock-workers-schema": "schemas",
+  "documentation/throttling-and-limits": "limits",
+} as const satisfies Record<string, ReferenceSidebarGroupId>;
+
+export type FactoryReferenceSidebarSlug =
+  keyof typeof FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG;
 
 /**
  * Top-group-only view of Program documentation membership for callers that
@@ -382,6 +416,45 @@ export function hasDocumentationSidebarMembership(docsSlug: string): boolean {
       documentationSidebarMembershipSlug(docsSlug),
     ) !== undefined
   );
+}
+
+/**
+ * Membership lookup key for Reference explorer placement. Reference collection
+ * pages strip the `references/` prefix; other collections (Limits throttling)
+ * keep the full docsSlug.
+ */
+export function referenceSidebarMembershipSlug(docsSlug: string): string {
+  return docsSlug.startsWith("references/")
+    ? docsSlug.slice("references/".length)
+    : docsSlug;
+}
+
+export function getReferenceSidebarGroup(
+  slug: string,
+): ReferenceSidebarGroupId | undefined {
+  return FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG[
+    slug as FactoryReferenceSidebarSlug
+  ];
+}
+
+/**
+ * True when a published page is claimed by Reference explorer subgroup
+ * membership (including cross-collection Limits throttling).
+ */
+export function hasReferenceSidebarMembership(docsSlug: string): boolean {
+  return (
+    getReferenceSidebarGroup(referenceSidebarMembershipSlug(docsSlug)) !==
+    undefined
+  );
+}
+
+export function resolveReferencesSidebarGroup(record: {
+  slug?: string;
+}): ReferenceSidebarGroupId | undefined {
+  if (!record.slug) {
+    return undefined;
+  }
+  return getReferenceSidebarGroup(record.slug);
 }
 
 function createSidebarGroupResolution<

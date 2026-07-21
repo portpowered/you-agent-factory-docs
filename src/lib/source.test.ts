@@ -4,12 +4,15 @@ import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import { hasDocumentationSidebarMembership } from "@/lib/content/sidebar-grouping";
 import { source } from "@/lib/source";
 
-const SECTION_FOLDER_NAMES = {
+const TOP_LEVEL_FOLDER_NAMES = {
   guides: "Guides",
   concepts: "Concepts",
   techniques: "Techniques",
   documentation: "Program documentation",
-  references: "References",
+  references: "Reference",
+} as const;
+
+const NESTED_REFERENCE_FOLDER_NAMES = {
   factories: "Factories",
   workers: "Workers",
   workstations: "Workstations",
@@ -75,6 +78,22 @@ function getFolderChildren(folderName: string): Node[] {
   return folder.children;
 }
 
+function getNestedFolderChildren(
+  parentFolderName: string,
+  nestedFolderName: string,
+): Node[] {
+  const nested = getFolderChildren(parentFolderName).find(
+    (node) => node.type === "folder" && node.name === nestedFolderName,
+  );
+  expect(nested?.type).toBe("folder");
+  if (nested?.type !== "folder") {
+    throw new Error(
+      `expected nested ${nestedFolderName} folder under ${parentFolderName}`,
+    );
+  }
+  return nested.children;
+}
+
 function docsSlugFromUrl(url: string): string[] {
   return url.replace("/docs/", "").split("/");
 }
@@ -89,12 +108,18 @@ describe("docs navigation source", () => {
       .filter((node) => node.type === "folder")
       .map((node) => String(node.name));
 
-    expect(folderNames).toEqual(Object.values(SECTION_FOLDER_NAMES));
+    expect(folderNames).toEqual(Object.values(TOP_LEVEL_FOLDER_NAMES));
     expect(folderNames).not.toContain("Glossary");
+    expect(folderNames).not.toContain("Factories");
     expect(source.pageTree.name).toBe("You Agent Factory");
     for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
       expect(folderNames).not.toContain(retiredFolder);
     }
+
+    const nestedNames = getFolderChildren(TOP_LEVEL_FOLDER_NAMES.references)
+      .filter((node) => node.type === "folder")
+      .map((node) => String(node.name));
+    expect(nestedNames).toEqual(Object.values(NESTED_REFERENCE_FOLDER_NAMES));
   });
 
   test("generated folder URLs stay within their published section contract without exact inventories", () => {
@@ -103,7 +128,13 @@ describe("docs navigation source", () => {
       publishedPages.map((page) => [page.url, page] as const),
     );
 
-    for (const [section, folderName] of Object.entries(SECTION_FOLDER_NAMES)) {
+    for (const [section, folderName] of Object.entries(
+      TOP_LEVEL_FOLDER_NAMES,
+    )) {
+      if (section === "references") {
+        continue;
+      }
+
       const folderUrls = collectPageUrls(getFolderChildren(folderName));
       const sectionPrefix = `/docs/${section}/`;
 
@@ -159,12 +190,49 @@ describe("docs navigation source", () => {
         ).toBeGreaterThan(0);
       }
     }
+
+    const referenceUrls = collectPageUrls(
+      getFolderChildren(TOP_LEVEL_FOLDER_NAMES.references),
+    );
+    expect(
+      referenceUrls.some((url) => url.startsWith("/docs/references/")),
+    ).toBe(true);
+    expect(
+      referenceUrls.some((url) =>
+        url.endsWith("/docs/documentation/throttling-and-limits"),
+      ),
+    ).toBe(true);
+    expect(
+      referenceUrls.some((url) => url.startsWith("/docs/factories/")),
+    ).toBe(true);
+
+    for (const [section, folderName] of Object.entries(
+      NESTED_REFERENCE_FOLDER_NAMES,
+    )) {
+      const folderUrls = collectPageUrls(
+        getNestedFolderChildren(TOP_LEVEL_FOLDER_NAMES.references, folderName),
+      );
+      for (const url of folderUrls) {
+        expect(url.startsWith(`/docs/${section}/`)).toBe(true);
+        expect(
+          hasDocumentationSidebarMembership(
+            publishedByUrl.get(url)?.docsSlug ?? "",
+          ),
+        ).toBe(false);
+      }
+    }
   });
 
   test("published factory sections keep representative anchors in the sidebar", () => {
     const publishedPages = loadPublishedDocsPagesSync("en");
 
-    for (const [section, folderName] of Object.entries(SECTION_FOLDER_NAMES)) {
+    for (const [section, folderName] of Object.entries(
+      TOP_LEVEL_FOLDER_NAMES,
+    )) {
+      if (section === "references") {
+        continue;
+      }
+
       const folderUrls = collectPageUrls(getFolderChildren(folderName));
       const publishedSectionUrls = publishedPages
         .filter((page) => {
@@ -196,13 +264,26 @@ describe("docs navigation source", () => {
         `${folderName} should surface the last published route as a representative anchor`,
       ).toContain(publishedSectionUrls.at(-1) as string);
     }
+
+    const referenceUrls = collectPageUrls(
+      getFolderChildren(TOP_LEVEL_FOLDER_NAMES.references),
+    );
+    expect(referenceUrls).toContain("/docs/references/api");
+    expect(referenceUrls).toContain("/docs/factories/sessions");
+    expect(referenceUrls).toContain("/docs/workers/agent");
+    expect(referenceUrls).toContain("/docs/workstations/inference-run");
+    expect(referenceUrls).toContain(
+      "/docs/documentation/throttling-and-limits",
+    );
   });
 
   test("representative factory discovery routes resolve through the Fumadocs source", () => {
     for (const [section, urls] of Object.entries(REPRESENTATIVE_SECTION_URLS)) {
       const folderUrls = collectPageUrls(
         getFolderChildren(
-          SECTION_FOLDER_NAMES[section as keyof typeof SECTION_FOLDER_NAMES],
+          TOP_LEVEL_FOLDER_NAMES[
+            section as keyof typeof TOP_LEVEL_FOLDER_NAMES
+          ],
         ),
       );
 

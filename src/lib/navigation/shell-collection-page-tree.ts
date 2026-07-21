@@ -25,10 +25,10 @@ export type ShellSidebarGroupingResolver = (
  * Optional override for explorer folder assignment. When it returns a
  * collection id, that id wins over routeSlug-based placement (used for
  * Program documentation cross-collection membership such as factories
- * config pages).
+ * config pages and Reference Limits throttling).
  */
 export type ShellCollectionIdResolver = (
-  page: ShellCollectionPageSource,
+  page: Pick<ShellCollectionPageSource, "docsSlug">,
 ) => string | undefined;
 
 export type ShellSidebarPageGroup<

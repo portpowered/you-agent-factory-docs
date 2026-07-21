@@ -1,16 +1,22 @@
 /**
- * W15 story 003: four route families are discoverable as top-level docs
- * explorer folders in topology order, with settled page children only
- * (no operation / event-variant / schema-definition inventory flood).
+ * W15 story 003 (updated PS-100): four route families remain discoverable —
+ * Reference is top-level; Factories / Workers / Workstations nest under
+ * Reference. Settled page children only (no inventory path flood).
  */
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
 import {
   FACTORY_EXPLORER_FOLDER_LABELS,
+  FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS,
+  FACTORY_REFERENCE_NESTED_COLLECTION_IDS,
   FACTORY_SIDEBAR_COLLECTION_IDS,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import { hasDocumentationSidebarMembership } from "@/lib/content/sidebar-grouping";
+import {
+  hasDocumentationSidebarMembership,
+  hasReferenceSidebarMembership,
+  SIDEBAR_GROUP_LABELS,
+} from "@/lib/content/sidebar-grouping";
 import { DIRECT_DOCS_ROUTE_FAMILY_IDS } from "@/lib/docs/collection-definition-contract";
 import {
   collectSidebarPageLinks,
@@ -18,19 +24,7 @@ import {
 } from "@/lib/navigation/docs-sidebar-contract";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
 
-const W15_FAMILY_FOLDER_ORDER = [
-  FACTORY_EXPLORER_FOLDER_LABELS.references,
-  FACTORY_EXPLORER_FOLDER_LABELS.factories,
-  FACTORY_EXPLORER_FOLDER_LABELS.workers,
-  FACTORY_EXPLORER_FOLDER_LABELS.workstations,
-] as const;
-
-const SETTLED_FAMILY_PAGE_PROOFS = [
-  {
-    folderName: FACTORY_EXPLORER_FOLDER_LABELS.references,
-    url: "/docs/references/api",
-    name: "API",
-  },
+const SETTLED_NESTED_FAMILY_PAGE_PROOFS = [
   {
     folderName: FACTORY_EXPLORER_FOLDER_LABELS.factories,
     url: "/docs/factories/sessions",
@@ -68,14 +62,37 @@ function getFolderChildren(
   return folder.children;
 }
 
+function getNestedFolderChildren(
+  parentChildren: Node[],
+  folderName: string,
+): Node[] {
+  const folder = parentChildren.find(
+    (node) => node.type === "folder" && node.name === folderName,
+  );
+  expect(folder?.type).toBe("folder");
+  if (folder?.type !== "folder") {
+    throw new Error(`expected nested ${folderName} folder under Reference`);
+  }
+  return folder.children;
+}
+
 describe("W15 family sidebar discovery", () => {
-  test("explorer collection ids append W15 families after CLI collections in topology order", () => {
-    expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
+  test("explorer collection ids keep W15 families after CLI with Reference nesting", () => {
+    expect([...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS]).toEqual([
       "guides",
       "concepts",
       "techniques",
       "documentation",
-      ...DIRECT_DOCS_ROUTE_FAMILY_IDS,
+      "references",
+    ]);
+    expect([...FACTORY_REFERENCE_NESTED_COLLECTION_IDS]).toEqual([
+      "factories",
+      "workers",
+      "workstations",
+    ]);
+    expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
+      ...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS,
+      ...FACTORY_REFERENCE_NESTED_COLLECTION_IDS,
     ]);
     expect([...DIRECT_DOCS_ROUTE_FAMILY_IDS]).toEqual([
       "references",
@@ -85,7 +102,7 @@ describe("W15 family sidebar discovery", () => {
     ]);
   });
 
-  test("generated page tree exposes the four families as top-level folders in topology relative order", () => {
+  test("generated page tree nests Factories / Workers / Workstations under Reference", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const folderNames = getTopLevelFolderNames(pageTree);
 
@@ -94,29 +111,66 @@ describe("W15 family sidebar discovery", () => {
       FACTORY_EXPLORER_FOLDER_LABELS.concepts,
       FACTORY_EXPLORER_FOLDER_LABELS.techniques,
       FACTORY_EXPLORER_FOLDER_LABELS.documentation,
-      ...W15_FAMILY_FOLDER_ORDER,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
     ]);
-
-    const familyIndexes = W15_FAMILY_FOLDER_ORDER.map((name) =>
-      folderNames.indexOf(name),
+    expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.factories);
+    expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.workers);
+    expect(folderNames).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
     );
-    expect(familyIndexes.every((index) => index >= 0)).toBe(true);
-    expect(familyIndexes).toEqual([...familyIndexes].sort((a, b) => a - b));
     expect(folderNames).not.toContain("Glossary");
     expect(pageTree.children.at(-1)).toEqual({
       type: "page",
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
+
+    const referenceChildren = getFolderChildren(
+      pageTree,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    );
+    expect(getSeparatorLabels(referenceChildren)).toEqual([
+      SIDEBAR_GROUP_LABELS.references.contracts,
+      SIDEBAR_GROUP_LABELS.references.schemas,
+      SIDEBAR_GROUP_LABELS.references.limits,
+    ]);
+    expect(
+      referenceChildren
+        .filter((node) => node.type === "folder")
+        .map((node) => String(node.name)),
+    ).toEqual([
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    ]);
   });
 
   test("family folders list settled published pages only, without inventory path flood", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const publishedPages = loadPublishedDocsPagesSync("en");
+    const referenceChildren = getFolderChildren(
+      pageTree,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    );
 
-    for (const familyId of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
+    const referenceLinks = collectSidebarPageLinks(referenceChildren).filter(
+      (link) => link.url.startsWith("/docs/references/"),
+    );
+    const publishedReferenceUrls = publishedPages
+      .filter(
+        (page) =>
+          page.docsSlug.startsWith("references/") &&
+          hasReferenceSidebarMembership(page.docsSlug),
+      )
+      .map((page) => page.url)
+      .sort();
+    expect(referenceLinks.map((link) => link.url).sort()).toEqual(
+      publishedReferenceUrls,
+    );
+
+    for (const familyId of FACTORY_REFERENCE_NESTED_COLLECTION_IDS) {
       const folderName = FACTORY_EXPLORER_FOLDER_LABELS[familyId];
-      const children = getFolderChildren(pageTree, folderName);
+      const children = getNestedFolderChildren(referenceChildren, folderName);
       const links = collectSidebarPageLinks(children);
       const publishedFamilyUrls = publishedPages
         .filter(
@@ -133,17 +187,33 @@ describe("W15 family sidebar discovery", () => {
       for (const link of links) {
         const pathAfterDocs = link.url.replace(/^\/docs\//, "");
         const segments = pathAfterDocs.split("/");
-        // Settled family pages are /docs/<family>/<page> only — not deeper
-        // operation / event-variant / schema-definition inventory routes.
         expect(segments).toHaveLength(2);
         expect(segments[0]).toBe(familyId);
         expect(link.url.includes("#")).toBe(false);
       }
     }
 
-    for (const proof of SETTLED_FAMILY_PAGE_PROOFS) {
+    expect(
+      findSidebarPageLink(
+        collectSidebarPageLinks(referenceChildren),
+        "/docs/references/api",
+      ),
+    ).toEqual({
+      name: "API",
+      url: "/docs/references/api",
+    });
+    expect(
+      findSidebarPageLink(
+        collectSidebarPageLinks(referenceChildren),
+        "/docs/documentation/throttling-and-limits",
+      ),
+    ).toMatchObject({
+      url: "/docs/documentation/throttling-and-limits",
+    });
+
+    for (const proof of SETTLED_NESTED_FAMILY_PAGE_PROOFS) {
       const links = collectSidebarPageLinks(
-        getFolderChildren(pageTree, proof.folderName),
+        getNestedFolderChildren(referenceChildren, proof.folderName),
       );
       expect(findSidebarPageLink(links, proof.url)).toEqual({
         name: proof.name,

@@ -44,6 +44,7 @@ export function assertExplorerMessages(
   const conceptsGroups = record.conceptsGroups;
   const documentationGroups = record.documentationGroups;
   const documentationSecondaries = record.documentationSecondaries;
+  const referenceGroups = record.referenceGroups;
 
   if (!folders || typeof folders !== "object") {
     throw new ExplorerLabelsError(
@@ -66,6 +67,11 @@ export function assertExplorerMessages(
   ) {
     throw new ExplorerLabelsError(
       "Explorer Program documentation secondary messages are missing; localized explorer chrome fails closed without English fallback.",
+    );
+  }
+  if (!referenceGroups || typeof referenceGroups !== "object") {
+    throw new ExplorerLabelsError(
+      "Explorer Reference group messages are missing; localized explorer chrome fails closed without English fallback.",
     );
   }
 
@@ -102,6 +108,15 @@ export function assertExplorerMessages(
     assertNonEmptyLabel(
       `explorer.documentationSecondaries.${id}`,
       (documentationSecondaries as Record<string, unknown>)[id],
+    );
+  }
+
+  for (const id of Object.keys(SIDEBAR_GROUP_LABELS.references) as Array<
+    keyof typeof SIDEBAR_GROUP_LABELS.references
+  >) {
+    assertNonEmptyLabel(
+      `explorer.referenceGroups.${id}`,
+      (referenceGroups as Record<string, unknown>)[id],
     );
   }
 }
@@ -146,6 +161,12 @@ export function buildDefaultGroupLabelLocalizer(
     SIDEBAR_GROUP_LABELS.documentation,
   ) as Array<[keyof ExplorerMessages["documentationGroups"], string]>) {
     localized.set(defaultLabel, explorer.documentationGroups[id]);
+  }
+
+  for (const [id, defaultLabel] of Object.entries(
+    SIDEBAR_GROUP_LABELS.references,
+  ) as Array<[keyof ExplorerMessages["referenceGroups"], string]>) {
+    localized.set(defaultLabel, explorer.referenceGroups[id]);
   }
 
   return localized;

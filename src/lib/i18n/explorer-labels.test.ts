@@ -41,8 +41,16 @@ describe("explorer labels", () => {
     expect(explorer.documentationSecondaries).toEqual({
       ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
     });
+    expect(explorer.referenceGroups).toEqual({
+      ...SIDEBAR_GROUP_LABELS.references,
+    });
     expect(Object.keys(explorer.documentationSecondaries).sort()).toEqual([
       "configuring",
+    ]);
+    expect(Object.keys(explorer.referenceGroups).sort()).toEqual([
+      "contracts",
+      "limits",
+      "schemas",
     ]);
     expect(explorer.documentationSecondaries).not.toHaveProperty("resources");
     expect(explorer.documentationSecondaries).not.toHaveProperty(
@@ -138,7 +146,7 @@ describe("explorer labels", () => {
           concepts: "Concepts",
           techniques: "Techniques",
           documentation: "Program documentation",
-          references: "References",
+          references: "Reference",
           factories: "Factories",
           workers: "Workers",
           workstations: "Workstations",
@@ -154,6 +162,9 @@ describe("explorer labels", () => {
         documentationSecondaries: {
           ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
         },
+        referenceGroups: {
+          ...SIDEBAR_GROUP_LABELS.references,
+        },
       }),
     ).toThrow(/industrial-engineering/);
   });
@@ -166,7 +177,7 @@ describe("explorer labels", () => {
           concepts: "Concepts",
           techniques: "Techniques",
           documentation: "Program documentation",
-          references: "References",
+          references: "Reference",
           factories: "Factories",
           workers: "Workers",
           workstations: "Workstations",
@@ -180,6 +191,9 @@ describe("explorer labels", () => {
         documentationSecondaries: {
           ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
           configuring: "   ",
+        },
+        referenceGroups: {
+          ...SIDEBAR_GROUP_LABELS.references,
         },
       }),
     ).toThrow(/documentationSecondaries\.configuring/);

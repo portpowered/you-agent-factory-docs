@@ -63,7 +63,7 @@
       "concepts": "Concepts",
       "techniques": "Techniques",
       "documentation": "Program documentation",
-      "references": "References",
+      "references": "Reference",
       "factories": "Factories",
       "workers": "Workers",
       "workstations": "Workstations"
@@ -81,6 +81,11 @@
     },
     "documentationSecondaries": {
       "configuring": "Configuring you-agent-factory"
+    },
+    "referenceGroups": {
+      "contracts": "Contracts",
+      "schemas": "Schemas",
+      "limits": "Limits"
     }
   },
   "referenceChrome": {

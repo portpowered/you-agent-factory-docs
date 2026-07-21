@@ -10,9 +10,11 @@ import {
   getSidebarGroupIdsForSection,
   getSidebarGroupLabel,
   isDocumentationSidebarSecondaryGroup,
+  referenceSidebarMembershipSlug,
   resolveConceptsSidebarGroup,
   resolveDocumentationSidebarGroup,
   resolveGlossarySidebarGroup,
+  resolveReferencesSidebarGroup,
   type SidebarGroupIdBySection,
   type SidebarGroupingSection,
 } from "@/lib/content/sidebar-grouping";
@@ -231,6 +233,19 @@ function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
   return nodes;
 }
 
+/**
+ * Reference emits Contracts / Schemas / Limits subgroup separators, then page
+ * links. Empty subgroups are omitted. Factories / Workers / Workstations nest
+ * as sibling folders under Reference in the section builder (not here).
+ */
+function buildReferencesGroupedNodes(pages: DocsPageSource[]): Node[] {
+  return groupPagesBySection("references", pages, (page) =>
+    resolveReferencesSidebarGroup({
+      slug: referenceSidebarMembershipSlug(page.docsSlug),
+    }),
+  );
+}
+
 const GROUPED_NODE_BUILDERS: Record<
   DocsCollectionSidebarGroupingResolverId,
   (pages: DocsPageSource[]) => Node[]
@@ -238,6 +253,7 @@ const GROUPED_NODE_BUILDERS: Record<
   glossary: buildGlossaryGroupedNodes,
   concepts: buildConceptsGroupedNodes,
   documentation: buildDocumentationGroupedNodes,
+  references: buildReferencesGroupedNodes,
 };
 
 export function buildGroupedSidebarNodes(

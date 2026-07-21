@@ -12,10 +12,7 @@ const EXPECTED_TOP_LEVEL_FOLDER_NAMES = [
   "Concepts",
   "Techniques",
   "Program documentation",
-  "References",
-  "Factories",
-  "Workers",
-  "Workstations",
+  "Reference",
 ] as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [
@@ -48,7 +45,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     separatorLabel: "Orientation",
   },
   {
-    folderName: "References",
+    folderName: "Reference",
     url: "/docs/references/api",
     name: "API",
   },
@@ -58,17 +55,17 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     name: "Configuration",
   },
   {
-    folderName: "Factories",
+    folderName: "Reference",
     url: "/docs/factories/sessions",
     name: "Factory Sessions",
   },
   {
-    folderName: "Workers",
+    folderName: "Reference",
     url: "/docs/workers/agent",
     name: "Agent worker",
   },
   {
-    folderName: "Workstations",
+    folderName: "Reference",
     url: "/docs/workstations/inference-run",
     name: "Inference-run workstation",
   },
@@ -266,10 +263,17 @@ describe("collection-driven docs sidebar verification", () => {
         (link) => link.url === "/docs/factories/global-configuration",
       ),
     ).toBe(true);
-    expect(
-      collectSidebarPageLinks(getFolderChildren(pageTree, "Factories")).some(
-        (link) => link.url === "/docs/factories/configuration",
-      ),
-    ).toBe(false);
+    const referenceChildren = getFolderChildren(pageTree, "Reference");
+    const factoriesFolder = referenceChildren.find(
+      (node) => node.type === "folder" && node.name === "Factories",
+    );
+    expect(factoriesFolder?.type).toBe("folder");
+    if (factoriesFolder?.type === "folder") {
+      expect(
+        collectSidebarPageLinks(factoriesFolder.children).some(
+          (link) => link.url === "/docs/factories/configuration",
+        ),
+      ).toBe(false);
+    }
   });
 });
