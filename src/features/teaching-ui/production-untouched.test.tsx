@@ -1,6 +1,7 @@
 /**
  * Chassis closeout: production blog/docs render without teaching-ui harness
- * content, and the public barrel stays chassis-only (no sibling recipe stubs).
+ * content. Public barrel keeps focus helpers; W-table may append table recipes
+ * without stubbing chart/list/playground APIs.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render } from "@testing-library/react";
@@ -56,17 +57,22 @@ describe("teaching-ui chassis production untouched (004)", () => {
     }
   });
 
-  test("public barrel stays chassis-only (no sibling recipe stubs)", () => {
+  test("public barrel exports chassis focus helpers plus W-table recipes", () => {
     const exportNames = Object.keys(teachingUi).sort();
     expect(exportNames).toEqual([
+      "AttributeFacetBar",
       "DEFAULT_FOCUS_COLOR_TOKENS",
+      "FilterableSortableTable",
+      "OrchestratorFeatureMatrix",
       "focusFill",
       "mutedFill",
       "resolveFocusColor",
     ]);
     expect(teachingUi).not.toHaveProperty("ComparativeBarChart");
     expect(teachingUi).not.toHaveProperty("TeachingList");
-    expect(teachingUi).not.toHaveProperty("FilterableSortableTable");
     expect(teachingUi).not.toHaveProperty("ModelCostPlayground");
+    expect(typeof teachingUi.FilterableSortableTable).toBe("function");
+    expect(typeof teachingUi.AttributeFacetBar).toBe("function");
+    expect(typeof teachingUi.OrchestratorFeatureMatrix).toBe("function");
   });
 });

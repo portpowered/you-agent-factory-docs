@@ -1,9 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import {
+  AttributeFacetBar,
   DEFAULT_FOCUS_COLOR_TOKENS,
+  FilterableSortableTable,
   type FocusColorTokens,
   focusFill,
   mutedFill,
+  OrchestratorFeatureMatrix,
   resolveFocusColor,
 } from "@/features/teaching-ui";
 import { DOCS_CHROME_HIGHLIGHTING_TOKEN_VARS } from "@/lib/theme/docs-chrome-highlighting-tokens";
@@ -25,5 +28,11 @@ describe("teaching-ui public barrel", () => {
     expect(resolveFocusColor("a", "a", tokens)).toBe(tokens.accent);
     expect(resolveFocusColor("b", "a", tokens)).toBe(tokens.muted);
     expect(resolveFocusColor("a", undefined, tokens)).toBe(tokens.muted);
+  });
+
+  test("re-exports W-table recipe components", () => {
+    expect(typeof FilterableSortableTable).toBe("function");
+    expect(typeof AttributeFacetBar).toBe("function");
+    expect(typeof OrchestratorFeatureMatrix).toBe("function");
   });
 });
