@@ -52,7 +52,7 @@ Do **not**:
 | `src/content/docs/references/mcp-reference/McpReferenceInventory.tsx` | Server mount: load inventory → `McpToolInventory` |
 | `src/content/docs/references/mcp-reference/page-mdx-components.tsx` | Page-local MDX component map |
 | `src/content/docs/references/mcp-reference/mcp-page.test.tsx` | Colocated route/render proof (title + explorer/nav/search chrome for `MCP Reference` on `/docs/references/mcp-reference`) |
-| `src/content/docs/references/mcp-reference/assert-mcp-reference-display-rename-browser.ts` | Playwright probe: visible `MCP Reference` title, URL `/docs/references/mcp-reference`, legacy product title not live H1/title chrome |
+| `src/content/docs/references/mcp-reference/assert-mcp-reference-display-rename-browser.ts` | Playwright probe: visible `MCP Reference` title, URL `/docs/references/mcp-reference`, inventory success, legacy product title not live H1/title chrome, and old `/docs/references/mcp` not silently 200 as this inventory page |
 | `src/content/registry/references/mcp-reference.json` | `reference.mcp` registry record (`slug: mcp-reference`) |
 | `src/lib/references/load-mcp-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
 | `src/lib/references/mcp-reference-turbopack.ts` | Webpack-safe MCP export resolution via ancestor `node_modules` + manifest join |
@@ -178,16 +178,20 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   `data-contract-source-badge` / `Handler registered` / `Object policy` /
   `data-mcp-example-generated-notice`. Smoke sibling CLI + javascript-runtime
   routes still return HTTP 200.
-- MCP display-rename browser-verify (title chrome only):
+- MCP route + display-rename browser-verify:
   `bun src/content/docs/references/mcp-reference/assert-mcp-reference-display-rename-browser.ts`
   (webpack `bun run dev`, unique port 3588 default, Playwright; kill server on
   exit). Assert visible H1/document title `MCP Reference`, path
-  `/docs/references/mcp-reference`, inventory success, and that
+  `/docs/references/mcp-reference`, inventory success, that
   `You Agent Factory MCP` is not the live H1/document title (alias-only is
-  fine). Prefer `MCP_REFERENCE_RENAME_PROBE_BASE_URL` when a server is warm.
-  Page-owned `mcp-page.test.tsx` also locks explorer page-tree name + search
-  document title to `MCP Reference` while keeping the legacy string as a
-  frontmatter alias.
+  fine), and that old `/docs/references/mcp` is not published/redirected as
+  this inventory page (expect 404 / non-200 without inventory success). Prefer
+  `MCP_REFERENCE_RENAME_PROBE_BASE_URL` when a server is warm. Page-owned
+  `mcp-page.test.tsx` also locks explorer page-tree name + search document
+  title to `MCP Reference` while keeping the legacy string as a frontmatter
+  alias, and asserts `source.getPage(["references", "mcp"])` is undefined.
+  Static-export success suite also asserts `out/docs/references/mcp.html` is
+  absent when `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`.
 - CLI intro-strip browser-verify on `/docs/references/cli`:
   `bun src/content/docs/references/cli/assert-cli-page-intro-strip-browser.ts`
   (webpack `next dev`, unique port 3578 default, Playwright; kill server on

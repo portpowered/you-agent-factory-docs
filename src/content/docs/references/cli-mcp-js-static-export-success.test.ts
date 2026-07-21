@@ -57,5 +57,11 @@ describe("W11 CLI/MCP/JS static-export inventory success", () => {
       const count = readCountAttribute(html, route.countAttr);
       expect(count).toBeGreaterThan(0);
     }
+
+    // Old inventory artifact must be absent so /docs/references/mcp cannot
+    // silently 200 as the moved MCP Reference page under static export.
+    expect(existsSync(join(repoRoot, "out/docs/references/mcp.html"))).toBe(
+      false,
+    );
   });
 });

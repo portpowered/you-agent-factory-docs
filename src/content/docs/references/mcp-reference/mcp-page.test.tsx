@@ -54,6 +54,12 @@ describe("mcp reference page", () => {
       const fumadocsPage = source.getPage(["references", MCP_PAGE_SLUG]);
       expect(fumadocsPage).toBeDefined();
       expect(fumadocsPage?.url).toBe(MCP_PAGE_URL);
+      // Old inventory slug must not remain a live page (no dual-slug / forever
+      // compatibility page under static export).
+      expect(source.getPage(["references", "mcp"])).toBeUndefined();
+      expect(
+        findPageTreeNode(source.pageTree.children, "/docs/references/mcp"),
+      ).toBeUndefined();
 
       const explorerNode = findPageTreeNode(
         source.pageTree.children,

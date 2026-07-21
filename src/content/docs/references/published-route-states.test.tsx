@@ -309,6 +309,9 @@ describe("W11 published route states and ownership fences", () => {
       expect(source.getPage(["references", route.slug])?.url).toBe(route.url);
     }
 
+    // Old MCP inventory slug must not remain published beside mcp-reference.
+    expect(source.getPage(["references", "mcp"])).toBeUndefined();
+
     // Parallel W11 API/schema/events pages coexist on the same family; this
     // lane must not delete or re-own them.
     for (const route of COEXISTING_REFERENCE_SLUGS) {
