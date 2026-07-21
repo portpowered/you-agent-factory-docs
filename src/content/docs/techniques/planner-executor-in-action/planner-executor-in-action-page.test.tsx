@@ -80,6 +80,31 @@ describe("planner-executor-in-action technique page", () => {
     expect(document.body.textContent ?? "").toMatch(
       /larger planner model and a smaller executor model/i,
     );
+
+    expect(
+      screen.getByRole("heading", { name: "The Multi-Model Pattern" }),
+    ).toBeTruthy();
+    expect(document.getElementById("pattern-list")).toBeTruthy();
+    expect(loadedPage.messages.sections?.patternList?.title).toBe(
+      "The Multi-Model Pattern",
+    );
+    expect(loadedPage.messages.links?.patternListLabel).toBe(
+      "Multi-model planner-executor pattern",
+    );
+    expect(
+      screen.getByRole("list", {
+        name: "Multi-model planner-executor pattern",
+      }),
+    ).toBeTruthy();
+    expect(screen.getByTestId("teaching-list")).toBeTruthy();
+    expect(document.body.textContent ?? "").toMatch(/Larger model plans/i);
+    expect(document.body.textContent ?? "").toMatch(/Smaller model executes/i);
+    expect(document.body.textContent ?? "").toMatch(
+      /Same roles, split models/i,
+    );
+    expect(document.body.textContent ?? "").not.toMatch(
+      /PatternList placeholder/i,
+    );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
     expect(document.getElementById("related")).toBeNull();

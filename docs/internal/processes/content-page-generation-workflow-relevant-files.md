@@ -568,6 +568,26 @@ before `/docs/techniques/<slug>` can render with `DocsPageProviders`:
   instead of relying on a filtered `as const` array — an empty filter collapses
   to `never[]` and breaks `tsc` on the empty-state loop
 
+### Technique page-local TeachingList / MDX components
+
+When a technique page needs a required page-local mount such as a soft-wired
+`TeachingList` PatternList slot (for example
+`techniques/planner-executor-in-action`):
+
+1. Keep the page-local client mount and `page-mdx-components.tsx` under the
+   page bundle. Import `TeachingList` from `@/features/teaching-ui/lists` only
+   (not private list paths, not the top-level teaching-ui barrel until
+   W-recipes re-exports it).
+2. Add a static slug switch in `technique-page-load.ts` that imports
+   `@/content/docs/techniques/<slug>/page-mdx-components` (same compileMDX
+   constraint as concepts/documentation — relative MDX imports do not resolve).
+3. Treat that loader switch as a narrow shared-surface exception: rerun
+   `bun run audit:canonical-page-surface` with `--exception-reason` and repeat
+   the justification in the PR conversation. Do not register page mounts in
+   shared `mdx-components.tsx`.
+4. Pass `listLabel` and item title/description strings from colocated
+   `messages` (`links.*` keys under the existing pageMessagesSchema).
+
 Declare the first-CLI-section exception with
 `bun run audit:canonical-page-surface -- --exception-reason "..."` and repeat
 that justification in the PR conversation. Later technique pages should stay
