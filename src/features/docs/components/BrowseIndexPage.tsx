@@ -85,7 +85,7 @@ function BrowseSection({
         <p className="mt-4">
           <Link
             href={linkHref}
-            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            className="text-sm font-medium text-secondary underline-offset-4 decoration-secondary hover:underline"
           >
             {linkLabel}
           </Link>
