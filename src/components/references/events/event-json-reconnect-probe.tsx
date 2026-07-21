@@ -132,7 +132,7 @@ export function EventJsonReconnectProbe({
         status codes, and the full OpenAPI operation UI) remains on the API
         operation page.{" "}
         <a
-          className="text-primary underline-offset-4 hover:underline"
+          className="text-secondary underline-offset-4 hover:underline"
           href={probe.apiTransportSummaryHref}
         >
           See API transport summary
