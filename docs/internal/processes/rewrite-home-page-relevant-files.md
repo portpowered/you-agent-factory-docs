@@ -87,10 +87,12 @@ Homepage Wave B / integrate should import command presentation from
 | --- | --- |
 | `src/features/code/CodeBlock.tsx` | Content-first `{ code, title? }` block with `pre`/`code` + named copy (`Copy` / `Copied`) |
 | `src/features/code/CodeBlock.test.tsx` | Clipboard write + accessible-name unit coverage |
+| `src/features/code/Terminal.tsx` | Chromed `{ lines, chips?, variant?: "install" \| "dark" }` shell (yellow install vs dark pill) + named copy of joined lines |
+| `src/features/code/Terminal.test.tsx` | Joined-line clipboard write, accessible-name, chip chrome, and install/dark distinctness |
 
 Do not couple this package to `src/features/landing-page/**` or production `/`
-while Wave A ships. Terminal + public `index.ts` + gated harness land in later
-W-code stories.
+while Wave A ships. Public `index.ts` + gated `(dev)/code-harness` land in the
+remaining W-code story.
 
 ## Patterns
 
