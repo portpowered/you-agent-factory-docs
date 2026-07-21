@@ -118,6 +118,11 @@ describe("SchemaRefLink", () => {
     });
     expect(link.getAttribute("href")).toBe(`${PAGE_PATH}#${display.anchor}`);
     expect(link.getAttribute("data-schema-ref-kind")).toBe("resolved");
+    expect(link.className).toContain("text-secondary");
+    expect(link.className).toContain("font-mono");
+    expect(link.className).toContain("underline-offset-2");
+    expect(link.className).toContain("hover:underline");
+    expect(link.className).not.toMatch(/\btext-primary\b/);
   });
 
   test("renders cycle links with an explicit cycle sentinel", () => {
@@ -138,6 +143,8 @@ describe("SchemaRefLink", () => {
     expect(link.getAttribute("data-schema-ref-kind")).toBe("cycle");
     expect(screen.getByText("(cycle)")).toBeTruthy();
     expect(link.textContent).toContain("Cycle at /components/schemas/NodeA");
+    expect(link.className).toContain("text-secondary");
+    expect(link.className).not.toMatch(/\btext-primary\b/);
   });
 
   test("renders unresolved missing refs without inventing a navigable target", () => {
@@ -157,6 +164,8 @@ describe("SchemaRefLink", () => {
     const status = screen.getByRole("status");
     expect(status.getAttribute("data-schema-ref-kind")).toBe("missing");
     expect(screen.getByText("(unresolved)")).toBeTruthy();
+    expect(status.className).toContain("text-destructive");
+    expect(status.className).not.toMatch(/\btext-secondary\b/);
   });
 });
 
@@ -187,11 +196,12 @@ describe("SchemaComposition", () => {
     expect(
       oneOfSection.querySelectorAll("[data-schema-composition-member]"),
     ).toHaveLength(2);
-    expect(
-      oneOfSection.querySelector(
-        '[data-schema-ref-pointer="/components/schemas/WorkTextContentPart"]',
-      ),
-    ).toBeTruthy();
+    const memberLink = oneOfSection.querySelector(
+      '[data-schema-ref-pointer="/components/schemas/WorkTextContentPart"]',
+    );
+    expect(memberLink).toBeTruthy();
+    expect(memberLink?.className).toContain("text-secondary");
+    expect(memberLink?.className).not.toMatch(/\btext-primary\b/);
   });
 
   test("renders discriminator property and mapped value links", () => {
@@ -309,6 +319,8 @@ describe("SchemaFieldTree $ref links", () => {
       name: /schema reference: \/\$defs\/Worker/i,
     });
     expect(link.getAttribute("href")).toContain(PAGE_PATH);
+    expect(link.className).toContain("text-secondary");
+    expect(link.className).not.toMatch(/\btext-primary\b/);
     expect(
       screen.queryByRole("button", { name: /Expand fields under worker/i }),
     ).toBeNull();
