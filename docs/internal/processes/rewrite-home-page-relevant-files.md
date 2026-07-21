@@ -77,6 +77,21 @@ Default en hrefs: `/docs/guides`, `/browse`, `/blog`.
 | `src/tests/content/home-page.test.tsx` | Asserts identity, CTAs, why/features, featured links, and non-en section structure |
 | `src/tests/layout/localized-route-metadata.test.ts` | Localized home metadata must use you-agent-factory identity (not Model Atlas) |
 
+## Shared code / terminal primitives (homepage-2 W-code)
+
+Homepage Wave B / integrate should import command presentation from
+`src/features/code/**`, not from docs `DocsCodeBlock` or
+`src/components/home/home-command-block.tsx`.
+
+| File | Role |
+| --- | --- |
+| `src/features/code/CodeBlock.tsx` | Content-first `{ code, title? }` block with `pre`/`code` + named copy (`Copy` / `Copied`) |
+| `src/features/code/CodeBlock.test.tsx` | Clipboard write + accessible-name unit coverage |
+
+Do not couple this package to `src/features/landing-page/**` or production `/`
+while Wave A ships. Terminal + public `index.ts` + gated harness land in later
+W-code stories.
+
 ## Patterns
 
 - Product identity on `/` is message-driven (`messages.home.*`), not `siteConfig.brand`.
