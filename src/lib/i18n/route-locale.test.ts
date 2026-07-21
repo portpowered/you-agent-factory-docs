@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  englishOnlyCanonicalAlternates,
   generateStaticLocaleParams,
   localizedRouteAlternates,
   localizedShippedDocsPageAlternates,
@@ -109,7 +110,7 @@ describe("route-locale", () => {
     });
   });
 
-  test("keeps metadata alternates app-relative for home and blog surfaces", () => {
+  test("keeps metadata alternates app-relative for home and multi-locale surfaces", () => {
     // Production origin + project-site base path live on root metadataBase;
     // these hrefs must stay unprefixed so Next.js does not double-prefix.
     expect(localizedRouteAlternates({ surface: "home" })).toEqual({
@@ -122,6 +123,14 @@ describe("route-locale", () => {
         "x-default": "/",
       },
     });
+  });
+
+  test("english-only helper omits language alternates for unshipped blog surfaces", () => {
+    expect(englishOnlyCanonicalAlternates({ surface: "blog-index" })).toEqual({
+      canonical: "/blog",
+    });
+    // Shared multi-locale builder still emits a full map — blog routes must
+    // not call it until blog locales ship.
     expect(localizedRouteAlternates({ surface: "blog-index" })).toEqual({
       canonical: "/blog",
       languages: {

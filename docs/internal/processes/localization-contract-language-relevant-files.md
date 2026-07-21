@@ -84,7 +84,7 @@ are display-only and are not contract description prose.
 | `src/lib/i18n/reference-chrome-context.tsx` | `ReferenceChromeProvider` / optional hook for client inventory surfaces |
 | `src/content/messages/{locale}/common.json` → `referenceChrome` | en/ja/zh-CN/vi filter, status, badge, a11y, inventory chrome catalogs |
 | `src/features/docs/components/DocsPageProviders.tsx` | Wires `referenceChrome` into local docs pages via provider |
-| `src/lib/i18n/route-locale.ts` | `localizedRouteAlternates` (all locales + `x-default` → English canonical) + `localizedShippedDocsPageAlternates` (fail-closed shipped filter; keeps `x-default` when language alternates remain) |
+| `src/lib/i18n/route-locale.ts` | `localizedRouteAlternates` (all locales + `x-default` → English canonical) + `localizedShippedDocsPageAlternates` (fail-closed shipped filter; keeps `x-default` when language alternates remain) + `englishOnlyCanonicalAlternates` (blog index/posts: English canonical only — no false locale hreflang until blog locales ship) |
 | `src/lib/content/shipped-localized-docs.server.ts` | Derive shipped-locale manifest; includes `references` family-index slug when published + locale messages exist |
 | `src/lib/content/generated/shipped-localized-docs.generated.ts` | Client-safe generated artifact for language switcher / gating |
 | `src/components/references/shared/*` | Shared chrome surfaces that resolve catalogs via prop or provider |

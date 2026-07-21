@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { renderBlogIndexPage } from "@/app/(site)/site-renderers";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
-  localizedRouteAlternates,
+  englishOnlyCanonicalAlternates,
   resolveRouteLocaleOrNotFound,
 } from "@/lib/i18n/route-locale";
 
@@ -20,7 +20,8 @@ export async function generateMetadata({
   return {
     title: messages.blogIndex.title,
     description: messages.blogIndex.description,
-    alternates: localizedRouteAlternates({ surface: "blog-index" }),
+    // English-only until blog locales ship — no false ja/zh-CN/vi hreflang.
+    alternates: englishOnlyCanonicalAlternates({ surface: "blog-index" }),
   };
 }
 

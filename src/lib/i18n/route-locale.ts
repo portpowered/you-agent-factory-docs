@@ -54,6 +54,22 @@ export function localizedRouteAlternates(
   };
 }
 
+/**
+ * English canonical-only alternates for surfaces that do not ship locale
+ * variants yet (blog index / posts until blog locales ship).
+ *
+ * Intentionally omits `languages` so crawlers do not see false ja / zh-CN / vi
+ * hreflang targets. Prefer this over `localizedRouteAlternates` for blog until
+ * real translated blog content ships.
+ */
+export function englishOnlyCanonicalAlternates(
+  destination: LocalizedRouteDestination,
+): NonNullable<Metadata["alternates"]> {
+  return {
+    canonical: buildLocalizedRoute(destination, defaultLocale),
+  };
+}
+
 const X_DEFAULT_HREFLANG = "x-default";
 
 /**
