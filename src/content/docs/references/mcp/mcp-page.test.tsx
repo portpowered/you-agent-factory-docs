@@ -2,16 +2,45 @@
  * Page-owned render proof for references/mcp.
  * Covers install-first lead, polished title/subtitle, package-backed
  * inventory mount, and representative trimmed tool-card chrome. Colocated
- * under the page bundle.
+ * under the page bundle. Also locks explorer/nav/search chrome for the
+ * MCP Reference display rename (route slug unchanged).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import type { Node } from "fumadocs-core/page-tree";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import { loadPublishedDocsPages } from "@/lib/content/pages";
+import { loadRegistry } from "@/lib/content/registry";
 import { loadMcpReferenceInventory } from "@/lib/references/load-mcp-reference-inventory";
+import { buildSearchDocuments } from "@/lib/search/build-documents";
 import { source } from "@/lib/source";
 
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
+const MCP_PAGE_URL = "/docs/references/mcp";
+const MCP_DISPLAY_TITLE = "MCP Reference";
+const MCP_LEGACY_TITLE = "You Agent Factory MCP";
+
+function findPageTreeNode(
+  nodes: Node[] | undefined,
+  url: string,
+): Node | undefined {
+  for (const node of nodes ?? []) {
+    if (
+      node.type === "page" &&
+      "url" in node &&
+      typeof node.url === "string" &&
+      node.url === url
+    ) {
+      return node;
+    }
+    if (node.type === "folder" && "children" in node) {
+      const hit = findPageTreeNode(node.children, url);
+      if (hit) return hit;
+    }
+  }
+  return undefined;
+}
 
 describe("mcp reference page", () => {
   afterEach(() => {
@@ -23,7 +52,18 @@ describe("mcp reference page", () => {
     async () => {
       const fumadocsPage = source.getPage(["references", "mcp"]);
       expect(fumadocsPage).toBeDefined();
-      expect(fumadocsPage?.url).toBe("/docs/references/mcp");
+      expect(fumadocsPage?.url).toBe(MCP_PAGE_URL);
+
+      const explorerNode = findPageTreeNode(
+        source.pageTree.children,
+        MCP_PAGE_URL,
+      );
+      expect(explorerNode).toBeDefined();
+      expect(explorerNode?.type).toBe("page");
+      if (explorerNode?.type === "page") {
+        expect(explorerNode.name).toBe(MCP_DISPLAY_TITLE);
+        expect(explorerNode.name).not.toBe(MCP_LEGACY_TITLE);
+      }
 
       const loadedPage = await loadLocalDocsPage({
         section: "references",
@@ -32,7 +72,19 @@ describe("mcp reference page", () => {
 
       expect(loadedPage.frontmatter.kind).toBe("reference");
       expect(loadedPage.frontmatter.registryId).toBe("reference.mcp");
-      expect(loadedPage.messages.title).toBe("MCP Reference");
+      expect(loadedPage.messages.title).toBe(MCP_DISPLAY_TITLE);
+      expect(loadedPage.messages.title).not.toBe(MCP_LEGACY_TITLE);
+      expect(loadedPage.frontmatter.aliases).toContain(MCP_LEGACY_TITLE);
+
+      const registry = await loadRegistry();
+      const pages = await loadPublishedDocsPages("en");
+      const searchDocument = buildSearchDocuments(pages, registry).find(
+        (document) => document.url === MCP_PAGE_URL,
+      );
+      expect(searchDocument).toBeDefined();
+      expect(searchDocument?.title).toBe(MCP_DISPLAY_TITLE);
+      expect(searchDocument?.title).not.toBe(MCP_LEGACY_TITLE);
+
       expect(loadedPage.messages.description).toMatch(
         /^Install MCP and look up/i,
       );
