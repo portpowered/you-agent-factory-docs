@@ -297,7 +297,10 @@ describe("FactoryResponseEvent catalog UI", () => {
     const payloadDimension = screen.getByTestId(
       "response-event-dimension-payload",
     );
-    const payloadVariantLinks = within(payloadDimension).getAllByRole("link");
+    const payloadVariantList = within(payloadDimension).getByLabelText(
+      /FactoryResponseEvent payload oneOf shapes/i,
+    );
+    const payloadVariantLinks = within(payloadVariantList).getAllByRole("link");
     expect(payloadVariantLinks.length).toBe(catalog.payloadVariants.length);
     for (const link of payloadVariantLinks) {
       expect(link.className).toContain("font-mono");
@@ -339,6 +342,18 @@ describe("FactoryResponseEvent catalog UI", () => {
         /Fields for FactoryResponseEventProvenance/i,
       ),
     ).toBeTruthy();
+
+    // Payload union must mount with the W04 schema-pointer id so envelope
+    // SchemaRefLinks to FactoryResponseEventPayload resolve on-page.
+    const payloadUnionDef = screen.getByTestId(
+      "response-event-payload-union-schema-definition",
+    );
+    expect(payloadUnionDef.id).toBe(
+      "components-schemas-FactoryResponseEventPayload",
+    );
+    expect(payloadUnionDef.getAttribute("data-schema-definition-pointer")).toBe(
+      "/components/schemas/FactoryResponseEventPayload",
+    );
 
     expect(
       screen

@@ -204,7 +204,7 @@ export function buildCliCommandSearchDocuments(
 
 /**
  * Project normalized MCP tools into ReferenceItems with registry anchors on
- * `/docs/references/mcp`.
+ * `/docs/references/mcp-reference`.
  */
 export function buildMcpToolSearchDocuments(
   tools: readonly McpToolNormalized[],
@@ -368,7 +368,7 @@ export function loadCliCommandReferenceSearchShapes(): CliCommandSearchDocuments
 
 /**
  * Load packaged MCP tools and project them into search shapes with registry
- * anchors on `/docs/references/mcp`.
+ * anchors on `/docs/references/mcp-reference`.
  */
 export function loadMcpToolReferenceSearchShapes(): McpToolSearchDocumentsResult {
   const artifact = resolveApiPackageArtifact(MCP_REFERENCE_PUBLIC_SUBPATH, {

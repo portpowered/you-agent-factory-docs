@@ -8,6 +8,7 @@ import {
   getDocumentationSidebarSecondaryLabel,
   getSidebarGroupIdsForSection,
   getSidebarGroupLabel,
+  isDeferredDocumentationExplorerMembershipSlug,
   isDocumentationSidebarSecondaryGroup,
   resolveConceptsSidebarGroup,
   resolveDocumentationSidebarGroup,
@@ -136,15 +137,22 @@ function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
 /**
  * Program documentation emits a three-level explorer: top-group separators,
  * optional nested secondary folders, then page links. Empty top groups and
- * empty secondaries are omitted. FAQ and W18 documentation move stubs are not
- * Program documentation explorer members (stubs keep compatibility HTML only).
+ * empty secondaries are omitted. FAQ, W18 documentation move stubs, and
+ * deferred-membership pages (PS-300 Interfaces `api`, etc.) are not Program
+ * documentation explorer members — stubs keep compatibility HTML only;
+ * deferred pages stay reachable by direct URL until their IA lane wires them.
  */
 function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
-  const explorerPages = pages.filter(
-    (page) =>
-      !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
-      !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug),
-  );
+  const explorerPages = pages.filter((page) => {
+    if (isDocsExplorerTopLevelFaqPage(page.docsSlug)) {
+      return false;
+    }
+    if (isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)) {
+      return false;
+    }
+    const slug = documentationPageSlug(page);
+    return !isDeferredDocumentationExplorerMembershipSlug(slug);
+  });
   const remaining = new Set(explorerPages.map((page) => page.docsSlug));
   const nodes: Node[] = [];
 

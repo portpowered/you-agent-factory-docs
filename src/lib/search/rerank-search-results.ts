@@ -439,7 +439,7 @@ function resultPriority(
   }
 
   // Every page-level title/slug/alias match ranks above weak inventory noise.
-  // Generic queries like "mcp" must surface /docs/references/mcp and
+  // Generic queries like "mcp" must surface /docs/references/mcp-reference and
   // documentation MCP pages ahead of tool/session item floods — not only the
   // single best seeded URL. Fragment URLs that are not inventory items must
   // not inherit the owning page's title score.

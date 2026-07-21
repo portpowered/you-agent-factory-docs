@@ -46,7 +46,16 @@ curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/down
 irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex
 ```
 
-  <T k="callouts.installDeepDive.body" />
+  <T k="callouts.confirmYouAvailable.body" />
+  <p>
+    <T k="links.claudeInitLabel" />
+  </p>
+
+```sh
+you init --executor claude
+```
+
+  <T k="callouts.scaffoldChoice.body" />
 </Section>
 
 <Section id="first-you" titleKey="sections.firstYou.title">
@@ -107,10 +116,6 @@ you submit batch ./batch.json
   <T k="sections.commonPitfalls.body" />
   <LocalizedLinkList
     items={[
-      {
-        href: "/docs/documentation/install",
-        labelKey: "links.installDeepDive",
-      },
       {
         href: "/docs/documentation/cli",
         labelKey: "links.cliDocs",

@@ -8,9 +8,13 @@
  * Surfaces probed together:
  * 1. search / globe / GitHub (surrounding background → primary yellow fill)
  * 2. TOC current / non-current (secondary blue / muted white → yellow overlay)
- * 3. sidebar row (white text → wide primary-yellow background)
+ * 3. sidebar row (white text; selected = muted secondary-blue wash; hover =
+ *    wide primary-yellow background + dark text)
  * 4. header text / icons (white → primary yellow overlay)
  * 5. breadcrumb (muted white → primary yellow overlay)
+ *
+ * Out-of-scope fence: TOC / search / header brand accents stay on their locked
+ * roles — this lane only retargets sidebar selected tint.
  */
 
 import { describe, expect, test } from "bun:test";
@@ -94,6 +98,14 @@ button[data-search] {
 `;
 
 function buildFiveSurfaceFixtureHtml(): string {
+  const selectedWashToken =
+    DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow
+      .selectedActiveBackgroundToken;
+  if (!selectedWashToken) {
+    throw new Error(
+      "sidebar selected wash token missing from token-map contract",
+    );
+  }
   return `<!doctype html>
 <html>
   <head>
@@ -163,6 +175,8 @@ function buildFiveSurfaceFixtureHtml(): string {
       <a class="docs-chrome-sidebar-row" href="/docs/guides/getting-started" data-probe="sidebar-row">Getting started</a>
       <a class="docs-chrome-sidebar-row" href="/docs/concepts/harness" data-active="true" data-probe="sidebar-active">Harness</a>
     </aside>
+    <!-- Reference wash: browsers report color-mix as oklch(... / 0.18); compare equality. -->
+    <div data-probe="sidebar-active-ref" style="background-color: ${selectedWashToken}; width:1px;height:1px;"></div>
 
     <nav id="nd-toc" aria-label="On this page">
       <a href="#overview" data-active="true" data-probe="toc-current">Overview</a>
@@ -208,9 +222,23 @@ describe("docs chrome highlighting token-map behavioral (five surfaces)", () => 
     expect(
       DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.hoverActiveKind,
     ).toBe("background");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.selectedActiveRole,
+    ).toBe("secondaryBlue");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.selectedActiveProof,
+    ).toBe("#507f8c");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow
+        .selectedActiveBackgroundToken,
+    ).toContain("--docs-chrome-secondary-blue");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow
+        .selectedActiveBackgroundToken,
+    ).not.toContain("--docs-chrome-primary-yellow");
   });
 
-  test("Playwright fixture: all five surfaces match locked rest and hover token map", async () => {
+  test("Playwright fixture: all five surfaces match locked rest, selected, and hover token map", async () => {
     const browser = await launchPlaywrightBrowser();
     try {
       const page = await browser.newPage({
@@ -221,7 +249,7 @@ describe("docs chrome highlighting token-map behavioral (five surfaces)", () => 
           waitUntil: "load",
         });
 
-        // --- Resting states ---
+        // --- Resting states (TOC / search / header fence: unchanged accents) ---
         const searchRest = await probe(page, '[data-probe="search"]');
         expect(searchRest.backgroundColor).toBe(SURROUNDING_RGB);
 
@@ -246,6 +274,25 @@ describe("docs chrome highlighting token-map behavioral (five surfaces)", () => 
         const sidebarRest = await probe(page, '[data-probe="sidebar-row"]');
         expect(sidebarRest.color).toBe(WHITE_RGB);
         expect(sidebarRest.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+        expect(sidebarRest.backgroundColor).not.toBe(SECONDARY_BLUE_RGB);
+
+        // Selected/active: muted secondary-blue wash (not yellow). Compare to
+        // reference color-mix — browsers report oklch(... / 0.18).
+        const sidebarActive = await probe(
+          page,
+          '[data-probe="sidebar-active"]',
+        );
+        const sidebarActiveRef = await probe(
+          page,
+          '[data-probe="sidebar-active-ref"]',
+        );
+        expect(sidebarActive.color).toBe(WHITE_RGB);
+        expect(sidebarActive.backgroundColor).toBe(
+          sidebarActiveRef.backgroundColor,
+        );
+        expect(sidebarActive.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+        expect(sidebarActive.backgroundColor).not.toBe("transparent");
+        expect(sidebarActive.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
 
         const headerTextRest = await probe(page, '[data-probe="header-text"]');
         expect(headerTextRest.color).toBe(WHITE_RGB);
@@ -265,7 +312,7 @@ describe("docs chrome highlighting token-map behavioral (five surfaces)", () => 
         );
         expect(breadcrumbPageRest.color).toBe(MUTED_WHITE_RGB);
 
-        // --- Hover / active overlays ---
+        // --- Hover overlays (sidebar hover stays yellow + dark text) ---
         await page.locator('[data-probe="search"]').hover();
         const searchHover = await probe(page, '[data-probe="search"]');
         expect(searchHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
@@ -293,6 +340,15 @@ describe("docs chrome highlighting token-map behavioral (five surfaces)", () => 
         const sidebarHover = await probe(page, '[data-probe="sidebar-row"]');
         expect(sidebarHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
         expect(sidebarHover.color).toBe(PRIMARY_FOREGROUND_RGB);
+
+        await page.locator('[data-probe="sidebar-active"]').hover();
+        const sidebarActiveHover = await probe(
+          page,
+          '[data-probe="sidebar-active"]',
+        );
+        expect(sidebarActiveHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+        expect(sidebarActiveHover.color).toBe(PRIMARY_FOREGROUND_RGB);
+        expect(sidebarActiveHover.backgroundColor).not.toBe(SECONDARY_BLUE_RGB);
 
         await page.locator('[data-probe="header-text"]').hover();
         const headerTextHover = await probe(page, '[data-probe="header-text"]');

@@ -368,4 +368,122 @@ describe("SchemaDefinition", () => {
       ),
     ).toBe(true);
   });
+
+  test("default hides OpenAPI pointer path chrome on definition and field rows", () => {
+    const fieldPointer = "/components/schemas/FactoryEvent/properties/type";
+    const definition = createSchemaDefinitionModel({
+      address: address("/components/schemas/FactoryEvent"),
+      title: "FactoryEvent",
+      type: "object",
+      properties: {
+        type: createSchemaFieldModel({
+          path: "type",
+          address: address(fieldPointer),
+          typeSummary: "FactoryEventType",
+          required: true,
+          refTarget: address("/components/schemas/FactoryEventType"),
+        }),
+      },
+    });
+
+    render(<SchemaDefinition definition={definition} pagePath={PAGE_PATH} />);
+
+    const article = screen.getByTestId("schema-definition");
+    const definitionBreadcrumb = within(article).getByRole("navigation", {
+      name: "Deep link for FactoryEvent",
+    });
+    expect(definitionBreadcrumb.getAttribute("data-schema-path-segments")).toBe(
+      "false",
+    );
+    expect(
+      definitionBreadcrumb.querySelector(
+        '[data-schema-breadcrumb-segment="components"]',
+      ),
+    ).toBeNull();
+    expect(
+      within(definitionBreadcrumb).getByRole("button", {
+        name: "Copy deep link",
+      }),
+    ).toBeTruthy();
+
+    const row = within(article).getByTestId("schema-field-row");
+    expect(row.querySelector("[data-schema-field-name]")?.textContent).toBe(
+      "type",
+    );
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="components"]'),
+    ).toBeNull();
+    expect(
+      row
+        .querySelector('[data-testid="schema-breadcrumb"]')
+        ?.getAttribute("data-schema-path-segments"),
+    ).toBe("false");
+    expect(row.querySelector('[data-schema-breadcrumb="copy"]')).toBeTruthy();
+    expect(row.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "FactoryEventType",
+    );
+    expect(article.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
+  });
+
+  test("showPointerPathChrome true restores full pointer trails on definition and fields", () => {
+    const fieldPointer = "/components/schemas/FactoryEvent/properties/type";
+    const definition = createSchemaDefinitionModel({
+      address: address("/components/schemas/FactoryEvent"),
+      title: "FactoryEvent",
+      type: "object",
+      properties: {
+        type: createSchemaFieldModel({
+          path: "type",
+          address: address(fieldPointer),
+          typeSummary: "FactoryEventType",
+          required: true,
+          refTarget: address("/components/schemas/FactoryEventType"),
+        }),
+      },
+    });
+
+    render(
+      <SchemaDefinition
+        definition={definition}
+        pagePath={PAGE_PATH}
+        showPointerPathChrome
+      />,
+    );
+
+    const article = screen.getByTestId("schema-definition");
+    const definitionBreadcrumb = within(article).getByRole("navigation", {
+      name: "Deep link for FactoryEvent",
+    });
+    expect(definitionBreadcrumb.getAttribute("data-schema-path-segments")).toBe(
+      "true",
+    );
+    expect(
+      definitionBreadcrumb.querySelector(
+        '[data-schema-breadcrumb-segment="components"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      definitionBreadcrumb.querySelector(
+        '[data-schema-breadcrumb-segment="schemas"]',
+      ),
+    ).toBeTruthy();
+
+    const row = within(article).getByTestId("schema-field-row");
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="components"]'),
+    ).toBeTruthy();
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="properties"]'),
+    ).toBeTruthy();
+    expect(
+      row
+        .querySelector('[data-testid="schema-breadcrumb"]')
+        ?.getAttribute("data-schema-path-segments"),
+    ).toBe("true");
+    expect(row.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "/components/schemas/FactoryEventType",
+    );
+  });
 });

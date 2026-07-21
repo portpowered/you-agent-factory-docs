@@ -615,7 +615,7 @@ describe("rerankSearchResults", () => {
   test("prefers all mcp page-title hits over weak inventory items and heading spam", () => {
     const conceptUrl = "/docs/concepts/mcp";
     const documentationUrl = "/docs/documentation/mcp";
-    const referencesUrl = "/docs/references/mcp";
+    const referencesUrl = "/docs/references/mcp-reference";
     const weakItem = `${referencesUrl}#you.factory_session.start_async`;
     const headingSpam = `${referencesUrl}#heading-0`;
     const documentsByUrl = new Map<string, SearchDocument>([
@@ -949,9 +949,10 @@ describe("rerankSearchResults", () => {
   });
 
   test("exact inventory-identifier match outranks every collection band and heading spam", () => {
-    const inventoryUrl = "/docs/references/mcp#you.factory_session.get";
+    const inventoryUrl =
+      "/docs/references/mcp-reference#you.factory_session.get";
     const guideUrl = "/docs/guides/write-review-loop";
-    const curatedRefUrl = "/docs/references/mcp";
+    const curatedRefUrl = "/docs/references/mcp-reference";
     const blogUrl = "/blog/agent-factories";
     const headingSpam = `${curatedRefUrl}#heading-0`;
     const documentsByUrl = new Map<string, SearchDocument>([
@@ -1151,7 +1152,7 @@ describe("rerankSearchResults", () => {
       title: "Ralph",
       facets: { kind: "guide", tags: [] },
     });
-    const curated = documentForUrl("/docs/references/mcp", {
+    const curated = documentForUrl("/docs/references/mcp-reference", {
       kind: "reference",
       title: "MCP",
       facets: { kind: "reference", tags: [] },
@@ -1162,7 +1163,7 @@ describe("rerankSearchResults", () => {
       facets: { kind: "blog", tags: [] },
     });
     const subfield = documentForUrl(
-      "/docs/references/mcp#you.factory_session.get",
+      "/docs/references/mcp-reference#you.factory_session.get",
       {
         kind: "reference",
         title: "you.factory_session.get",

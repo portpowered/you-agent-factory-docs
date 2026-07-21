@@ -114,9 +114,18 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   secondary path labels that equal the leaf name; events catalog views opt in
   via `EventsSchemaDefinition` / `dedupeSchemaFieldTreeNodesByPath` without
   changing MCP/CLI/JS/API defaults. Optional `showPointerPathChrome` (default
-  true) controls visible OpenAPI pointer breadcrumbs and full-pointer `$ref`
-  labels; events opt out (`false`) so field names stay primary while
-  `SchemaBreadcrumb` copy controls remain.
+  false) hides visible OpenAPI pointer breadcrumbs and prefers compact `$ref`
+  labels (leaf schema name) while `SchemaBreadcrumb` copy controls remain;
+  pass `true` to opt into full pointer trails. Events still passes `false`
+  explicitly via `EventsSchemaDefinition` (redundant after the shared default
+  flip; not a regression). Browser close-out for the quiet default across a
+  non-events mount plus events no-regression:
+  `src/content/docs/references/mock-workers-schema/assert-schema-pointer-path-chrome-quiet-browser.ts`
+  (`SCHEMA_POINTER_PATH_CHROME_PROBE_PORT` / `_BASE_URL`, webpack `bun` next
+  dev, kill server on exit). Asserts no visible
+  `$defs|components/.../properties/...` trails / breadcrumb segments on
+  mock-workers-schema, preserved copyable deep links, and suppressed pointer
+  chrome on `/docs/references/events`.
 - Composition UI: `SchemaComposition` + `projectSchemaCompositionDisplay` /
   `schemaRefLinkDisplayFromOutcome` consume W04 composition models and
   `ReferenceCrossLinkResolver` outcomes. Members stay as links — never

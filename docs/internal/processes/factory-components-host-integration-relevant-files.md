@@ -75,7 +75,7 @@ shared map — not per-control hex hacks.
 | --- | --- | --- | --- |
 | surrounding chrome background | `--background` | `#050b10` | search / globe / GitHub rest |
 | primary yellow | `--primary` | `#f5c76f` | hover/active overlay (all); sidebar hover **background** |
-| secondary blue | `--secondary` | `#507f8c` | TOC current rest |
+| secondary blue | `--secondary` | `#507f8c` | TOC current rest; sidebar active wash (`color-mix` 18%) |
 | white | `--foreground` | `#f7f2e8` | sidebar / header text+icons rest |
 | muted white | `--muted-foreground` | `#8aaeb8` | TOC non-current / breadcrumb rest |
 
@@ -106,17 +106,23 @@ shared map — not per-control hex hacks.
   and retargets the TOC thumb `.bg-fd-primary` to secondary blue. Keep
   focus-visible as outline-only so focus does not recolor rest roles.
   Prove with `docs-chrome-toc.test.ts`.
-- Sidebar row surface (story 004): consume
+- Sidebar row surface (story 004 / PF-K repair): consume
   `src/features/docs/styles/docs-chrome-sidebar.ts` + `docs-chrome-sidebar.css`
   (imported from `globals.css`). Rest text = `--docs-chrome-white`; hover =
-  wide `--docs-chrome-primary-yellow` **background** (with `px-2` so the fill
-  covers outline/padding — not text-only recolor). Active rows keep a soft
-  primary-yellow wash so current stays distinguishable at rest. Marker class
-  `docs-chrome-sidebar-row` is shared by desktop `#nd-sidebar` tree
-  (`docs-sidebar-tree.tsx`) and mobile drawer (`data-mobile-docs-drawer`).
+  wide `--docs-chrome-primary-yellow` **background** + dark
+  `--primary-foreground` text (with `px-2` so the fill covers outline/padding —
+  not text-only recolor; do not invent a secondary-blue hover). Active rows use
+  a muted secondary-blue wash (`color-mix` of `--docs-chrome-secondary-blue` at
+  18% into transparent) so selection stays quiet and distinct from yellow hover.
+  Hover rules follow active in the stylesheet so `:hover` wins over the active
+  wash at the same specificity. Focus-visible keeps a `--ring` outline.
+  Marker class `docs-chrome-sidebar-row` is shared by desktop `#nd-sidebar`
+  tree (`docs-sidebar-tree.tsx`) and mobile drawer (`data-mobile-docs-drawer`).
   Do not leave `text-fd-muted-foreground` rest or `hover:bg-fd-accent/50` /
   `hover:bg-sidebar-accent` owning these rows. Prove with
-  `docs-chrome-sidebar.test.ts`.
+  `docs-chrome-sidebar.test.ts` and
+  `docs-chrome-sidebar.browser.test.ts` (Playwright fixture — rest, yellow
+  hover on resting+active rows, focus-visible ring; no Next build).
 - Header text/icons + breadcrumb surface (story 005): consume
   `src/features/docs/styles/docs-chrome-header-breadcrumb.ts` +
   `docs-chrome-header-breadcrumb.css` (imported from `globals.css`). Header
@@ -129,18 +135,22 @@ shared map — not per-control hex hacks.
   `text-muted-foreground hover:text-foreground` owning these chrome surfaces.
   Do not reopen primary-nav membership, brand copy, glossary, or search
   ranking. Prove with `docs-chrome-header-breadcrumb.test.ts`.
-- Five-surface lock (story 006): consume
+- Five-surface lock (story 006 / PF-K repair-003): consume
   `src/features/docs/styles/docs-chrome-highlighting-token-map-contract.ts`
-  for the representative resting vs hover/active expectations across search /
-  globe / GitHub, TOC, sidebar, header text/icons, and breadcrumb. Prove with
+  for the representative resting vs hover expectations across search /
+  globe / GitHub, TOC, sidebar, header text/icons, and breadcrumb. Sidebar
+  also encodes `selectedActiveRole: secondaryBlue` + the muted
+  `color-mix(... 18% ...)` wash token — selected ≠ hover yellow. Prove with
   `docs-chrome-highlighting-token-map-contract.test.ts` (happy-dom role + DOM
   color proofs) and
   `docs-chrome-highlighting-token-map.browser.test.ts` (Playwright fixture —
-  same always-on pattern as `docs-page-footer-chrome.browser.test.ts`; no Next
-  build required). The home-shell layout contract also asserts the five-surface
-  expectation map next to the search resting-fill contract. Joint live check:
-  on `/docs/guides/getting-started`, confirm all five surfaces match the locked
-  map together (rest + hover).
+  rest, selected secondary-blue wash via reference `color-mix`, yellow hover
+  on resting+active rows, TOC/search/header fence; no Next build required).
+  The home-shell layout contract also asserts the five-surface expectation
+  map (including sidebar selected secondary blue) next to the search
+  resting-fill contract. Joint live check: on `/docs/guides/getting-started`,
+  confirm all five surfaces match the locked map together (rest + selected +
+  hover).
 
 ## Prose / chrome link underline accent (secondary blue)
 

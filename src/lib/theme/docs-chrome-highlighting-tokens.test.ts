@@ -100,7 +100,7 @@ describe("docs chrome highlighting tokens (locked map)", () => {
     );
   });
 
-  test("surface role map encodes defaults and primary-yellow hover/active overlays", () => {
+  test("surface role map encodes defaults, primary-yellow hover, and sidebar secondary-blue selected", () => {
     expect([...DOCS_CHROME_HIGHLIGHTING_SURFACES]).toEqual([
       "searchGlobeGitHub",
       "tocCurrent",
@@ -129,6 +129,7 @@ describe("docs chrome highlighting tokens (locked map)", () => {
       default: "white",
       hoverActive: "primaryYellow",
       hoverActiveKind: "background",
+      selectedActive: "secondaryBlue",
     });
     expect(DOCS_CHROME_HIGHLIGHTING_SURFACE_ROLES.headerTextIcons).toEqual({
       default: "white",
@@ -144,6 +145,19 @@ describe("docs chrome highlighting tokens (locked map)", () => {
     for (const surface of DOCS_CHROME_HIGHLIGHTING_SURFACES) {
       expect(DOCS_CHROME_HIGHLIGHTING_SURFACE_ROLES[surface].hoverActive).toBe(
         "primaryYellow",
+      );
+    }
+    // Only sidebar separates selected/active (secondary blue) from hover yellow.
+    expect(
+      DOCS_CHROME_HIGHLIGHTING_SURFACE_ROLES.sidebarRow.selectedActive,
+    ).toBe("secondaryBlue");
+    for (const surface of DOCS_CHROME_HIGHLIGHTING_SURFACES) {
+      if (surface === "sidebarRow") {
+        continue;
+      }
+      const roles = DOCS_CHROME_HIGHLIGHTING_SURFACE_ROLES[surface];
+      expect("selectedActive" in roles ? roles.selectedActive : undefined).toBe(
+        undefined,
       );
     }
   });
@@ -166,6 +180,11 @@ describe("docs chrome highlighting tokens (locked map)", () => {
     sidebarRow.style.color = tokens.white;
     sidebarRow.style.backgroundColor = tokens.primaryYellow;
 
+    const sidebarActive = document.createElement("a");
+    sidebarActive.setAttribute("data-active", "true");
+    sidebarActive.style.color = tokens.white;
+    sidebarActive.style.backgroundColor = "rgba(80, 127, 140, 0.18)";
+
     const headerIcon = document.createElement("button");
     headerIcon.style.color = tokens.white;
     headerIcon.style.backgroundColor = tokens.surroundingChromeBackground;
@@ -175,6 +194,7 @@ describe("docs chrome highlighting tokens (locked map)", () => {
       tocCurrent,
       tocNonCurrent,
       sidebarRow,
+      sidebarActive,
       headerIcon,
     );
 
@@ -183,6 +203,11 @@ describe("docs chrome highlighting tokens (locked map)", () => {
     expect(normalizeHex(tocNonCurrent.style.color)).toBe("#8aaeb8");
     expect(normalizeHex(sidebarRow.style.color)).toBe("#f7f2e8");
     expect(normalizeHex(sidebarRow.style.backgroundColor)).toBe("#f5c76f");
+    expect(normalizeHex(sidebarActive.style.color)).toBe("#f7f2e8");
+    expect(sidebarActive.style.backgroundColor).toContain("80");
+    expect(sidebarActive.style.backgroundColor).toContain("127");
+    expect(sidebarActive.style.backgroundColor).toContain("140");
+    expect(normalizeHex(tokens.secondaryBlue)).toBe("#507f8c");
     expect(normalizeHex(headerIcon.style.color)).toBe("#f7f2e8");
     expect(normalizeHex(headerIcon.style.backgroundColor)).toBe("#050b10");
   });

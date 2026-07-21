@@ -48,6 +48,10 @@ export {
   type EventJsonReconnectProbeProps,
 } from "./event-json-reconnect-probe";
 export {
+  EventLinkedComponentSchemas,
+  type EventLinkedComponentSchemasProps,
+} from "./event-linked-component-schemas";
+export {
   EventPayloadCatalog,
   type EventPayloadCatalogProps,
 } from "./event-payload-catalog";

@@ -19,6 +19,7 @@ import {
   EVENT_RECONNECT_CURSOR_PARAM_NAMES,
   EVENT_STREAM_SAFETY,
   LOCKED_EVENT_STREAM_PLACEMENT,
+  resolveEventCorpus,
   type SseStaticExamplesCorpus,
 } from "@/lib/references/events";
 import { source } from "@/lib/source";
@@ -26,6 +27,8 @@ import {
   EventsCorpusMountView,
   type ResolvedCorpusMount,
 } from "./EventsCorpusMount";
+
+const INFERENCE_OUTCOME_ANCHOR = "components-schemas-InferenceOutcome";
 
 const PAGE_OWNED_SSE_FIXTURE: SseStaticExamplesCorpus = {
   examples: [
@@ -345,6 +348,42 @@ describe("events reference page published-route states", () => {
           '[data-schema-breadcrumb-segment="components"]',
         ).length,
       ).toBe(0);
+
+      // Linked component splay: inlined anchors + navigable SchemaRefLinks
+      // (InferenceOutcome-class) must stay present in the published success corpus.
+      const linkedSchemas = screen.getByTestId(
+        "event-linked-component-schemas",
+      );
+      expect(
+        Number(
+          linkedSchemas.getAttribute("data-event-linked-component-count") ??
+            "0",
+        ),
+      ).toBeGreaterThan(0);
+      const liveSchemas =
+        resolveEventCorpus().openapi.document.components?.schemas ?? {};
+      if (liveSchemas.InferenceOutcome !== undefined) {
+        const inferenceOutcome = document.getElementById(
+          INFERENCE_OUTCOME_ANCHOR,
+        );
+        expect(inferenceOutcome).toBeTruthy();
+        expect(
+          inferenceOutcome?.getAttribute("data-schema-definition-pointer"),
+        ).toBe("/components/schemas/InferenceOutcome");
+        const inferenceLinks = [
+          ...document.querySelectorAll(
+            'a[data-schema-ref-kind="resolved"], a[data-schema-ref-kind="cycle"]',
+          ),
+        ].filter((link) =>
+          (link.getAttribute("data-schema-ref-pointer") ?? "").endsWith(
+            "/InferenceOutcome",
+          ),
+        );
+        expect(inferenceLinks.length).toBeGreaterThan(0);
+        expect(inferenceLinks[0]?.getAttribute("href")).toBe(
+          `/docs/references/events#${INFERENCE_OUTCOME_ANCHOR}`,
+        );
+      }
 
       const reconnectLifecycle = screen.getByTestId(
         "event-reconnect-lifecycle-section",

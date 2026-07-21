@@ -150,7 +150,7 @@ export const W20_STATIC_EXPORT_REQUIRED_ROUTE_PROBES = [
     noHostMarkers: [],
   },
   {
-    path: "/docs/references/mcp",
+    path: "/docs/references/mcp-reference",
     family: "mcp",
     corpusMarkers: ["data-mcp-tool-inventory"],
     noHostMarkers: [],

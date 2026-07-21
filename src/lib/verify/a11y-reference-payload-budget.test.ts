@@ -118,8 +118,8 @@ describe("reference payload budget baselines", () => {
 
     expect(byId["references-api"]?.measuredHtmlBytes).toBe(10_258_887);
     expect(byId["references-api"]?.maxHtmlBytes).toBe(13_000_000);
-    expect(byId["references-events"]?.measuredHtmlBytes).toBe(2_076_020);
-    expect(byId["references-events"]?.maxHtmlBytes).toBe(2_600_000);
+    expect(byId["references-events"]?.measuredHtmlBytes).toBe(4_527_337);
+    expect(byId["references-events"]?.maxHtmlBytes).toBe(5_700_000);
     expect(byId["references-factory-schema"]?.measuredHtmlBytes).toBe(
       1_997_920,
     );

@@ -272,7 +272,7 @@ describe("collection ranking policy", () => {
 
     const results = await docsSearchApi.search("you.factory_session.get");
     expect(results[0]?.url).toBe(
-      "/docs/references/mcp#you.factory_session.get",
+      "/docs/references/mcp-reference#you.factory_session.get",
     );
   });
 
@@ -288,7 +288,7 @@ describe("collection ranking policy", () => {
     );
     const referencesIndex = firstIndexMatching(
       results,
-      (result) => result.url === "/docs/references/mcp",
+      (result) => result.url === "/docs/references/mcp-reference",
     );
     expect(documentationIndex).toBeGreaterThanOrEqual(0);
     expect(referencesIndex).toBeGreaterThanOrEqual(0);
@@ -296,7 +296,7 @@ describe("collection ranking policy", () => {
     const firstInventoryIndex = firstIndexMatching(
       results,
       (result) =>
-        result.url.startsWith("/docs/references/mcp#") ||
+        result.url.startsWith("/docs/references/mcp-reference#") ||
         result.url.startsWith("/docs/references/cli#you-mcp"),
     );
     expect(firstInventoryIndex).toBeGreaterThanOrEqual(0);

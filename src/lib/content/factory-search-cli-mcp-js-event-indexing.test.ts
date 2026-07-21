@@ -36,7 +36,7 @@ describe("factory search CLI/MCP/JS/event reference indexing (W16-004)", () => {
     expect(init?.url).toBe("/docs/references/cli#you-config-init");
   });
 
-  test("indexes each published MCP tool with /docs/references/mcp#anchor", () => {
+  test("indexes each published MCP tool with /docs/references/mcp-reference#anchor", () => {
     resetReferenceItemSearchDocumentsCacheForTests();
     const { shapes, corpus } = loadMcpReferenceSearchShapes();
     expect(shapes.length).toBeGreaterThan(0);
@@ -45,14 +45,18 @@ describe("factory search CLI/MCP/JS/event reference indexing (W16-004)", () => {
     for (const shape of shapes) {
       expect(shape.kind).toBe(REFERENCE_SEARCH_DOCUMENT_KIND);
       expect(shape.family).toBe("mcp");
-      expect(shape.url.startsWith("/docs/references/mcp#")).toBe(true);
+      expect(shape.url.startsWith("/docs/references/mcp-reference#")).toBe(
+        true,
+      );
     }
 
     const get = shapes.find(
       (shape) => shape.anchor === "you.factory_session.get",
     );
     expect(get).toBeDefined();
-    expect(get?.url).toBe("/docs/references/mcp#you.factory_session.get");
+    expect(get?.url).toBe(
+      "/docs/references/mcp-reference#you.factory_session.get",
+    );
   });
 
   test("indexes JavaScript symbols (and shared schemas) on javascript-runtime", () => {
@@ -112,7 +116,8 @@ describe("factory search CLI/MCP/JS/event reference indexing (W16-004)", () => {
     );
     expect(
       toolHits.some(
-        (hit) => hit.url === "/docs/references/mcp#you.factory_session.get",
+        (hit) =>
+          hit.url === "/docs/references/mcp-reference#you.factory_session.get",
       ),
     ).toBe(true);
 

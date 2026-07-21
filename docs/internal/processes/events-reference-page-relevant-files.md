@@ -29,10 +29,16 @@ Do **not**:
 | `src/content/docs/references/events/page.mdx` | Published reference page structure |
 | `src/content/docs/references/events/messages/en.json` | Default-locale copy |
 | `src/content/docs/references/events/assets.json` | Empty baseline assets |
-| `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount |
+| `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount (includes linked component schema splay) |
+| `src/lib/references/events/linked-component-schemas.ts` | Pure builder: nested component schemas cited from catalog roots |
+| `src/components/references/events/event-linked-component-schemas.tsx` | On-page linked component schema definitions section |
+| `src/components/references/events/response-event-matrix.tsx` | Response dimensions; mounts payload-union SchemaDefinition so envelope SchemaRefLinks resolve |
 | `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
 | `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount + catalog polish proof |
+| `src/content/docs/references/events/events-schema-ref-link-resolution.test.tsx` | Same-page SchemaRefLink → inlined component-schema anchor proof |
+| `src/content/docs/references/events/events-inlined-component-schema-anchors.test.tsx` | Story 003: success-corpus InferenceOutcome anchor + navigable SchemaRefLink regression |
 | `src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts` | Playwright probe: short Event catalog label, envelope components, suppressed pointer chrome, envelope/payload JSON examples on `/docs/references/events` |
+| `src/content/docs/references/events/assert-events-page-inline-schema-splay-browser.ts` | Playwright probe: `#components-schemas-InferenceOutcome` hash focus + SchemaRefLink click-traverse; reports SSR HTML bytes for focused payload budget |
 | `src/content/registry/references/events.json` | `reference.events` registry record |
 
 ## Additive registry / published-docs wiring
@@ -96,6 +102,42 @@ other W11 reference page lanes):
   Worktrees without local `node_modules` must use the probe’s `--webpack` start
   path (Turbopack rejects parent-hoisted `next`); optionally set
   `EVENTS_CATALOG_POLISH_PROBE_BASE_URL` against an already-warm server.
+- Linked component schema splay (InferenceOutcome-class deep links): build the
+  transitive `$ref` closure from already-rendered FactoryEvent /
+  FactoryResponseEvent catalog roots via
+  `buildEventsLinkedComponentSchemas` (`src/lib/references/events/linked-component-schemas.ts`),
+  exclude those already-rendered roots, and mount
+  `EventLinkedComponentSchemas` from `EventsCorpusMount` after the response
+  catalog. Reuse `schema-ref-closure` + `normalizeOpenApiComponentSchemaDefinition`;
+  do not invent schemas and do not flip the shared `showPointerPathChrome`
+  default (events keeps `EventsSchemaDefinition` local `false`). Prove anchors
+  with `linked-component-schemas.test.ts` +
+  `event-linked-component-schemas.test.tsx`.
+- SchemaRefLink destinations must exist for every name in
+  `eventsAlreadyRenderedComponentSchemaNames`: kind / phase / provenance mount
+  as `EventsSchemaDefinition` in `ResponseEventMatrix`, and the payload union
+  (`FactoryResponseEventPayload`) must also mount there
+  (`response-event-payload-union-schema-definition`) — listing oneOf variant
+  links alone is not enough for envelope `$ref` clicks. Prove same-page
+  InferenceOutcome-class hrefs + hash focus + no dangling navigable refs with
+  `events-schema-ref-link-resolution.test.tsx`.
+- Story 003 regression (anchors + navigable SchemaRefLinks): bind to live
+  packaged OpenAPI via `resolveEventCorpus()` — when `InferenceOutcome` is
+  published, assert `#components-schemas-InferenceOutcome` and at least one
+  `a[data-schema-ref-kind="resolved"|"cycle"]` href
+  `/docs/references/events#components-schemas-InferenceOutcome` in both
+  `events-inlined-component-schema-anchors.test.tsx` (corpus mount) and the
+  published-route success render in `events-page.test.tsx`. Do not invent
+  schemas; soft-skip only when the package drops the name.
+- Story 004 browser + budget close-out: run
+  `bun src/content/docs/references/events/assert-events-page-inline-schema-splay-browser.ts`
+  (unique port via `EVENTS_INLINE_SPLAY_PROBE_PORT`, optional
+  `EVENTS_INLINE_SPLAY_PROBE_BASE_URL`, kill server on exit; webpack start for
+  worktrees). Prove hash navigation to `#components-schemas-InferenceOutcome`
+  and SchemaRefLink click-traverse. Intentional linked-component splay grows
+  events SSR HTML (~4.5 MiB observed); raise the focused `references-events`
+  ceiling in `a11y-reference-payload-budget.ts` (~25% headroom) with measured
+  evidence — do not dump unpublished schemas to inflate or shrink the page.
 - Intro-strip browser close-out (story 003): the same probe also asserts
   absence of What It Covers / Key Concepts headings and ids, absence of folded
   Opening summary (`[data-testid="folded-summary"]` /

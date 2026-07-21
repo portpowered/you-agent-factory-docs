@@ -35,6 +35,16 @@ export {
   probeApiPrintReadableFacts,
 } from "./a11y-verification";
 export {
+  API_ACCENT_CHROME_FACTORY_DARK_RGB,
+  API_ACCENT_CHROME_QUIET_COLOR,
+  API_ACCENT_CHROME_ROOT_ATTR,
+  API_ACCENT_CHROME_SELECTED_COLOR,
+  API_ACCENT_CHROME_STYLESHEET,
+  API_ACCENT_METHOD_LABEL_COLOR_CLASSES,
+  API_ACCENT_TAB_QUIET_SELECTOR,
+  API_ACCENT_TAB_SELECTED_SELECTOR,
+} from "./api-accent-chrome";
+export {
   ApiOpenApiCodeBlock,
   type ApiOpenApiCodeBlockProps,
 } from "./api-code-block";
@@ -266,6 +276,9 @@ export {
   isApiSseOperation,
 } from "./sse-operations";
 export {
+  API_ACCENT_CHROME_REMAP,
+  API_ACCENT_CSS_VARS,
+  API_ACCENT_TOKEN_CLASSES,
   API_CODE_COPY_POLICY,
   API_CODE_PANEL_ATTR,
   API_METHOD_BADGE_TONE_CLASSES,
@@ -274,6 +287,7 @@ export {
   API_TOKEN_CLASSES,
   type ApiMethodBadgeToneKey,
   apiMethodBadgeToneClass,
+  avoidsPrimaryAccentClasses,
   usesSemanticTokenClasses,
 } from "./theme-tokens";
 export {
