@@ -44,7 +44,12 @@ import {
   resolveHostSemanticThemeTokens,
 } from "@/lib/theme/host-semantic-theme-tokens";
 
-/** R01 Program documentation pages (published; stubs and demotions excluded from explorer). */
+/**
+ * R01 Program documentation pages (published; stubs and demotions excluded from
+ * explorer). PS-300 membership finish promotes Mode A capability overviews and
+ * the API how-to into Program explorer members — they must not regress to
+ * published-but-explorer-omitted. English-only pages are gated in locale loops.
+ */
 const R01_PROGRAM_DOCUMENTATION_PAGES = [
   {
     slug: "mock-workers",
@@ -92,7 +97,29 @@ const R01_PROGRAM_DOCUMENTATION_PAGES = [
     slug: "packaged-factories",
     group: "capabilities",
     registryId: "documentation.packaged-factories",
-    explorerMember: false,
+    explorerMember: true,
+    englishOnly: true,
+  },
+  {
+    slug: "factory-session",
+    group: "capabilities",
+    registryId: "documentation.factory-session",
+    explorerMember: true,
+    englishOnly: true,
+  },
+  {
+    slug: "dynamic-workflows",
+    group: "capabilities",
+    registryId: "documentation.dynamic-workflows",
+    explorerMember: true,
+    englishOnly: true,
+  },
+  {
+    slug: "api",
+    group: "interfaces",
+    registryId: "documentation.api",
+    explorerMember: true,
+    englishOnly: true,
   },
 ] as const;
 
@@ -278,6 +305,9 @@ describe("plan-issues R02 tip reconciliation", () => {
       }
       const urls = pageEntriesInFolder(documentation).map((page) => page.url);
       for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
+        if ("englishOnly" in page && page.englishOnly && locale !== "en") {
+          continue;
+        }
         const present = urls.some((url) =>
           url.endsWith(`/documentation/${page.slug}`),
         );

@@ -214,6 +214,13 @@ describe("Program documentation three-level taxonomy", () => {
       expect(publishedSlugs).toContain(stubSlug);
     }
 
+    // PS-300 membership finish: pending + deferred exemption lists stay empty
+    // so published Program members fail closed if silently re-exempted.
+    expect(MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS).toEqual(
+      [],
+    );
+    expect(DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS).toEqual([]);
+
     for (const overviewSlug of [
       "factory-session",
       "dynamic-workflows",
