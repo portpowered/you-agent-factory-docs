@@ -165,8 +165,8 @@ describe("desktop/mobile explorer tree parity", () => {
       expect(
         isSubsequence(folderNames, [
           ...declaredCollectionFolders,
-          "Internal architecture",
-          "Miscellanea",
+          messages.explorer.virtualFolders["internal-architecture"],
+          messages.explorer.virtualFolders.miscellanea,
         ]),
       ).toBe(true);
       expect(folderNames).not.toContain(messages.explorer.folders.factories);

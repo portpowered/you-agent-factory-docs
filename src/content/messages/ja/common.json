@@ -86,6 +86,10 @@
       "contracts": "コントラクト",
       "schemas": "スキーマ",
       "limits": "制限"
+    },
+    "virtualFolders": {
+      "internal-architecture": "内部アーキテクチャ",
+      "miscellanea": "その他"
     }
   },
   "referenceChrome": {

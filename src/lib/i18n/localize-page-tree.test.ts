@@ -78,16 +78,17 @@ describe("localizePageTree", () => {
     );
   });
 
-  test("keeps explorer folders free of Glossary after locale pruning", () => {
-    const localizedTree = localizePageTree(source.pageTree, "vi");
+  test("keeps explorer folders free of Glossary after locale pruning", async () => {
+    const messages = await loadUiMessages("vi");
+    const localizedTree = localizePageTree(source.pageTree, "vi", { messages });
 
     expect(topLevelFolderNames(localizedTree.children)).toEqual([
-      "Hướng dẫn",
-      "Tài liệu chương trình",
-      "Khái niệm",
-      "Kỹ thuật",
-      "Tham chiếu",
-      "Miscellanea",
+      messages.explorer.folders.guides,
+      messages.explorer.folders.documentation,
+      messages.explorer.folders.concepts,
+      messages.explorer.folders.techniques,
+      messages.explorer.folders.references,
+      messages.explorer.virtualFolders.miscellanea,
     ]);
     expect(localizedTree.name).toBe("You Agent Factory");
     expect(localizedTree.children.at(-1)).toMatchObject({
@@ -111,7 +112,11 @@ describe("localizePageTree", () => {
       messages.explorer.folders.techniques,
       messages.explorer.folders.references,
     ]);
-    expect(folderNames).toContain("Miscellanea");
+    expect(folderNames).toContain(messages.explorer.virtualFolders.miscellanea);
+    expect(folderNames).not.toContain(
+      messages.explorer.virtualFolders["internal-architecture"],
+    );
+    expect(folderNames).not.toContain("Miscellanea");
     expect(folderNames).not.toContain("Internal architecture");
     // Factories / workers / workstations folders prune when no pages are
     // shipped for the locale (current shipped set includes references/api).

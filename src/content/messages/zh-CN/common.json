@@ -86,6 +86,10 @@
       "contracts": "合约",
       "schemas": "模式",
       "limits": "限制"
+    },
+    "virtualFolders": {
+      "internal-architecture": "内部架构",
+      "miscellanea": "杂项"
     }
   },
   "referenceChrome": {

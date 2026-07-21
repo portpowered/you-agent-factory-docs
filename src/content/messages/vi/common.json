@@ -86,6 +86,10 @@
       "contracts": "Hợp đồng",
       "schemas": "Lược đồ",
       "limits": "Giới hạn"
+    },
+    "virtualFolders": {
+      "internal-architecture": "Kiến trúc nội bộ",
+      "miscellanea": "Linh tinh"
     }
   },
   "referenceChrome": {

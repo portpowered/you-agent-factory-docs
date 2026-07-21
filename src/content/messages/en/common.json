@@ -86,6 +86,10 @@
       "contracts": "Contracts",
       "schemas": "Schemas",
       "limits": "Limits"
+    },
+    "virtualFolders": {
+      "internal-architecture": "Internal architecture",
+      "miscellanea": "Miscellanea"
     }
   },
   "referenceChrome": {

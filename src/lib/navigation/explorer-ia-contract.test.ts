@@ -788,8 +788,8 @@ describe("explorer IA exact-order contract", () => {
       expect(
         isSubsequence(topLevelFolders, [
           ...declaredCollectionFolders,
-          "Internal architecture",
-          "Miscellanea",
+          explorer.virtualFolders["internal-architecture"],
+          explorer.virtualFolders.miscellanea,
         ]),
       ).toBe(true);
       expect(
@@ -923,6 +923,7 @@ describe("explorer IA fail-closed locale contract", () => {
       },
       documentationSecondaries: messages.explorer.documentationSecondaries,
       referenceGroups: messages.explorer.referenceGroups,
+      virtualFolders: messages.explorer.virtualFolders,
     };
 
     expect(() =>
@@ -941,6 +942,7 @@ describe("explorer IA fail-closed locale contract", () => {
         configuring: "",
       },
       referenceGroups: messages.explorer.referenceGroups,
+      virtualFolders: messages.explorer.virtualFolders,
     };
 
     expect(() =>
@@ -959,10 +961,30 @@ describe("explorer IA fail-closed locale contract", () => {
         ...messages.explorer.referenceGroups,
         contracts: "",
       },
+      virtualFolders: messages.explorer.virtualFolders,
     };
 
     expect(() =>
       resolveExplorerMessages({ ...messages, explorer: incomplete }),
     ).toThrow(/referenceGroups\.contracts/);
+  });
+
+  test("assertExplorerMessages rejects incomplete virtual folder catalogs", async () => {
+    const messages = await loadUiMessages("zh-CN");
+    const incomplete = {
+      folders: messages.explorer.folders,
+      conceptsGroups: messages.explorer.conceptsGroups,
+      documentationGroups: messages.explorer.documentationGroups,
+      documentationSecondaries: messages.explorer.documentationSecondaries,
+      referenceGroups: messages.explorer.referenceGroups,
+      virtualFolders: {
+        ...messages.explorer.virtualFolders,
+        "internal-architecture": "",
+      },
+    };
+
+    expect(() =>
+      resolveExplorerMessages({ ...messages, explorer: incomplete }),
+    ).toThrow(/virtualFolders\.internal-architecture/);
   });
 });

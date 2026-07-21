@@ -844,8 +844,11 @@ those paths only accept collection section refs.
   refs in `FACTORY_EXPLORER_SECTION_ORDER` (after Reference, before FAQ).
   Membership is `FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP` (full docsSlugs;
   pages keep `/docs/documentation/...` routes). Install stays demoted from
-  explorer. English labels live in `FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS`
-  (locale catalog keys for these folders are a later story).
+  explorer. English defaults live in `FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS`;
+  shipped locales require `explorer.virtualFolders.{internal-architecture,miscellanea}`
+  fail-closed via `assertExplorerMessages`, and `localizePageTree` remaps them
+  through `buildDefaultVirtualFolderLabelLocalizer` (empty virtual folders still
+  prune when no locale-shipped pages remain).
 - Packaged CLI reference surfaces: place `packaged-documents` under Program
   Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
   Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;

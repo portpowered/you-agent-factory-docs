@@ -96,12 +96,22 @@ export type ExplorerReferenceGroupMessages = {
   limits: string;
 };
 
+/**
+ * Top-level virtual explorer folder labels (Internal architecture /
+ * Miscellanea). Not DocsCollectionIds — see FACTORY_EXPLORER_VIRTUAL_FOLDER_*.
+ */
+export type ExplorerVirtualFolderMessages = {
+  "internal-architecture": string;
+  miscellanea: string;
+};
+
 export type ExplorerMessages = {
   folders: ExplorerFolderMessages;
   conceptsGroups: ExplorerConceptsGroupMessages;
   documentationGroups: ExplorerDocumentationGroupMessages;
   documentationSecondaries: ExplorerDocumentationSecondaryMessages;
   referenceGroups: ExplorerReferenceGroupMessages;
+  virtualFolders: ExplorerVirtualFolderMessages;
 };
 
 /**

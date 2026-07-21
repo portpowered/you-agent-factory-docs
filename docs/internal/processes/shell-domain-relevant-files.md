@@ -470,21 +470,24 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `FACTORY_EXPLORER_FOLDER_LABELS` / `SIDEBAR_GROUP_LABELS` /
   `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`. Program documentation
   top-group and secondary labels localize; literal CLI/package/route
-  identifiers in page titles stay untranslated. Nested secondary labels
-  (Resources, Observability) are declared in
+  identifiers in page titles stay untranslated.   Nested secondary labels (Configuring under Operations) are declared in
   `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`, flattened for catalogs via
   `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`, and remapped by
   `localizePageTree` through `buildDefaultSecondaryLabelLocalizer`.
-  Empty Workers / Workstations / Factories Program-documentation secondaries
-  that only nested W18 move stubs were removed after #158 demotion — keep
-  W15 top-level `explorer.folders.{workers,workstations,factories}` for the
-  live family routes. Contracts lock the live secondary catalog shape
-  (`resources` / `observability` only) and the absence of retired glossary
-  advertising keys (`glossaryIndex`, `home.glossaryLink*`,
+  Virtual folder labels (Internal architecture / Miscellanea) ship as
+  `explorer.virtualFolders` and remap through
+  `buildDefaultVirtualFolderLabelLocalizer`. Empty Workers / Workstations /
+  Factories Program-documentation secondaries that only nested W18 move stubs
+  were removed after #158 demotion — keep W15
+  `explorer.folders.{workers,workstations,factories}` for the live family
+  routes nested under Reference. Contracts lock the live secondary catalog
+  shape (`configuring` only) and the absence of retired glossary advertising
+  keys (`glossaryIndex`, `home.glossaryLink*`,
   `browseIndex.glossaryRouteDescription` / `glossarySection*`) without
   reading those deleted symbols as live typed fields. Keep `nav.glossary` and
   `pageKind.glossary`. `assertExplorerMessages` fails closed when any explorer
-  catalog (including secondaries) is incomplete.
+  catalog (folders, groups, secondaries, referenceGroups, virtualFolders) is
+  incomplete.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
   Locale-aware explorer folder/subgroup/secondary/page label resolution
   consumed by desktop sidebar and mobile drawer through the same localized
