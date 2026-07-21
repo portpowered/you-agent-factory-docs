@@ -108,6 +108,37 @@ describe("blog post page render", () => {
     expect(html).not.toContain('data-testid="blog-related-docs"');
     expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/concepts/bottlenecks"');
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('aria-label="Next blog post"');
+    expect(html).toContain('href="/blog/comparing-agent-factories"');
+  });
+
+  it("renders next-post control for a mid-list fixture and omits it for the last post", async () => {
+    await writeFixturePost({
+      slug: "newer-neighbor",
+      status: "published",
+      publishedAt: "2026-06-15",
+      title: "Newer Neighbor",
+    });
+    await writeFixturePost({
+      slug: "older-neighbor",
+      status: "published",
+      publishedAt: "2026-06-01",
+      title: "Older Neighbor",
+    });
+
+    const newerHtml = renderToStaticMarkup(
+      await renderBlogPostPage("newer-neighbor", "en", { blogRoot: tempRoot }),
+    );
+    const olderHtml = renderToStaticMarkup(
+      await renderBlogPostPage("older-neighbor", "en", { blogRoot: tempRoot }),
+    );
+
+    expect(newerHtml).toContain('data-testid="blog-next-post"');
+    expect(newerHtml).toContain('href="/blog/older-neighbor"');
+    expect(newerHtml).toContain("Older Neighbor");
+    expect(olderHtml).not.toContain('data-testid="blog-next-post"');
+    expect(olderHtml).not.toContain('href="/blog/newer-neighbor"');
   });
 
   it("returns missing-page behavior for unpublished legacy Atlas blog slugs", async () => {

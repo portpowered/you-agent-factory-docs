@@ -14,6 +14,9 @@ adding public blog routes, shell hardening, or committed real posts.
   Sidecar loading for local `messages/<locale>.json` and optional `assets.json`.
 * `src/lib/content/blog-post-list.ts`
   Published post discovery, draft filtering, and newest-first sorting.
+* `src/lib/content/blog-next-post.ts`
+  Next published neighbor under the same newest-first index order (null when
+  last / unknown). Used by blog post chrome, not related-docs lists.
 * `src/lib/content/blog-post-get.ts`
   Single published post lookup by slug with typed not-found (`null`) behavior.
 * `src/lib/content/page-asset-paths.ts`
@@ -33,6 +36,7 @@ adding public blog routes, shell hardening, or committed real posts.
 * `src/lib/content/blog-frontmatter.test.ts`
 * `src/lib/content/blog-post-load.test.ts`
 * `src/lib/content/blog-post-list.test.ts`
+* `src/lib/content/blog-next-post.test.ts`
 * `src/lib/content/blog-post-get.test.ts`
 * `src/lib/content/blog-content-loader-scope.test.ts`
   Production-root emptiness, blog-owned import surfaces, and public shell catalog isolation.
@@ -118,6 +122,12 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   SSR/page tests should assert exactly one `h1`, absence of
   `data-testid="tag-pill-list"`, and absence of a `Tags` h2, while still
   checking frontmatter tag labels from `BlogPostMeta` when tags are present.
+* Published blog post pages render a compact next-post control
+  (`data-testid="blog-next-post"`, `aria-label="Next blog post"`) via
+  `BlogNextPostControl` when a next published neighbor exists under the
+  newest-first index order from `listPublishedBlogPosts`. Omit the control
+  (no dead href) when the post is last. Do not reintroduce `BlogRelatedDocs`
+  lists for neighbor navigation.
 * Historical note: `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve
   related-doc kinds wired through `getRegistryRecordById` (concept, module,
   model, and other tagged kinds in that lookup). Published `documentation.*`
