@@ -325,8 +325,9 @@ confirm-`you`-available guidance, and starter scaffold choice (default Codex
 when `--executor` is omitted; copyable `you init --executor claude` for a
 Claude-backed scaffold). Do not reintroduce an Install deep-dive callout or
 primary next-step that requires `/docs/documentation/install` to finish a
-standard install — that URL stays a thin compatibility stub (PS-200) until
-explorer demotion (PS-300).
+standard install — that URL stays a thin compatibility stub (PS-200) and
+remains permanently demoted from the explorer (PS-300; listed in
+`PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`).
 
 For `documentation/install` itself: keep a published thin stub under
 `src/content/docs/documentation/install/` with one `install-path` section that
@@ -815,8 +816,11 @@ those paths only accept collection section refs.
   Orientation → Capabilities → Interfaces → Operations; Operations nests
   secondary `configuring` = “Configuring you-agent-factory” and may also list
   direct children such as logs/metrics/dashboard). Factory config pages use
-  full `factories/...` docsSlug keys in that map; `PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`
-  and FAQ are omitted from Program membership.
+  full `factories/...` docsSlug keys in that map; Operations → Configuring
+  secondary membership is exactly `resources`, `factories/configuration`, and
+  `factories/global-configuration` (no route moves). `PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`
+  (including permanent `install` demotion) and FAQ are omitted from Program
+  membership.
   Mode A capability overviews (`factory-session`, `dynamic-workflows`,
   `packaged-factories`) are Program → Capabilities members; keep
   `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` empty unless a

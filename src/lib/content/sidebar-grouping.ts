@@ -225,6 +225,8 @@ export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
  * Published documentation slugs intentionally demoted from Program explorer
  * membership under locked PS-100 (still published at existing routes).
  * `throttling-and-limits` is claimed by Reference → Limits instead.
+ * `install` stays permanently demoted (PS-200/PS-300): Getting Started owns
+ * install teaching; the compatibility route is not an explorer destination.
  */
 export const PROGRAM_DOCUMENTATION_DEMOTED_SLUGS = [
   "install",

@@ -10,6 +10,7 @@ import {
   type ExplorerTreeSignature,
   folderSignatureByName,
   pageEntriesInFolder,
+  pageEntriesInSecondaryFolderUnderSeparator,
   pageEntriesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
@@ -37,6 +38,19 @@ const MODE_A_CAPABILITY_OVERVIEW_MEMBERSHIP_SLUGS = [
 
 /** Program Interfaces how-to wired into Program → Interfaces (PS-300). */
 const PROGRAM_INTERFACES_API_HOWTO_MEMBERSHIP_SLUG = "api" as const;
+
+/**
+ * Operations → Configuring secondary membership (PS-300 confirm).
+ * Factories config pages keep `/docs/factories/...` routes.
+ */
+const OPERATIONS_CONFIGURING_MEMBERSHIP_URL_SUFFIXES = [
+  "/docs/documentation/resources",
+  "/docs/factories/configuration",
+  "/docs/factories/global-configuration",
+] as const;
+
+/** Permanent Program explorer demotion — published stub, not a sidebar destination. */
+const PROGRAM_DOCUMENTATION_PERMANENTLY_DEMOTED_INSTALL_SLUG = "install";
 
 /** W18 move stubs that must stay out of Program documentation explorer. */
 const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
@@ -272,13 +286,24 @@ describe("desktop/mobile explorer tree parity", () => {
           messages.explorer.documentationGroups.operations,
         ).some((page) => page.url.includes("/documentation/mock-workers")),
       ).toBe(false);
+      expect(
+        pageEntriesInFolder(documentation).some((page) =>
+          page.url.includes(
+            `/documentation/${PROGRAM_DOCUMENTATION_PERMANENTLY_DEMOTED_INSTALL_SLUG}`,
+          ),
+        ),
+        `${locale}: install must stay demoted from Program documentation explorer`,
+      ).toBe(false);
       if (locale === "en") {
+        const configuringPages = pageEntriesInSecondaryFolderUnderSeparator(
+          documentation,
+          messages.explorer.documentationGroups.operations,
+          messages.explorer.documentationSecondaries.configuring,
+        );
         expect(
-          pageEntriesUnderSeparator(
-            documentation,
-            messages.explorer.documentationGroups.operations,
-          ).some((page) => page.url.includes("/documentation/resources")),
-        ).toBe(true);
+          configuringPages.map((page) => page.url).sort(),
+          `${locale}: Operations → Configuring must list Resources + both factories config pages`,
+        ).toEqual([...OPERATIONS_CONFIGURING_MEMBERSHIP_URL_SUFFIXES].sort());
       }
       expect(
         pageEntriesUnderSeparator(
