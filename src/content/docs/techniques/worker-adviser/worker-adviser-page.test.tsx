@@ -52,15 +52,20 @@ describe("worker-adviser technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
     expect(
       screen.queryByRole("heading", { name: "Worker-Adviser" }),
     ).toBeNull();
 
     const sections = loadedPage.messages.sections;
     expect(sections).toBeDefined();
+    expect(sections?.related).toBeUndefined();
+    expect(sections?.references).toBeUndefined();
+    expect(loadedPage.messages.links).toBeUndefined();
     const whatItIs = sections?.whatItIs.body as string;
     const whyItMatters = sections?.whyItMatters.body as string;
     const howItWorks = sections?.howItWorks.body as string;
@@ -112,23 +117,6 @@ describe("worker-adviser technique page", () => {
     expect(comparedSection?.textContent ?? "").toMatch(
       /Classify-execute|Workqueue-executor|workers configuration/i,
     );
-
-    const workersLink = screen.getByRole("link", {
-      name: "Workers configuration",
-    });
-    expect(workersLink.getAttribute("href")).toBe("/docs/workers");
-    const writerReviewerLink = screen.getByRole("link", {
-      name: "Writer-reviewer technique",
-    });
-    expect(writerReviewerLink.getAttribute("href")).toBe(
-      "/docs/techniques/writer-reviewer",
-    );
-    const plannerExecutorLink = screen.getByRole("link", {
-      name: "Planner-executor technique",
-    });
-    expect(plannerExecutorLink.getAttribute("href")).toBe(
-      "/docs/techniques/planner-executor",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with technique section structure", async () => {
@@ -167,15 +155,11 @@ describe("worker-adviser technique page", () => {
     expect(String(vi.messages.sections?.howItWorks?.title ?? "")).toBe(
       "How It Works",
     );
-    expect(ja.messages.links?.workersDocumentation).toBe(
-      "Workers configuration",
-    );
-    expect(zhCN.messages.links?.writerReviewerTechnique).toBe(
-      "Writer-reviewer technique",
-    );
-    expect(vi.messages.links?.plannerExecutorTechnique).toBe(
-      "Planner-executor technique",
-    );
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
+    expect(ja.messages.sections?.related).toBeUndefined();
+    expect(zhCN.messages.sections?.references).toBeUndefined();
     expect(ja.messages.description).not.toMatch(/Model Atlas/i);
     expect(zhCN.messages.description).not.toMatch(/Model Atlas/i);
     expect(vi.messages.description).not.toMatch(/Model Atlas/i);

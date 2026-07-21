@@ -50,9 +50,14 @@ chrome (`RelatedDocs`, Related-section `LocalizedLinkList`, References
 owned `sections.related` / `sections.references` footer title keys and orphan
 Related-footer-only `links.*` keys from techniques `messages/*.json` (all owned
 locales) so bundles match the page. Keep teaching-section body keys. Colocated
-absence assertions remain a follow-on strip story. Other published collections
-may still mount RelatedDocs until their PF-L-strip lane removes it; that
-remaining chrome is not a contracts-lane failure. FAQ-only strip remains PF-D2.
+techniques `*-page.test.tsx` files assert Related / References footer absence
+(`queryByRole` Related To / References headings, `#related` / `#references`
+null, and no orphan `messages.links` / `sections.related` /
+`sections.references`); keep teaching-section and Tags presence asserts. Drop
+Related-footer curated-link proofs instead of inventing a replacement related
+surface. Other published collections may still mount RelatedDocs until their
+PF-L-strip lane removes it; that remaining chrome is not a contracts-lane
+failure. FAQ-only strip remains PF-D2.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no

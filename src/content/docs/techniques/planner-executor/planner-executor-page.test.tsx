@@ -44,9 +44,10 @@ describe("planner-executor technique page", () => {
     expect(
       loadedPage.messages.sections?.comparedToNearbyTechniques?.title,
     ).toBe("Compared To Nearby Techniques");
-    expect(loadedPage.messages.sections?.related?.title).toBe("Related To");
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
     expect(loadedPage.messages.sections?.tags?.title).toBe("Tags");
-    expect(loadedPage.messages.sections?.references?.title).toBe("References");
+    expect(loadedPage.messages.sections?.references).toBeUndefined();
+    expect(loadedPage.messages.links).toBeUndefined();
     const whatItIsBody = String(
       loadedPage.messages.sections?.whatItIs?.body ?? "",
     );
@@ -100,9 +101,6 @@ describe("planner-executor technique page", () => {
     expect(comparedBody).not.toMatch(/Model Atlas/i);
     expect(comparedBody).not.toMatch(/on this page/i);
 
-    expect(loadedPage.messages.links?.checklist).toBe("Checklist");
-    expect(loadedPage.messages.links?.taskQueue).toBe("Task queue");
-
     render(
       <main>
         <DocsPageProviders
@@ -122,9 +120,11 @@ describe("planner-executor technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
     expect(document.getElementById("what-it-is")?.textContent ?? "").toMatch(
       /Planner-executor/i,
     );
@@ -155,17 +155,6 @@ describe("planner-executor technique page", () => {
       document.getElementById("compared-to-nearby-techniques")?.textContent ??
         "",
     ).toMatch(/Classify-execute/i);
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection?.textContent ?? "").toMatch(/Checklist/i);
-    expect(relatedSection?.textContent ?? "").toMatch(/Task queue/i);
-    const checklistLink = relatedSection?.querySelector(
-      'a[href="/docs/concepts/checklist"]',
-    );
-    const taskQueueLink = relatedSection?.querySelector(
-      'a[href="/docs/concepts/task-queue"]',
-    );
-    expect(checklistLink).toBeTruthy();
-    expect(taskQueueLink).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
   });
@@ -212,8 +201,10 @@ describe("planner-executor technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
   });
 });

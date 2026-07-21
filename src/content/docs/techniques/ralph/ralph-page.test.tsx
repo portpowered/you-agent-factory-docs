@@ -88,14 +88,9 @@ describe("ralph technique page", () => {
       /on this page|Model Atlas|reader.?shortcut|AGENTS\.md|skill converter/i,
     );
 
-    const links = loadedPage.messages.links as
-      | Record<string, string>
-      | undefined;
-    expect(links?.loopConcept).toMatch(/loop concept/i);
-    expect(links?.loopsGuide).toMatch(/using you-agent-factory for loops/i);
-    expect(links?.plannerExecutor).toMatch(/planner-executor/i);
-    expect(links?.writerReviewer).toMatch(/writer-reviewer/i);
-    expect(links?.workqueueExecutor).toMatch(/workqueue-executor/i);
+    expect(loadedPage.messages.links).toBeUndefined();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
+    expect(loadedPage.messages.sections?.references).toBeUndefined();
 
     render(
       <main>
@@ -116,30 +111,10 @@ describe("ralph technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
-    expect(
-      screen.getByRole("link", { name: "Loop concept" }).getAttribute("href"),
-    ).toBe("/docs/concepts/loop");
-    expect(
-      screen
-        .getByRole("link", { name: "Using you-agent-factory for loops" })
-        .getAttribute("href"),
-    ).toBe("/docs/guides/using-you-agent-factory-for-loops");
-    expect(
-      screen
-        .getByRole("link", { name: "Planner-executor" })
-        .getAttribute("href"),
-    ).toBe("/docs/techniques/planner-executor");
-    expect(
-      screen
-        .getByRole("link", { name: "Writer-reviewer" })
-        .getAttribute("href"),
-    ).toBe("/docs/techniques/writer-reviewer");
-    expect(
-      screen
-        .getByRole("link", { name: "Workqueue-executor" })
-        .getAttribute("href"),
-    ).toBe("/docs/techniques/workqueue-executor");
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
     const bodyText = document.body.textContent ?? "";
     expect(bodyText).toMatch(/product requirements document \(PRD\)/i);
     expect(bodyText).toMatch(/mergeable and reviewable/i);
@@ -207,6 +182,9 @@ describe("ralph technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
   });
 });

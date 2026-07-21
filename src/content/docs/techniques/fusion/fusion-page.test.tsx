@@ -69,9 +69,11 @@ describe("fusion technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const whatItIs = document.getElementById("what-it-is");
     expect(whatItIs).toBeTruthy();
@@ -133,17 +135,6 @@ describe("fusion technique page", () => {
     expect(compared?.textContent).not.toMatch(/on this page/i);
     expect(compared?.textContent).not.toMatch(/Model Atlas/i);
 
-    const related = document.getElementById("related");
-    expect(related).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/concepts/harness"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/guides/getting-started"]'),
-    ).toBeTruthy();
-    expect(related?.textContent).toMatch(/Harness concept/i);
-    expect(related?.textContent).toMatch(/Getting started/i);
-
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 
@@ -203,6 +194,9 @@ describe("fusion technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
   });
 });
