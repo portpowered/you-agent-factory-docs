@@ -36,8 +36,18 @@ describe("tokens concept route accessibility smoke", () => {
     expect(
       screen.getByRole("heading", { name: "Why It Matters" }),
     ).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Configuration" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Workstations" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
+    // Teaching-body auto-links remain after Related footer strip.
+    expect(
+      screen.getAllByRole("link", { name: "harness" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getByRole("link", { name: "deliberative reasoning" }),
+    ).toBeTruthy();
     await expectNoSeriousAxeViolations(container);
   });
 });

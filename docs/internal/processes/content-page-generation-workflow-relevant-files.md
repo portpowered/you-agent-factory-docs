@@ -67,6 +67,11 @@ mounting trailing Related / References footer chrome:
   `#related` / `#references` DOM null, and Tags heading still present.
   Keep teaching-section link asserts (SPC `where-it-appears`) separate from
   footer chrome.
+- Tightly coupled a11y smokes under `src/tests/a11y/` that still require
+  Related-footer curated link names (for example `glossary-token.a11y.test.tsx`
+  Configuration / Workstations) must flip to Related/References absence plus
+  teaching-body link proofs, or `make test-reader-facing` / component-coverage
+  fail after the MDX strip.
 - `src/lib/navigation/local-docs-toc.test.ts` uses the loop concept page — after
   the strip, assert Tags presence and Related To / References TOC absence.
 - After MDX strip, clean owned concepts `messages/*.json`: drop
