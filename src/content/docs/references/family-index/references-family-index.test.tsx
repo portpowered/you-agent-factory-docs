@@ -161,6 +161,11 @@ describe("references family index", () => {
       document.querySelector("[data-references-family-freshness]"),
     ).toBeNull();
     expect(document.querySelector("#package-freshness")).toBeNull();
+    expect(document.querySelector("[data-freshness-status]")).toBeNull();
+    expect(
+      document.querySelector("[data-references-family-freshness-summary]"),
+    ).toBeNull();
+    expect(screen.queryByText(/Package freshness unavailable/i)).toBeNull();
   });
 
   test("renders discoverability links for all eight planned reference routes", async () => {

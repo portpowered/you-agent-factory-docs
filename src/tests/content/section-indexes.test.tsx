@@ -503,7 +503,7 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
   });
 
-  it("renders the authored references family index without introduction chrome", async () => {
+  it("renders the authored references family index without introduction or Package freshness chrome", async () => {
     const html = renderToStaticMarkup(await ReferencesIndexPage());
 
     expect(html).toContain("References");
@@ -516,11 +516,11 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain('data-references-family-index=""');
     expect(html).toContain("Contract surfaces");
     expect(html).toContain('data-references-family-discoverability=""');
-    expect(html).toContain('data-references-family-freshness=""');
-    expect(html).toContain("Package freshness");
-    expect(html).toContain('data-freshness-status="ready"');
-    expect(html).toContain('data-references-family-freshness-summary=""');
-    expect(html).toContain("@you-agent-factory/api");
+    expect(html).not.toContain('data-references-family-freshness=""');
+    expect(html).not.toContain("Package freshness");
+    expect(html).not.toContain("data-freshness-status=");
+    expect(html).not.toContain('data-references-family-freshness-summary=""');
+    expect(html).not.toContain('id="package-freshness"');
     expect(html).toContain("System configuration schema");
     expect(html).not.toContain("you-config");
     for (const href of [
@@ -549,7 +549,10 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain("リファレンス");
     expect(html).not.toContain("このファミリーが扱うこと");
     expect(html).toContain("コントラクト面");
-    expect(html).toContain("パッケージの鮮度");
+    expect(html).toContain("公開済みコントラクト面");
+    expect(html).not.toContain("パッケージの鮮度");
+    expect(html).not.toContain('data-references-family-freshness=""');
+    expect(html).not.toContain('id="package-freshness"');
     expect(html).not.toContain("What this family covers");
     expect(html).not.toContain("No reference entries yet");
   });
