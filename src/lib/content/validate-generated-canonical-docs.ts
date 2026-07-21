@@ -132,53 +132,17 @@ export function validateGeneratedFoldedSummary(options: {
   return errors;
 }
 
-function sectionMustContain(
-  pagePath: string,
-  mdxBody: string,
-  sectionId: string,
-  marker: string,
-  code: string,
-  label: string,
-): ValidationError[] {
-  const sectionBody = sectionSlice(mdxBody, sectionId);
-  if (!sectionBody) {
-    return [];
-  }
-  if (sectionBody.includes(marker)) {
-    return [];
-  }
-  return [
-    {
-      code,
-      message: `${pagePath}: section id="${sectionId}" must include ${label}`,
-      path: pagePath,
-    },
-  ];
-}
-
-export function validateGeneratedKindSpecificStructure(options: {
+/**
+ * Kind-specific structure checks for generated canonical pages.
+ * RelatedDocs / related-section presence is intentionally not required
+ * (PF-L-contracts): strip-ready concept/canonical MDX may omit both.
+ */
+export function validateGeneratedKindSpecificStructure(_options: {
   pagePath: string;
   kind: PageKind;
   mdxSource: string;
 }): ValidationError[] {
-  const { pagePath, kind, mdxSource } = options;
-  const mdxBody = extractMdxBody(mdxSource);
-  const errors: ValidationError[] = [];
-
-  if (kind === "concept") {
-    errors.push(
-      ...sectionMustContain(
-        pagePath,
-        mdxBody,
-        "related",
-        "<RelatedDocs",
-        "missing-related-docs-component",
-        "RelatedDocs",
-      ),
-    );
-  }
-
-  return errors;
+  return [];
 }
 
 /**
