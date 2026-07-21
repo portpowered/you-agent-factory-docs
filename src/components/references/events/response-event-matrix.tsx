@@ -176,6 +176,11 @@ export function ResponseEventMatrix({
           addressable shapes. Full schema-backed fields are listed in the
           payload catalog below.
         </p>
+        <EventsSchemaDefinition
+          data-testid="response-event-payload-union-schema-definition"
+          definition={catalog.payloadUnionDefinition}
+          pagePath={pagePath}
+        />
         <ul
           aria-label="FactoryResponseEvent payload oneOf shapes"
           className="min-w-0 space-y-1"

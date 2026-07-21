@@ -11,6 +11,7 @@
  * loaders or scanning renderer trees.
  */
 
+import { EventLinkedComponentSchemas } from "@/components/references/events/event-linked-component-schemas";
 import { EventReconnectLifecycleSection } from "@/components/references/events/event-reconnect-lifecycle-section";
 import {
   type EventStreamOperationSummaryModel,
@@ -25,10 +26,12 @@ import type { EventsUiStatus } from "@/components/references/events/types";
 import { ReferenceHashNavigation } from "@/components/references/shared";
 import {
   buildEventReconnectLifecycleCorpus,
+  buildEventsLinkedComponentSchemas,
   buildFactoryEventCatalog,
   buildFactoryResponseEventCatalog,
   buildSseStaticExamplesCorpus,
   type EventReconnectLifecycleCorpus,
+  type EventsLinkedComponentSchema,
   eventsOpenApiTurbopackLoadDependencies,
   type FactoryEventCatalog,
   type FactoryResponseEventCatalog,
@@ -45,6 +48,7 @@ export type ResolvedCorpusMount = {
   summaries: readonly EventStreamOperationSummaryModel[];
   factoryEventCatalog?: FactoryEventCatalog;
   factoryResponseEventCatalog?: FactoryResponseEventCatalog;
+  linkedComponentSchemas?: readonly EventsLinkedComponentSchema[];
   reconnectLifecycle?: EventReconnectLifecycleCorpus;
   sseStaticExamples?: SseStaticExamplesCorpus;
   sourceHash?: string;
@@ -64,6 +68,11 @@ export function resolvePublishedEventsCorpus(): ResolvedCorpusMount {
     );
     const factoryResponseEventCatalog = buildFactoryResponseEventCatalog(
       corpus.openapi.document,
+    );
+    const linkedComponentSchemas = buildEventsLinkedComponentSchemas(
+      corpus.openapi.document,
+      factoryEventCatalog,
+      factoryResponseEventCatalog,
     );
     const reconnectLifecycle = buildEventReconnectLifecycleCorpus(
       corpus.openapi.document,
@@ -88,6 +97,7 @@ export function resolvePublishedEventsCorpus(): ResolvedCorpusMount {
       summaries,
       factoryEventCatalog,
       factoryResponseEventCatalog,
+      linkedComponentSchemas,
       reconnectLifecycle,
       sseStaticExamples,
       sourceHash: corpus.sourceHash,
@@ -147,6 +157,13 @@ export function EventsCorpusMountView({
             <FactoryResponseEventCatalogSection
               catalog={resolved.factoryResponseEventCatalog}
               pagePath={EVENTS_PAGE_PATH}
+            />
+          ) : null}
+          {resolved.linkedComponentSchemas !== undefined &&
+          resolved.linkedComponentSchemas.length > 0 ? (
+            <EventLinkedComponentSchemas
+              pagePath={EVENTS_PAGE_PATH}
+              schemas={resolved.linkedComponentSchemas}
             />
           ) : null}
           {resolved.reconnectLifecycle !== undefined ? (
