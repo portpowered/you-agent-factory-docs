@@ -4,9 +4,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import {
   composeWaveBCarouselSlot,
+  composeWaveBCtaSlot,
   composeWaveBFaqSlot,
   composeWaveBLandingHarnessSlots,
   mapFixtureCarouselToFactoryCarouselProps,
+  mapFixtureCtaToCtaBandProps,
   mapFixtureFaqToFaqPanelProps,
   WIRED_WAVE_B_SLOTS,
 } from "./compose-wave-b-slots";
@@ -93,6 +95,33 @@ describe("composeWaveBFaqSlot", () => {
   });
 });
 
+describe("composeWaveBCtaSlot", () => {
+  test("maps fixture CTA fields onto CtaBand public contract with harness defaults", () => {
+    const props = mapFixtureCtaToCtaBandProps(fixtureLandingPageData.cta);
+
+    expect(props.headline).toBe(fixtureLandingPageData.cta.headline);
+    expect(props.supporting).toBe(fixtureLandingPageData.cta.supporting);
+    expect(props.installCommand).toBe(
+      fixtureLandingPageData.cta.installCommand,
+    );
+    expect(props.ctaLabel).toBe("Install the CLI");
+    expect(props.ctaHref).toBe("/docs/guides");
+  });
+
+  test("composeWaveBCtaSlot renders CtaBand markers from fixture", () => {
+    const html = renderToStaticMarkup(composeWaveBCtaSlot() as ReactElement);
+
+    expect(html).toContain('data-landing-cta-band=""');
+    expect(html).toContain('data-landing-cta-fog=""');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
+    expect(html).toContain(fixtureLandingPageData.cta.headline);
+    expect(html).toContain(fixtureLandingPageData.cta.supporting);
+    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain("Install the CLI");
+    expect(html).toContain('href="/docs/guides"');
+  });
+});
+
 describe("composeWaveBLandingHarnessSlots", () => {
   test("returns only currently wired Wave B slot keys", () => {
     const slots = composeWaveBLandingHarnessSlots();
@@ -101,14 +130,15 @@ describe("composeWaveBLandingHarnessSlots", () => {
     expect(keys).toEqual([...WIRED_WAVE_B_SLOTS].sort());
     expect(slots).toHaveProperty("carousel");
     expect(slots).toHaveProperty("faq");
-    expect(slots).not.toHaveProperty("cta");
+    expect(slots).toHaveProperty("cta");
     expect(slots).not.toHaveProperty("header");
   });
 
-  test("wired carousel and faq render public markers; aggregate does not invent cta trees", () => {
+  test("wired carousel, faq, and cta render public markers from fixture", () => {
     const slots = composeWaveBLandingHarnessSlots();
     const carouselHtml = renderToStaticMarkup(slots.carousel as ReactElement);
     const faqHtml = renderToStaticMarkup(slots.faq as ReactElement);
+    const ctaHtml = renderToStaticMarkup(slots.cta as ReactElement);
 
     expect(carouselHtml).toContain('data-factory-carousel=""');
     expect(carouselHtml).toContain(
@@ -118,7 +148,8 @@ describe("composeWaveBLandingHarnessSlots", () => {
     expect(faqHtml).toContain(
       fixtureLandingPageData.faq.items[0]?.question ?? "",
     );
-    expect(carouselHtml).not.toContain(fixtureLandingPageData.cta.headline);
-    expect(faqHtml).not.toContain(fixtureLandingPageData.cta.headline);
+    expect(ctaHtml).toContain('data-landing-cta-band=""');
+    expect(ctaHtml).toContain(fixtureLandingPageData.cta.headline);
+    expect(ctaHtml).toContain(fixtureLandingPageData.cta.supporting);
   });
 });

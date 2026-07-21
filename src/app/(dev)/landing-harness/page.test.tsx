@@ -97,6 +97,14 @@ describe("LandingHarnessPage", () => {
       expect(html).toContain(item.answer);
     }
 
+    // Wired Wave B cta (CtaBand) from fixture + faq-cta-harness defaults
+    expect(html).toContain('data-landing-cta-band=""');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
+    expect(html).toContain(fixtureLandingPageData.cta.headline);
+    expect(html).toContain(fixtureLandingPageData.cta.supporting);
+    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain("Install the CLI");
+
     // Remaining unwired slots stay labeled placeholders
     for (const slot of LANDING_SLOT_ORDER) {
       if (WIRED_SLOT_SET.has(slot)) {
@@ -114,8 +122,6 @@ describe("LandingHarnessPage", () => {
       fixtureLandingPageData.capability.items[0]?.label ?? "",
     );
     expect(html).not.toContain(fixtureLandingPageData.youi.title);
-    expect(html).not.toContain(fixtureLandingPageData.cta.headline);
-    expect(html).not.toContain(fixtureLandingPageData.cta.supporting);
 
     const vars = landingThemeToCssVars();
     expect(html).toContain(
