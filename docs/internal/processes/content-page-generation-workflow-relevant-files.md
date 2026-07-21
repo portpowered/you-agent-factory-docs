@@ -146,8 +146,20 @@ when `--executor` is omitted; copyable `you init --executor claude` for a
 Claude-backed scaffold). Do not reintroduce an Install deep-dive callout or
 primary next-step that requires `/docs/documentation/install` to finish a
 standard install — that URL stays a thin compatibility stub (PS-200) until
-explorer demotion (PS-300). First-run / session forms used on the
-getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
+explorer demotion (PS-300).
+
+For `documentation/install` itself: keep a published thin stub under
+`src/content/docs/documentation/install/` with one `install-path` section that
+identifies Getting Started as the install path and a
+`<LocalizedLinkList>` href to `/docs/guides/getting-started`. Do **not** put OS
+scripts or `you init --executor claude` back on that page as primary teaching.
+Do **not** use W18 `DocumentationRouteCompatibilityDocument` / the §10 family
+migration ledger for this absorption (that ledger is for documentation →
+factories/workers/workstations/references moves). Stay static-export-safe: no
+`next.config` redirects, host `_redirects`, or runtime server redirects.
+Prove stub behavior in `src/lib/content/install-page.test.tsx` (Getting Started
+link present; OS/Claude command literals absent). First-run / session forms used
+on the getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
 `you session list`. First-submit forms: unary
 `you submit --name <name> --work-type-name <type> --payload <path>` and
 `you submit batch <path>` (keep the quickstart free of full batch schema /
@@ -561,10 +573,11 @@ summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
 and next-step links) over inventory-only “slug exists on disk” assertions.
 For documentation pages with copyable commands, mirror
 `src/lib/content/what-is-you-agent-factory-page.test.tsx` /
-`src/lib/content/install-page.test.tsx`: load via `loadLocalDocsPage`, render
-with `DocsPageProviders`, and assert visible command text plus next-step
-hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
-as sufficient page coverage.
+`src/lib/content/install-page.test.tsx`: after PS-200, load via
+`loadLocalDocsPage`, render with `DocsPageProviders`, and assert the thin stub
+(Getting Started pointer; no primary OS/Claude install command teaching). Do not
+treat `shipped-localized-docs.server.test.ts` route-list updates as sufficient
+page coverage.
 
 ## Glossary-derived browse and sidebar sections
 

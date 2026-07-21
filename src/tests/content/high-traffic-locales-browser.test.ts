@@ -145,7 +145,19 @@ describe("high-traffic locales browser journey", () => {
         await page
           .getByRole("heading", { level: 1, name: install.title })
           .waitFor({ state: "visible" });
-        await expectArticleContains(page, INSTALL_COMMAND);
+        // PS-200: install is a thin stub pointing at Getting Started (commands live there).
+        const installPathBody = String(
+          install.sections?.installPath?.body ?? "",
+        );
+        const gettingStartedLabel = String(install.links?.gettingStarted ?? "");
+        expect(installPathBody.length).toBeGreaterThan(0);
+        expect(gettingStartedLabel.length).toBeGreaterThan(0);
+        await expectArticleContains(page, installPathBody);
+        const gettingStartedHref = await page
+          .getByRole("link", { name: gettingStartedLabel })
+          .getAttribute("href");
+        expect(gettingStartedHref).toMatch(/\/docs\/guides\/getting-started$/);
+        expect(await articleContent(page)).not.toContain(INSTALL_COMMAND);
 
         await page.goto(`${session.baseUrl}/${locale}/docs/documentation/cli`, {
           waitUntil: "domcontentloaded",
