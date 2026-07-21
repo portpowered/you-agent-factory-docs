@@ -11,14 +11,17 @@ import { join } from "node:path";
 import { getRegistryRoot } from "./content-paths";
 import {
   type AttributeDef,
+  type AttributeFilterState,
   attributeDefSchema,
   attributeDefsFileSchema,
+  filterOrchestrators,
   listAttributeDefs,
   listOrchestrators,
   type OrchestratorAttributeValue,
   type OrchestratorRecord,
   OrchestratorRegistryLoadError,
   orchestratorRecordSchema,
+  sortOrchestrators,
   validateOrchestratorAttributeAgreement,
   validateOrchestratorsRegistry,
 } from "./orchestrators";
@@ -560,5 +563,199 @@ describe("orchestrator attribute type/value agreement", () => {
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }
+  });
+});
+
+const filterFixtureRows: OrchestratorRecord[] = [
+  {
+    id: "orchestrator.alpha",
+    kind: "orchestrator",
+    name: "Alpha",
+    attributes: {
+      "attr.open-source": true,
+      "attr.license": "MIT License",
+      "attr.hosting": "local",
+      "attr.capabilities": ["loops", "worktrees", "mcp"],
+    },
+  },
+  {
+    id: "orchestrator.beta",
+    kind: "orchestrator",
+    name: "Beta",
+    attributes: {
+      "attr.open-source": false,
+      "attr.license": "proprietary",
+      "attr.hosting": "cloud",
+      "attr.capabilities": ["loops"],
+    },
+  },
+  {
+    id: "orchestrator.gamma",
+    kind: "orchestrator",
+    name: "Gamma",
+    attributes: {
+      "attr.open-source": true,
+      "attr.license": "Apache-2.0",
+      "attr.hosting": "hybrid",
+      "attr.capabilities": ["loops", "mcp"],
+    },
+  },
+  {
+    id: "orchestrator.delta",
+    kind: "orchestrator",
+    name: "Delta",
+    attributes: {
+      "attr.open-source": false,
+      "attr.license": "MIT",
+      "attr.hosting": "local",
+      "attr.capabilities": ["worktrees", "mcp"],
+    },
+  },
+];
+
+function idsOf(rows: OrchestratorRecord[]): string[] {
+  return rows.map((row) => row.id);
+}
+
+describe("filterOrchestrators", () => {
+  test("keeps all rows when filters are empty or any/empty selections", () => {
+    const empty: AttributeFilterState = {};
+    expect(filterOrchestrators(filterFixtureRows, empty)).toEqual(
+      filterFixtureRows,
+    );
+
+    const anyOrEmpty: AttributeFilterState = {
+      boolean: { "attr.open-source": "any" },
+      string: { "attr.license": "" },
+      singleTag: { "attr.hosting": "any" },
+      multiTag: { "attr.capabilities": [] },
+    };
+    expect(filterOrchestrators(filterFixtureRows, anyOrEmpty)).toEqual(
+      filterFixtureRows,
+    );
+  });
+
+  test("boolean filter exact-matches when not any", () => {
+    const filtered = filterOrchestrators(filterFixtureRows, {
+      boolean: { "attr.open-source": true },
+    });
+    expect(idsOf(filtered)).toEqual([
+      "orchestrator.alpha",
+      "orchestrator.gamma",
+    ]);
+  });
+
+  test("string filter uses case-insensitive substring", () => {
+    const filtered = filterOrchestrators(filterFixtureRows, {
+      string: { "attr.license": "mit" },
+    });
+    expect(idsOf(filtered)).toEqual([
+      "orchestrator.alpha",
+      "orchestrator.delta",
+    ]);
+  });
+
+  test("single-tag filter exact-matches when not any", () => {
+    const filtered = filterOrchestrators(filterFixtureRows, {
+      singleTag: { "attr.hosting": "local" },
+    });
+    expect(idsOf(filtered)).toEqual([
+      "orchestrator.alpha",
+      "orchestrator.delta",
+    ]);
+  });
+
+  test("multi-tag AND keeps rows that include every selected tag", () => {
+    const filtered = filterOrchestrators(filterFixtureRows, {
+      multiTag: { "attr.capabilities": ["loops", "mcp"] },
+    });
+    expect(idsOf(filtered)).toEqual([
+      "orchestrator.alpha",
+      "orchestrator.gamma",
+    ]);
+  });
+
+  test("multi-tag AND excludes rows missing any selected tag", () => {
+    const filtered = filterOrchestrators(filterFixtureRows, {
+      multiTag: { "attr.capabilities": ["loops", "worktrees"] },
+    });
+    expect(idsOf(filtered)).toEqual(["orchestrator.alpha"]);
+  });
+
+  test("combined filters apply across facet types", () => {
+    const filtered = filterOrchestrators(filterFixtureRows, {
+      boolean: { "attr.open-source": true },
+      singleTag: { "attr.hosting": "local" },
+      multiTag: { "attr.capabilities": ["mcp"] },
+    });
+    expect(idsOf(filtered)).toEqual(["orchestrator.alpha"]);
+  });
+});
+
+describe("sortOrchestrators", () => {
+  test("sorts boolean attributes ascending and descending", () => {
+    const asc = sortOrchestrators(filterFixtureRows, "attr.open-source", "asc");
+    expect(idsOf(asc)).toEqual([
+      "orchestrator.beta",
+      "orchestrator.delta",
+      "orchestrator.alpha",
+      "orchestrator.gamma",
+    ]);
+
+    const desc = sortOrchestrators(
+      filterFixtureRows,
+      "attr.open-source",
+      "desc",
+    );
+    expect(idsOf(desc)).toEqual([
+      "orchestrator.alpha",
+      "orchestrator.gamma",
+      "orchestrator.beta",
+      "orchestrator.delta",
+    ]);
+  });
+
+  test("sorts string attributes ascending", () => {
+    const asc = sortOrchestrators(filterFixtureRows, "attr.license", "asc");
+    expect(idsOf(asc)).toEqual([
+      "orchestrator.gamma",
+      "orchestrator.delta",
+      "orchestrator.alpha",
+      "orchestrator.beta",
+    ]);
+  });
+
+  test("sorts multi-tag via lexicographic join of tags in stored order", () => {
+    // joins: alpha=loops,worktrees,mcp; beta=loops; gamma=loops,mcp; delta=worktrees,mcp
+    const asc = sortOrchestrators(
+      filterFixtureRows,
+      "attr.capabilities",
+      "asc",
+    );
+    expect(idsOf(asc)).toEqual([
+      "orchestrator.beta",
+      "orchestrator.gamma",
+      "orchestrator.alpha",
+      "orchestrator.delta",
+    ]);
+
+    const desc = sortOrchestrators(
+      filterFixtureRows,
+      "attr.capabilities",
+      "desc",
+    );
+    expect(idsOf(desc)).toEqual([
+      "orchestrator.delta",
+      "orchestrator.alpha",
+      "orchestrator.gamma",
+      "orchestrator.beta",
+    ]);
+  });
+
+  test("does not mutate the input array", () => {
+    const original = [...filterFixtureRows];
+    const sorted = sortOrchestrators(filterFixtureRows, "attr.hosting", "desc");
+    expect(filterFixtureRows).toEqual(original);
+    expect(sorted).not.toBe(filterFixtureRows);
   });
 });

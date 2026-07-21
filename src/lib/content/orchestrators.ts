@@ -4,12 +4,11 @@ import { z } from "zod";
 import { getRegistryRoot } from "./content-paths";
 
 /**
- * Orchestrator feature registry schemas, loaders, and attribute agreement
- * validation.
+ * Orchestrator feature registry schemas, loaders, attribute agreement
+ * validation, and pure filter/sort helpers.
  *
  * Locked contract: docs/temp/graph-pages/registries.md + contracts.md
- * (AttributeDef / AttributeDefsFile / OrchestratorRecord).
- * Filter/sort helpers land in a later story.
+ * (AttributeDef / AttributeDefsFile / OrchestratorRecord / AttributeFilterState).
  */
 
 const ATTRIBUTE_DEFS_FILE_NAME = "attribute-defs.json";
@@ -71,6 +70,20 @@ export type OrchestratorAttributeValue = z.infer<
   typeof orchestratorAttributeValueSchema
 >;
 export type OrchestratorRecord = z.infer<typeof orchestratorRecordSchema>;
+
+/**
+ * Facet filter state for orchestrator rows (contracts.md).
+ * Only filterable defs appear in UI; helpers apply whatever keys are present.
+ */
+export type AttributeFilterState = {
+  boolean?: Record<string, true | false | "any">;
+  string?: Record<string, string>;
+  singleTag?: Record<string, string | "any">;
+  /** AND: value array must include every selected tag. */
+  multiTag?: Record<string, string[]>;
+};
+
+export type SortDirection = "asc" | "desc";
 
 /** Directory for attribute-defs.json and orchestrator.*.json records. */
 export function getOrchestratorsRegistryRoot(
@@ -370,5 +383,174 @@ export function validateOrchestratorsRegistry(
   return validateOrchestratorAttributeAgreement(attributeDefs, orchestrators, {
     attributeDefsPath: join(orchestratorsRoot, ATTRIBUTE_DEFS_FILE_NAME),
     recordPath: (record) => join(orchestratorsRoot, `${record.id}.json`),
+  });
+}
+
+function matchesBooleanFilter(
+  value: OrchestratorAttributeValue | undefined,
+  expected: true | false | "any",
+): boolean {
+  if (expected === "any") {
+    return true;
+  }
+  return value === expected;
+}
+
+function matchesStringFilter(
+  value: OrchestratorAttributeValue | undefined,
+  needle: string,
+): boolean {
+  if (needle === "") {
+    return true;
+  }
+  if (typeof value !== "string") {
+    return false;
+  }
+  return value.toLowerCase().includes(needle.toLowerCase());
+}
+
+function matchesSingleTagFilter(
+  value: OrchestratorAttributeValue | undefined,
+  expected: string | "any",
+): boolean {
+  if (expected === "any") {
+    return true;
+  }
+  return value === expected;
+}
+
+/**
+ * Multi-tag AND: every selected tag must be present in the value array.
+ * Empty selection does not exclude the row.
+ */
+function matchesMultiTagFilter(
+  value: OrchestratorAttributeValue | undefined,
+  selected: readonly string[],
+): boolean {
+  if (selected.length === 0) {
+    return true;
+  }
+  if (!Array.isArray(value)) {
+    return false;
+  }
+  return selected.every((tag) => value.includes(tag));
+}
+
+function matchesAttributeFilters(
+  row: OrchestratorRecord,
+  filters: AttributeFilterState,
+): boolean {
+  if (filters.boolean) {
+    for (const [attributeId, expected] of Object.entries(filters.boolean)) {
+      if (!matchesBooleanFilter(row.attributes[attributeId], expected)) {
+        return false;
+      }
+    }
+  }
+
+  if (filters.string) {
+    for (const [attributeId, needle] of Object.entries(filters.string)) {
+      if (!matchesStringFilter(row.attributes[attributeId], needle)) {
+        return false;
+      }
+    }
+  }
+
+  if (filters.singleTag) {
+    for (const [attributeId, expected] of Object.entries(filters.singleTag)) {
+      if (!matchesSingleTagFilter(row.attributes[attributeId], expected)) {
+        return false;
+      }
+    }
+  }
+
+  if (filters.multiTag) {
+    for (const [attributeId, selected] of Object.entries(filters.multiTag)) {
+      if (!matchesMultiTagFilter(row.attributes[attributeId], selected)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Filter orchestrator rows by AttributeFilterState.
+ *
+ * Semantics (registries.md / contracts.md):
+ * - boolean: exact match when not `"any"`
+ * - string: case-insensitive substring; empty needle does not exclude
+ * - single-tag: exact match when not `"any"`
+ * - multi-tag: AND — each selected tag must be in the value array; empty
+ *   selection does not exclude
+ */
+export function filterOrchestrators(
+  rows: readonly OrchestratorRecord[],
+  filters: AttributeFilterState,
+): OrchestratorRecord[] {
+  return rows.filter((row) => matchesAttributeFilters(row, filters));
+}
+
+/**
+ * Sort key for an attribute value.
+ * Multi-tag values use a lexicographic join of tags in stored order
+ * (comma-separated), so `["a","c"]` sorts before `["b"]` and after `["a","b"]`.
+ */
+function attributeSortKey(
+  value: OrchestratorAttributeValue | undefined,
+): string | number | null {
+  if (value === undefined) {
+    return null;
+  }
+  if (typeof value === "boolean") {
+    return value ? 1 : 0;
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  return value.join(",");
+}
+
+function compareSortKeys(
+  left: string | number | null,
+  right: string | number | null,
+): number {
+  if (left === null && right === null) {
+    return 0;
+  }
+  if (left === null) {
+    return 1;
+  }
+  if (right === null) {
+    return -1;
+  }
+  if (typeof left === "number" && typeof right === "number") {
+    return left - right;
+  }
+  return String(left).localeCompare(String(right));
+}
+
+/**
+ * Sort orchestrators by a single attribute id and direction.
+ * Missing attributes sort after defined values in ascending order (before in
+ * descending, via the direction multiplier). Ties break by record id.
+ */
+export function sortOrchestrators(
+  rows: readonly OrchestratorRecord[],
+  sortAttributeId: string,
+  direction: SortDirection = "asc",
+): OrchestratorRecord[] {
+  const factor = direction === "asc" ? 1 : -1;
+  return [...rows].sort((left, right) => {
+    const comparison =
+      compareSortKeys(
+        attributeSortKey(left.attributes[sortAttributeId]),
+        attributeSortKey(right.attributes[sortAttributeId]),
+      ) * factor;
+    if (comparison !== 0) {
+      return comparison;
+    }
+    return left.id.localeCompare(right.id);
   });
 }
