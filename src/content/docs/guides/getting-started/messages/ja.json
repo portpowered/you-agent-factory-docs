@@ -13,7 +13,7 @@
     },
     "install": {
       "title": "インストール",
-      "body": "ホームページと同じコマンドで you CLI をインストールします。お使いの OS に合った手順を選んでください。"
+      "body": "ホームページと同じコマンドで you CLI をインストールします。お使いの OS に合った手順を選んでください。スクリプトが終わったら、シェルで you が使えることを確認してから、ファクトリーをスキャフォールドします。"
     },
     "firstYou": {
       "title": "最初の you",
@@ -29,7 +29,7 @@
     },
     "commonPitfalls": {
       "title": "よくある落とし穴",
-      "body": "ファクトリーセッションが動く前に作業を投入しないでください。OS 固有のインストールの例外はインストール詳細を、CLI コマンド一覧は CLI ドキュメントを参照してください。"
+      "body": "ファクトリーセッションが動く前に作業を投入しないでください。CLI コマンド一覧は CLI ドキュメントを参照してください。"
     },
     "related": {
       "title": "関連"
@@ -44,17 +44,20 @@
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
+    "claudeInitLabel": "Claude ベースのスキャフォールド",
     "firstYouNamedRunLabel": "名前付き実行",
     "firstYouDefaultStartLabel": "デフォルトのファクトリー起動",
     "firstYouSessionListLabel": "稼働中のファクトリーを確認",
     "firstSubmitUnaryLabel": "単一投入",
     "firstSubmitBatchLabel": "バッチ投入",
-    "installDeepDive": "インストール詳細",
     "cliDocs": "CLI ドキュメント"
   },
   "callouts": {
-    "installDeepDive": {
-      "body": "これらのコマンドは基本的なインストールをカバーします。OS 固有の例外、カスタムインストール先、ピン留めバージョンはインストール詳細にあります。標準インストールを終えるためにそのページを開く必要はありません。"
+    "confirmYouAvailable": {
+      "body": "インストール後は、必要なら新しいターミナルを開いて PATH を再読み込みし、続ける前にシェルで you が使えることを確認してください。"
+    },
+    "scaffoldChoice": {
+      "body": "--executor を省略すると、デフォルトの Codex ベースのスタータースキャフォールドのままです。Claude ベースのデフォルトスキャフォールドが必要なときは --executor claude を渡します。"
     },
     "firstYouSessionCheck": {
       "body": "投入する前に session list で稼働中のファクトリーを確認してください。セッションがなければ、ファクトリーを再度起動してから再確認します。"

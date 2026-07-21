@@ -166,9 +166,37 @@ When a guide needs copyable shell commands (install, first-run, submit):
 
 Canonical install command forms match the home CTA in
 `src/content/messages/*/common.json` (`home.installMacosLinuxCommand` /
-`home.installWindowsCommand`). First-run / session forms used on the
-getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
-`you session list`. First-submit forms: unary
+`home.installWindowsCommand`). After PS-200, Guides → Getting Started owns the
+full standard install teaching path: both OS release scripts, post-install
+confirm-`you`-available guidance, and starter scaffold choice (default Codex
+when `--executor` is omitted; copyable `you init --executor claude` for a
+Claude-backed scaffold). Do not reintroduce an Install deep-dive callout or
+primary next-step that requires `/docs/documentation/install` to finish a
+standard install — that URL stays a thin compatibility stub (PS-200) until
+explorer demotion (PS-300).
+
+For `documentation/install` itself: keep a published thin stub under
+`src/content/docs/documentation/install/` with one `install-path` section that
+identifies Getting Started as the install path and a
+`<LocalizedLinkList>` href to `/docs/guides/getting-started`. Do **not** put OS
+scripts or `you init --executor claude` back on that page as primary teaching.
+Do **not** use W18 `DocumentationRouteCompatibilityDocument` / the §10 family
+migration ledger for this absorption (that ledger is for documentation →
+factories/workers/workstations/references moves). Stay static-export-safe: no
+`next.config` redirects, host `_redirects`, or runtime server redirects.
+Prove stub behavior in `src/lib/content/install-page.test.tsx` (Getting Started
+link present; OS/Claude command literals absent; stub message shape is only
+`sections.installPath` + `links.gettingStarted`). Prove Getting Started owns
+the merged path in
+`src/content/docs/guides/getting-started/getting-started-page.test.tsx`: both
+OS commands and `you init --executor claude` live under `#install`, confirm-you
++ scaffold copy render, and the `#common-pitfalls` teaching links stay CLI-docs
+only (no Install deep-dive href). Prefer scoping “no Install deep-dive” to the
+pitfalls / teaching link list — do not require the whole document body to omit
+`/docs/documentation/install` if RelatedDocs later re-adds that registry id.
+First-run / session forms used on the getting-started quickstart:
+`you run --named @goal/blah`, bare `you`, and `you session list`. First-submit
+forms: unary
 `you submit --name <name> --work-type-name <type> --payload <path>` and
 `you submit batch <path>` (keep the quickstart free of full batch schema /
 relation dumps — those belong on submitting-work / CLI docs).
@@ -178,13 +206,17 @@ quickstart `Section`s (for example `install`, `first-you`, `first-submit`)
 are allowed when colocated message keys validate. Browser-verify MDX or
 message edits with `bun run build` then `bun run start` on a unique port —
 plain `start` serves the last production build and will look stale otherwise.
+In parent-hoisted worktrees prefer
+`bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` (unique port
+in `3100–3999`); plain Turbopack `bun run dev` can fail to resolve `next` from
+`src/app`, and the first docs compile may need a long curl `--max-time`.
 
 When linking parallel-lane sibling destinations that are not yet published in
-this worktree (for example getting-started → `/docs/documentation/install` and
-`/docs/documentation/cli`), prefer page-local `<LocalizedLinkList>` with stable
-hrefs and `links.*` labels. Do not put those ids in registry `relatedIds` until
-the sibling registry records exist here — unresolved related ids fail
-`validate-data`, and RelatedDocs also drops unpublished targets.
+this worktree (for example getting-started → `/docs/documentation/cli`), prefer
+page-local `<LocalizedLinkList>` with stable hrefs and `links.*` labels. Do not
+put those ids in registry `relatedIds` until the sibling registry records exist
+here — unresolved related ids fail `validate-data`, and RelatedDocs also drops
+unpublished targets.
 
 Guide ↔ guide discovery also needs `<LocalizedLinkList>` today: generated
 `listRelatedRegistryRecords()` / `getRegistryRecordById()` omit `guides` (and
@@ -577,10 +609,11 @@ summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
 and next-step links) over inventory-only “slug exists on disk” assertions.
 For documentation pages with copyable commands, mirror
 `src/lib/content/what-is-you-agent-factory-page.test.tsx` /
-`src/lib/content/install-page.test.tsx`: load via `loadLocalDocsPage`, render
-with `DocsPageProviders`, and assert visible command text plus next-step
-hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
-as sufficient page coverage.
+`src/lib/content/install-page.test.tsx`: after PS-200, load via
+`loadLocalDocsPage`, render with `DocsPageProviders`, and assert the thin stub
+(Getting Started pointer; no primary OS/Claude install command teaching). Do not
+treat `shipped-localized-docs.server.test.ts` route-list updates as sufficient
+page coverage.
 
 ## Glossary-derived browse and sidebar sections
 

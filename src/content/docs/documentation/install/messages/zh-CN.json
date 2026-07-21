@@ -1,31 +1,14 @@
 {
   "title": "安装 you-agent-factory",
-  "description": "使用发布安装脚本在 macOS、Linux 或 Windows 上安装 you-agent-factory CLI，然后搭建工厂脚手架。",
-  "openingSummary": "Install the you-agent-factory CLI with the published release scripts for your operating system, then scaffold a factory.",
+  "description": "you-agent-factory 的安装教学内容在「快速开始」。请前往该页查看操作系统安装脚本、确认 you 可用，以及入门脚手架。",
+  "openingSummary": "请在「快速开始」安装 you-agent-factory CLI。",
   "sections": {
-    "howToUse": {
-      "title": "如何使用",
-      "body": "运行适用于你操作系统的安装命令。两条路径都使用与首页安装 CTA 相同的 GitHub Releases 资源。脚本结束后，确认 shell 中可以使用 you。然后搭建工厂脚手架。省略 --executor 会保留默认的 Codex 入门脚手架。若需要 Claude 默认脚手架，请传入 --executor claude。安装后，继续阅读快速开始以完成首次运行与提交循环，或在需要更完整命令矩阵时打开 CLI 文档。"
-    },
-    "limitsAndAssumptions": {
-      "title": "限制与假设",
-      "body": "本页仅是安装参考。它不是快速开始入门、不是完整 CLI 命令矩阵，也不能替代已打包的 you docs 主题。安装后的代理与工厂导览，请运行 you docs agents。更深的 CLI 与工厂约定仍在已打包的 you docs 以及相邻文档页中。"
-    },
-    "related": {
-      "title": "相关内容"
-    },
-    "tags": {
-      "title": "标签"
-    },
-    "references": {
-      "title": "参考资料"
+    "installPath": {
+      "title": "安装路径",
+      "body": "「快速开始」讲解完整的 you-agent-factory 安装路径：操作系统发布脚本、确认 shell 中可以使用 you，以及入门脚手架选择。请前往该页完成安装与运行。"
     }
   },
   "links": {
-    "macosLinuxLabel": "macOS / Linux",
-    "windowsLabel": "Windows (PowerShell)",
-    "claudeInitLabel": "Claude 脚手架",
-    "gettingStarted": "快速开始",
-    "cliDocs": "CLI 文档"
+    "gettingStarted": "快速开始"
   }
 }
