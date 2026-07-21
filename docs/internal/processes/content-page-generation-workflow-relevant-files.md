@@ -43,9 +43,12 @@ full `validateGeneratedCanonicalDocs` both assert live concept template MDX
 errors. An end-to-end `buildPageBundleArtifacts` proof also asserts generated
 concept `pageMdx` stays strip-ready and validates (no
 `missing-related-docs-component`). Do not revive a presence-expecting test that
-fails when chrome is absent. Existing published MDX may still mount RelatedDocs
-until PF-L-strip removes it by collection; that remaining chrome is not a
-contracts-lane failure. FAQ-only strip remains PF-D2.
+fails when chrome is absent. Techniques collection MDX under
+`src/content/docs/techniques/**` no longer mounts Related / References footer
+chrome (`RelatedDocs`, Related-section `LocalizedLinkList`, References
+`CitationList`); teaching sections and Tags remain. Other published collections
+may still mount RelatedDocs until their PF-L-strip lane removes it; that
+remaining chrome is not a contracts-lane failure. FAQ-only strip remains PF-D2.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
