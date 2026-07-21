@@ -1,9 +1,9 @@
 /**
- * Public barrel for teaching-ui (Graph-pages Wave A chassis).
+ * Public teaching-ui barrel.
  *
- * Consumers import focus tokens/helpers from `@/features/teaching-ui`.
- * Chart / list / table recipe bodies are owned by sibling lanes — do not
- * stub those APIs here.
+ * W-recipes owns focus tokens/helpers. W-table appends tables/** recipe
+ * exports. Chart / list sibling lanes append their public APIs without
+ * removing chassis or table exports.
  */
 
 export {
@@ -13,3 +13,19 @@ export {
   mutedFill,
   resolveFocusColor,
 } from "./focus";
+
+export {
+  type AttributeDef,
+  AttributeFacetBar,
+  type AttributeFacetBarProps,
+  type AttributeFilterState,
+  type AttributeType,
+  FilterableSortableTable,
+  type FilterableSortableTableProps,
+  type GetAttributeValue,
+  OrchestratorFeatureMatrix,
+  type OrchestratorFeatureMatrixProps,
+  type OrchestratorRecord,
+  type SortDirection,
+  type TransposedMatrixDisplayModel,
+} from "./tables";

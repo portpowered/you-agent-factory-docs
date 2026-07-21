@@ -40,6 +40,7 @@ export {
 export {
   SchemaDefinition,
   type SchemaDefinitionProps,
+  type SchemaExamplesPlacement,
 } from "./schema-definition";
 export {
   type ProjectSchemaExamplesOptions,

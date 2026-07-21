@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { focusFill, mutedFill } from "@/features/teaching-ui";
 import { TeachingUiHarnessContent } from "./teaching-ui-harness-content";
 
@@ -8,8 +9,8 @@ afterEach(() => {
 });
 
 describe("TeachingUiHarnessContent", () => {
-  test("renders labeled Chart, List, and Table placeholders", () => {
-    render(<TeachingUiHarnessContent />);
+  test("renders Chart/List placeholders and filled Table section", () => {
+    const { container } = render(<TeachingUiHarnessContent />);
 
     expect(
       screen.getByRole("heading", { level: 1, name: "Teaching UI harness" }),
@@ -31,7 +32,21 @@ describe("TeachingUiHarnessContent", () => {
       screen.getByTestId("teaching-ui-harness-list-placeholder"),
     ).toBeTruthy();
     expect(
-      screen.getByTestId("teaching-ui-harness-table-placeholder"),
+      screen.queryByTestId("teaching-ui-harness-table-placeholder"),
+    ).toBeNull();
+
+    const tableSection = container.querySelector(
+      '[data-teaching-ui-harness-section="table"]',
+    );
+    expect(tableSection).toBeTruthy();
+    expect(
+      tableSection?.querySelector("[data-filterable-sortable-table]"),
+    ).toBeTruthy();
+    expect(
+      tableSection?.querySelector("[data-orchestrator-feature-matrix]"),
+    ).toBeTruthy();
+    expect(
+      tableSection?.querySelector("[data-matrix-column-picker]"),
     ).toBeTruthy();
   });
 
@@ -58,5 +73,57 @@ describe("TeachingUiHarnessContent", () => {
     expect((mutedSwatch as HTMLElement).style.backgroundColor).toBe(mutedFill);
     expect(accent.textContent).toContain("(accent)");
     expect(muted.textContent).toContain("(muted)");
+  });
+
+  test("column picker hides an orchestrator column in the matrix", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<TeachingUiHarnessContent />);
+    const matrixDemo = container.querySelector(
+      '[data-teaching-ui-harness-demo="feature-matrix"]',
+    );
+    expect(matrixDemo).toBeTruthy();
+
+    const matrixTable = within(matrixDemo as HTMLElement).getByRole("table", {
+      name: "Fixture orchestrator feature matrix",
+    });
+    expect(within(matrixTable).getByText("Beta")).toBeTruthy();
+
+    const betaCheckbox = within(matrixDemo as HTMLElement).getByRole(
+      "checkbox",
+      { name: "Beta" },
+    );
+    await user.click(betaCheckbox);
+
+    expect(within(matrixTable).queryByText("Beta")).toBeNull();
+    expect(within(matrixTable).getByText("Alpha")).toBeTruthy();
+    expect(within(matrixTable).getByText("Gamma")).toBeTruthy();
+  });
+
+  test("entity-table multi-tag AND filter narrows visible rows", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<TeachingUiHarnessContent />);
+    const entityDemo = container.querySelector(
+      '[data-teaching-ui-harness-demo="entity-table"]',
+    );
+    expect(entityDemo).toBeTruthy();
+
+    const entityTable = within(entityDemo as HTMLElement).getByRole("table", {
+      name: "Fixture orchestrator entity table",
+    });
+    expect(within(entityTable).getByText("Alpha")).toBeTruthy();
+    expect(within(entityTable).getByText("Beta")).toBeTruthy();
+
+    const worktree = within(entityDemo as HTMLElement).getByRole("checkbox", {
+      name: "worktree",
+    });
+    const harness = within(entityDemo as HTMLElement).getByRole("checkbox", {
+      name: "harness",
+    });
+    await user.click(worktree);
+    await user.click(harness);
+
+    expect(within(entityTable).getByText("Gamma")).toBeTruthy();
+    expect(within(entityTable).queryByText("Alpha")).toBeNull();
+    expect(within(entityTable).queryByText("Beta")).toBeNull();
   });
 });

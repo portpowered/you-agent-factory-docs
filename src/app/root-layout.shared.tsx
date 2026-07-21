@@ -1,5 +1,7 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { resolveGaMeasurementId } from "@/lib/analytics/ga-measurement-id";
 import { SITE_PRODUCT_NAME } from "@/lib/scaffold";
 import { resolveProductionMetadataBase } from "@/lib/seo/production-metadata-base";
 import {
@@ -24,7 +26,14 @@ type RootDocumentProps = {
   lang: string;
 };
 
+/**
+ * Shared HTML shell for (site), [locale], docs, and (dev). Mounts GA4 once via
+ * `@next/third-parties` when the resolved Measurement ID is non-empty. No raw
+ * duplicate gtag HTML — pageviews only (Wave A).
+ */
 export function RootDocument({ children, lang }: RootDocumentProps) {
+  const gaId = resolveGaMeasurementId();
+
   return (
     <html
       lang={lang}
@@ -32,7 +41,10 @@ export function RootDocument({ children, lang }: RootDocumentProps) {
       data-color-palette="factory-dark"
       suppressHydrationWarning
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
+      </body>
     </html>
   );
 }

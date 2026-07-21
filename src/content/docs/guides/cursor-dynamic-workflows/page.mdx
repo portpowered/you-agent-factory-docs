@@ -12,9 +12,7 @@ aliases:
 updatedAt: "2026-07-09"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -102,14 +100,6 @@ you.factory_session.get_result
   />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <RelatedDocs registryId="guide.cursor-dynamic-workflows" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="guide.cursor-dynamic-workflows" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="guide.cursor-dynamic-workflows" />
 </Section>

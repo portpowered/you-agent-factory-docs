@@ -56,6 +56,7 @@ import {
   validateGeneratedFoldedSummary,
   validateGeneratedKindSpecificStructure,
 } from "./validate-generated-canonical-docs";
+import { validateModelPricing } from "./validate-model-pricing";
 import { parseYamlFrontmatterBlock } from "./yaml-frontmatter";
 
 export { parseYamlFrontmatterBlock };
@@ -130,6 +131,8 @@ export type ValidateRegistryContentOptions = {
   docsRoot?: string;
   blogRoot?: string;
   messagesRoot?: string;
+  /** Override model pricing models root (for tests). Defaults to `<registryRoot>/models`. */
+  modelsRoot?: string;
   /** Override Phase 1 page directories (for tests). */
   phase1PageDirectories?: readonly string[];
   /** Override derived shipped localized docs entries in tests. */
@@ -1158,6 +1161,11 @@ export async function validateRegistryContent(
       blogRoot: options.blogRoot,
       indexes,
     })),
+  );
+  errors.push(
+    ...validateModelPricing({
+      modelsRoot: options.modelsRoot ?? join(registryRoot, "models"),
+    }),
   );
 
   return errors;

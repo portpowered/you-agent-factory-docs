@@ -115,6 +115,7 @@ export function SystemConfigSchemaReference({
         data-testid="system-config-schema-reference"
         definitions={model.definitions}
         exampleInputs={SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE_INPUTS}
+        examplesPlacement="before-body"
         pagePath={SYSTEM_CONFIG_SCHEMA_PAGE_PATH}
         projection={buildRootDisplayProjection(model.root)}
         resolve={buildResolve(model)}

@@ -13,7 +13,10 @@ import type {
   SchemaDefinitionModel,
 } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
-import { SchemaDefinition } from "./schema-definition";
+import {
+  SchemaDefinition,
+  type SchemaExamplesPlacement,
+} from "./schema-definition";
 import type {
   SchemaExampleDisplay,
   SchemaExampleInput,
@@ -66,6 +69,12 @@ export type SchemaReferenceProps = {
   examples?: readonly SchemaExampleDisplay[];
   exampleInputs?: readonly SchemaExampleInput[];
   showEmptyExamples?: boolean;
+  /**
+   * Placement for the primary SchemaDefinition examples panel relative to
+   * composition/fields. Default `"after-fields"`; pass `"before-body"` to
+   * render examples above the definition body.
+   */
+  examplesPlacement?: SchemaExamplesPlacement;
   /** Owning page path for deep-link href values. */
   pagePath?: string;
   /** Initial expansion for nested field rows. */
@@ -99,6 +108,7 @@ export function SchemaReference({
   examples,
   exampleInputs,
   showEmptyExamples = false,
+  examplesPlacement = "after-fields",
   pagePath,
   defaultExpanded = false,
   showFilter = true,
@@ -176,6 +186,7 @@ export function SchemaReference({
           definition={primary}
           exampleInputs={exampleInputs}
           examples={examples}
+          examplesPlacement={examplesPlacement}
           fieldNodes={nodes}
           pagePath={pagePath}
           projection={projection}

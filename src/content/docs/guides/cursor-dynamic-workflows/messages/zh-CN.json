@@ -19,14 +19,8 @@
       "title": "常见陷阱",
       "body": "若 Cursor 在 PATH 上找不到 you，请将 command 设为 you 二进制的绝对路径，而不是依赖 shell PATH。若 validate 或 start 无法解析工作流源，请检查 cwd 是工作流项目根目录，而不是嵌套包或主目录。更改 MCP 配置后，请重启 Cursor 或运行 Developer: Reload Window，以便 MCP 子进程重新生成；仅保存文件不够。将本指南仅视为首次 Cursor 集成循环 — 完整工具目录、serve 标志与动态工作流 API 细节见下方链接的 MCP 与动态工作流文档页。"
     },
-    "related": {
-      "title": "相关内容"
-    },
     "tags": {
       "title": "标签"
-    },
-    "references": {
-      "title": "参考资料"
     }
   },
   "links": {

@@ -9,8 +9,14 @@ import {
   resolveProductionSitemapUrl,
 } from "@/lib/seo/export-robots";
 import { EXPORT_SITEMAP_RELATIVE_PATH } from "@/lib/seo/export-sitemap";
-import { resolveProductionMetadataHref } from "@/lib/seo/production-metadata-base";
-import { listPublicSitemapAbsoluteUrls } from "@/lib/seo/public-sitemap-routes";
+import {
+  resolveProductionMetadataHref,
+  resolveProductionSitemapLocHref,
+} from "@/lib/seo/production-metadata-base";
+import {
+  DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
+  listPublicSitemapAbsoluteUrls,
+} from "@/lib/seo/public-sitemap-routes";
 import { resolveSocialPreviewImageAbsoluteHref } from "@/lib/seo/social-preview-assets";
 import { verifyExportSeoDiscovery } from "@/lib/seo/verify-export-seo-discovery";
 
@@ -117,6 +123,11 @@ describe("verifyExportSeoDiscovery", () => {
     const dir = mkdtempSync(join(tmpdir(), "seo-discovery-export-"));
     try {
       writeDiscoveryFixture(dir);
+      const locs = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+      expect(locs.length).toBeGreaterThan(0);
+      for (const loc of locs) {
+        expect(loc.endsWith("/")).toBe(true);
+      }
       const result = verifyExportSeoDiscovery({
         outDir: dir,
         env: PROJECT_SITE_EXPORT_ENV,
@@ -152,7 +163,10 @@ describe("verifyExportSeoDiscovery", () => {
       writeDiscoveryFixture(dir);
       const urls = [
         ...listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV),
-        resolveProductionMetadataHref("/docs/models", PROJECT_SITE_EXPORT_ENV),
+        resolveProductionSitemapLocHref(
+          "/docs/models",
+          PROJECT_SITE_EXPORT_ENV,
+        ),
       ];
       writeFileSync(join(dir, EXPORT_SITEMAP_RELATIVE_PATH), sitemapXml(urls));
       const result = verifyExportSeoDiscovery({
@@ -163,6 +177,62 @@ describe("verifyExportSeoDiscovery", () => {
       if (!result.ok) {
         expect(result.gate).toBe("sitemap");
         expect(result.reason).toMatch(/retired Atlas|non-live|unexpected/i);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("fails when sitemap lists a §10 documentation-migration exclusion route", () => {
+    const dir = mkdtempSync(join(tmpdir(), "seo-discovery-migration-sitemap-"));
+    try {
+      writeDiscoveryFixture(dir);
+      const migrationOld =
+        DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES[0] as string;
+      const urls = [
+        ...listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV),
+        resolveProductionSitemapLocHref(migrationOld, PROJECT_SITE_EXPORT_ENV),
+      ];
+      writeFileSync(join(dir, EXPORT_SITEMAP_RELATIVE_PATH), sitemapXml(urls));
+      const result = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.gate).toBe("sitemap");
+        expect(result.reason).toMatch(/migration old|unexpected|§10/i);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("fails when sitemap locs use non-slash absolute production URLs", () => {
+    const dir = mkdtempSync(join(tmpdir(), "seo-discovery-nonslash-sitemap-"));
+    try {
+      writeDiscoveryFixture(dir);
+      const slashHarness = resolveProductionSitemapLocHref(
+        "/docs/concepts/harness",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      const nonSlashHarness = resolveProductionMetadataHref(
+        "/docs/concepts/harness",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      expect(nonSlashHarness.endsWith("/")).toBe(false);
+      const urls = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV).map(
+        (url) => (url === slashHarness ? nonSlashHarness : url),
+      );
+      writeFileSync(join(dir, EXPORT_SITEMAP_RELATIVE_PATH), sitemapXml(urls));
+      const result = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.gate).toBe("sitemap");
+        expect(result.reason).toContain(slashHarness);
       }
     } finally {
       rmSync(dir, { recursive: true, force: true });

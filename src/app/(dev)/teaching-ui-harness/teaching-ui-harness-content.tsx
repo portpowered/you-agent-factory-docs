@@ -3,10 +3,12 @@ import {
   mutedFill,
   resolveFocusColor,
 } from "@/features/teaching-ui";
+import { TeachingUiHarnessTablesSection } from "./teaching-ui-harness-tables-section";
 
 /**
  * Presentational body for `(dev)/teaching-ui-harness`.
  * Kept free of Next.js routing so unit tests can render it directly.
+ * Table section is filled by W-table; Chart / List stay placeholders.
  */
 
 const FOCUS_DEMO_ID = "primary-series";
@@ -16,7 +18,7 @@ function RecipeFamilyPlaceholder({
   family,
   description,
 }: {
-  family: "Chart" | "List" | "Table";
+  family: "Chart" | "List";
   description: string;
 }) {
   return (
@@ -95,7 +97,7 @@ function FocusDemo() {
 export function TeachingUiHarnessContent() {
   return (
     <main
-      className="mx-auto flex min-h-screen max-w-3xl flex-col gap-10 bg-background px-6 py-10 text-foreground"
+      className="mx-auto flex min-h-screen max-w-5xl flex-col gap-10 bg-background px-6 py-10 text-foreground"
       data-teaching-ui-harness=""
       data-testid="teaching-ui-harness"
     >
@@ -104,9 +106,9 @@ export function TeachingUiHarnessContent() {
           Teaching UI harness
         </h1>
         <p className="text-sm text-muted-foreground">
-          Chassis shell for Graph-pages recipe families. Chart / List / Table
-          bodies land in sibling lanes; this route only reserves labeled
-          sections and proves focus tokens.
+          Chassis shell for Graph-pages recipe families. Chart / List bodies
+          land in sibling lanes; Table section ships W-table fixtures; focus
+          tokens are proven here.
         </p>
       </header>
 
@@ -120,10 +122,7 @@ export function TeachingUiHarnessContent() {
         description="Reserved for TeachingList (plain + tagged variants)."
         family="List"
       />
-      <RecipeFamilyPlaceholder
-        description="Reserved for FilterableSortableTable / matrix / facets."
-        family="Table"
-      />
+      <TeachingUiHarnessTablesSection />
     </main>
   );
 }

@@ -77,6 +77,28 @@ present, and footer absence via `#related` / `#references`, `Related To`,
 `PATH`). Warm first compiles with `--max-time 180`; assertion curls may use
 `--max-time 60`.
 
+### Guides collection PF-L-strip (published MDX)
+
+For published guides under `src/content/docs/guides/**/page.mdx`, strip trailing
+`Section id="related"` / `id="references"` footer chrome and drop unused
+`RelatedDocs` / `CitationList` imports. Keep Tags (`TagPillList`) and
+teaching-section / common-pitfalls `LocalizedLinkList` mounts (including Getting
+Started install teaching and CLI docs link). Do not rewrite shared `RelatedDocs`
+behavior; leave sibling collections and docs next/prev footer density alone.
+After MDX strip, remove owned `sections.related` / `sections.references`
+footer title keys from guides `messages/*.json` (all owned locales) so bundles
+match the page. Keep teaching / common-pitfalls / install `links.*` keys.
+Colocated guides `*-page.test.tsx` files must assert Related / References /
+RelatedDocs footer absence (`Related To` / `References` headings, `#related` /
+`#references`, `curated-related-docs` / `derived-related-docs` test ids) while
+keeping install-merge and teaching / common-pitfalls link proofs.
+End-to-end browser proof for the strip lives at
+`src/content/docs/guides/assert-guides-related-references-strip-browser.ts`
+(Getting Started + write-review-loops; webpack `bun run next` via
+`scripts/run-next.ts`, unique port `GUIDES_RELATED_STRIP_PROBE_PORT` default
+3571; kill server on exit). Run with
+`bun src/content/docs/guides/assert-guides-related-references-strip-browser.ts`.
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a

@@ -31,14 +31,8 @@
       "title": "常见陷阱",
       "body": "不要在工厂会话运行之前提交工作。完整 CLI 命令矩阵请参阅 CLI 文档。"
     },
-    "related": {
-      "title": "相关内容"
-    },
     "tags": {
       "title": "标签"
-    },
-    "references": {
-      "title": "参考资料"
     }
   },
   "links": {

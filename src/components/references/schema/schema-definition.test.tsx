@@ -283,6 +283,92 @@ describe("SchemaDefinition", () => {
     ).toBeNull();
   });
 
+  test("default examplesPlacement keeps examples after fields", () => {
+    const definition = createSchemaDefinitionModel({
+      address: address("/$defs/AfterFieldsOrder"),
+      title: "AfterFieldsOrder",
+      type: "object",
+      examples: [{ mode: "after" }],
+      properties: {
+        name: createSchemaFieldModel({
+          path: "name",
+          typeSummary: "string",
+          required: true,
+        }),
+      },
+    });
+
+    render(<SchemaDefinition definition={definition} />);
+
+    const article = screen.getByTestId("schema-definition");
+    expect(article.getAttribute("data-schema-examples-placement")).toBe(
+      "after-fields",
+    );
+    const examples = screen.getByTestId("schema-definition-examples");
+    const fields = article.querySelector("[data-schema-definition-fields]");
+    expect(fields).toBeTruthy();
+    expect(
+      Boolean(
+        fields &&
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_PRECEDING,
+      ),
+    ).toBe(true);
+  });
+
+  test("examplesPlacement before-body renders examples before composition and fields", () => {
+    const definitions = buildCompositionDefinitions();
+    const contentPart = definitions.find(
+      (definition) => definition.title === "WorkContentPart",
+    );
+    expect(contentPart).toBeTruthy();
+    if (contentPart === undefined) {
+      return;
+    }
+
+    render(
+      <SchemaDefinition
+        definition={{
+          ...contentPart,
+          examples: [{ kind: "text" }],
+          properties: {
+            kind: createSchemaFieldModel({
+              path: "kind",
+              typeSummary: "string",
+              required: true,
+            }),
+          },
+        }}
+        examplesPlacement="before-body"
+      />,
+    );
+
+    const article = screen.getByTestId("schema-definition");
+    expect(article.getAttribute("data-schema-examples-placement")).toBe(
+      "before-body",
+    );
+
+    const examples = screen.getByTestId("schema-definition-examples");
+    const fields = article.querySelector("[data-schema-definition-fields]");
+    const composition = screen.getByRole("region", {
+      name: "Schema composition",
+    });
+    expect(fields).toBeTruthy();
+    expect(
+      Boolean(
+        fields &&
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+    expect(
+      Boolean(
+        examples.compareDocumentPosition(composition) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+  });
+
   test("default hides OpenAPI pointer path chrome on definition and field rows", () => {
     const fieldPointer = "/components/schemas/FactoryEvent/properties/type";
     const definition = createSchemaDefinitionModel({

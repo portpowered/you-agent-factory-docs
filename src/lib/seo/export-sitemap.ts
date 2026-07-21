@@ -11,7 +11,7 @@ import {
   stripBasePathFromHref,
 } from "@/lib/navigation/site-path";
 import { isCanonicalPublicDiscoveryPath } from "@/lib/seo/export-absolute-canonical";
-import { resolveProductionMetadataHref } from "@/lib/seo/production-metadata-base";
+import { resolveProductionSitemapLocHref } from "@/lib/seo/production-metadata-base";
 import {
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES,
@@ -83,25 +83,25 @@ export function sitemapLocsMatchPublicFactoryContract(
   }
 
   for (const route of SITEMAP_INCLUSION_PROOF_ROUTES) {
-    if (!locSet.has(resolveProductionMetadataHref(route, env))) {
+    if (!locSet.has(resolveProductionSitemapLocHref(route, env))) {
       return false;
     }
   }
 
   for (const route of SITEMAP_EXCLUSION_PROOF_ROUTES) {
-    if (locSet.has(resolveProductionMetadataHref(route, env))) {
+    if (locSet.has(resolveProductionSitemapLocHref(route, env))) {
       return false;
     }
   }
 
   for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES) {
-    if (locSet.has(resolveProductionMetadataHref(route, env))) {
+    if (locSet.has(resolveProductionSitemapLocHref(route, env))) {
       return false;
     }
   }
 
   for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES) {
-    if (!locSet.has(resolveProductionMetadataHref(route, env))) {
+    if (!locSet.has(resolveProductionSitemapLocHref(route, env))) {
       return false;
     }
   }
@@ -111,7 +111,7 @@ export function sitemapLocsMatchPublicFactoryContract(
     if (appPath === null || !isCanonicalPublicDiscoveryPath(appPath)) {
       return false;
     }
-    if (loc !== resolveProductionMetadataHref(appPath, env)) {
+    if (loc !== resolveProductionSitemapLocHref(appPath, env)) {
       return false;
     }
   }
@@ -178,7 +178,7 @@ export function verifyExportSitemap(options: {
   }
 
   for (const route of SITEMAP_EXCLUSION_PROOF_ROUTES) {
-    const absolute = resolveProductionMetadataHref(route, env);
+    const absolute = resolveProductionSitemapLocHref(route, env);
     if (locSet.has(absolute)) {
       return {
         ok: false,
@@ -189,7 +189,7 @@ export function verifyExportSitemap(options: {
   }
 
   for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES) {
-    const absolute = resolveProductionMetadataHref(route, env);
+    const absolute = resolveProductionSitemapLocHref(route, env);
     if (locSet.has(absolute)) {
       return {
         ok: false,
@@ -225,7 +225,7 @@ export function verifyExportSitemap(options: {
       };
     }
 
-    const expectedAbsolute = resolveProductionMetadataHref(appPath, env);
+    const expectedAbsolute = resolveProductionSitemapLocHref(appPath, env);
     if (url !== expectedAbsolute) {
       return {
         ok: false,

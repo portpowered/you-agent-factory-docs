@@ -46,6 +46,17 @@ function assertNoPrimaryInstallDeepDive(): void {
   );
 }
 
+/** PF-L-strip: trailing Related / References / RelatedDocs footer chrome must stay gone. */
+function assertNoRelatedReferencesFooterChrome(): void {
+  expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Related" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+  expect(document.getElementById("related")).toBeNull();
+  expect(document.getElementById("references")).toBeNull();
+  expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+  expect(screen.queryByTestId("derived-related-docs")).toBeNull();
+}
+
 describe("getting-started guide page", () => {
   afterEach(() => {
     cleanup();
@@ -108,6 +119,7 @@ describe("getting-started guide page", () => {
     expect(screen.getByText("you submit batch ./batch.json")).toBeTruthy();
 
     assertNoPrimaryInstallDeepDive();
+    assertNoRelatedReferencesFooterChrome();
     const cliDocs = screen.getByRole("link", { name: "CLI docs" });
     expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
   });
@@ -241,6 +253,7 @@ describe("getting-started guide page", () => {
     );
 
     assertNoPrimaryInstallDeepDive();
+    assertNoRelatedReferencesFooterChrome();
     const pitfalls = document.getElementById("common-pitfalls");
     expect(
       within(pitfalls as HTMLElement).getByRole("link", { name: cliDocsName }),

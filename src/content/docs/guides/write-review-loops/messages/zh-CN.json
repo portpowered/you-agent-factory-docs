@@ -18,14 +18,8 @@
       "title": "常见陷阱",
       "body": "不要对未活跃的工厂进行审查或提交。不要把没有断路器的拒绝当作永远安全。不要把本用例指南与后续的 writer-reviewer 技法术语页混淆。"
     },
-    "related": {
-      "title": "相关内容"
-    },
     "tags": {
       "title": "标签"
-    },
-    "references": {
-      "title": "参考资料"
     }
   },
   "links": {

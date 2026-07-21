@@ -19,14 +19,8 @@
       "title": "Common Pitfalls",
       "body": "If Cursor cannot find you on PATH, set command to the absolute path of the you binary instead of relying on the shell PATH. If validate or start fails to resolve workflow sources, check that cwd is the workflow project root, not a nested package or home directory. After you change MCP config, restart Cursor or run Developer: Reload Window so the MCP child process respawns; saving the file alone is not enough. Treat this guide as a first Cursor integration loop only — full tool catalogs, serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages linked below."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

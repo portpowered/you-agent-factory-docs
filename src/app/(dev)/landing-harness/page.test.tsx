@@ -2,7 +2,9 @@ import { afterEach, describe, expect, mock, test } from "bun:test";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { LANDING_SLOT_ORDER } from "@/features/landing-page/LandingPage";
+import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { landingThemeToCssVars } from "@/features/landing-page/landing-page.theme";
+import { WIRED_WAVE_A_SLOTS } from "./compose-wave-a-slots";
 
 mock.module("next/navigation", () => ({
   notFound: () => {
@@ -33,8 +35,10 @@ afterEach(() => {
   }
 });
 
+const WIRED_SLOT_SET = new Set<string>(WIRED_WAVE_A_SLOTS);
+
 describe("LandingHarnessPage", () => {
-  test("renders LandingPage placeholders and theme CSS vars when enabled", async () => {
+  test("renders wired Wave A fills from fixtures and keeps unwired slots as placeholders", async () => {
     setNodeEnv("development");
     delete process.env.ENABLE_COMPONENT_EXAMPLES;
 
@@ -42,9 +46,60 @@ describe("LandingHarnessPage", () => {
     const html = renderToStaticMarkup(LandingHarnessPage() as ReactElement);
 
     expect(html).toContain('data-landing-page=""');
+
+    // Wired footer (SiteFooter) from fixture columns/meta
+    expect(html).toContain('data-testid="site-footer"');
+    expect(html).toContain('data-testid="site-footer-columns"');
+    expect(html).toContain('data-testid="site-footer-meta"');
+    expect(html).toContain(
+      fixtureLandingPageData.footer.columns[0]?.title ?? "",
+    );
+    expect(html).toContain(
+      fixtureLandingPageData.footer.columns[1]?.title ?? "",
+    );
+    expect(html).toContain(fixtureLandingPageData.footer.meta.copyright);
+    expect(html).not.toContain('data-landing-placeholder="footer"');
+
+    // Wired whaleBubbles from fixture bubble labels
+    expect(html).toContain('data-whale-bubbles-section=""');
+    expect(html).toContain('data-whale-plate=""');
+    for (const bubble of fixtureLandingPageData.whaleBubbles.bubbles) {
+      expect(html).toContain(bubble.label);
+    }
+    expect(html).not.toContain('data-landing-placeholder="whaleBubbles"');
+
+    // Wired hero: ParticleSphere + optional Terminal from fixture commands
+    expect(html).toContain('data-landing-harness-hero=""');
+    expect(html).toContain('data-particle-sphere=""');
+    expect(html).toContain('data-particle-sphere-canvas=""');
+    expect(html).toContain('data-terminal=""');
+    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).not.toContain('data-landing-placeholder="hero"');
+
+    // Unwired Wave B slots stay labeled placeholders
     for (const slot of LANDING_SLOT_ORDER) {
+      if (WIRED_SLOT_SET.has(slot)) {
+        continue;
+      }
       expect(html).toContain(`data-landing-placeholder="${slot}"`);
     }
+
+    // Unwired Wave B fixture content trees are not mounted as filled slots
+    // (command strings may still appear via soft-wired Terminal chrome).
+    expect(html).not.toContain(fixtureLandingPageData.hero.title);
+    expect(html).not.toContain(fixtureLandingPageData.hero.subtitle);
+    expect(html).not.toContain(
+      fixtureLandingPageData.capability.items[0]?.label ?? "",
+    );
+    expect(html).not.toContain(fixtureLandingPageData.youi.title);
+    expect(html).not.toContain(
+      fixtureLandingPageData.faq.items[0]?.question ?? "",
+    );
+    expect(html).not.toContain(fixtureLandingPageData.cta.headline);
+    expect(html).not.toContain(fixtureLandingPageData.cta.supporting);
+    expect(html).not.toContain(
+      fixtureLandingPageData.carousel.slides[0]?.blurb ?? "",
+    );
 
     const vars = landingThemeToCssVars();
     expect(html).toContain(

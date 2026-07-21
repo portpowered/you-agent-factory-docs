@@ -4,6 +4,7 @@ import {
   PRODUCTION_SITE_ORIGIN,
   resolveProductionMetadataBase,
   resolveProductionMetadataHref,
+  resolveProductionSitemapLocHref,
 } from "./production-metadata-base";
 
 const PROJECT_SITE_BASE_PATH = BUILT_APP_GITHUB_PAGES_BASE_PATH;
@@ -97,6 +98,51 @@ describe("resolveProductionMetadataHref", () => {
       ),
     ).toBe(
       `${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/docs/workstations`,
+    );
+  });
+});
+
+describe("resolveProductionSitemapLocHref", () => {
+  test("emits trailing-slash absolute locs under project-site export", () => {
+    expect(
+      resolveProductionSitemapLocHref("/docs/guides", PROJECT_SITE_EXPORT_ENV),
+    ).toBe(`${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/docs/guides/`);
+    expect(
+      resolveProductionSitemapLocHref(
+        "/docs/factories",
+        PROJECT_SITE_EXPORT_ENV,
+      ),
+    ).toBe(
+      `${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/docs/factories/`,
+    );
+    expect(resolveProductionSitemapLocHref("/", PROJECT_SITE_EXPORT_ENV)).toBe(
+      `${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/`,
+    );
+    expect(
+      resolveProductionSitemapLocHref("/blog", PROJECT_SITE_EXPORT_ENV),
+    ).toBe(`${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/blog/`);
+  });
+
+  test("keeps root-mode locs origin-only with trailing slash and no project prefix", () => {
+    expect(
+      resolveProductionSitemapLocHref("/docs/guides", ROOT_EXPORT_ENV),
+    ).toBe(`${PRODUCTION_SITE_ORIGIN}/docs/guides/`);
+    expect(resolveProductionSitemapLocHref("/search", {})).toBe(
+      `${PRODUCTION_SITE_ORIGIN}/search/`,
+    );
+  });
+
+  test("normalizes slash and non-slash app hrefs to the same trailing-slash loc", () => {
+    expect(
+      resolveProductionSitemapLocHref(
+        "/docs/factories/",
+        PROJECT_SITE_EXPORT_ENV,
+      ),
+    ).toBe(
+      resolveProductionSitemapLocHref(
+        "/docs/factories",
+        PROJECT_SITE_EXPORT_ENV,
+      ),
     );
   });
 });

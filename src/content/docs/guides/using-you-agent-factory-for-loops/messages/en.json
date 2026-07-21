@@ -19,14 +19,8 @@
       "title": "Common Pitfalls",
       "body": "Do not submit work when no factory session is live—confirm with session list first, or start a named run again. Do not treat a factory loop as a disposable one-shot chat; the factory keeps the session across passes until the goal is done or you stop. Do not use a plain loop when the work should alternate draft and review gates—that path belongs to a write-review loop instead."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

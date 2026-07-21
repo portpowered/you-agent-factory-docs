@@ -2,6 +2,10 @@ import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import {
+  GA_MEASUREMENT_ID_ENV,
+  GA_MEASUREMENT_ID_FALLBACK,
+} from "@/lib/analytics/ga-measurement-id";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 
 const repoRoot = join(import.meta.dir, "../../..");
@@ -25,7 +29,7 @@ describe("deploy-pages.yml project-site build contract", () => {
     expect(existsSync(retiredDeployWorkflowPath)).toBe(false);
   });
 
-  test("Build static export sets GITHUB_PAGES_BASE_PATH for make build", () => {
+  test("Build static export sets GITHUB_PAGES_BASE_PATH and GA Measurement ID for make build", () => {
     const workflow = readFileSync(deployPagesWorkflowPath, "utf8");
 
     const buildStepMatch = workflow.match(
@@ -42,6 +46,11 @@ describe("deploy-pages.yml project-site build contract", () => {
     );
     expect(buildStep).not.toMatch(
       /GITHUB_PAGES_BASE_PATH:\s*\/?ai-model-reference\b/,
+    );
+    expect(buildStep).toMatch(
+      new RegExp(
+        `${GA_MEASUREMENT_ID_ENV}:\\s*${GA_MEASUREMENT_ID_FALLBACK}\\b`,
+      ),
     );
   });
 
