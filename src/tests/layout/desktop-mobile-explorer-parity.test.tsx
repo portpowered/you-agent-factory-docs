@@ -27,10 +27,7 @@ import {
 import "@/tests/a11y/mock-navigation";
 
 /** Representative R01 pages that remain explorer members after W18 stub demotion. */
-const R01_EXPLORER_MEMBERSHIP_SLUGS = [
-  "throttling-and-limits",
-  "packaged-documents",
-] as const;
+const R01_EXPLORER_MEMBERSHIP_SLUGS = ["packaged-documents"] as const;
 
 /** W18 move stubs that must stay out of Program documentation explorer. */
 const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
@@ -74,10 +71,9 @@ async function openNestedProgramDocumentationSecondaries(
   container: HTMLElement,
   messages: Awaited<ReturnType<typeof loadUiMessages>>,
 ): Promise<void> {
-  // Open live Program documentation secondaries (Resources / Observability).
+  // Open live Program documentation Configuring secondary.
   for (const folderName of [
-    messages.explorer.documentationSecondaries.resources,
-    messages.explorer.documentationSecondaries.observability,
+    messages.explorer.documentationSecondaries.configuring,
   ] as const) {
     const folders = within(container).queryAllByRole("button", {
       name: folderName,
@@ -189,10 +185,10 @@ describe("desktop/mobile explorer tree parity", () => {
       }
       const documentationSeparators = separatorNamesInFolder(documentation);
       expect(documentationSeparators[0]).toBe(
-        messages.explorer.documentationGroups["system-feature-set"],
+        messages.explorer.documentationGroups.orientation,
       );
       expect(documentationSeparators.at(-1)).toBe(
-        messages.explorer.documentationGroups["additional-references"],
+        messages.explorer.documentationGroups.operations,
       );
       expect(
         pageEntriesInFolder(documentation).some((page) =>
@@ -228,21 +224,21 @@ describe("desktop/mobile explorer tree parity", () => {
       expect(
         pageEntriesUnderSeparator(
           documentation,
-          messages.explorer.documentationGroups["factory-configuration"],
-        ).some((page) =>
-          page.url.includes("/documentation/throttling-and-limits"),
-        ),
-      ).toBe(true);
-      expect(
-        pageEntriesUnderSeparator(
-          documentation,
-          messages.explorer.documentationGroups["factory-configuration"],
+          messages.explorer.documentationGroups.operations,
         ).some((page) => page.url.includes("/documentation/mock-workers")),
       ).toBe(false);
+      if (locale === "en") {
+        expect(
+          pageEntriesUnderSeparator(
+            documentation,
+            messages.explorer.documentationGroups.operations,
+          ).some((page) => page.url.includes("/documentation/resources")),
+        ).toBe(true);
+      }
       expect(
         pageEntriesUnderSeparator(
           documentation,
-          messages.explorer.documentationGroups["packaged-factories"],
+          messages.explorer.documentationGroups.capabilities,
         ).some((page) =>
           page.url.includes("/documentation/packaged-documents"),
         ),
@@ -314,7 +310,7 @@ describe("desktop/mobile explorer tree parity", () => {
       }
       expect(
         within(sidebar).getByText(
-          context.messages.explorer.documentationGroups["system-feature-set"],
+          context.messages.explorer.documentationGroups.orientation,
         ),
       ).toBeTruthy();
 
@@ -365,7 +361,7 @@ describe("desktop/mobile explorer tree parity", () => {
       }
       expect(
         within(drawer).getByText(
-          context.messages.explorer.documentationGroups["system-feature-set"],
+          context.messages.explorer.documentationGroups.orientation,
         ),
       ).toBeTruthy();
 

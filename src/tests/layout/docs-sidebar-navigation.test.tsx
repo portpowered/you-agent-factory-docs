@@ -114,12 +114,10 @@ describe("docs sidebar page-tree contract", () => {
     expect(sidebarJson).not.toContain("Attention Variants");
   });
 
-  test("page tree includes documentation install reader URL", () => {
+  test("page tree omits demoted documentation install from explorer membership", () => {
     const links = collectSidebarPageLinks(source.pageTree);
 
-    expect(findSidebarPageLink(links, INSTALL_DOCS_URL)?.name).toBe(
-      "Install you-agent-factory",
-    );
+    expect(findSidebarPageLink(links, INSTALL_DOCS_URL)).toBeUndefined();
   });
 
   test("FAQ is a top-level explorer page outside Program documentation", () => {

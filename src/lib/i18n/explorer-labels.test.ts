@@ -42,9 +42,12 @@ describe("explorer labels", () => {
       ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
     });
     expect(Object.keys(explorer.documentationSecondaries).sort()).toEqual([
-      "observability",
-      "resources",
+      "configuring",
     ]);
+    expect(explorer.documentationSecondaries).not.toHaveProperty("resources");
+    expect(explorer.documentationSecondaries).not.toHaveProperty(
+      "observability",
+    );
     expect(explorer.documentationSecondaries).not.toHaveProperty("workers");
     expect(explorer.documentationSecondaries).not.toHaveProperty(
       "workstations",
@@ -76,13 +79,16 @@ describe("explorer labels", () => {
         explorer.documentationGroups.interfaces.trim().length,
       ).toBeGreaterThan(0);
       expect(
-        explorer.documentationGroups["system-feature-set"].trim().length,
+        explorer.documentationGroups.orientation.trim().length,
       ).toBeGreaterThan(0);
       expect(
-        explorer.documentationSecondaries.observability.trim().length,
+        explorer.documentationGroups.capabilities.trim().length,
       ).toBeGreaterThan(0);
       expect(
-        explorer.documentationSecondaries.resources.trim().length,
+        explorer.documentationGroups.operations.trim().length,
+      ).toBeGreaterThan(0);
+      expect(
+        explorer.documentationSecondaries.configuring.trim().length,
       ).toBeGreaterThan(0);
     }
   });
@@ -96,27 +102,27 @@ describe("explorer labels", () => {
     expect(ja.folders.concepts).not.toBe(en.folders.concepts);
     expect(ja.folders.documentation).not.toBe(en.folders.documentation);
     expect(ja.conceptsGroups.harnesses).not.toBe(en.conceptsGroups.harnesses);
-    expect(ja.documentationSecondaries.observability).not.toBe(
-      en.documentationSecondaries.observability,
+    expect(ja.documentationSecondaries.configuring).not.toBe(
+      en.documentationSecondaries.configuring,
     );
-    expect(ja.documentationSecondaries.resources).not.toBe(
-      en.documentationSecondaries.resources,
+    expect(ja.documentationGroups.orientation).not.toBe(
+      en.documentationGroups.orientation,
     );
 
     expect(vi.folders.guides).not.toBe(en.folders.guides);
-    expect(vi.documentationGroups["system-feature-set"]).not.toBe(
-      en.documentationGroups["system-feature-set"],
+    expect(vi.documentationGroups.capabilities).not.toBe(
+      en.documentationGroups.capabilities,
     );
-    expect(vi.documentationSecondaries.observability).not.toBe(
-      en.documentationSecondaries.observability,
+    expect(vi.documentationSecondaries.configuring).not.toBe(
+      en.documentationSecondaries.configuring,
     );
 
     expect(zhCN.folders.techniques).not.toBe(en.folders.techniques);
     expect(zhCN.conceptsGroups["model-inference"]).not.toBe(
       en.conceptsGroups["model-inference"],
     );
-    expect(zhCN.documentationSecondaries.resources).not.toBe(
-      en.documentationSecondaries.resources,
+    expect(zhCN.documentationSecondaries.configuring).not.toBe(
+      en.documentationSecondaries.configuring,
     );
   });
 
@@ -173,9 +179,9 @@ describe("explorer labels", () => {
         },
         documentationSecondaries: {
           ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
-          observability: "   ",
+          configuring: "   ",
         },
       }),
-    ).toThrow(/documentationSecondaries\.observability/);
+    ).toThrow(/documentationSecondaries\.configuring/);
   });
 });

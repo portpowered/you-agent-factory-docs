@@ -78,19 +78,15 @@ export type ExplorerConceptsGroupMessages = {
 };
 
 export type ExplorerDocumentationGroupMessages = {
-  "system-feature-set": string;
+  orientation: string;
+  capabilities: string;
   interfaces: string;
-  "packaged-factories": string;
-  "factory-configuration": string;
-  "system-operations": string;
-  "internal-architecture": string;
-  "additional-references": string;
+  operations: string;
 };
 
-/** Nested Program documentation secondary folder labels (Resources, Observability). */
+/** Nested Program documentation secondary folder labels (Configuring). */
 export type ExplorerDocumentationSecondaryMessages = {
-  resources: string;
-  observability: string;
+  configuring: string;
 };
 
 export type ExplorerMessages = {

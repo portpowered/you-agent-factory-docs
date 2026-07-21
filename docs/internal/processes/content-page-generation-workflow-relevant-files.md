@@ -811,17 +811,27 @@ those paths only accept collection section refs.
   `sidebarGrouping.concepts` is for exceptions not covered by that map.
   `generation-and-diffusion` remains glossary-only.
 - Program documentation explorer membership is driven by
-  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (seven top groups with
-  optional secondaries under Factory Configuration and System Operations;
-  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view).
-  FAQ is omitted from that map because it is a top-level explorer
-  page outside the Program documentation folder.
-- Packaged CLI reference surfaces: place `packaged-documents` and
-  `packaged-factories` under the `packaged-factories` top group; place
-  `cli` / `cli-command-index` / `api-doc` / `mcp` under `interfaces`. Wire
-  documentation→documentation discovery with page-local `<LocalizedLinkList>`
-  plus aligned registry `relatedIds`; `<RelatedDocs />` alone will not render
-  documentation-kind siblings.
+  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (four top groups
+  Orientation → Capabilities → Interfaces → Operations; Operations nests
+  secondary `configuring` = “Configuring you-agent-factory” and may also list
+  direct children such as logs/metrics/dashboard). Factory config pages use
+  full `factories/...` docsSlug keys in that map; `PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`
+  and FAQ are omitted from Program membership.
+  Mode A overviews in `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS`
+  and deferred membership slugs in `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS`
+  are likewise omitted until their IA lanes wire them.
+  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view.
+  `buildDocumentationGroupedNodes` uses membership allowlisting so demotions,
+  Mode A pending, and deferred pages do not appear as Program leftovers.
+  Injecting factories config pages into the Program tree (while keeping Factories
+  routes) is a separate render story.
+- Packaged CLI reference surfaces: place `packaged-documents` under Program
+  Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
+  Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;
+  retired move stubs (`cli-command-index`, `api-doc`, etc.) stay out of the
+  explorer. Wire documentation→documentation discovery with page-local
+  `<LocalizedLinkList>` plus aligned registry `relatedIds`; `<RelatedDocs />`
+  alone will not render documentation-kind siblings.
 - Deferred Program documentation explorer membership (page-only lanes such as
   PS-220 `/docs/documentation/api`): publish the page bundle + registry with
   status `published`, add the slug to
@@ -829,10 +839,9 @@ those paths only accept collection section refs.
   `src/lib/content/sidebar-grouping.ts`, and keep
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` unchanged until the IA lane
   (PS-300) wires Interfaces membership. The sidebar adapter omits deferred
-  slugs from the explorer tree the same way it omits FAQ and W18 move stubs;
-  do not leave an unassigned published page to append after the last top group
-  (that leaks into Additional references under `pageEntriesUnderSeparator`).
-  Direct URL, documentation section index, and search still include the page.
+  slugs from the explorer tree the same way it omits FAQ, W18 move stubs, Mode A
+  pending overviews, and PS-100 demotions (membership allowlist). Direct URL,
+  documentation section index, and search still include the page.
 - Dual-page API how-to proof (`documentation/api` vs `references/api`): colocate
   page-local tests under `src/content/docs/documentation/api/api-page.test.tsx`.
   Assert Mode A how-to identity, default base URL / factory-running / session-flow

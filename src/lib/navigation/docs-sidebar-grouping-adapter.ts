@@ -8,9 +8,7 @@ import {
   getDocumentationSidebarSecondaryLabel,
   getSidebarGroupIdsForSection,
   getSidebarGroupLabel,
-  isDeferredDocumentationExplorerMembershipSlug,
   isDocumentationSidebarSecondaryGroup,
-  isModeAProgramOverviewPendingExplorerMembership,
   resolveConceptsSidebarGroup,
   resolveDocumentationSidebarGroup,
   resolveGlossarySidebarGroup,
@@ -138,11 +136,11 @@ function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
 /**
  * Program documentation emits a three-level explorer: top-group separators,
  * optional nested secondary folders, then page links. Empty top groups and
- * empty secondaries are omitted. FAQ, W18 documentation move stubs, Mode A
- * overviews pending PS-300 membership, and deferred-membership pages
- * (PS-300 Interfaces `api`, etc.) are not Program documentation explorer
- * members — stubs keep compatibility HTML; Mode A / deferred pages stay
- * published without explorer placement until their IA lane wires membership.
+ * empty secondaries are omitted. Membership is allowlist-only via
+ * {@link getDocumentationSidebarMembership}: FAQ, W18 documentation move stubs,
+ * Mode A overviews pending PS-300 membership, deferred-membership pages
+ * (PS-300 Interfaces `api`, etc.), and locked PS-100 demotions stay published
+ * without Program explorer placement until their IA lane wires membership.
  */
 function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
   const explorerPages = pages.filter((page) => {
@@ -152,11 +150,10 @@ function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
     if (isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)) {
       return false;
     }
-    if (isModeAProgramOverviewPendingExplorerMembership(page.docsSlug)) {
-      return false;
-    }
-    const slug = documentationPageSlug(page);
-    return !isDeferredDocumentationExplorerMembershipSlug(slug);
+    return (
+      getDocumentationSidebarMembership(documentationPageSlug(page)) !==
+      undefined
+    );
   });
   const remaining = new Set(explorerPages.map((page) => page.docsSlug));
   const nodes: Node[] = [];

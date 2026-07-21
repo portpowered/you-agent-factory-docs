@@ -159,26 +159,20 @@ describe("docs sidebar adapter extraction parity", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const children = getFolderChildren(pageTree, "Program documentation");
     const links = collectSidebarPageLinks(children);
-    const additionalReferencesUrl =
-      "/docs/documentation/what-is-you-agent-factory";
+    const whatIsUrl = "/docs/documentation/what-is-you-agent-factory";
     const secondaryFolderNames = children
       .filter((node) => node.type === "folder")
       .map((node) => String(node.name));
 
-    expect(findSidebarPageLink(links, additionalReferencesUrl)?.url).toBe(
-      additionalReferencesUrl,
-    );
-    expect(findPrecedingSeparatorLabel(children, additionalReferencesUrl)).toBe(
-      "Additional references",
+    expect(findSidebarPageLink(links, whatIsUrl)?.url).toBe(whatIsUrl);
+    expect(findPrecedingSeparatorLabel(children, whatIsUrl)).toBe(
+      "Orientation",
     );
     expect(getSeparatorLabels(children)).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
     for (const former of [
       "Basics",
@@ -202,13 +196,15 @@ describe("docs sidebar adapter extraction parity", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).toContain("Configuring you-agent-factory");
     expect(secondaryFolderNames).not.toContain("Workers");
-    expect(secondaryFolderNames).toContain("Observability");
+    expect(secondaryFolderNames).not.toContain("Observability");
     expect(
-      findSidebarPageLink(links, "/docs/documentation/throttling-and-limits")
-        ?.url,
-    ).toBe("/docs/documentation/throttling-and-limits");
+      findSidebarPageLink(links, "/docs/documentation/resources")?.url,
+    ).toBe("/docs/documentation/resources");
+    expect(
+      findSidebarPageLink(links, "/docs/documentation/throttling-and-limits"),
+    ).toBeUndefined();
     expect(
       findSidebarPageLink(links, "/docs/documentation/mock-workers"),
     ).toBeUndefined();

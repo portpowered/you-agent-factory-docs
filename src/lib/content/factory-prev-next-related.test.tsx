@@ -50,10 +50,10 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     next: "/docs/techniques/worker-adviser",
   },
   {
-    // First Program documentation page under System feature set (three-level IA).
-    href: "/docs/documentation/harness-support",
+    // First Program documentation page under Orientation (locked PS-100 IA).
+    href: "/docs/documentation/what-is-you-agent-factory",
     previous: "/docs/techniques/writer-reviewer",
-    next: "/docs/documentation/replays-records",
+    next: "/docs/documentation/harness-support",
   },
 ] as const;
 

@@ -16,13 +16,10 @@ export const SIDEBAR_GROUP_LABELS = {
     "model-inference": "Model inference",
   },
   documentation: {
-    "system-feature-set": "System feature set",
+    orientation: "Orientation",
+    capabilities: "Capabilities",
     interfaces: "Interfaces",
-    "packaged-factories": "Packaged factories",
-    "factory-configuration": "Factory Configuration",
-    "system-operations": "System Operations",
-    "internal-architecture": "Internal Architecture",
-    "additional-references": "Additional references",
+    operations: "Operations",
   },
 } as const;
 
@@ -30,30 +27,23 @@ export const SIDEBAR_GROUP_LABELS = {
  * Nested secondaries under Program documentation top groups that need a third
  * explorer level. Groups absent here list pages directly under the top group.
  *
- * After W18 move-stub demotion (#158), Factory Configuration only nests
- * Resources (Workers / Workstations / Factories secondaries had no remaining
- * explorer members and were removed as orphaned stub support).
+ * Locked PS-100 IA: Operations nests Configuring (factory config + resources).
+ * Former Factory Configuration / System Operations secondaries
+ * (Resources-as-group / Observability) are retired.
  */
 export const DOCUMENTATION_SIDEBAR_SECONDARY_LABELS = {
-  "factory-configuration": {
-    resources: "Resources",
-  },
-  "system-operations": {
-    observability: "Observability",
+  operations: {
+    configuring: "Configuring you-agent-factory",
   },
 } as const;
 
 /**
  * Flat English defaults for `explorer.documentationSecondaries` catalogs.
  * Keys must stay aligned with nested `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`
- * values. Resources and Observability are secondary-only (they do not collide
- * with top-level W15 family folder labels).
+ * values. Configuring is secondary-only under Operations.
  */
 export const DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS = {
-  resources:
-    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].resources,
-  observability:
-    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"].observability,
+  configuring: DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations.configuring,
 } as const;
 
 /**
@@ -98,11 +88,13 @@ export type DocumentationSidebarSecondaryId<
     DocumentationSidebarSecondaryGroupId = DocumentationSidebarSecondaryGroupId,
 > = keyof DocumentationSecondaryLabels[Group];
 
-type DocumentationMembershipWithoutSecondary = {
-  readonly group: Exclude<
-    DocumentationTopGroupId,
-    DocumentationSidebarSecondaryGroupId
-  >;
+/**
+ * Direct placement under a Program top group (no nested secondary folder).
+ * Allowed even when the top group also declares secondaries — Operations lists
+ * Logs / Metrics / Dashboard as direct children beside Configuring.
+ */
+type DocumentationMembershipDirect = {
+  readonly group: DocumentationTopGroupId;
 };
 
 type DocumentationMembershipWithSecondary = {
@@ -113,7 +105,7 @@ type DocumentationMembershipWithSecondary = {
 }[DocumentationSidebarSecondaryGroupId];
 
 export type DocumentationSidebarMembership =
-  | DocumentationMembershipWithoutSecondary
+  | DocumentationMembershipDirect
   | DocumentationMembershipWithSecondary;
 
 /**
@@ -184,33 +176,55 @@ export function isDeferredDocumentationExplorerMembershipSlug(
  * destinations. Mode A overviews in
  * `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` and deferred
  * membership slugs (see {@link DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS})
- * are likewise omitted until their IA lanes wire them. Groups with declared
- * secondaries assign exactly one secondary per slug; other groups place pages
- * directly under the top group.
+ * are likewise omitted until their IA lanes wire them.
+ *
+ * Locked PS-100 demotions (install, throttling-and-limits, architecture-of-system,
+ * petri, troubleshooting, security-trust-boundaries, contributing-to-these-docs)
+ * are intentionally omitted from Program membership; later Lane A stories place
+ * them under Reference / Internal architecture / Miscellanea / Guides.
+ *
+ * Factory configuration pages use full `factories/...` docsSlug keys so
+ * Operations → Configuring can nest them without route moves (render injection
+ * is a later story).
+ *
+ * Groups with declared secondaries assign exactly one secondary per slug;
+ * other groups place pages directly under the top group.
  */
 export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
-  "harness-support": { group: "system-feature-set" },
-  "replays-records": { group: "system-feature-set" },
-  "submitting-work": { group: "system-feature-set" },
+  "what-is-you-agent-factory": { group: "orientation" },
+  "harness-support": { group: "capabilities" },
+  "submitting-work": { group: "capabilities" },
+  "replays-records": { group: "capabilities" },
+  "packaged-documents": { group: "capabilities" },
   cli: { group: "interfaces" },
   mcp: { group: "interfaces" },
-  "packaged-documents": { group: "packaged-factories" },
-  resources: { group: "factory-configuration", secondary: "resources" },
-  "throttling-and-limits": {
-    group: "factory-configuration",
-    secondary: "resources",
+  logs: { group: "operations" },
+  metrics: { group: "operations" },
+  "dashboard-ui-overview": { group: "operations" },
+  resources: { group: "operations", secondary: "configuring" },
+  "factories/configuration": {
+    group: "operations",
+    secondary: "configuring",
   },
-  logs: { group: "system-operations", secondary: "observability" },
-  metrics: { group: "system-operations", secondary: "observability" },
-  "architecture-of-system": { group: "internal-architecture" },
-  petri: { group: "internal-architecture" },
-  "what-is-you-agent-factory": { group: "additional-references" },
-  install: { group: "additional-references" },
-  "contributing-to-these-docs": { group: "additional-references" },
-  "dashboard-ui-overview": { group: "additional-references" },
-  "security-trust-boundaries": { group: "additional-references" },
-  troubleshooting: { group: "additional-references" },
+  "factories/global-configuration": {
+    group: "operations",
+    secondary: "configuring",
+  },
 } as const satisfies Record<string, DocumentationSidebarMembership>;
+
+/**
+ * Published documentation slugs intentionally demoted from Program explorer
+ * membership under locked PS-100 (still published at existing routes).
+ */
+export const PROGRAM_DOCUMENTATION_DEMOTED_SLUGS = [
+  "install",
+  "throttling-and-limits",
+  "architecture-of-system",
+  "petri",
+  "troubleshooting",
+  "security-trust-boundaries",
+  "contributing-to-these-docs",
+] as const;
 
 export type FactoryDocumentationSidebarSlug =
   keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG;

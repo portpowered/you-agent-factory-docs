@@ -2,7 +2,11 @@ import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
 import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import { isModeAProgramOverviewPendingExplorerMembership } from "@/lib/content/sidebar-grouping";
+import {
+  isDeferredDocumentationExplorerMembershipSlug,
+  isModeAProgramOverviewPendingExplorerMembership,
+  PROGRAM_DOCUMENTATION_DEMOTED_SLUGS,
+} from "@/lib/content/sidebar-grouping";
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 import { source } from "@/lib/source";
 
@@ -153,12 +157,18 @@ describe("docs navigation source", () => {
           if (section !== "documentation") {
             return true;
           }
-          // FAQ is top-level; W18 move stubs and Mode A overviews pending
-          // PS-300 keep published routes without Program explorer membership.
+          // FAQ is top-level; W18 move stubs, Mode A overviews pending
+          // PS-300, deferred-membership pages, and PS-100 demotions keep
+          // published routes without Program explorer membership.
+          const slug = page.docsSlug.slice("documentation/".length);
           return (
             !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
             !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug) &&
-            !isModeAProgramOverviewPendingExplorerMembership(page.docsSlug)
+            !isModeAProgramOverviewPendingExplorerMembership(page.docsSlug) &&
+            !isDeferredDocumentationExplorerMembershipSlug(slug) &&
+            !(
+              PROGRAM_DOCUMENTATION_DEMOTED_SLUGS as readonly string[]
+            ).includes(slug)
           );
         })
         .map((page) => page.url);
@@ -220,13 +230,10 @@ describe("docs navigation source", () => {
       .map((node) => String(node.name));
 
     expect(separatorNames).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
     for (const former of [
       "Basics",
@@ -248,12 +255,13 @@ describe("docs navigation source", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).toContain("Configuring you-agent-factory");
     expect(secondaryFolderNames).not.toContain("Workers");
-    expect(secondaryFolderNames).toContain("Observability");
+    expect(secondaryFolderNames).not.toContain("Observability");
     expect(pageUrls).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(pageUrls).toContain("/docs/documentation/cli");
-    expect(pageUrls).toContain("/docs/documentation/throttling-and-limits");
+    expect(pageUrls).not.toContain("/docs/documentation/throttling-and-limits");
+    expect(pageUrls).not.toContain("/docs/documentation/install");
     expect(pageUrls).not.toContain("/docs/documentation/mock-workers");
     expect(pageUrls).toContain("/docs/documentation/logs");
   });

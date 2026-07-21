@@ -74,17 +74,13 @@
       "model-inference": "模型推理"
     },
     "documentationGroups": {
-      "system-feature-set": "系统功能集",
+      "orientation": "导览",
+      "capabilities": "能力",
       "interfaces": "接口",
-      "packaged-factories": "打包工厂",
-      "factory-configuration": "工厂配置",
-      "system-operations": "系统运维",
-      "internal-architecture": "内部架构",
-      "additional-references": "补充参考"
+      "operations": "运维"
     },
     "documentationSecondaries": {
-      "resources": "资源",
-      "observability": "可观测性"
+      "configuring": "配置 you-agent-factory"
     }
   },
   "referenceChrome": {

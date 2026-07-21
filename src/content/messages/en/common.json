@@ -74,17 +74,13 @@
       "model-inference": "Model inference"
     },
     "documentationGroups": {
-      "system-feature-set": "System feature set",
+      "orientation": "Orientation",
+      "capabilities": "Capabilities",
       "interfaces": "Interfaces",
-      "packaged-factories": "Packaged factories",
-      "factory-configuration": "Factory Configuration",
-      "system-operations": "System Operations",
-      "internal-architecture": "Internal Architecture",
-      "additional-references": "Additional references"
+      "operations": "Operations"
     },
     "documentationSecondaries": {
-      "resources": "Resources",
-      "observability": "Observability"
+      "configuring": "Configuring you-agent-factory"
     }
   },
   "referenceChrome": {

@@ -44,53 +44,53 @@ import {
   resolveHostSemanticThemeTokens,
 } from "@/lib/theme/host-semantic-theme-tokens";
 
-/** R01 eight Program documentation pages (published; stubs demoted from explorer). */
+/** R01 Program documentation pages (published; stubs and demotions excluded from explorer). */
 const R01_PROGRAM_DOCUMENTATION_PAGES = [
   {
     slug: "mock-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.mock-workers",
     explorerMember: false,
   },
   {
     slug: "throttling-and-limits",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.throttling-and-limits",
-    explorerMember: true,
+    explorerMember: false,
   },
   {
     slug: "script-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.script-workers",
     explorerMember: false,
   },
   {
     slug: "poller-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.poller-workers",
     explorerMember: false,
   },
   {
     slug: "agent-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.agent-workers",
     explorerMember: false,
   },
   {
     slug: "inference-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.inference-workers",
     explorerMember: false,
   },
   {
     slug: "packaged-documents",
-    group: "packaged-factories",
+    group: "capabilities",
     registryId: "documentation.packaged-documents",
     explorerMember: true,
   },
   {
     slug: "packaged-factories",
-    group: "packaged-factories",
+    group: "capabilities",
     registryId: "documentation.packaged-factories",
     explorerMember: false,
   },
@@ -228,13 +228,10 @@ describe("plan-issues R02 tip reconciliation", () => {
       "Model inference",
     ]);
     expect(Object.values(SIDEBAR_GROUP_LABELS.documentation)).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
   });
 

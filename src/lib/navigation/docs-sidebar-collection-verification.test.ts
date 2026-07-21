@@ -45,7 +45,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     folderName: "Program documentation",
     url: "/docs/documentation/what-is-you-agent-factory",
     name: "What is you-agent-factory",
-    separatorLabel: "Additional references",
+    separatorLabel: "Orientation",
   },
   {
     folderName: "References",
@@ -219,13 +219,10 @@ describe("collection-driven docs sidebar verification", () => {
       .map((node) => String(node.name));
 
     expect(getSeparatorLabels(children)).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
     for (const former of [
       "Basics",
@@ -251,8 +248,8 @@ describe("collection-driven docs sidebar verification", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).toContain("Configuring you-agent-factory");
     expect(secondaryFolderNames).not.toContain("Workers");
-    expect(secondaryFolderNames).toContain("Observability");
+    expect(secondaryFolderNames).not.toContain("Observability");
   });
 });

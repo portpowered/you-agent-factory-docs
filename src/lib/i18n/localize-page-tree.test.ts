@@ -158,63 +158,39 @@ describe("localizePageTree", () => {
       throw new Error("expected Program documentation folder");
     }
     expect(separatorNames(documentation.children)[0]).toBe(
-      messages.explorer.documentationGroups["system-feature-set"],
+      messages.explorer.documentationGroups.orientation,
+    );
+    expect(separatorNames(documentation.children)).toContain(
+      messages.explorer.documentationGroups.capabilities,
     );
     expect(separatorNames(documentation.children)).toContain(
       messages.explorer.documentationGroups.interfaces,
     );
     expect(separatorNames(documentation.children)).toContain(
-      messages.explorer.documentationGroups["factory-configuration"],
-    );
-    expect(separatorNames(documentation.children)).toContain(
-      messages.explorer.documentationGroups["additional-references"],
+      messages.explorer.documentationGroups.operations,
     );
 
-    const factoryConfigurationLabel =
-      messages.explorer.documentationGroups["factory-configuration"];
-    expect(separatorNames(documentation.children)).toContain(
-      factoryConfigurationLabel,
-    );
-    const factoryConfigurationIndex = documentation.children.findIndex(
-      (child) =>
-        child.type === "separator" &&
-        String(child.name) === factoryConfigurationLabel,
-    );
-    expect(factoryConfigurationIndex).toBeGreaterThanOrEqual(0);
-    const nextSeparatorAfterFactoryConfiguration = documentation.children
-      .slice(factoryConfigurationIndex + 1)
-      .findIndex((child) => child.type === "separator");
-    const factoryConfigurationChildren =
-      nextSeparatorAfterFactoryConfiguration === -1
-        ? documentation.children.slice(factoryConfigurationIndex + 1)
-        : documentation.children.slice(
-            factoryConfigurationIndex + 1,
-            factoryConfigurationIndex +
-              1 +
-              nextSeparatorAfterFactoryConfiguration,
-          );
-    const secondaryFolderNames = factoryConfigurationChildren
-      .filter((child) => child.type === "folder")
-      .map((child) => String(child.name));
-    // Empty Workers / Workstations / Factories stub-nesting secondaries were
-    // removed after demotion; only Resources remains under Factory Configuration.
-    expect(secondaryFolderNames).toEqual([
-      messages.explorer.documentationSecondaries.resources,
-    ]);
+    const operationsLabel = messages.explorer.documentationGroups.operations;
+    expect(separatorNames(documentation.children)).toContain(operationsLabel);
 
-    const systemOperationsIndex = separatorNames(
-      documentation.children,
-    ).indexOf(messages.explorer.documentationGroups["system-operations"]);
-    expect(systemOperationsIndex).toBeGreaterThanOrEqual(0);
-    const observabilityFolder = documentation.children
-      .slice(systemOperationsIndex + 1)
-      .find(
-        (child) =>
-          child.type === "folder" &&
-          String(child.name) ===
-            messages.explorer.documentationSecondaries.observability,
+    const links = collectLinks(documentation.children);
+    if (
+      links.some((link) => link.endsWith("/ja/docs/documentation/resources"))
+    ) {
+      const operationsIndex = separatorNames(documentation.children).indexOf(
+        operationsLabel,
       );
-    expect(observabilityFolder?.type).toBe("folder");
+      expect(operationsIndex).toBeGreaterThanOrEqual(0);
+      const configuringFolder = documentation.children
+        .slice(operationsIndex + 1)
+        .find(
+          (child) =>
+            child.type === "folder" &&
+            String(child.name) ===
+              messages.explorer.documentationSecondaries.configuring,
+        );
+      expect(configuringFolder?.type).toBe("folder");
+    }
   });
 
   test("preserves literal you-agent-factory identifiers in localized page labels", async () => {
