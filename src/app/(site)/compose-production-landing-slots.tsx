@@ -3,6 +3,9 @@ import { Terminal, type TerminalProps } from "@/features/code";
 import { SiteFooter, type SiteFooterProps } from "@/features/footer";
 import {
   CapabilityStrip,
+  FactoryCarousel,
+  type FactoryCarouselProps,
+  type FactorySlideData,
   HeroSection,
   LandingFooterArt,
   LandingHeader,
@@ -33,14 +36,15 @@ import {
 
 /**
  * Production `/` LandingPage slots filled from MERGED public exports.
- * Carousel / FAQ / CTA stay omitted so LandingPage keeps labeled placeholders
- * until those surfaces are ready (carousel #217 remains open).
+ * FAQ / CTA stay omitted so LandingPage keeps labeled placeholders until
+ * those Wave B surfaces are wired in follow-on stories.
  */
 export const WIRED_PRODUCTION_LANDING_SLOTS = [
   "header",
   "hero",
   "capability",
   "youi",
+  "carousel",
   "whaleBubbles",
   "footer",
 ] as const satisfies ReadonlyArray<keyof LandingPageSlots>;
@@ -165,6 +169,41 @@ export function composeProductionYouiSlot(
 }
 
 /**
+ * Map landing fixture carousel slides onto the public FactoryCarousel /
+ * FactorySlideData contract. Keeps id / title / blurb / command only; omits
+ * `art` unless the fixture already supplies a caller-owned ReactNode (no path
+ * → ReactNode invention from strings). Mirrored from harness Wave B — do not
+ * import from (dev)/landing-harness/**.
+ */
+export function mapFixtureCarouselToFactoryCarouselProps(
+  carousel: LandingCarouselData = fixtureLandingPageData.carousel,
+): Pick<FactoryCarouselProps, "slides"> {
+  const slides: FactorySlideData[] = carousel.slides.map((slide) => {
+    const mapped: FactorySlideData = {
+      id: slide.id,
+      title: slide.title,
+      blurb: slide.blurb,
+      command: slide.command,
+    };
+    if (slide.art != null) {
+      mapped.art = slide.art;
+    }
+    return mapped;
+  });
+
+  return { slides };
+}
+
+/** Real production carousel slot: FactoryCarousel from fixture slides. */
+export function composeProductionCarouselSlot(
+  carousel: LandingCarouselData = fixtureLandingPageData.carousel,
+): ReactNode {
+  return (
+    <FactoryCarousel {...mapFixtureCarouselToFactoryCarouselProps(carousel)} />
+  );
+}
+
+/**
  * Map landing fixture whale/bubbles data onto WhaleBubblesSection props.
  * Falls back to `WHALE_BUBBLES_FIXTURE_*` when fixture fields are empty.
  */
@@ -227,9 +266,10 @@ export function composeProductionFooterSlot(
 
 /**
  * Aggregate production LandingPage slot props from MERGED public exports.
- * Returns only wired keys — carousel / faq / cta stay on LandingPage
- * placeholder defaults. Props map from `fixtureLandingPageData` (or optional
- * override) onto public component contracts only; no CMS schemas.
+ * Returns only wired keys — faq / cta stay on LandingPage placeholder
+ * defaults until follow-on Wave B stories wire them. Props map from
+ * `fixtureLandingPageData` (or optional override) onto public component
+ * contracts only; no CMS schemas.
  */
 export function composeProductionLandingSlots(
   data: LandingPageData = fixtureLandingPageData,
@@ -242,6 +282,7 @@ export function composeProductionLandingSlots(
     }),
     capability: composeProductionCapabilitySlot(data.capability),
     youi: composeProductionYouiSlot(data.youi),
+    carousel: composeProductionCarouselSlot(data.carousel),
     whaleBubbles: composeProductionWhaleBubblesSlot(data.whaleBubbles),
     footer: composeProductionFooterSlot(data.footer),
   };
