@@ -55,7 +55,13 @@ techniques `*-page.test.tsx` files assert Related / References footer absence
 null, and no orphan `messages.links` / `sections.related` /
 `sections.references`); keep teaching-section and Tags presence asserts. Drop
 Related-footer curated-link proofs instead of inventing a replacement related
-surface. Other published collections may still mount RelatedDocs until their
+surface. End-to-end browser proof for the strip lives at
+`src/content/docs/techniques/assert-techniques-related-references-strip-browser.ts`
+(ralph + planner-executor; webpack `bun run next` via `scripts/run-next.ts`,
+unique port `TECHNIQUES_RELATED_STRIP_PROBE_PORT` default 3572; kill server on
+exit). Run with
+`bun src/content/docs/techniques/assert-techniques-related-references-strip-browser.ts`.
+Other published collections may still mount RelatedDocs until their
 PF-L-strip lane removes it; that remaining chrome is not a contracts-lane
 failure. FAQ-only strip remains PF-D2.
 
