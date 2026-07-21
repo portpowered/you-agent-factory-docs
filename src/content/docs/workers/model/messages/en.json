@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when reviewing a MODEL_WORKER with local TTS capability. The misuse example shows agentTools on a model worker—agentTools belongs on AGENT_WORKER and fails validation on MODEL_WORKER."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -34,12 +28,6 @@
     "minimalExampleLabel": "Minimal valid MODEL_WORKER:",
     "misuseExampleLabel": "Incompatible misuse — agentTools on MODEL_WORKER (rejected):",
     "misuseNote": "agentTools is an agent-loop field. Validation rejects it on MODEL_WORKER. Use AGENT_WORKER for prompt-rendered agent loops.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workersFamilyIndex": "Workers family index",
-    "siblingInferenceWorker": "Inference worker",
-    "siblingAgentWorker": "Agent worker",
-    "siblingWorkstations": "Workstations overview",
-    "siblingResources": "Resources",
-    "siblingTokens": "Tokens"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

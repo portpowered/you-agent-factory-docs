@@ -965,7 +965,11 @@ Related-only `LocalizedLinkList`, or References `CitationList`). Keep How To
 Use / purpose teaching chrome and teaching-section links (companion /
 schema-reference `LocalizedLinkList`s). Tags footer chrome stays where already
 present (agent has none). Do not restore Related / References footers on
-workers pages; do not rewrite shared `RelatedDocs` to force omission.
+workers pages; do not rewrite shared `RelatedDocs` to force omission. After
+MDX strip, remove owned `sections.related` / `sections.references` footer
+title keys and Related-footer-only `links.*` keys
+(`workersFamilyIndex`, `sibling*`) from workers `messages/*.json` so bundles
+match the page; keep companion / schema / example / selection labels.
 
 On `/docs/workers/agent`, JSON examples render through shared `CodePanel` (not
 bare unstyled `<pre><code>`). Do not restore `#tags` / `#references`

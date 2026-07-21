@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when reviewing a HOSTED_WORKER with hosted Linear provider auth. The misuse example shows an inline API key under auth—V1 hosted workers accept only auth.secretRef, and validation rejects inline credential fields."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -34,11 +28,6 @@
     "minimalExampleLabel": "Minimal valid HOSTED_WORKER:",
     "misuseExampleLabel": "Incompatible misuse — inline secret on HOSTED_WORKER (rejected):",
     "misuseNote": "auth accepts only secretRef. Validation rejects inline API keys and other credential fields. Resolve the referenced secret from an environment variable or a factory-relative secret file.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workersFamilyIndex": "Workers family index",
-    "siblingPollerWorker": "Poller worker",
-    "siblingWorkstations": "Workstations overview",
-    "siblingResources": "Resources",
-    "siblingTokens": "Tokens"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

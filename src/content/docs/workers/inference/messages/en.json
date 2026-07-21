@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting an INFERENCE_WORKER. The misuse example shows agentTools on an inference worker—agentTools belongs on AGENT_WORKER and fails validation on INFERENCE_WORKER."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -33,11 +27,6 @@
     "minimalExampleLabel": "Minimal valid INFERENCE_WORKER:",
     "misuseExampleLabel": "Incompatible misuse — agentTools on INFERENCE_WORKER (rejected):",
     "misuseNote": "agentTools is an agent-loop field. Validation rejects it on INFERENCE_WORKER. Use AGENT_WORKER for prompt-rendered agent loops.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workersFamilyIndex": "Workers family index",
-    "siblingAgentWorker": "Agent worker",
-    "siblingWorkstations": "Workstations overview",
-    "siblingResources": "Resources",
-    "siblingTokens": "Tokens"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }
