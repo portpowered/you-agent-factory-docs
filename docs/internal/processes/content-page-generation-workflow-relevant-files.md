@@ -991,8 +991,10 @@ behaviorally (rendered headings/copy, not file inventories):
   `:scope > header [data-testid="schema-breadcrumb"]` (field-row breadcrumbs
   still use that test id).
 - Assert concrete workstation `messages.title` forms (`… workstation`) and
-  workers Related / References footer absence (`Related To` / `References`
-  headings, `section#related`, `curated-related-docs`) after PF-L-strip.
+  workers Related / References footer absence after PF-L-strip: `Related To` /
+  `References` headings, `#related` / `#references`, `[data-related-group]`,
+  and `curated-related-docs` (variant pages + family index; keep How To Use
+  teaching proofs; leave Tags alone).
 - Do not edit Factory schema / you-config / mock-workers *reference* page
   tests for this chrome trim unless proving shared opt-in defaults stay
   unchanged.

@@ -136,6 +136,10 @@ describe("workers agent page", () => {
     ).toBeNull();
     expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
+    expect(document.querySelector("[data-related-group]")).toBeNull();
+    expect(screen.queryByTestId("curated-related-docs")).toBeNull();
 
     expect(
       screen.getByText(
@@ -172,11 +176,6 @@ describe("workers agent page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-
-    expect(document.querySelector("section#related")).toBeNull();
-    expect(
-      document.querySelector('[data-testid="curated-related-docs"]'),
-    ).toBeNull();
 
     expect(screen.getByText("Minimal valid AGENT_WORKER:")).toBeTruthy();
     expect(
