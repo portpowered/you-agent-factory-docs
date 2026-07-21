@@ -24,10 +24,20 @@ export const MULTI_LOCALE_ALTERNATES_PROOF_ROUTE = "/" as const;
 export const SUBSET_LOCALE_ALTERNATES_PROOF_ROUTE =
   "/docs/concepts/task-queue" as const;
 
+/**
+ * Blog English-only policy proof route: posts stay canonical-only until blog
+ * locales ship (no false ja / zh-CN / vi hreflang).
+ */
+export const BLOG_ENGLISH_ONLY_ALTERNATES_PROOF_ROUTE =
+  "/blog/bottlenecks" as const;
+
 export const LOCALIZED_ALTERNATES_PROOF_ROUTES = [
   MULTI_LOCALE_ALTERNATES_PROOF_ROUTE,
   SUBSET_LOCALE_ALTERNATES_PROOF_ROUTE,
+  BLOG_ENGLISH_ONLY_ALTERNATES_PROOF_ROUTE,
 ] as const;
+
+const X_DEFAULT_HREFLANG = "x-default";
 
 export type LocalizedAlternatesProofRoute =
   (typeof LOCALIZED_ALTERNATES_PROOF_ROUTES)[number];
@@ -61,7 +71,7 @@ export function extractHreflangAlternates(
     if (
       hreflang !== undefined &&
       href !== undefined &&
-      hreflang.toLowerCase() !== "x-default"
+      hreflang.toLowerCase() !== X_DEFAULT_HREFLANG
     ) {
       results.push({ hreflang, href });
     }
@@ -70,6 +80,60 @@ export function extractHreflangAlternates(
   }
 
   return results;
+}
+
+/**
+ * Returns the absolute href for `hreflang="x-default"` when present.
+ * Does not fold `x-default` into shipped-locale inventory assertions.
+ */
+export function extractXDefaultHreflangHref(html: string): string | null {
+  const tagPattern = /<link\b[^>]*>/gi;
+  let match: RegExpExecArray | null = tagPattern.exec(html);
+
+  while (match !== null) {
+    const tag = match[0];
+    const rel = tag.match(/\brel=["']([^"']+)["']/i)?.[1]?.toLowerCase();
+    if (rel !== "alternate") {
+      match = tagPattern.exec(html);
+      continue;
+    }
+
+    const hreflang = tag.match(/\bhreflang=["']([^"']+)["']/i)?.[1];
+    const href = tag.match(/\bhref=["']([^"']+)["']/i)?.[1];
+    if (
+      hreflang !== undefined &&
+      href !== undefined &&
+      hreflang.toLowerCase() === X_DEFAULT_HREFLANG
+    ) {
+      return href;
+    }
+
+    match = tagPattern.exec(html);
+  }
+
+  return null;
+}
+
+/**
+ * True when exported HTML emits absolute production `hreflang="x-default"`
+ * pointing at the English canonical URL for the page.
+ */
+export function exportHtmlHasAbsoluteXDefaultAlternate(
+  html: string,
+  englishCanonicalAppPath: string,
+  env: BuildModeEnv = process.env,
+): boolean {
+  if (!isLiveFactoryCanonicalPath(englishCanonicalAppPath)) {
+    return false;
+  }
+
+  const href = extractXDefaultHreflangHref(html);
+  if (href === null) {
+    return false;
+  }
+
+  const expectedHref = expectedAbsoluteHref(englishCanonicalAppPath, env);
+  return href === expectedHref && isAbsoluteProductionCanonicalHref(href, env);
 }
 
 function expectedAbsoluteHref(appPath: string, env: BuildModeEnv): string {
@@ -165,8 +229,11 @@ export type VerifyExportLocalizedAlternatesResult =
     };
 
 /**
- * Reads representative export HTML and requires shipped-only absolute
- * production hreflang alternates for multi-locale and subset-locale proofs.
+ * Reads representative export HTML and requires:
+ * - shipped-only absolute production hreflang for multi-locale + subset docs
+ * - `hreflang="x-default"` → English canonical whenever language alternates
+ *   are advertised (x-default is not treated as a shipped locale code)
+ * - blog English-only policy: no non-English locale hreflang on the blog proof
  */
 export function verifyExportLocalizedAlternates(options: {
   env?: BuildModeEnv;
@@ -191,6 +258,7 @@ export function verifyExportLocalizedAlternates(options: {
       [SUBSET_LOCALE_ALTERNATES_PROOF_ROUTE]: {
         en: "/docs/concepts/task-queue",
       },
+      [BLOG_ENGLISH_ONLY_ALTERNATES_PROOF_ROUTE]: {},
     },
   } = options;
 
@@ -234,6 +302,27 @@ export function verifyExportLocalizedAlternates(options: {
         reason: `hreflang alternates for ${route} must be absolute production URLs for shipped locales only (expected ${JSON.stringify(expectedLanguages)}, got ${JSON.stringify(extracted)})`,
         alternates,
       };
+    }
+
+    const advertisedLocaleCount = Object.keys(expectedLanguages).length;
+    if (advertisedLocaleCount > 0) {
+      const englishCanonical = expectedLanguages.en;
+      if (englishCanonical === undefined) {
+        return {
+          ok: false,
+          reason: `hreflang x-default for ${route} requires an English (en) canonical in expected languages`,
+          alternates,
+        };
+      }
+      if (
+        !exportHtmlHasAbsoluteXDefaultAlternate(html, englishCanonical, env)
+      ) {
+        return {
+          ok: false,
+          reason: `hreflang x-default for ${route} must be the absolute English canonical URL (${englishCanonical}); got ${JSON.stringify(extractXDefaultHreflangHref(html))}`,
+          alternates,
+        };
+      }
     }
   }
 

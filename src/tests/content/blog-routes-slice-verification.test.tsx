@@ -18,6 +18,7 @@ import {
   renderBlogIndexPage,
   renderBlogPostPage,
 } from "@/app/(site)/site-renderers";
+import { generateMetadata as generateLocalizedBlogIndexMetadata } from "@/app/[locale]/blog/page";
 import { blogIndexHref, blogPostHref } from "@/lib/content/blog-page-load";
 
 const BOTTLENECKS_SLUG = "bottlenecks";
@@ -101,7 +102,18 @@ describe("blog routes slice verification (blog-routes-layout-index-004)", () => 
 
     expect(metadata.title).toBe("Blog");
     expect(metadata.alternates?.canonical).toBe(blogIndexHref());
+    // English-only policy: no false ja / zh-CN / vi language alternates.
+    expect(metadata.alternates?.languages).toBeUndefined();
     expect(metadata.description?.length).toBeGreaterThan(0);
+  });
+
+  it("keeps locale-prefixed blog index on English-only alternates", async () => {
+    const metadata = await generateLocalizedBlogIndexMetadata({
+      params: Promise.resolve({ locale: "ja" }),
+    });
+
+    expect(metadata.alternates?.canonical).toBe(blogIndexHref());
+    expect(metadata.alternates?.languages).toBeUndefined();
   });
 
   it("publishes canonical metadata for a published blog post route", async () => {
@@ -112,6 +124,8 @@ describe("blog routes slice verification (blog-routes-layout-index-004)", () => 
     expect(metadata.title).toBe(BOTTLENECKS_TITLE);
     expect(metadata.description).toBe(BOTTLENECKS_DESCRIPTION);
     expect(metadata.alternates?.canonical).toBe(blogPostHref(BOTTLENECKS_SLUG));
+    // English-only policy: posts stay canonical-only until blog locales ship.
+    expect(metadata.alternates?.languages).toBeUndefined();
   });
 
   it("returns empty metadata for an unknown blog post slug", async () => {

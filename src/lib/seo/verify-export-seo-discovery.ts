@@ -20,9 +20,12 @@ const PROJECT_SITE_EXPORT_ENV = {
  * Composite project-site export SEO/discovery gate.
  *
  * Proves absolute canonicals, page-specific Open Graph, base-prefixed social
- * images, shipped-only absolute alternates, sitemap of live factory routes
- * only, and robots.txt pointing at the production sitemap — all against an
- * exported `out/` directory.
+ * images, shipped-only absolute alternates (including `hreflang="x-default"` →
+ * English canonical when language alternates are advertised, plus the blog
+ * English-only alternate policy), sitemap of live factory routes only, and
+ * robots.txt pointing at the production sitemap — all against an exported
+ * `out/` directory. Sitemap locale inventory stays owned by
+ * `seo-sitemap-locales`; this gate consumes alternates without expanding it.
  */
 export function verifyExportSeoDiscovery(options: {
   env?: BuildModeEnv;
