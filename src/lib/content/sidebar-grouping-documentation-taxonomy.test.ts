@@ -69,7 +69,6 @@ const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
   "global-configuration-factories",
   "packaged-factories",
   "dynamic-workflows",
-  "factory-session",
   "workers",
   "agent-workers",
   "inference-workers",
@@ -77,6 +76,14 @@ const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
   "poller-workers",
   "mock-workers",
   "workstations",
+] as const;
+
+/**
+ * Mode A Program overviews restored under PS-210 before PS-300 wires explorer
+ * membership. Published and canonical, but not yet explorer members.
+ */
+const MODE_A_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS = [
+  "factory-session",
 ] as const;
 
 describe("Program documentation three-level taxonomy", () => {
@@ -164,7 +171,7 @@ describe("Program documentation three-level taxonomy", () => {
     }
   });
 
-  test("every published documentation page except FAQ and W18 move stubs has exactly one membership path", () => {
+  test("every published documentation page except FAQ, W18 move stubs, and Mode A overviews pending explorer membership has exactly one membership path", () => {
     const publishedSlugs = loadPublishedDocsPagesSync("en")
       .filter((page) => page.docsSlug.startsWith("documentation/"))
       .map((page) => page.docsSlug.slice("documentation/".length));
@@ -173,6 +180,9 @@ describe("Program documentation three-level taxonomy", () => {
       FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
     );
     const moveStubSlugSet = new Set<string>(W18_DOCUMENTATION_MOVE_STUB_SLUGS);
+    const pendingExplorerSlugSet = new Set<string>(
+      MODE_A_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
+    );
 
     expect(membershipSlugs).not.toContain("faq");
     expect(getDocumentationSidebarMembership("faq")).toBeUndefined();
@@ -188,12 +198,19 @@ describe("Program documentation three-level taxonomy", () => {
       expect(publishedSlugs).toContain(stubSlug);
     }
 
+    for (const overviewSlug of MODE_A_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
+      expect(membershipSlugs).not.toContain(overviewSlug);
+      expect(getDocumentationSidebarMembership(overviewSlug)).toBeUndefined();
+      expect(publishedSlugs).toContain(overviewSlug);
+      expect(moveStubSlugSet.has(overviewSlug)).toBe(false);
+    }
+
     for (const slug of publishedSlugs) {
       if (isDocsExplorerTopLevelFaqPage(`documentation/${slug}`)) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }
-      if (moveStubSlugSet.has(slug)) {
+      if (moveStubSlugSet.has(slug) || pendingExplorerSlugSet.has(slug)) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }

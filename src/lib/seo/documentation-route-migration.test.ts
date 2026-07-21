@@ -32,7 +32,6 @@ const SECTION_10_EXPECTED_MAPPINGS = [
     "/docs/documentation/dynamic-workflows",
     "/docs/factories/dynamic-workflows",
   ],
-  ["/docs/documentation/factory-session", "/docs/factories/sessions"],
   ["/docs/documentation/workers", "/docs/workers"],
   ["/docs/documentation/agent-workers", "/docs/workers/agent"],
   ["/docs/documentation/inference-workers", "/docs/workers/inference"],
