@@ -112,7 +112,10 @@ describe("factories/sessions documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const factoryNameEmbed = screen.getByTestId(
       "factories-sessions-factory-name-schema",
@@ -148,11 +151,6 @@ describe("factories/sessions documentation page", () => {
 
     expect(
       screen
-        .getAllByRole("link", { name: "What Factory Sessions are" })[0]
-        ?.getAttribute("href"),
-    ).toBe("/docs/documentation/factory-session");
-    expect(
-      screen
         .getAllByRole("link", { name: "CLI docs" })[0]
         ?.getAttribute("href"),
     ).toBe("/docs/documentation/cli");
@@ -178,44 +176,6 @@ describe("factories/sessions documentation page", () => {
         .getAllByRole("link", { name: "Cursor dynamic workflows" })[0]
         ?.getAttribute("href"),
     ).toBe("/docs/guides/cursor-dynamic-workflows");
-
-    const related = document.getElementById("related");
-    expect(related).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/factory-session"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/configuration"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/global-configuration"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/packaged"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/dynamic-workflows"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/cli"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/submitting-work"]'),
-    ).toBeTruthy();
-    expect(related?.querySelector('a[href="/docs/workers"]')).toBeTruthy();
-    expect(related?.querySelector('a[href="/docs/workstations"]')).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/resources"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/schema"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/api"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/events"]'),
-    ).toBeTruthy();
 
     const sessionListSection = document.getElementById("session-list");
     const sessionShowSection = document.getElementById("session-show");

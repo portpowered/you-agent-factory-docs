@@ -91,7 +91,10 @@ describe("factories/configuration documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const schemaEmbed = screen.getByTestId(
       "factories-configuration-factory-root-schema",
@@ -133,31 +136,5 @@ describe("factories/configuration documentation page", () => {
         .getAllByRole("link", { name: "Resources" })[0]
         ?.getAttribute("href"),
     ).toBe("/docs/documentation/resources");
-
-    const related = document.getElementById("related");
-    expect(related).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/global-configuration"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/packaged"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/dynamic-workflows"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/sessions"]'),
-    ).toBeTruthy();
-    expect(related?.querySelector('a[href="/docs/workers"]')).toBeTruthy();
-    expect(related?.querySelector('a[href="/docs/workstations"]')).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/resources"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/schema"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/api"]'),
-    ).toBeTruthy();
   });
 });

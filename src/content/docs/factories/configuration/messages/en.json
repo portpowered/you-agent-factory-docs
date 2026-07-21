@@ -27,14 +27,8 @@
       "title": "Limits And Assumptions",
       "body": "This page is a web topology overview for factory.json. It is not a sync of packaged CLI docs, not the operator model-defaults deep dive in ~/.you-agent-factory/config.json, and not the submitting-work, batch, relationships, or harness-support references. Deep worker-type, workstation-kind, and resource-pool field contracts belong on the workers, workstations, and resources documentation pages — this overview does not absorb those contracts. Exhaustive Factory field and operation inventories live on the schema and API reference pages linked from the root-properties section."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -50,10 +44,6 @@
     "routingFailedField": "onFailure",
     "fullFactorySchema": "Full Factory schema",
     "fullFactoryApi": "Factory API reference",
-    "globalConfigurationDocs": "Global configuration",
-    "packagedDocs": "Packaged factories",
-    "dynamicWorkflowsDocs": "Dynamic workflows",
-    "sessionsDocs": "Factory sessions",
     "workersDocs": "Workers",
     "workstationsDocs": "Workstations",
     "resourcesDocs": "Resources"

@@ -107,7 +107,10 @@ describe("factories/global-configuration documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const youConfigEmbed = screen.getByTestId(
       "factories-global-configuration-you-config-schema",
@@ -166,48 +169,5 @@ describe("factories/global-configuration documentation page", () => {
         .getAllByRole("link", { name: "Factory API reference" })[0]
         ?.getAttribute("href"),
     ).toBe("/docs/references/api");
-
-    expect(
-      screen
-        .getAllByRole("link", {
-          name: "Configuration (factory.json topology)",
-        })[0]
-        ?.getAttribute("href"),
-    ).toBe("/docs/factories/configuration");
-    expect(
-      screen.getAllByRole("link", { name: "CLI" })[0]?.getAttribute("href"),
-    ).toBe("/docs/documentation/cli");
-    expect(
-      screen.getAllByRole("link", { name: "Workers" })[0]?.getAttribute("href"),
-    ).toBe("/docs/workers");
-
-    const related = document.getElementById("related");
-    expect(related).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/configuration"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/packaged"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/dynamic-workflows"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/sessions"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/cli"]'),
-    ).toBeTruthy();
-    expect(related?.querySelector('a[href="/docs/workers"]')).toBeTruthy();
-    expect(related?.querySelector('a[href="/docs/workstations"]')).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/resources"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/schema"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/api"]'),
-    ).toBeTruthy();
   });
 });

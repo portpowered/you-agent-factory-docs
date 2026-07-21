@@ -97,7 +97,10 @@ describe("factories/packaged documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const factoryNameEmbed = screen.getByTestId(
       "factories-packaged-factory-name-schema",
@@ -144,63 +147,5 @@ describe("factories/packaged documentation page", () => {
         .getAllByRole("link", { name: "Factory API reference" })[0]
         ?.getAttribute("href"),
     ).toBe("/docs/references/api");
-
-    expect(
-      screen
-        .getAllByRole("link", { name: "What Packaged Factories are" })[0]
-        ?.getAttribute("href"),
-    ).toBe("/docs/documentation/packaged-factories");
-    expect(
-      screen
-        .getAllByRole("link", {
-          name: "Configuration (factory.json topology)",
-        })[0]
-        ?.getAttribute("href"),
-    ).toBe("/docs/factories/configuration");
-    expect(
-      screen
-        .getAllByRole("link", { name: "Global configuration" })[0]
-        ?.getAttribute("href"),
-    ).toBe("/docs/factories/global-configuration");
-    expect(
-      screen
-        .getAllByRole("link", { name: "Dynamic workflows" })[0]
-        ?.getAttribute("href"),
-    ).toBe("/docs/factories/dynamic-workflows");
-    expect(
-      screen.getAllByRole("link", { name: "CLI" })[0]?.getAttribute("href"),
-    ).toBe("/docs/documentation/cli");
-    expect(
-      screen
-        .getAllByRole("link", { name: "Packaged documents" })[0]
-        ?.getAttribute("href"),
-    ).toBe("/docs/documentation/packaged-documents");
-
-    const related = document.getElementById("related");
-    expect(related).toBeTruthy();
-    expect(
-      related?.querySelector(
-        'a[href="/docs/documentation/packaged-factories"]',
-      ),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/configuration"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/global-configuration"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/dynamic-workflows"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/factories/sessions"]'),
-    ).toBeTruthy();
-    expect(related?.querySelector('a[href="/docs/workers"]')).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/schema"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/references/api"]'),
-    ).toBeTruthy();
   });
 });
