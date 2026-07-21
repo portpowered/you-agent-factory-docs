@@ -29,7 +29,9 @@ Do **not**:
 | `src/content/docs/references/events/page.mdx` | Published reference page structure |
 | `src/content/docs/references/events/messages/en.json` | Default-locale copy |
 | `src/content/docs/references/events/assets.json` | Empty baseline assets |
-| `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount |
+| `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount (includes linked component schema splay) |
+| `src/lib/references/events/linked-component-schemas.ts` | Pure builder: nested component schemas cited from catalog roots |
+| `src/components/references/events/event-linked-component-schemas.tsx` | On-page linked component schema definitions section |
 | `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
 | `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount + catalog polish proof |
 | `src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts` | Playwright probe: short Event catalog label, envelope components, suppressed pointer chrome, envelope/payload JSON examples on `/docs/references/events` |
@@ -96,6 +98,17 @@ other W11 reference page lanes):
   Worktrees without local `node_modules` must use the probe’s `--webpack` start
   path (Turbopack rejects parent-hoisted `next`); optionally set
   `EVENTS_CATALOG_POLISH_PROBE_BASE_URL` against an already-warm server.
+- Linked component schema splay (InferenceOutcome-class deep links): build the
+  transitive `$ref` closure from already-rendered FactoryEvent /
+  FactoryResponseEvent catalog roots via
+  `buildEventsLinkedComponentSchemas` (`src/lib/references/events/linked-component-schemas.ts`),
+  exclude those already-rendered roots, and mount
+  `EventLinkedComponentSchemas` from `EventsCorpusMount` after the response
+  catalog. Reuse `schema-ref-closure` + `normalizeOpenApiComponentSchemaDefinition`;
+  do not invent schemas and do not flip the shared `showPointerPathChrome`
+  default (events keeps `EventsSchemaDefinition` local `false`). Prove anchors
+  with `linked-component-schemas.test.ts` +
+  `event-linked-component-schemas.test.tsx`.
 - Intro-strip browser close-out (story 003): the same probe also asserts
   absence of What It Covers / Key Concepts headings and ids, absence of folded
   Opening summary (`[data-testid="folded-summary"]` /
