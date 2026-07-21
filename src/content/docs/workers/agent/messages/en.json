@@ -14,9 +14,6 @@
     "examples": {
       "title": "Examples",
       "body": "Use the minimal valid example when starting an AGENT_WORKER. The misuse example shows operations on an agent worker—operations belong on INFERENCE_WORKER and fail validation on AGENT_WORKER."
-    },
-    "related": {
-      "title": "Related To"
     }
   },
   "links": {

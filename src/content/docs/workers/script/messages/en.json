@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a SCRIPT_WORKER. The misuse example shows model-routing fields on a script worker—model, modelProvider, and modelLocality belong on inference and agent families and fail validation on SCRIPT_WORKER."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -33,12 +27,6 @@
     "minimalExampleLabel": "Minimal valid SCRIPT_WORKER:",
     "misuseExampleLabel": "Incompatible misuse — model fields on SCRIPT_WORKER (rejected):",
     "misuseNote": "model, modelProvider, and modelLocality are model-routing fields. Validation rejects them on SCRIPT_WORKER. Use INFERENCE_WORKER or AGENT_WORKER when you need model-backed execution.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workersFamilyIndex": "Workers family index",
-    "siblingInferenceWorker": "Inference worker",
-    "siblingAgentWorker": "Agent worker",
-    "siblingWorkstations": "Workstations overview",
-    "siblingResources": "Resources",
-    "siblingTokens": "Tokens"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

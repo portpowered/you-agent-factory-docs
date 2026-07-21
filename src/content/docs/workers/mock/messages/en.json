@@ -15,14 +15,8 @@
       "title": "Examples",
       "body": "Use the minimal valid example when you need a single accept match for a named factory worker. The misuse example shows Factory Worker fields name and type MOCK_WORKER on a mock entry — mock selection uses workerName, never Factory WorkerType discriminators, and rejects unknown fields."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -33,11 +27,6 @@
     "minimalExampleLabel": "Minimal valid mock-workers config:",
     "misuseExampleLabel": "Incompatible misuse — Factory WorkerType shape on mock entry (rejected):",
     "misuseNote": "Mock selection entries use workerName, not name. They never accept type or other Factory WorkerType discriminators. Unknown fields fail validation at load time.",
-    "fullMockWorkersSchema": "Full mock-workers schema reference",
-    "workersFamilyIndex": "Workers family index",
-    "siblingDocumentationMockWorkers": "Mock workers CLI reference",
-    "siblingAgentWorker": "Agent worker",
-    "siblingWorkstations": "Workstations overview",
-    "siblingResources": "Resources"
+    "fullMockWorkersSchema": "Full mock-workers schema reference"
   }
 }
