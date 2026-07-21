@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { buildPageBundleArtifacts } from "./generate-page-bundle";
+import { validatePageSpec } from "./page-spec";
 import type { PageAssetConfig, PageMessages } from "./schemas";
 import {
   validateGeneratedCanonicalDocs,
@@ -27,21 +29,11 @@ function readTemplateAssets(kind: string): PageAssetConfig {
   ) as PageAssetConfig;
 }
 
-/** Strip RelatedDocs / related-section chrome for strip-readiness proofs (PF-L-contracts). */
-function stripRelatedDocsChrome(mdxSource: string): string {
-  return mdxSource
-    .replace(
-      /\n?<Section id="related" titleKey="sections\.related\.title">[\s\S]*?<\/Section>\n?/,
-      "\n",
-    )
-    .replace(
-      /\n?import \{ RelatedDocs \} from "@\/features\/docs\/components\/RelatedDocs";\n?/,
-      "\n",
-    )
-    .replace(
-      /\n?import \{ DerivedRelatedDocs \} from "@\/features\/docs\/components\/DerivedRelatedDocs";\n?/,
-      "\n",
-    );
+/** Assert MDX has no RelatedDocs / related-section chrome (PF-L-contracts). */
+function expectStripReadyRelatedDocsChrome(mdxSource: string): void {
+  expect(mdxSource).not.toContain("<RelatedDocs");
+  expect(mdxSource).not.toContain("<DerivedRelatedDocs");
+  expect(mdxSource).not.toContain('id="related"');
 }
 
 describe("validateGeneratedFoldedSummary", () => {
@@ -156,11 +148,8 @@ describe("validateGeneratedGraphPlacement", () => {
 
 describe("validateGeneratedKindSpecificStructure", () => {
   test("allows concept pages that omit RelatedDocs and the related section", () => {
-    const conceptMdx = stripRelatedDocsChrome(readTemplateMdx("concept"));
-
-    expect(conceptMdx).not.toContain("<RelatedDocs");
-    expect(conceptMdx).not.toContain("<DerivedRelatedDocs");
-    expect(conceptMdx).not.toContain('id="related"');
+    const conceptMdx = readTemplateMdx("concept");
+    expectStripReadyRelatedDocsChrome(conceptMdx);
 
     const errors = validateGeneratedKindSpecificStructure({
       pagePath: "/docs/concepts/example/page.mdx",
@@ -177,26 +166,8 @@ describe("validateGeneratedKindSpecificStructure", () => {
 
 describe("validateGeneratedCanonicalDocs", () => {
   test("passes generated concept template bundle shape", () => {
-    const errors = validateGeneratedCanonicalDocs({
-      pagePath: "/docs/concepts/example/page.mdx",
-      kind: "concept",
-      mdxSource: readTemplateMdx("concept"),
-      messages: {
-        ...readTemplateMessages("concept"),
-        title: "Example",
-        description: "Summary",
-      },
-      assets: readTemplateAssets("concept"),
-    });
-    expect(errors).toEqual([]);
-  });
-
-  test("passes strip-ready concept MDX without RelatedDocs or related section", () => {
-    const conceptMdx = stripRelatedDocsChrome(readTemplateMdx("concept"));
-
-    expect(conceptMdx).not.toContain("<RelatedDocs");
-    expect(conceptMdx).not.toContain("<DerivedRelatedDocs");
-    expect(conceptMdx).not.toContain('id="related"');
+    const conceptMdx = readTemplateMdx("concept");
+    expectStripReadyRelatedDocsChrome(conceptMdx);
 
     const errors = validateGeneratedCanonicalDocs({
       pagePath: "/docs/concepts/example/page.mdx",
@@ -208,6 +179,63 @@ describe("validateGeneratedCanonicalDocs", () => {
         description: "Summary",
       },
       assets: readTemplateAssets("concept"),
+    });
+    expect(errors).toEqual([]);
+    expect(
+      errors.some((error) => error.code === "missing-related-docs-component"),
+    ).toBe(false);
+  });
+
+  test("passes strip-ready concept MDX without RelatedDocs or related section", () => {
+    const conceptMdx = readTemplateMdx("concept");
+    expectStripReadyRelatedDocsChrome(conceptMdx);
+
+    const errors = validateGeneratedCanonicalDocs({
+      pagePath: "/docs/concepts/example/page.mdx",
+      kind: "concept",
+      mdxSource: conceptMdx,
+      messages: {
+        ...readTemplateMessages("concept"),
+        title: "Example",
+        description: "Summary",
+      },
+      assets: readTemplateAssets("concept"),
+    });
+
+    expect(errors).toEqual([]);
+    expect(
+      errors.some((error) => error.code === "missing-related-docs-component"),
+    ).toBe(false);
+  });
+
+  test("buildPageBundleArtifacts concept MDX stays strip-ready and validates", async () => {
+    const spec = validatePageSpec({
+      kind: "concept",
+      slug: "pf-l-contracts-strip-ready-proof",
+      title: "PF-L Contracts Strip Ready Proof",
+      summary:
+        "Generated concept bundle proving RelatedDocs chrome is not reintroduced by default.",
+      status: "draft",
+      conceptType: "general",
+      aliases: [],
+      tags: [],
+      relatedIds: [],
+      citationIds: [],
+    });
+
+    const artifacts = await buildPageBundleArtifacts({
+      spec,
+      updatedAt: "2026-07-21",
+    });
+
+    expectStripReadyRelatedDocsChrome(artifacts.pageMdx);
+
+    const errors = validateGeneratedCanonicalDocs({
+      pagePath: artifacts.paths.pagePath,
+      kind: "concept",
+      mdxSource: artifacts.pageMdx,
+      messages: artifacts.messages,
+      assets: artifacts.assets,
     });
 
     expect(errors).toEqual([]);

@@ -38,19 +38,22 @@ without that chrome must validate for RelatedDocs presence rules. Do not
 reintroduce a fail-closed RelatedDocs presence gate in generation validation.
 
 Proofs live in `validate-generated-canonical-docs.test.ts`: kind-specific and
-full `validateGeneratedCanonicalDocs` both assert strip-ready concept MDX
+full `validateGeneratedCanonicalDocs` both assert live concept template MDX
 (without RelatedDocs / related-section) passes with zero RelatedDocs-presence
-errors. Do not revive a presence-expecting test that fails when chrome is
-absent. Site-wide published MDX RelatedDocs strip remains a separate
-PF-L-strip lane; FAQ-only strip remains PF-D2.
+errors. An end-to-end `buildPageBundleArtifacts` proof also asserts generated
+concept `pageMdx` stays strip-ready and validates (no
+`missing-related-docs-component`). Do not revive a presence-expecting test that
+fails when chrome is absent. Existing published MDX may still mount RelatedDocs
+until PF-L-strip removes it by collection; that remaining chrome is not a
+contracts-lane failure. FAQ-only strip remains PF-D2.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a
-related-section. `generate-page-bundle` copies those templates, so new page
-MDX stays strip-ready by default. Do not reintroduce RelatedDocs chrome into
-kind templates. Leave unused `sections.related` message keys alone unless a
-template edit needs them; they are not page chrome.
+related-section. `generate-page-bundle` / `buildPageBundleArtifacts` copy those
+templates, so new page MDX stays strip-ready by default. Do not reintroduce
+RelatedDocs chrome into kind templates. Leave unused `sections.related`
+message keys alone unless a template edit needs them; they are not page chrome.
 
 ## Derived page directory contract
 
