@@ -3,8 +3,8 @@ import { cleanup, fireEvent, screen, within } from "@testing-library/react";
 import type { SharedProps } from "fumadocs-ui/components/dialog/search";
 import type { ComponentType } from "react";
 import { act } from "react";
-import { DocsHeader } from "@/components/layout/docs-header";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
+import { DocsHeader } from "@/features/layout/docs-header";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { source } from "@/lib/source";
 import {

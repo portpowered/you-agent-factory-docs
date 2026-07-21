@@ -5,14 +5,6 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import { type ReactNode, Suspense, useId, useState } from "react";
 import { FaGithub } from "react-icons/fa";
-import { LanguageSwitcher } from "@/components/layout/language-switcher";
-import { MobileDocsDrawer } from "@/components/layout/mobile-docs-drawer";
-import {
-  getPrimaryNavItems,
-  PRIMARY_NAV_LINK_CLASS,
-  PRIMARY_NAV_MOBILE_LINK_CLASS,
-  PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
-} from "@/components/layout/primary-nav";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
 import {
@@ -20,6 +12,14 @@ import {
   DOCS_CHROME_HEADER_TEXT_CLASSES,
 } from "@/features/docs/styles/docs-chrome-header-breadcrumb";
 import { DOCS_CHROME_HEADER_ACTION_ICON_CLASSES } from "@/features/docs/styles/docs-chrome-search-globe-github";
+import { LanguageSwitcher } from "@/features/layout/language-switcher";
+import { MobileDocsDrawer } from "@/features/layout/mobile-docs-drawer";
+import {
+  getPrimaryNavItems,
+  PRIMARY_NAV_LINK_CLASS,
+  PRIMARY_NAV_MOBILE_LINK_CLASS,
+  PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
+} from "@/features/layout/primary-nav";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import {

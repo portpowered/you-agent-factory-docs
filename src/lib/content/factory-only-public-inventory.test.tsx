@@ -15,8 +15,8 @@ import {
   renderBrowseIndexPage,
   renderSectionKindIndexPage,
 } from "@/app/(site)/site-renderers";
-import { DocsHeader } from "@/components/layout/docs-header";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
+import { DocsHeader } from "@/features/layout/docs-header";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { DOCS_BROWSE_COLLECTION_IDS } from "@/lib/docs/browse-collection-sections";
 import { DOCS_COLLECTION_IDS } from "@/lib/docs/collection-definition-contract";

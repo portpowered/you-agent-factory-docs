@@ -12,9 +12,9 @@ import {
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { act } from "react";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
 import { DocsSearchDialog } from "@/features/docs/search/SearchDialog";
 import { SearchPagePanelContent } from "@/features/docs/search/SearchPagePanel";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import {
   expectCriticalPageStructure,
   listKeyboardFocusableControls,

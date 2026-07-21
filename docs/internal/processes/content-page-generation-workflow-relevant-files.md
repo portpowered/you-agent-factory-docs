@@ -1761,12 +1761,12 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   committed-tree expectation in
   `src/lib/content/shipped-localized-docs.server.test.ts` to match the new
   shipped slug lists.
-* Language switcher (`src/components/layout/language-switcher.tsx`) maps
+* Language switcher (`src/features/layout/language-switcher.tsx`) maps
   `supportedLocales` into options: non-docs surfaces (home, search, browse, …)
   always get a locale-preserving `href` via `switchRouteLocale`; docs pages mark
   unshipped locales unavailable (`href: null`) instead of linking to wrong-language
   copy. Cover available zh-CN navigation + query preservation and unavailable
-  docs behavior in `src/components/layout/docs-header.test.tsx`. When filling
+  docs behavior in `src/features/layout/docs-header.test.tsx`. When filling
   high-traffic locales, also prove language switching stays available on a filled
   docs slug (for example `/docs/guides/getting-started`) and that localized
   metadata titles/descriptions resolve from page message bundles in

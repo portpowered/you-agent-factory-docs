@@ -8,12 +8,12 @@ import {
 } from "@/app/(site)/site-renderers";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
 import { HomeArticle } from "@/components/home/home-article";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import {
   DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,
   DOCS_HEADER_SHELL_CLASS,
-} from "@/components/layout/docs-header";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
+} from "@/features/layout/docs-header";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import {
   CONTENT_COLUMN_INSET_CLASS,
   usesNegativeMarginCompensation,

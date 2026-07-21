@@ -13,7 +13,7 @@ contract for the you-agent-factory CLI docs product.
 | `src/lib/site/you-agent-factory-site-config.ts` | Product default config: you-agent-factory brand/repo, CLI primary nav/route placeholders, CLI collections (`guides`/`concepts`/`techniques`/`documentation`), and CLI `homeFeaturedLinks` (guides/docs/blog — no glossary advertising) |
 | `src/lib/site/site-config-layout-nav.ts` | Client-safe brand/home resolution (`resolveSiteConfigLayoutNav`) for header chrome; no Node/`pages` imports |
 | `src/lib/site/site-config-resolution.ts` | Resolves primary nav hrefs and home featured links from `SiteConfig`; re-exports layout-nav helpers |
-| `src/components/layout/primary-nav.ts` | Shell primary nav consumer of `SiteConfig.primaryNav` / `routeSurfaces` |
+| `src/features/layout/primary-nav.ts` | Shell primary nav consumer of `SiteConfig.primaryNav` / `routeSurfaces` |
 | `src/lib/layout.shared.tsx` | Layout `baseOptions` defaults to `youAgentFactorySiteConfig` |
 | `src/content/messages/{en,vi,ja,zh-CN}/common.json` | Shell UI messages; `nav.guides` / `nav.docs` plus W15 family keys `nav.references` / `nav.factories` / `nav.workers` / `nav.workstations` |
 
@@ -87,7 +87,7 @@ contract for the you-agent-factory CLI docs product.
   family index titles; not the full reference chrome corpus) even though those
   labels are no longer primary-nav chips.
 - Exact-order / desktop↔mobile primary-nav parity proofs live in
-  `src/components/layout/w15-primary-nav-family-parity.test.tsx` (and
+  `src/features/layout/w15-primary-nav-family-parity.test.tsx` (and
   `primary-nav.test.ts`). Both Primary landmarks must share the same
   Blog/Docs/Guides/References hrefs/labels/order; Search stays a header
   control only.
@@ -131,14 +131,14 @@ contract for the you-agent-factory CLI docs product.
   mark driven by the default site config (not the full product name). Explorer
   root / home title / SEO may still use `You Agent Factory`.
 - CLI docs header regression lock-in lives in
-  `src/components/layout/docs-header.test.tsx` ("locks CLI shell header brand,
+  `src/features/layout/docs-header.test.tsx` ("locks CLI shell header brand,
   primary nav, and Search together") and
   `src/tests/a11y/primary-navigation.a11y.test.tsx` (brand + CLI Primary +
   Search on the canonical layout). Do not reintroduce Model Atlas header
   component names, Topology/Timeline primary items, or Model Atlas search
   chrome copy in those surfaces.
 - W15 family exact-order and desktop/mobile Primary parity:
-  `src/components/layout/w15-primary-nav-family-parity.test.tsx`.
+  `src/features/layout/w15-primary-nav-family-parity.test.tsx`.
 
 ## Story sequencing
 

@@ -200,7 +200,7 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 ## CLI docs header / primary-nav regression
 
-* `src/components/layout/docs-header.tsx`
+* `src/features/layout/docs-header.tsx`
   Product-neutral docs shell header (`DocsHeader`); brand via
   `data-docs-header-brand`, CLI primary nav, and header `SearchTrigger`.
   Shell grid is `DOCS_HEADER_SHELL_CLASS` (`gap-4 md:gap-0` — desktop must
@@ -209,7 +209,7 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `DOCS_HEADER_ACTIONS_COLUMN_CLASS` (`CONTENT_COLUMN_INSET_FROM_MD_CLASS` +
   full max-width). Mobile shell keeps outer `px-4 md:px-0` — no
   negative-margin compensation.
-* `src/components/layout/docs-header.test.tsx`
+* `src/features/layout/docs-header.test.tsx`
   Unit regression locking you-agent-factory brand, Home/Guides/Docs/Glossary/Blog
   primary destinations (no Topology/Timeline), Search chrome without Model
   Atlas copy — including the consolidated "locks CLI shell header brand,
@@ -217,7 +217,7 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   alignment for desktop nav/actions and `md:gap-0` shell contract.
 * `src/tests/a11y/primary-navigation.a11y.test.tsx`
   A11y smoke for brand + Primary landmark + Search on the canonical docs layout.
-* `src/components/layout/primary-nav.ts` / `primary-nav.test.ts`
+* `src/features/layout/primary-nav.ts` / `primary-nav.test.ts`
   Site-config-driven CLI primary nav item resolution. Link hrefs stay unprefixed
   (Next `basePath` prefixes at render); absolute/export resolution uses
   `resolveSiteNavigationHrefs` from `site-navigation-href.ts`.

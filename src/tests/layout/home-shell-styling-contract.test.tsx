@@ -8,7 +8,6 @@ import {
   HomeBrowseList,
 } from "@/components/home/home-browse-link";
 import { HomeBrushHeader } from "@/components/home/home-brush-header";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { DocsIndexEntryList } from "@/features/docs/components/DocsIndexEntryList";
 import { searchInlineResultsListClassName } from "@/features/docs/components/list-decoration";
 import { proseAutoLinkClassName } from "@/features/docs/components/prose-auto-link-class";
@@ -19,6 +18,7 @@ import {
   DOCS_CHROME_TOKEN_MAP_SURFACES,
 } from "@/features/docs/styles/docs-chrome-highlighting-token-map-contract";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import type { TagResourceKindGroup } from "@/lib/content/tag-resources";
 import type { TagIndexCategoryGroup } from "@/lib/content/tags";
 import { loadUiMessages } from "@/lib/content/ui-messages";

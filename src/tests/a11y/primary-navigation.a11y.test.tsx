@@ -2,9 +2,9 @@ import "./mock-navigation";
 import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, fireEvent, screen, within } from "@testing-library/react";
 import { act } from "react";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { DocsHeader } from "@/components/layout/docs-header";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
+import { DocsHeader } from "@/features/layout/docs-header";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import { source } from "@/lib/source";
 import { expectNoSeriousAxeViolations } from "@/tests/a11y/axe";
 import {

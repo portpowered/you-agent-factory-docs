@@ -5,7 +5,7 @@ import {
   buildDocsPageMetadata,
   renderDocsSlugPage,
 } from "@/app/docs/docs-slug-renderer";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import {
   captureOriginalFetch,
   installDocsSearchFetchMock,

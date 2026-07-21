@@ -6,8 +6,8 @@ import {
   renderBlogIndexPage,
   renderBlogPostPage,
 } from "@/app/(site)/site-renderers";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import {
   expectCriticalPageStructure,
   listKeyboardFocusableControls,

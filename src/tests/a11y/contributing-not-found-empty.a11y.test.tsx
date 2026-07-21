@@ -8,9 +8,9 @@ import { cleanup, screen, within } from "@testing-library/react";
 import { act } from "react";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
 import DocsNotFound from "@/app/docs/not-found";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { DocsIndexEmptyState } from "@/features/docs/components/DocsIndexEmptyState";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import {
   expectCriticalPageStructure,
   listKeyboardFocusableControls,
