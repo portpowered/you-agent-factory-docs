@@ -14,6 +14,7 @@ aliases:
 updatedAt: "2026-07-09"
 ---
 
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -33,6 +34,14 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="compared-to-nearby-techniques" titleKey="sections.comparedToNearbyTechniques.title">
   <T k="sections.comparedToNearbyTechniques.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/techniques/planner-executor-in-action",
+        labelKey: "links.plannerExecutorInAction",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">
