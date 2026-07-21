@@ -7,6 +7,10 @@
  *
  * Code samples use the site `CodePanel` + fumadocs `useCopyButton` pattern
  * (same as W07 schema examples) — not a second copy widget.
+ *
+ * Locked Q3 accent policy: code-panel language tabs, HTTP method badges, and
+ * response status chips use secondary blue for selected/emphasis and muted
+ * secondary for quieter/unselected states — never primary yellow.
  */
 
 /** Marker attribute on the production API theme root (harness or page). */
@@ -18,29 +22,69 @@ export const API_CODE_PANEL_ATTR = "data-api-code-panel" as const;
 /**
  * Semantic Tailwind / utility classes that resolve through host tokens.
  * Prefer these (or equivalents like `text-foreground`) over raw colors.
+ *
+ * `primary` remains a host semantic alias for unrelated non-accent consumers.
+ * Tabs, method badges, and status chips must use {@link API_ACCENT_TOKEN_CLASSES}
+ * instead — do not wire `primary` into those accents.
  */
 export const API_TOKEN_CLASSES = {
   foreground: "text-foreground",
   mutedForeground: "text-muted-foreground",
   card: "bg-card text-card-foreground",
   border: "border-border",
+  /** Host primary alias — not the accent for tabs/badges/chips. */
   primary: "text-primary",
+  secondary: "text-secondary",
   muted: "bg-muted",
   background: "bg-background",
   ring: "focus-visible:ring-ring",
 } as const;
 
 /**
+ * Accent roles for API code-panel language tabs, HTTP method badges, and
+ * response status chips under `data-api-reference-theme`.
+ *
+ * - Selected / emphasis → secondary blue (`text-secondary` / `border-secondary`)
+ * - Quieter / unselected → muted secondary via host `muted-foreground`
+ *
+ * Primary yellow (`text-primary` / `text-fd-primary` / `border-fd-primary`) is
+ * never the documented accent for these surfaces.
+ */
+export const API_ACCENT_TOKEN_CLASSES = {
+  /** Selected / active / emphasis text (secondary blue). */
+  selected: "text-secondary",
+  /** Selected / active underline or chip border (secondary blue). */
+  selectedBorder: "border-secondary",
+  /** Quieter / unselected text (muted secondary via host muted-foreground). */
+  quiet: "text-muted-foreground",
+  /** Quieter border chrome (neutral host border — not primary). */
+  quietBorder: "border-border",
+} as const;
+
+/**
+ * Host CSS custom properties the accent roles resolve through.
+ * Prefer these when remapping Fumadocs `fd-primary` utilities under the API
+ * theme root — never page-only hex/rgb/hsl/oklch. Published remaps live in
+ * `references-api-accents.css` (see `api-accent-chrome.ts`).
+ */
+export const API_ACCENT_CSS_VARS = {
+  selected: "var(--secondary)",
+  quiet: "var(--muted-foreground)",
+} as const;
+
+/**
  * Method badge tone classes — semantic tokens only. Meaning stays in the
- * uppercase method text (`ApiMethodBadge`); tones are optional chrome.
+ * uppercase method text (`ApiMethodBadge`); tones are optional chrome and
+ * must not rely on color alone. Accent text uses secondary / muted-secondary
+ * roles from {@link API_ACCENT_TOKEN_CLASSES}, never primary yellow.
  */
 export const API_METHOD_BADGE_TONE_CLASSES = {
-  get: "border-border bg-muted/60 text-foreground",
-  post: "border-border bg-muted text-foreground",
-  put: "border-border bg-background text-foreground",
-  patch: "border-border bg-background text-foreground",
-  delete: "border-border bg-muted/40 text-foreground",
-  default: "border-border bg-muted/50 text-foreground",
+  get: `border-border bg-muted/60 ${API_ACCENT_TOKEN_CLASSES.selected}`,
+  post: `border-border bg-muted ${API_ACCENT_TOKEN_CLASSES.selected}`,
+  put: `border-border bg-background ${API_ACCENT_TOKEN_CLASSES.selected}`,
+  patch: `border-border bg-background ${API_ACCENT_TOKEN_CLASSES.selected}`,
+  delete: `border-border bg-muted/40 ${API_ACCENT_TOKEN_CLASSES.selected}`,
+  default: `border-border bg-muted/50 ${API_ACCENT_TOKEN_CLASSES.quiet}`,
 } as const;
 
 export type ApiMethodBadgeToneKey = keyof typeof API_METHOD_BADGE_TONE_CLASSES;
@@ -101,8 +145,32 @@ export function usesSemanticTokenClasses(className: string): boolean {
     className.includes("border") ||
     className.includes("card") ||
     className.includes("primary") ||
+    className.includes("secondary") ||
     className.includes("muted") ||
     className.includes("background") ||
     className.includes("ring")
   );
 }
+
+/**
+ * True when a class string does not use primary yellow as an accent utility.
+ * Used to fence tabs / badges / chips against `text-primary` / `border-primary`
+ * regressions. Fumadocs `fd-primary` remaps are owned by
+ * `references-api-accents.css` under {@link API_THEME_ROOT_ATTR}.
+ */
+export function avoidsPrimaryAccentClasses(className: string): boolean {
+  return !/\b(?:text|border|bg|ring|decoration|outline|fill|stroke)-primary(?:\/|\b)/.test(
+    className,
+  );
+}
+
+/**
+ * Host CSS custom-property values used when remapping Fumadocs tab/chip/badge
+ * chrome under {@link API_THEME_ROOT_ATTR}. See `api-accent-chrome.ts` and
+ * `references-api-accents.css` for the published remap surface.
+ */
+export const API_ACCENT_CHROME_REMAP = {
+  selectedColor: API_ACCENT_CSS_VARS.selected,
+  quietColor: API_ACCENT_CSS_VARS.quiet,
+  stylesheet: "@/features/docs/styles/references-api-accents.css",
+} as const;

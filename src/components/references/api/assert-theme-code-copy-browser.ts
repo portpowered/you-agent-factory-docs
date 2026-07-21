@@ -6,6 +6,7 @@
 
 import { type ChildProcess, spawn } from "node:child_process";
 import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
+import { API_ACCENT_CHROME_FACTORY_DARK_RGB } from "./api-accent-chrome";
 import { API_THEME_ROOT_ATTR } from "./theme-tokens";
 
 const PORT = Number(process.env.API_RENDERER_HARNESS_PROBE_PORT ?? "3539");
@@ -164,6 +165,8 @@ try {
       }
 
       // Probe computed styles use semantic CSS vars (not page-only hex locks).
+      // Locked Q3: method badge emphasis must resolve secondary blue, never
+      // primary yellow.
       const badgeColor = await methodBadges.first().evaluate((el) => {
         const style = getComputedStyle(el);
         return {
@@ -175,6 +178,18 @@ try {
       if (!badgeColor.color || badgeColor.color === "rgba(0, 0, 0, 0)") {
         throw new Error(
           `[${viewport.label}] Method badge color unresolved: ${JSON.stringify(badgeColor)}`,
+        );
+      }
+      if (
+        badgeColor.color === API_ACCENT_CHROME_FACTORY_DARK_RGB.primaryYellow
+      ) {
+        throw new Error(
+          `[${viewport.label}] Method badge still primary yellow: ${badgeColor.color}`,
+        );
+      }
+      if (badgeColor.color !== API_ACCENT_CHROME_FACTORY_DARK_RGB.selected) {
+        throw new Error(
+          `[${viewport.label}] Method badge expected secondary blue ${API_ACCENT_CHROME_FACTORY_DARK_RGB.selected}, got ${badgeColor.color}`,
         );
       }
 
