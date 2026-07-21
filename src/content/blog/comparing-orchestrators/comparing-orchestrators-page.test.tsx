@@ -1,6 +1,6 @@
 /**
- * Post-owned render proof for blog/comparing-orchestrators
- * (stories 001–003: shell, matrix, Intro → notes order).
+ * Colocated page smoke for /blog/comparing-orchestrators (stories 001–004).
+ * Proves title, Intro teaching signal, and matrix region / critical controls.
  */
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -11,7 +11,7 @@ const BLOG_TITLE = "Comparing orchestrators by feature attributes";
 const BLOG_DESCRIPTION =
   "Explore orchestrator tradeoffs across open source, license, hosting, and capabilities—feature-attribute comparison, not a benchmark leaderboard.";
 
-describe("comparing-orchestrators blog composition (001–003)", () => {
+describe("comparing-orchestrators blog page smoke (001–004)", () => {
   test("renders published post shell with title, description, and intro teaching signal", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
