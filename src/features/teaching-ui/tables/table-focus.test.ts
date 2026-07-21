@@ -1,6 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import { DOCS_CHROME_HIGHLIGHTING_TOKEN_VARS } from "@/lib/theme/docs-chrome-highlighting-tokens";
 import {
+  resolveMatrixColumnFocusClassName,
+  resolveMatrixColumnFocusState,
+  resolveMatrixRowFocusClassName,
   resolveTableFocusColor,
   resolveTableRowFocusClassName,
   resolveTableRowFocusState,
@@ -56,5 +59,26 @@ describe("table-focus helpers", () => {
     expect(resolveTableFocusColor("row-a", undefined)).toBe(
       TABLE_FOCUS_COLOR_TOKENS.muted,
     );
+  });
+
+  test("resolveMatrixColumnFocusState accents focused column and mutes siblings", () => {
+    expect(resolveMatrixColumnFocusState("orch-a", "orch-a")).toBe("accent");
+    expect(resolveMatrixColumnFocusState("orch-b", "orch-a")).toBe("muted");
+    expect(resolveMatrixColumnFocusState("orch-a", undefined)).toBe("neutral");
+  });
+
+  test("resolveMatrixColumnFocusClassName and resolveMatrixRowFocusClassName map markers", () => {
+    expect(resolveMatrixColumnFocusClassName("orch-a", "orch-a")).toBe(
+      TABLE_ROW_FOCUS_CLASS.accent,
+    );
+    expect(resolveMatrixColumnFocusClassName("orch-b", "orch-a")).toContain(
+      "teaching-ui-focus-muted",
+    );
+    expect(resolveMatrixRowFocusClassName("attr.license", "attr.license")).toBe(
+      TABLE_ROW_FOCUS_CLASS.accent,
+    );
+    expect(
+      resolveMatrixRowFocusClassName("attr.open-source", "attr.license"),
+    ).toContain("teaching-ui-focus-muted");
   });
 });

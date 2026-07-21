@@ -75,3 +75,39 @@ export function resolveTableFocusColor(
   }
   return tokens.muted;
 }
+
+/**
+ * Resolve matrix column focus against an optional focus column (entity) id.
+ * When unset, columns stay neutral; when set, match is accent and siblings muted.
+ */
+export function resolveMatrixColumnFocusState(
+  columnEntityId: string,
+  focusColumnId: string | undefined,
+): TableRowFocusState {
+  if (focusColumnId === undefined) {
+    return "neutral";
+  }
+  return columnEntityId === focusColumnId ? "accent" : "muted";
+}
+
+/**
+ * Resolve matrix column header/cell class for focus accent vs muted.
+ */
+export function resolveMatrixColumnFocusClassName(
+  columnEntityId: string,
+  focusColumnId: string | undefined,
+): string {
+  return TABLE_ROW_FOCUS_CLASS[
+    resolveMatrixColumnFocusState(columnEntityId, focusColumnId)
+  ];
+}
+
+/**
+ * Resolve matrix attribute-row focus (alias of row focus for the attr axis).
+ */
+export function resolveMatrixRowFocusClassName(
+  attributeId: string,
+  focusRowId: string | undefined,
+): string {
+  return resolveTableRowFocusClassName(attributeId, focusRowId);
+}

@@ -47,3 +47,16 @@ export type TransposedMatrixDisplayModel = {
    */
   cells: unknown[][];
 };
+
+/**
+ * Orchestrator entity for the feature matrix (registries.md shape).
+ * Attributes are keyed by AttributeDef.id; value shape matches AttributeDef.type.
+ */
+export type OrchestratorRecord = {
+  id: string;
+  kind?: "orchestrator";
+  name: string;
+  attributes: Record<string, boolean | string | string[]>;
+  tags?: string[];
+  defaultSummaryKey?: string;
+};
