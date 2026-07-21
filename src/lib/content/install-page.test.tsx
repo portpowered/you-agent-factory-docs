@@ -30,12 +30,19 @@ describe("install documentation page", () => {
     expect(loadedPage.messages.description).toMatch(/Getting Started/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
     expect(loadedPage.messages.openingSummary).toMatch(/Getting Started/i);
+    expect(Object.keys(loadedPage.messages.sections ?? {}).sort()).toEqual([
+      "installPath",
+    ]);
+    expect(Object.keys(loadedPage.messages.links ?? {}).sort()).toEqual([
+      "gettingStarted",
+    ]);
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
     expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(loadedPage.messages.links?.macosLinuxLabel).toBeUndefined();
     expect(loadedPage.messages.links?.claudeInitLabel).toBeUndefined();
+    expect(loadedPage.messages.callouts).toBeUndefined();
 
     const installPath = String(
       loadedPage.messages.sections?.installPath?.body ?? "",
@@ -43,6 +50,7 @@ describe("install documentation page", () => {
     expect(installPath).toMatch(/Getting Started/i);
     expect(installPath).toMatch(/install path/i);
     expect(installPath).not.toMatch(/This page|on this page|reader.?shortcut/i);
+    expect(installPath).not.toMatch(/install\.sh|install\.ps1|--executor/i);
 
     render(
       <main>

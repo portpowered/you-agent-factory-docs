@@ -158,9 +158,18 @@ migration ledger for this absorption (that ledger is for documentation →
 factories/workers/workstations/references moves). Stay static-export-safe: no
 `next.config` redirects, host `_redirects`, or runtime server redirects.
 Prove stub behavior in `src/lib/content/install-page.test.tsx` (Getting Started
-link present; OS/Claude command literals absent). First-run / session forms used
-on the getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
-`you session list`. First-submit forms: unary
+link present; OS/Claude command literals absent; stub message shape is only
+`sections.installPath` + `links.gettingStarted`). Prove Getting Started owns
+the merged path in
+`src/content/docs/guides/getting-started/getting-started-page.test.tsx`: both
+OS commands and `you init --executor claude` live under `#install`, confirm-you
++ scaffold copy render, and the `#common-pitfalls` teaching links stay CLI-docs
+only (no Install deep-dive href). Prefer scoping “no Install deep-dive” to the
+pitfalls / teaching link list — do not require the whole document body to omit
+`/docs/documentation/install` if RelatedDocs later re-adds that registry id.
+First-run / session forms used on the getting-started quickstart:
+`you run --named @goal/blah`, bare `you`, and `you session list`. First-submit
+forms: unary
 `you submit --name <name> --work-type-name <type> --payload <path>` and
 `you submit batch <path>` (keep the quickstart free of full batch schema /
 relation dumps — those belong on submitting-work / CLI docs).

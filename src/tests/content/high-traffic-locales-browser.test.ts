@@ -33,6 +33,9 @@ const NON_DEFAULT_LOCALES = [
 
 const INSTALL_COMMAND =
   "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh";
+const INSTALL_PS1_COMMAND =
+  "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex";
+const CLAUDE_INIT_COMMAND = "you init --executor claude";
 const RUN_COMMAND = "you run --named @goal/blah";
 
 const ENGLISH_HOME_SUBTITLE = "Docs for the agent factory CLI";
@@ -132,7 +135,10 @@ describe("high-traffic locales browser journey", () => {
         if (gettingStarted.openingSummary) {
           await expectArticleContains(page, gettingStarted.openingSummary);
         }
+        // PS-200: Getting Started owns the full install teaching path.
         await expectArticleContains(page, INSTALL_COMMAND);
+        await expectArticleContains(page, INSTALL_PS1_COMMAND);
+        await expectArticleContains(page, CLAUDE_INIT_COMMAND);
         await expectArticleContains(page, RUN_COMMAND);
         expect(await articleContent(page)).not.toContain(
           ENGLISH_GETTING_STARTED_TITLE,
@@ -157,7 +163,10 @@ describe("high-traffic locales browser journey", () => {
           .getByRole("link", { name: gettingStartedLabel })
           .getAttribute("href");
         expect(gettingStartedHref).toMatch(/\/docs\/guides\/getting-started$/);
-        expect(await articleContent(page)).not.toContain(INSTALL_COMMAND);
+        const installArticle = await articleContent(page);
+        expect(installArticle).not.toContain(INSTALL_COMMAND);
+        expect(installArticle).not.toContain(INSTALL_PS1_COMMAND);
+        expect(installArticle).not.toContain(CLAUDE_INIT_COMMAND);
 
         await page.goto(`${session.baseUrl}/${locale}/docs/documentation/cli`, {
           waitUntil: "domcontentloaded",
