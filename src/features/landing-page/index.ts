@@ -2,10 +2,11 @@
  * Landing-page public surface.
  *
  * W-faq-cta chrome (header / FAQ / CTA / footer art), W-whale-bubbles
- * (whale plate + feature bubbles), and W-hero-art (portrait, capability strip,
- * Youi showcase, TornEdge, optional HeroSection with sphere/terminal holes).
- * Skeleton / integrate consumers mount these via LandingPage slots — do not
- * flip production `/` from this package alone.
+ * (whale plate + feature bubbles), W-hero-art (portrait, capability strip,
+ * Youi showcase, TornEdge, optional HeroSection with sphere/terminal holes),
+ * and Wave B W-carousel (FactoryCarousel / FactorySlide). Skeleton / integrate
+ * consumers mount these via LandingPage slots — do not flip production `/`
+ * from this package alone.
  */
 
 export {
@@ -15,6 +16,20 @@ export {
   type CapabilityStripProps,
 } from "./components/CapabilityStrip";
 export { CtaBand, type CtaBandProps } from "./components/CtaBand";
+export {
+  type CarouselMotionMode,
+  type CarouselSlideDepth,
+  type CarouselSlideDepthRole,
+  FactoryCarousel,
+  type FactoryCarouselProps,
+  getCarouselSlideDepth,
+  wrapCarouselIndex,
+} from "./components/FactoryCarousel";
+export {
+  FactorySlide,
+  type FactorySlideData,
+  type FactorySlideProps,
+} from "./components/FactorySlide";
 export {
   FaqPanel,
   type FaqPanelItem,
