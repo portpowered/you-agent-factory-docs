@@ -77,6 +77,10 @@ describe("writer-reviewer technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const whatItIsSection = document.getElementById("what-it-is");
     const whyItMattersSection = document.getElementById("why-it-matters");
@@ -98,13 +102,9 @@ describe("writer-reviewer technique page", () => {
       /write-review use-case guide/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const writeReviewGuideLink = screen.getByRole("link", {
-      name: "Write-review loops guide",
-    });
-    expect(writeReviewGuideLink.getAttribute("href")).toBe(
-      "/docs/guides/write-review-loops",
-    );
+    expect(loadedPage.messages.links).toBeUndefined();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
+    expect(loadedPage.messages.sections?.references).toBeUndefined();
   });
 
   test("ships ja / zh-CN / vi message stubs with technique section structure", async () => {
@@ -143,15 +143,9 @@ describe("writer-reviewer technique page", () => {
     expect(String(vi.messages.sections?.howItWorks?.title ?? "")).toBe(
       "How It Works",
     );
-    expect(ja.messages.links?.writeReviewLoopsGuide).toBe(
-      "Write-review loops guide",
-    );
-    expect(zhCN.messages.links?.writeReviewLoopsGuide).toBe(
-      "Write-review loops guide",
-    );
-    expect(vi.messages.links?.writeReviewLoopsGuide).toBe(
-      "Write-review loops guide",
-    );
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>
@@ -169,13 +163,10 @@ describe("writer-reviewer technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const writeReviewGuideLink = screen.getByRole("link", {
-      name: "Write-review loops guide",
-    });
-    expect(writeReviewGuideLink.getAttribute("href")).toBe(
-      "/docs/guides/write-review-loops",
-    );
   });
 });

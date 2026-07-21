@@ -18,20 +18,8 @@
       "title": "Compared To Nearby Techniques",
       "body": "Fusion is a draft-then-refine two-pass flow on the same request. Writer-reviewer is a role-split write→review quality loop: one role authors, another reviews against a gate, rather than a second model pass that simply refines the draft. Ralph is a persistent keep-going loop that continues work across many iterations until the goal is done; fusion stops after the refine pass. Planner-executor plans work into slices and then executes those slices; fusion does not invent a plan—it drafts an answer and then refines that answer. Fusion here is also not GPU kernel fusion (merging compute kernels) and not multimodal model fusion (combining modalities into one model)."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "harnessConcept": "Harness concept",
-    "gettingStarted": "Getting started",
-    "loopConcept": "Loop concept",
-    "writeReviewLoopsGuide": "Write-review loops"
   }
 }

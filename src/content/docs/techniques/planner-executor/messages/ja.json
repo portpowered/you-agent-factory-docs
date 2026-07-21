@@ -18,18 +18,8 @@
       "title": "Compared To Nearby Techniques",
       "body": "Planner-executor is easy to mix up with nearby factory techniques. Writer-reviewer is a quality loop: one role writes, another reviews, and the pair iterates until the work meets the bar. Workqueue-executor drains or organizes an ordered work queue—it focuses on consuming queued items, not on deciding how to slice a customer ask into parallel lanes. Classify-execute routes work by class and then runs the matching path; the split is classify-then-run, not plan-then-execute across independent streams. Planner-executor separates planning (turn the ask into reviewable slices with real dependency checks) from execution (implement those slices) so non-overlapping lanes can move without a global phase gate."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "checklist": "Checklist",
-    "taskQueue": "Task queue"
   }
 }

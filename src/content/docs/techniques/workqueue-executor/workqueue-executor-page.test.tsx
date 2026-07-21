@@ -51,9 +51,11 @@ describe("workqueue-executor technique page", () => {
         name: "Compared To Nearby Techniques",
       }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const whatItIs = document.getElementById("what-it-is");
     const whyItMatters = document.getElementById("why-it-matters");
@@ -100,27 +102,6 @@ describe("workqueue-executor technique page", () => {
     expect(compared?.textContent).toMatch(/worker-adviser/i);
     expect(compared?.textContent).not.toMatch(/on this page/i);
     expect(compared?.textContent).not.toMatch(/page-meta/i);
-
-    const related = document.getElementById("related");
-    expect(related).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/concepts/task-queue"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/submitting-work"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/techniques/planner-executor"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/techniques/classify-execute"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/techniques/ralph"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/techniques/writer-reviewer"]'),
-    ).toBeTruthy();
 
     // No decorative / broken placeholder graph figure on the page.
     expect(document.querySelector("[data-page-asset]")).toBeNull();

@@ -18,17 +18,8 @@
       "title": "Compared To Nearby Techniques",
       "body": "Writer-reviewer is the dual-role technique itself: write produces a candidate, and review accepts or rejects. A write-review use-case guide shows how to run that pattern in the factory; it is not the technique definition. A plain factory loop keeps iterating until the goal is done, but it does not require an explicit review gate before completion. Planner-executor and worker-adviser split roles differently—planning versus executing, or advising versus doing—without making accept-or-reject review the completion gate."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "writeReviewLoopsGuide": "Write-review loops guide"
   }
 }

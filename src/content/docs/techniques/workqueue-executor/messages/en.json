@@ -18,22 +18,8 @@
       "title": "Compared To Nearby Techniques",
       "body": "A task queue is the backlog concept of waiting work in work-type places; a workqueue executor is the drain pattern that organizes how executor workstations consume that backlog. Planner-executor pairs a planner role with an executor role so work is planned then run; that role pair is not queue-drain organization. Classify-execute classifies an item then routes it to a next step; that classify-then-route path is not draining a waiting queue through executors. Nearby role-pair techniques such as ralph, writer-reviewer, and worker-adviser also organize paired agent jobs, but they do not define how a factory task queue is drained or kept organized for further consume."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "taskQueue": "Task queue",
-    "submittingWork": "Submitting work",
-    "plannerExecutor": "Planner-executor",
-    "classifyExecute": "Classify-execute",
-    "ralph": "Ralph",
-    "writerReviewer": "Writer-reviewer"
   }
 }

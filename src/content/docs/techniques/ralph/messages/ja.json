@@ -18,21 +18,8 @@
       "title": "Compared To Nearby Techniques",
       "body": "A plain factory loop keeps iterating under the factory until a goal is done; Ralph is a specific loop that advances a PRD backlog one user story per iteration, not a generic keep-iterating format. Planner-executor splits plan work from execute work across roles; Ralph does not require that role split—it executes the next unfinished story in the backlog. Writer-reviewer pairs draft work with an explicit review gate before the goal can complete; Ralph’s gate is finishing and verifying one story, then recording progress, not a separate writer-plus-reviewer handoff. Workqueue-executor drains or organizes a work queue; Ralph’s driver is the ordered PRD story list and progress notes, not a queue-drain pattern."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "loopConcept": "Loop concept",
-    "loopsGuide": "Using you-agent-factory for loops",
-    "plannerExecutor": "Planner-executor",
-    "writerReviewer": "Writer-reviewer",
-    "workqueueExecutor": "Workqueue-executor"
   }
 }

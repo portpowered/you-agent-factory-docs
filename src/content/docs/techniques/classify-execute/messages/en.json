@@ -19,20 +19,8 @@
       "title": "Compared To Nearby Techniques",
       "body": "Planner-executor chooses or enqueues the next work item for a factory run; classify-execute already has an item and asks which specialist path should run it. Writer-reviewer is a quality-gated write → review → revise loop; classify-execute is a triage-then-specialist handoff, not a revise cycle. Workqueue-executor drains or organizes queued work across a backlog; classify-execute routes one item into a class and runs that class’s path. Those nearby techniques solve different factory jobs and are not the same pattern as classify then execute."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "plannerExecutor": "Planner-executor",
-    "workqueueExecutor": "Workqueue-executor",
-    "writerReviewer": "Writer-reviewer",
-    "taskQueue": "Task queue"
   }
 }
