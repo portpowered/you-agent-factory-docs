@@ -83,9 +83,11 @@ Confirm Wave A/B teaching integrate work did not expand
 
 | Check | Outcome | UTC check |
 | --- | --- | --- |
-| Lane diff vs `origin/main` | **Docs-only** — `documentation-site-pages-needed.md` + this process note; no `packages/`, no `node_modules/@you-agent-factory/components` edits, no `src/features/teaching-ui/` recipe rewrites | 2026-07-21 11:20 UTC |
-| Sibling-owned MDX / PF strip / homepage-2 / SEO | **None mixed in** — inventory/process-note only in this inventory story | 2026-07-21 11:55 UTC |
+| Lane diff vs `origin/main` (inventory story) | **Docs-only** — `documentation-site-pages-needed.md` + this process note; no `packages/`, no `node_modules/@you-agent-factory/components` edits, no `src/features/teaching-ui/` recipe rewrites | 2026-07-21 11:20 UTC |
+| Sibling-owned MDX / PF strip / homepage-2 / SEO (inventory story) | **None mixed in** — inventory/process-note only in this inventory story | 2026-07-21 11:55 UTC |
 | Wave B customer route inventory | Prior soft-skips **superseded** — routes inventoried as **present** after #232 / #233 landings | 2026-07-21 11:55 UTC |
+| Wave B landed follow-up closeout (`001`–`005`) | **Fence held** — lane paths are inventory/process notes + additive glossary LocalizedLinkList/locale labels + agent-factories in-body hop + page tests only; package stays host-consumed `0.0.0` / no public export growth; no teaching-ui recipe / ModelCostPlayground calc / registry schema rewrites; no RelatedDocs chrome restore; no PF / homepage-2 / SEO / explorer-map mix-ins | 2026-07-21 12:35 UTC |
+| Prior soft-skipped Wave B integrate steps | **Closed completed** — present + soft-wired + live-route/a11y smoked + `make validate-data` reconfirmed (see soft-wire + smoke pass logs above); soft-skip rows remain historical only | 2026-07-21 12:35 UTC |
 
 ## Patterns
 

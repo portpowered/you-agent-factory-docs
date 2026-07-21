@@ -157,11 +157,15 @@ Maintainer verify trail for this stream (detail in
 
 ### Components API fence (W-integrate)
 
-Lane diff review (2026-07-21 UTC): this integrate branch only updates the
-committed inventory + process note above. No `@you-agent-factory/components`
-public exports, package API growth, or promotion of teaching recipes into that
-package. Teaching remains site-internal under `src/features/teaching-ui/` +
-`src/features/teaching-pages/` + page-local composers. Prior soft-skipped Wave B
-customer routes are now inventoried as **present**. No teaching-ui
-recipe/registry schema rewrites, no sibling-owned MDX creation, and no
-page-formatting / homepage-2 / SEO helper churn mixed in.
+Lane closeout review (2026-07-21 ~12:35 UTC): Wave B landed follow-up (`001`–
+`005`) is **inventory + additive soft-wires + smoke/verify only**. Diff vs
+`origin/main` touches committed inventory / process notes, glossary
+`LocalizedLinkList` + locale labels, agent-factories in-body hop, and matching
+page tests — no `packages/`, no `@you-agent-factory/components` public exports
+or version/API growth (package stays host-consumed `0.0.0`), no promotion of
+teaching recipes into that package. Teaching remains site-internal under
+`src/features/teaching-ui/` + `src/features/teaching-pages/` + page-local
+composers. Prior soft-skipped Wave B steps are **closed completed** (present +
+linked + smoked). No teaching-ui recipe / ModelCostPlayground calc / registry
+schema rewrites; no page teaching-arc expansion beyond additive cross-links; no
+page-formatting / homepage-2 / SEO / explorer-map churn mixed in.
