@@ -1,0 +1,88 @@
+---
+title: "API"
+description: "Reach and use the you-agent-factory local HTTP API: default base URL, factory-running precondition, session-oriented flow, and the path to the operations catalog."
+kind: "documentation"
+registryId: "documentation.api"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "local HTTP API"
+  - "Factory HTTP API"
+  - "API how-to"
+updatedAt: "2026-07-21"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="how-to-reach" titleKey="sections.howToReach.title">
+  <T k="sections.howToReach.body" />
+  <p>
+    <T k="links.defaultBaseUrlLabel" />
+  </p>
+
+```text
+http://localhost:7437
+```
+
+</Section>
+
+<Section id="typical-session-flow" titleKey="sections.typicalSessionFlow.title">
+  <T k="sections.typicalSessionFlow.body" />
+</Section>
+
+<Section id="trust-boundaries" titleKey="sections.trustBoundaries.title">
+  <T k="sections.trustBoundaries.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/api",
+        labelKey: "links.apiReferenceCatalog",
+      },
+      {
+        href: "/docs/documentation/security-trust-boundaries",
+        labelKey: "links.securityTrustBoundariesDocs",
+      },
+      {
+        href: "/docs/factories/sessions",
+        labelKey: "links.factorySessionsDocs",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+    ]}
+  />
+
+  <RelatedDocs registryId="documentation.api" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.api" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.api" />
+</Section>

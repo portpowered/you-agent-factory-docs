@@ -1,0 +1,44 @@
+{
+  "title": "API",
+  "description": "Reach and use the you-agent-factory local HTTP API: default base URL, factory-running precondition, session-oriented flow, and the path to the operations catalog.",
+  "openingSummary": "Point HTTP clients at a running local factory service—default http://localhost:7437—then follow a session-oriented read and submit flow. Exact operations live on the Reference API catalog.",
+  "sections": {
+    "howToReach": {
+      "title": "How To Reach",
+      "body": "The local factory service exposes an HTTP API on the operator machine. Session and API traffic use the default local base URL http://localhost:7437 unless the process that bound the listener overrides host or port. A factory service must already be running before clients can call the API—startup forms such as you or you run create or attach to that runtime; the API does not start the factory by itself. This documentation site is not the Agent Factory API. Point HTTP clients at a local Factory server you run yourself—not at this docs host."
+    },
+    "typicalSessionFlow": {
+      "title": "Typical Session Flow",
+      "body": "Treat the live Factory Session as the unit you discover, inspect, and address. Confirm a live session on the running host before submitting work or reading status. Inspect one session by id when you need its identity and runtime projection. Submit work and read status or events against that same session id. Prefer CLI and API reads—you session list, you session show, you workflow status, and matching status or event endpoints—when you need scripted inspection. Exhaustive path, method, and schema contracts stay on the Reference API catalog rather than on this how-to."
+    },
+    "trustBoundaries": {
+      "title": "Trust Boundaries",
+      "body": "Treat the default local bind as an operator-accessible local surface, not a multi-tenant public product edge. Open Security / Trust Boundaries for local-bind expectations, operator versus autonomous-agent ingress paths, and sensitive artifact handling. This how-to does not replace that trust documentation."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start or attach a local factory so a service is listening. Point your HTTP client at http://localhost:7437 unless you overrode host or port. Confirm a live Factory Session, then call session-oriented status, event, or submit operations against that session id. When you need exact operations, media types, or schema components, open the Reference API catalog."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "API coverage here is how to reach and use the local HTTP API: default base URL, factory-running precondition, trust-boundary pointer, and a typical session-oriented flow. It is not the operations catalog, not an OpenAPI playground, not a pasted OpenAPI document, and not agent CLI-ingress policy replacement. Exhaustive HTTP operations stay on the Reference API page. Autonomous agents must submit work only through the CLI; dashboard submit and operator HTTP submit paths remain operator surfaces."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "defaultBaseUrlLabel": "Default local base URL",
+    "apiReferenceCatalog": "API reference (operations catalog)",
+    "securityTrustBoundariesDocs": "Security / Trust Boundaries",
+    "factorySessionsDocs": "Factory Sessions",
+    "cliDocs": "CLI docs",
+    "mcpDocs": "MCP docs"
+  }
+}
