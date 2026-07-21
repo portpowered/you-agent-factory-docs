@@ -251,11 +251,13 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    on the Mode B Related list first (for example
    `/docs/factories/sessions` → `/docs/documentation/factory-session`) and
    assert the href in the Mode B page-owned test; do not change schema embeds
-   or Mode B depth body copy for that discovery link alone. Until PS-300 wires
-   explorer membership, keep restored Mode A slugs in
-   `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` and filter them
-   from Program documentation explorer construction (same path as FAQ / W18
-   stubs) so they do not reappear as ungrouped leftovers. Mode A
+   or Mode B depth body copy for that discovery link alone. After PS-300,
+   Mode A capability overviews (`factory-session`, `dynamic-workflows`,
+   `packaged-factories`) are Program → Capabilities members; only keep a slug
+   in `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` (and filter it
+   from Program documentation explorer construction) when publishing an
+   overview before membership lands, so it does not reappear as an ungrouped
+   leftover. Mode A
    `limitsAndAssumptions` bodies must stay topic-first (for example
    “Factory Sessions covers…”) — never “This overview/This page
    explains/covers/is…”. Peer Pattern: Packaged documents / CLI. Page-owned

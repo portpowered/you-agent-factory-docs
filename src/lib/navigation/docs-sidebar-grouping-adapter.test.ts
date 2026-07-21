@@ -189,7 +189,7 @@ describe("docs sidebar grouping adapter", () => {
     expect(countPageNodes(nodes)).toBe(pages.length);
   });
 
-  test("Program documentation emits three-level nesting without FAQ, W18 stubs, pending Mode A overviews, deferred-membership, or PS-100 demotions", () => {
+  test("Program documentation emits three-level nesting without FAQ, W18 stubs, deferred-membership, or PS-100 demotions", () => {
     const allDocumentationPages = loadPublishedDocsPagesSync("en").filter(
       (page) => page.docsSlug.startsWith("documentation/"),
     );
@@ -297,6 +297,9 @@ describe("docs sidebar grouping adapter", () => {
         "replays-records",
         "submitting-work",
         "packaged-documents",
+        "factory-session",
+        "dynamic-workflows",
+        "packaged-factories",
       ],
       Interfaces: ["cli", "mcp"],
       Operations: [
@@ -381,11 +384,11 @@ describe("docs sidebar grouping adapter", () => {
       "packaged-factories",
     ] as const) {
       expect(
-        Object.values(byGroup)
-          .flat()
-          .some((url) => url.endsWith(`/docs/documentation/${overviewSlug}`)),
-        `${overviewSlug} Mode A overview must not appear until PS-300`,
-      ).toBe(false);
+        byGroup.Capabilities?.some((url) =>
+          url.endsWith(`/docs/documentation/${overviewSlug}`),
+        ),
+        `${overviewSlug} Mode A overview must appear under Capabilities`,
+      ).toBe(true);
     }
 
     expect(countPageNodes(nodes)).toBe(

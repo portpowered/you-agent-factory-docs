@@ -2,7 +2,6 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, within } from "@testing-library/react";
 import { act } from "react";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
-import { MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS } from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { type SiteLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 import { localizePageTree } from "@/lib/i18n/localize-page-tree";
@@ -28,6 +27,13 @@ import "@/tests/a11y/mock-navigation";
 
 /** Representative R01 pages that remain explorer members after W18 stub demotion. */
 const R01_EXPLORER_MEMBERSHIP_SLUGS = ["packaged-documents"] as const;
+
+/** Mode A capability overviews wired into Program → Capabilities (PS-300). */
+const MODE_A_CAPABILITY_OVERVIEW_MEMBERSHIP_SLUGS = [
+  "factory-session",
+  "dynamic-workflows",
+  "packaged-factories",
+] as const;
 
 /** W18 move stubs that must stay out of Program documentation explorer. */
 const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
@@ -234,13 +240,16 @@ describe("desktop/mobile explorer tree parity", () => {
           `${locale}: ${slug} must not appear in Program documentation folder`,
         ).toBe(false);
       }
-      for (const slug of MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
-        expect(
-          pageEntriesInFolder(documentation).some((page) =>
-            page.url.includes(`/documentation/${slug}`),
-          ),
-          `${locale}: Mode A overview ${slug} must not appear in Program documentation folder until PS-300`,
-        ).toBe(false);
+      if (locale === "en") {
+        for (const slug of MODE_A_CAPABILITY_OVERVIEW_MEMBERSHIP_SLUGS) {
+          expect(
+            pageEntriesUnderSeparator(
+              documentation,
+              messages.explorer.documentationGroups.capabilities,
+            ).some((page) => page.url.includes(`/documentation/${slug}`)),
+            `${locale}: Mode A overview ${slug} must appear under Capabilities`,
+          ).toBe(true);
+        }
       }
 
       expect(

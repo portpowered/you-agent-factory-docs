@@ -817,9 +817,12 @@ those paths only accept collection section refs.
   direct children such as logs/metrics/dashboard). Factory config pages use
   full `factories/...` docsSlug keys in that map; `PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`
   and FAQ are omitted from Program membership.
-  Mode A overviews in `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS`
-  and deferred membership slugs in `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS`
-  are likewise omitted until their IA lanes wire them.
+  Mode A capability overviews (`factory-session`, `dynamic-workflows`,
+  `packaged-factories`) are Program → Capabilities members; keep
+  `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` empty unless a
+  future overview is published before membership. Deferred membership slugs in
+  `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS` stay omitted until their
+  IA lane wires them (PS-300 Interfaces for `api`).
   `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view.
   `buildDocumentationGroupedNodes` uses membership allowlisting so demotions,
   Mode A pending, and deferred pages do not appear as Program leftovers.

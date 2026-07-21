@@ -225,8 +225,8 @@ export function buildDocsSidebarSectionNodes({
     if (isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)) {
       continue;
     }
-    // Mode A Program overviews stay published until PS-300 wires membership;
-    // do not place them in explorer folders as ungrouped leftovers.
+    // Mode A overviews still pending membership stay published without explorer
+    // placement so they do not appear as ungrouped leftovers.
     if (isModeAProgramOverviewPendingExplorerMembership(page.docsSlug)) {
       continue;
     }

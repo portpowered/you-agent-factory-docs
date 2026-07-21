@@ -118,16 +118,13 @@ export type DocumentationSidebarMembership =
   | DocumentationMembershipWithSecondary;
 
 /**
- * Mode A Program capability overviews restored under PS-210 before PS-300 wires
- * explorer membership. Published and canonical, but not explorer destinations
- * until Lane A membership lands — otherwise they fall through as ungrouped
- * leftovers once removed from the W18 move-stub ledger.
+ * Mode A Program capability overviews waiting on explorer membership.
+ * PS-300 wired factory-session, dynamic-workflows, and packaged-factories into
+ * Program → Capabilities; keep this list empty unless a future overview is
+ * published before membership lands (otherwise they become ungrouped leftovers).
  */
-export const MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS = [
-  "factory-session",
-  "dynamic-workflows",
-  "packaged-factories",
-] as const;
+export const MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS =
+  [] as const;
 
 export type ModeAProgramOverviewPendingExplorerMembershipSlug =
   (typeof MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS)[number];
@@ -137,8 +134,7 @@ const MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUG_SET =
 
 /**
  * True when a Program documentation docsSlug (with or without the
- * `documentation/` prefix) is a Mode A overview waiting on PS-300 explorer
- * membership.
+ * `documentation/` prefix) is a Mode A overview waiting on explorer membership.
  */
 export function isModeAProgramOverviewPendingExplorerMembership(
   docsSlugOrPath: string,
@@ -182,10 +178,11 @@ export function isDeferredDocumentationExplorerMembershipSlug(
  * FAQ is a top-level explorer page and is intentionally omitted here.
  * W18 documentation move-stub slugs (see DOCUMENTATION_ROUTE_MIGRATION_LEDGER)
  * are also omitted — they keep static compatibility HTML but are not explorer
- * destinations. Mode A overviews in
- * `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` and deferred
- * membership slugs (see {@link DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS})
- * are likewise omitted until their IA lanes wire them.
+ * destinations. Deferred membership slugs (see
+ * {@link DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS}) and any Mode A
+ * overviews still listed in
+ * {@link MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS} are omitted
+ * until their IA lanes wire them.
  *
  * Locked PS-100 demotions (install, throttling-and-limits, architecture-of-system,
  * petri, troubleshooting, security-trust-boundaries, contributing-to-these-docs)
@@ -207,6 +204,9 @@ export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
   "submitting-work": { group: "capabilities" },
   "replays-records": { group: "capabilities" },
   "packaged-documents": { group: "capabilities" },
+  "factory-session": { group: "capabilities" },
+  "dynamic-workflows": { group: "capabilities" },
+  "packaged-factories": { group: "capabilities" },
   cli: { group: "interfaces" },
   mcp: { group: "interfaces" },
   logs: { group: "operations" },
