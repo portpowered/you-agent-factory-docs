@@ -56,6 +56,9 @@ jobs:
           # Project-site prefix for https://portpowered.github.io/you-agent-factory-docs
           # so exported HTML references /you-agent-factory-docs/_next (not bare /_next).
           GITHUB_PAGES_BASE_PATH: /you-agent-factory-docs
+          # Bake GA4 Measurement ID into the static export (code also falls back
+          # to the same ID when this env is unset — see resolveGaMeasurementId).
+          NEXT_PUBLIC_GA_MEASUREMENT_ID: G-80P18Q3LWQ
 
       - name: Guard Pages deployed artifact
         # Reuses validate's out/ only — must not run another make build / build:export.
