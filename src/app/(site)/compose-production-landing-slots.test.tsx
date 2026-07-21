@@ -10,6 +10,7 @@ import {
 import {
   composeProductionCapabilitySlot,
   composeProductionCarouselSlot,
+  composeProductionCtaSlot,
   composeProductionFaqSlot,
   composeProductionFooterSlot,
   composeProductionHeaderSlot,
@@ -20,6 +21,7 @@ import {
   mapFixtureCarouselToFactoryCarouselProps,
   mapFixtureCommandsToTerminalLines,
   mapFixtureCommandsToTerminalProps,
+  mapFixtureCtaToCtaBandProps,
   mapFixtureFaqToFaqPanelProps,
   mapFixtureFooterToSiteFooterProps,
   mapFixtureHeaderToLandingHeaderProps,
@@ -194,6 +196,35 @@ describe("composeProductionFaqSlot", () => {
   });
 });
 
+describe("composeProductionCtaSlot", () => {
+  test("maps fixture CTA fields onto CtaBand public contract with compose defaults", () => {
+    const props = mapFixtureCtaToCtaBandProps(fixtureLandingPageData.cta);
+
+    expect(props.headline).toBe(fixtureLandingPageData.cta.headline);
+    expect(props.supporting).toBe(fixtureLandingPageData.cta.supporting);
+    expect(props.installCommand).toBe(
+      fixtureLandingPageData.cta.installCommand,
+    );
+    expect(props.ctaLabel).toBe("Install the CLI");
+    expect(props.ctaHref).toBe("/docs/guides");
+  });
+
+  test("composeProductionCtaSlot renders CtaBand markers from fixture", () => {
+    const html = renderToStaticMarkup(
+      composeProductionCtaSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-landing-cta-band=""');
+    expect(html).toContain('data-landing-cta-fog=""');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
+    expect(html).toContain(fixtureLandingPageData.cta.headline);
+    expect(html).toContain(fixtureLandingPageData.cta.supporting);
+    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain("Install the CLI");
+    expect(html).toContain('href="/docs/guides"');
+  });
+});
+
 describe("composeProductionWhaleBubblesSlot", () => {
   test("maps fixture whaleSrc and bubbles onto WhaleBubblesSection props", () => {
     const props = mapFixtureWhaleBubblesToSectionProps(
@@ -268,10 +299,10 @@ describe("composeProductionLandingSlots", () => {
     expect(keys).toEqual([...WIRED_PRODUCTION_LANDING_SLOTS].sort());
     expect(slots).toHaveProperty("carousel");
     expect(slots).toHaveProperty("faq");
-    expect(slots).not.toHaveProperty("cta");
+    expect(slots).toHaveProperty("cta");
   });
 
-  test("LandingPage mounts wired fills including carousel and faq and keeps cta placeholder", () => {
+  test("LandingPage mounts wired fills including carousel, faq, and cta", () => {
     const html = renderToStaticMarkup(
       <LandingPage {...composeProductionLandingSlots()} />,
     );
@@ -284,11 +315,12 @@ describe("composeProductionLandingSlots", () => {
     expect(html).toContain('data-youi-showcase=""');
     expect(html).toContain('data-factory-carousel=""');
     expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-cta-band=""');
     expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-testid="site-footer"');
     expect(html).not.toContain('data-landing-placeholder="carousel"');
     expect(html).not.toContain('data-landing-placeholder="faq"');
-    expect(html).toContain('data-landing-placeholder="cta"');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
     expect(html).not.toContain('data-landing-placeholder="header"');
     expect(html).not.toContain('data-landing-placeholder="hero"');
     expect(html).not.toContain('data-landing-placeholder="footer"');
@@ -303,5 +335,11 @@ describe("composeProductionLandingSlots", () => {
       expect(html).toContain(item.question);
       expect(html).toContain(item.answer);
     }
+
+    expect(html).toContain(fixtureLandingPageData.cta.headline);
+    expect(html).toContain(fixtureLandingPageData.cta.supporting);
+    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain("Install the CLI");
+    expect(html).toContain('href="/docs/guides"');
   });
 });

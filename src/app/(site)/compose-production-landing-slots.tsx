@@ -3,6 +3,8 @@ import { Terminal, type TerminalProps } from "@/features/code";
 import { SiteFooter, type SiteFooterProps } from "@/features/footer";
 import {
   CapabilityStrip,
+  CtaBand,
+  type CtaBandProps,
   FactoryCarousel,
   type FactoryCarouselProps,
   type FactorySlideData,
@@ -42,9 +44,15 @@ import {
 const FAQ_PANEL_HEADING = "FAQ";
 
 /**
+ * Compose-local CTA control defaults — same as harness Wave B / faq-cta-harness.
+ * Not fixture schema fields; LandingCtaContent has no ctaLabel / ctaHref.
+ */
+const CTA_BAND_LABEL = "Install the CLI";
+const CTA_BAND_HREF = "/docs/guides";
+
+/**
  * Production `/` LandingPage slots filled from MERGED public exports.
- * CTA stays omitted so LandingPage keeps a labeled placeholder until the
- * Wave B CTA surface is wired in a follow-on story.
+ * Includes Wave A fills plus Wave B carousel / faq / cta.
  */
 export const WIRED_PRODUCTION_LANDING_SLOTS = [
   "header",
@@ -53,6 +61,7 @@ export const WIRED_PRODUCTION_LANDING_SLOTS = [
   "youi",
   "carousel",
   "faq",
+  "cta",
   "whaleBubbles",
   "footer",
 ] as const satisfies ReadonlyArray<keyof LandingPageSlots>;
@@ -236,6 +245,31 @@ export function composeProductionFaqSlot(
 }
 
 /**
+ * Map landing fixture CTA fields onto the public CtaBand contract.
+ * Reuses faq-cta-harness defaults for required `ctaLabel` and optional
+ * `ctaHref` — does not extend LandingCtaContent or invent schema fields.
+ * Mirrored from harness Wave B — do not import from (dev)/landing-harness/**.
+ */
+export function mapFixtureCtaToCtaBandProps(
+  cta: LandingCtaContent = fixtureLandingPageData.cta,
+): CtaBandProps {
+  return {
+    headline: cta.headline,
+    supporting: cta.supporting,
+    installCommand: cta.installCommand,
+    ctaLabel: CTA_BAND_LABEL,
+    ctaHref: CTA_BAND_HREF,
+  };
+}
+
+/** Real production cta slot: CtaBand from fixture CTA fields. */
+export function composeProductionCtaSlot(
+  cta: LandingCtaContent = fixtureLandingPageData.cta,
+): ReactNode {
+  return <CtaBand {...mapFixtureCtaToCtaBandProps(cta)} />;
+}
+
+/**
  * Map landing fixture whale/bubbles data onto WhaleBubblesSection props.
  * Falls back to `WHALE_BUBBLES_FIXTURE_*` when fixture fields are empty.
  */
@@ -298,10 +332,8 @@ export function composeProductionFooterSlot(
 
 /**
  * Aggregate production LandingPage slot props from MERGED public exports.
- * Returns only wired keys — cta stays on LandingPage placeholder defaults
- * until a follow-on Wave B story wires it. Props map from
- * `fixtureLandingPageData` (or optional override) onto public component
- * contracts only; no CMS schemas.
+ * Returns only wired keys. Props map from `fixtureLandingPageData` (or
+ * optional override) onto public component contracts only; no CMS schemas.
  */
 export function composeProductionLandingSlots(
   data: LandingPageData = fixtureLandingPageData,
@@ -316,6 +348,7 @@ export function composeProductionLandingSlots(
     youi: composeProductionYouiSlot(data.youi),
     carousel: composeProductionCarouselSlot(data.carousel),
     faq: composeProductionFaqSlot(data.faq),
+    cta: composeProductionCtaSlot(data.cta),
     whaleBubbles: composeProductionWhaleBubblesSlot(data.whaleBubbles),
     footer: composeProductionFooterSlot(data.footer),
   };

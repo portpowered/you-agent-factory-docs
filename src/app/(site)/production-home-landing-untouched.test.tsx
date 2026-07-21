@@ -84,7 +84,7 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     expect(html).toContain('data-landing-page=""');
   });
 
-  test("production home exposes wired landing markers including FactoryCarousel and FaqPanel", async () => {
+  test("production home exposes wired landing markers including FactoryCarousel, FaqPanel, and CtaBand", async () => {
     const tree = (await renderHomePage()) as ReactElement;
     const landingPage = findElementOfType(tree, LandingPage);
     expect(landingPage).not.toBeNull();
@@ -92,7 +92,7 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     const html = renderToStaticMarkup(landingPage as ReactElement);
 
     // Root + wired MERGED slots (header / hero+sphere / capability / youi /
-    // carousel / faq / whale / footer).
+    // carousel / faq / cta / whale / footer).
     expect(html).toContain('data-landing-page=""');
     expect(html).toContain('data-landing-main=""');
     expect(html).toContain("<main");
@@ -103,11 +103,13 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     expect(html).toContain('data-youi-showcase=""');
     expect(html).toContain('data-factory-carousel=""');
     expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-cta-band=""');
     expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-testid="site-footer"');
     expect(html).toContain('data-landing-footer-art=""');
     expect(html).not.toContain('data-landing-placeholder="carousel"');
     expect(html).not.toContain('data-landing-placeholder="faq"');
+    expect(html).not.toContain('data-landing-placeholder="cta"');
 
     // Reject docs-home composition and harness-only hero surface.
     expect(html).not.toContain(
