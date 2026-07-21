@@ -74,6 +74,14 @@ mounting trailing Related / References footer chrome:
   keys, keep teaching-section `links.*` (SPC `where-it-appears`), and flip
   colocated locale stub asserts that previously required Related-footer link
   labels.
+- Browser-verify representative concepts routes with
+  `bun src/content/docs/concepts/assert-concepts-related-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3591 default,
+  Playwright; kill server on exit). Assert Related To / References headings
+  and `#related` / `#references` absent; Tags and teaching section ids still
+  present; on `statistical-process-control-graphs`, teaching-section links
+  (Metrics documentation / Bottlenecks / Tokens) still visible. Prefer
+  `CONCEPTS_RELATED_STRIP_PROBE_BASE_URL` when a server is already warm.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
