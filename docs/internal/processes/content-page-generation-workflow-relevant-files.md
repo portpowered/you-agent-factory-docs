@@ -47,6 +47,17 @@ fails when chrome is absent. Existing published MDX may still mount RelatedDocs
 until PF-L-strip removes it by collection; that remaining chrome is not a
 contracts-lane failure. FAQ-only strip remains PF-D2.
 
+### Guides collection PF-L-strip (published MDX)
+
+For published guides under `src/content/docs/guides/**/page.mdx`, strip trailing
+`Section id="related"` / `id="references"` footer chrome and drop unused
+`RelatedDocs` / `CitationList` imports. Keep Tags (`TagPillList`) and
+teaching-section / common-pitfalls `LocalizedLinkList` mounts (including Getting
+Started install teaching and CLI docs link). Do not rewrite shared `RelatedDocs`
+behavior; leave sibling collections and docs next/prev footer density alone.
+Locale footer title keys and colocated absence assertions are follow-on strip
+stories, not required for the MDX chrome removal itself.
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a
