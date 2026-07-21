@@ -14,11 +14,11 @@ import {
   generateStaticParams as generateBlogPostStaticParams,
 } from "@/app/(site)/blog/[slug]/page";
 import { generateMetadata as generateBlogIndexMetadata } from "@/app/(site)/blog/page";
-import { generateMetadata as generateLocalizedBlogIndexMetadata } from "@/app/[locale]/blog/page";
 import {
   renderBlogIndexPage,
   renderBlogPostPage,
 } from "@/app/(site)/site-renderers";
+import { generateMetadata as generateLocalizedBlogIndexMetadata } from "@/app/[locale]/blog/page";
 import { blogIndexHref, blogPostHref } from "@/lib/content/blog-page-load";
 
 const BOTTLENECKS_SLUG = "bottlenecks";

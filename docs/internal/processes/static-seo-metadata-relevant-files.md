@@ -20,8 +20,8 @@ social assets, sitemap, robots).
 | `src/lib/seo/social-preview-assets.test.ts` | Project-site vs root public-asset prefix + absolute production URL proofs |
 | `src/lib/seo/export-social-preview-images.ts` | Export HTML `og:image` / `twitter:image` extraction + verification |
 | `src/lib/seo/export-social-preview-images.test.ts` | Metadata + temp-`out/` proofs that social images resolve under production origin/base path |
-| `src/lib/seo/export-localized-alternates.ts` | Export HTML hreflang extraction + shipped-only absolute production alternate verification |
-| `src/lib/seo/export-localized-alternates.test.ts` | Multi-locale home + subset-locale docs (`concepts/task-queue`) metadata and temp-`out/` proofs |
+| `src/lib/seo/export-localized-alternates.ts` | Export HTML hreflang extraction + shipped-only absolute production alternate verification; requires `hreflang="x-default"` → English canonical when language alternates are advertised; blog English-only proof route (`/blog/bottlenecks`) expects no language hreflang |
+| `src/lib/seo/export-localized-alternates.test.ts` | Multi-locale home + subset-locale docs (`concepts/task-queue`) + blog English-only metadata and temp-`out/` proofs (`x-default` + no false blog locales) |
 | `src/lib/seo/public-sitemap-routes.ts` | Live public factory route inventory for sitemap (shell, non-default locale homes from `FACTORY_SHIPPED_LOCALES` / `buildLocalizedRoute`, shipped localized docs from `getShippedLocalizedDocsSlugs` via `listPublicSitemapLocalizedDocsRoutes`, docs sections/articles, blog, tags). `SITEMAP_INCLUSION_PROOF_ROUTES` requires locale homes + `SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE` (`/ja/docs/concepts/harness`) |
 | `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths + locale homes (`/ja`, `/zh-CN`, `/vi`) + shipped localized docs (fail-closed; no unshipped locale×slug ghosts); absolute locs must end with `/` while app-relative stay non-slash; inclusion-proof set itself must contain locale homes + at least one shipped localized docs route |
 | `src/lib/content/factory-locale-base-path.ts` | `FACTORY_SHIPPED_LOCALES` + `buildLocalizedRoute` / `defaultLocale` — drive sitemap locale-home membership (no hard-coded one-offs disconnected from the shipped set) |
@@ -33,7 +33,7 @@ social assets, sitemap, robots).
 | `src/lib/seo/export-robots.test.ts` | Production sitemap reference proofs + no legacy Atlas advertising |
 | `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
-| `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract; requires locale homes + shipped localized docs locs; fail-closed on Atlas / §10 migration-old; no `hreflang="x-default"` in this lane |
+| `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract; requires locale homes + shipped localized docs locs; fail-closed on Atlas / §10 migration-old; fixture emits `hreflang="x-default"` on multi-locale pages and keeps blog English-only (`seo-hreflang`) |
 | `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects); canonical slug/path remap helpers |
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
@@ -105,13 +105,19 @@ social assets, sitemap, robots).
    public-asset contexts and
    `exportHtmlHasBasePrefixedSocialImages` /
    `verifyExportSocialPreviewImages` for export HTML gates.
-9. **Localized alternates** (story 005): keep hreflang Metadata app-relative;
-   filter docs alternates with `isDocsPageShippedForLocale` (fail-closed).
-   Exported HTML must emit absolute production hreflang URLs for shipped
-   locales only. Proof routes: `/` (en/ja/zh-CN/vi) and
-   `/docs/concepts/task-queue` (en only). Use
-   `exportHtmlHasShippedAbsoluteAlternates` /
+9. **Localized alternates** (story 005 + `seo-hreflang`): keep hreflang
+   Metadata app-relative; filter docs alternates with
+   `isDocsPageShippedForLocale` (fail-closed). Exported HTML must emit
+   absolute production hreflang URLs for shipped locales only, plus
+   `hreflang="x-default"` → English canonical whenever language alternates
+   are advertised (`extractHreflangAlternates` still skips `x-default` for
+   shipped-locale inventory equality; use `extractXDefaultHreflangHref` /
+   `exportHtmlHasAbsoluteXDefaultAlternate` for the explicit check). Proof
+   routes: `/` (en/ja/zh-CN/vi + x-default), `/docs/concepts/task-queue`
+   (en + x-default), `/blog/bottlenecks` (English-only — no language
+   hreflang). Use `exportHtmlHasShippedAbsoluteAlternates` /
    `verifyExportLocalizedAlternates`. Never advertise deleted Atlas paths.
+   Do not expand sitemap locale inventory here — hreflang/alternates only.
 10. **Sitemap** (story 006 + SEO-SITEMAP-SLASH + SEO-SITEMAP-LOCALES):
     `listPublicSitemapRoutes` stays app-relative non-slash and includes
     non-default locale homes from `PUBLIC_SITEMAP_LOCALE_HOME_ROUTES`
@@ -139,7 +145,6 @@ social assets, sitemap, robots).
     omitted), reject non-slash absolute locs (compare against
     `resolveProductionSitemapLocHref`, not `resolveProductionMetadataHref`), and
     still fail closed on retired Atlas / §10 migration-old exclusion URLs.
-    Do not add `hreflang="x-default"` here — that is sibling `seo-hreflang`.
 11. **Robots + discovery gate** (story 007): `buildPublicRobots` /
     `src/app/robots.ts` emit `out/robots.txt` with a normal allow-all policy
     and `Sitemap:` pointing at the absolute production sitemap URL

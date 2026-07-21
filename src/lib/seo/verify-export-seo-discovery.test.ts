@@ -40,27 +40,35 @@ const PAGE_COPY: Record<
       ja: "/ja",
       "zh-CN": "/zh-CN",
       vi: "/vi",
+      "x-default": "/",
     },
   },
   "/search": {
     title: "Search",
     description: "Search factory docs",
-    languages: { en: "/search" },
+    languages: { en: "/search", "x-default": "/search" },
   },
   "/docs/concepts/harness": {
     title: "Harness",
     description: "Persistent workspaces",
-    languages: { en: "/docs/concepts/harness" },
+    languages: {
+      en: "/docs/concepts/harness",
+      "x-default": "/docs/concepts/harness",
+    },
   },
   "/blog/bottlenecks": {
     title: "Bottlenecks",
     description: "Where agent work stalls",
-    languages: { en: "/blog/bottlenecks" },
+    // English-only blog policy: canonical only — no language alternates.
+    languages: {},
   },
   "/docs/concepts/task-queue": {
     title: "Task queue",
     description: "Queued agent work",
-    languages: { en: "/docs/concepts/task-queue" },
+    languages: {
+      en: "/docs/concepts/task-queue",
+      "x-default": "/docs/concepts/task-queue",
+    },
   },
 };
 
@@ -236,12 +244,19 @@ describe("verifyExportSeoDiscovery", () => {
     }
   });
 
-  test("discovery fixture does not invent hreflang x-default", () => {
-    for (const copy of Object.values(PAGE_COPY)) {
-      expect(Object.keys(copy.languages)).not.toContain("x-default");
-    }
-    const html = pageHtml("/");
-    expect(html).not.toMatch(/hreflang=["']x-default["']/i);
+  test("discovery fixture emits x-default on multi-locale pages and keeps blog English-only", () => {
+    const home = PAGE_COPY["/"];
+    expect(home?.languages["x-default"]).toBe("/");
+    expect(PAGE_COPY["/docs/concepts/task-queue"]?.languages["x-default"]).toBe(
+      "/docs/concepts/task-queue",
+    );
+    expect(PAGE_COPY["/blog/bottlenecks"]?.languages).toEqual({});
+
+    const homeHtml = pageHtml("/");
+    expect(homeHtml).toMatch(/hreflang=["']x-default["']/i);
+    expect(pageHtml("/blog/bottlenecks")).not.toMatch(
+      /hreflang=["'](ja|zh-CN|vi)["']/i,
+    );
   });
 
   test("fails when sitemap lists a §10 documentation-migration exclusion route", () => {
