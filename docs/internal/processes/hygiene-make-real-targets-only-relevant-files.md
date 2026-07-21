@@ -120,8 +120,23 @@ landed in stories 002–003 (temp scrub alone is not the PR).
 2. ~~Add or tighten a short primary-entrypoints maintainer note (README /
    AGENTS / factory overview) pointing at the root Makefile.~~ Done in story 003.
 3. ~~Opportunistically scrub `docs/temp/**` if instructional `ui-build` reappears.~~ Done in story 004 (confirmed clean for run instructions).
-4. Confirm lane fences: instruction docs/scripts comments only; no new Make
-   targets; no page-chrome / IA / feature-package moves.
+4. ~~Confirm lane fences: instruction docs/scripts comments only; no new Make
+   targets; no page-chrome / IA / feature-package moves.~~ Done in story 005.
+
+## Lane fences + quality gates (story 005 — applied)
+
+UTC confirmation against `main...HEAD` for this hygiene lane:
+
+| Fence | Result |
+| --- | --- |
+| Root `Makefile` `.PHONY` / target definitions | **Unchanged** — no invent / rename |
+| Page-formatting chrome, explorer IA, landing-page, teaching-ui, feature-package moves | **None** in the lane diff |
+| Historical factory batch archives / closed-era payloads | **Left alone** (still listed under Historical above) |
+| Diff ownership | Instruction docs + process note + governance mechanism-status + the companion `architectural-checklist-audit` marker alignment required by that doc |
+
+Files in the reviewed diff: `AGENTS.md`, `README.md`, `docs/contributors/CONTRIBUTING.md`, `docs/governance/architectural-checklist-mechanism-status.md`, `docs/internal/processes/hygiene-make-real-targets-only-relevant-files.md`, `factory/docs/overview.md`, `src/lib/governance/architectural-checklist-audit.ts`, `src/lib/governance/architectural-checklist-audit.test.ts`.
+
+Quality gates on this checkout after the doc/comment changes: `make check` passed; `make test` passed (1822 tests). Ensure `make setup` has populated `node_modules/@you-agent-factory/api` before relying on W02 SSE package-backed suites.
 
 ## Companion contract note (story 002)
 
