@@ -31,14 +31,8 @@
       "title": "Common Pitfalls",
       "body": "Do not submit work before a factory session is running. For the full CLI command matrix, use the CLI docs."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

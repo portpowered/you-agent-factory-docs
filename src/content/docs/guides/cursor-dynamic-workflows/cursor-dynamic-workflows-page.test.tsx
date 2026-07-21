@@ -14,12 +14,23 @@ const START_ASYNC = "you.factory_session.start_async";
 const GET = "you.factory_session.get";
 const GET_RESULT = "you.factory_session.get_result";
 
+/** PF-L-strip: trailing Related / References / RelatedDocs footer chrome must stay gone. */
+function assertNoRelatedReferencesFooterChrome(): void {
+  expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "Related" })).toBeNull();
+  expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+  expect(document.getElementById("related")).toBeNull();
+  expect(document.getElementById("references")).toBeNull();
+  expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+  expect(screen.queryByTestId("derived-related-docs")).toBeNull();
+}
+
 describe("cursor-dynamic-workflows guide page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("renders English Cursor guide identity, tool names, and related hrefs", async () => {
+  test("renders English Cursor guide identity, tool names, and teaching hrefs without Related footer chrome", async () => {
     const loadedPage = await loadLocalDocsPage({
       section: "guides",
       slug: "cursor-dynamic-workflows",
@@ -59,6 +70,7 @@ describe("cursor-dynamic-workflows guide page", () => {
     expect(dynamicDocs.getAttribute("href")).toBe(
       "/docs/factories/dynamic-workflows",
     );
+    assertNoRelatedReferencesFooterChrome();
   });
 
   test.each([
@@ -130,5 +142,6 @@ describe("cursor-dynamic-workflows guide page", () => {
     expect(document.body.textContent ?? "").not.toContain(
       "Cursor dynamic workflows mean using Cursor as a Model Context Protocol",
     );
+    assertNoRelatedReferencesFooterChrome();
   });
 });
