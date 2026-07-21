@@ -100,26 +100,57 @@ describe("public sitemap routes", () => {
     }
   });
 
-  test("collection index sitemap locs use trailing-slash absolute hrefs", () => {
+  test("representative absolute sitemap locs use trailing slash while app-relative stay non-slash", () => {
     const routes = listPublicSitemapRoutes();
     const urls = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
-    const collectionIndexes = [
+    const representativeRoutes = [
       "/docs/factories",
       "/docs/workers",
       "/docs/workstations",
+      "/docs/concepts/harness",
+      "/blog/bottlenecks",
+      "/",
     ] as const;
 
-    for (const route of collectionIndexes) {
+    for (const route of representativeRoutes) {
       expect(routes).toContain(route);
-      expect(routes).not.toContain(`${route}/`);
+      if (route !== "/") {
+        expect(route.endsWith("/")).toBe(false);
+        expect(routes).not.toContain(`${route}/`);
+      }
       const absolute = resolveProductionSitemapLocHref(
         route,
         PROJECT_SITE_EXPORT_ENV,
       );
       expect(absolute.endsWith("/")).toBe(true);
       expect(urls).toContain(absolute);
+      if (route !== "/") {
+        expect(urls).not.toContain(
+          resolveProductionMetadataHref(route, PROJECT_SITE_EXPORT_ENV),
+        );
+      }
+    }
+  });
+
+  test("absolute loc lists use the sitemap helper path and exclude Atlas / migration-old routes", () => {
+    const urls = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+
+    for (const route of SITEMAP_INCLUSION_PROOF_ROUTES) {
+      expect(urls).toContain(
+        resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
+      );
+    }
+    for (const route of SITEMAP_EXCLUSION_PROOF_ROUTES) {
+      expect(urls).not.toContain(
+        resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
+      );
       expect(urls).not.toContain(
         resolveProductionMetadataHref(route, PROJECT_SITE_EXPORT_ENV),
+      );
+    }
+    for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES) {
+      expect(urls).not.toContain(
+        resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
       );
     }
   });

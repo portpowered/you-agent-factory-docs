@@ -26,9 +26,12 @@ describe("public-sitemap-routes unit", () => {
     for (const route of SITEMAP_INCLUSION_PROOF_ROUTES) {
       expect(routes).toContain(route);
       expect(route === "/" || !route.endsWith("/")).toBe(true);
-      expect(urls).toContain(
-        resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
+      const absolute = resolveProductionSitemapLocHref(
+        route,
+        PROJECT_SITE_EXPORT_ENV,
       );
+      expect(absolute.endsWith("/")).toBe(true);
+      expect(urls).toContain(absolute);
     }
 
     expect(resolveProductionSitemapLocHref("/", PROJECT_SITE_EXPORT_ENV)).toBe(
@@ -36,10 +39,18 @@ describe("public-sitemap-routes unit", () => {
     );
   });
 
-  test("exclusion proofs stay out of the public route list", () => {
+  test("exclusion proofs stay out of app-relative and absolute sitemap inventories", () => {
     const routes = new Set(listPublicSitemapRoutes());
+    const urls = new Set(
+      listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV),
+    );
     for (const route of SITEMAP_EXCLUSION_PROOF_ROUTES) {
       expect(routes.has(route)).toBe(false);
+      expect(
+        urls.has(
+          resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
+        ),
+      ).toBe(false);
     }
   });
 

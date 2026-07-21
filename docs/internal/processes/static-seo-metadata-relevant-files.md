@@ -23,9 +23,9 @@ social assets, sitemap, robots).
 | `src/lib/seo/export-localized-alternates.ts` | Export HTML hreflang extraction + shipped-only absolute production alternate verification |
 | `src/lib/seo/export-localized-alternates.test.ts` | Multi-locale home + subset-locale docs (`concepts/task-queue`) metadata and temp-`out/` proofs |
 | `src/lib/seo/public-sitemap-routes.ts` | Live public factory route inventory for sitemap (shell, docs sections/articles, blog, tags) |
-| `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths |
+| `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths; absolute locs must end with `/` while app-relative stay non-slash |
 | `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml` |
-| `src/lib/seo/export-sitemap.test.ts` | Absolute production sitemap URL proofs + temp-`out/` verification |
+| `src/lib/seo/export-sitemap.test.ts` | Trailing-slash absolute loc proofs (collection indexes + docs/blog/home) + non-slash app-relative + temp-`out/` verification |
 | `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/export-robots.ts` | `buildPublicRobots` / `resolveProductionSitemapUrl` + `verifyExportRobots` for `out/robots.txt` |
 | `src/lib/seo/export-robots.test.ts` | Production sitemap reference proofs + no legacy Atlas advertising |
