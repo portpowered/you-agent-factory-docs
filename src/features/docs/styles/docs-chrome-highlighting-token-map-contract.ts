@@ -1,14 +1,16 @@
 /**
  * Representative docs chrome highlighting token-map contract.
  *
- * Locks resting vs hover/active roles across all five chrome surfaces in one
- * place so story-006 regressions stay reviewable without scanning CSS source
- * inventories or route registries.
+ * Locks resting vs hover roles across all five chrome surfaces in one place
+ * so story-006 regressions stay reviewable without scanning CSS source
+ * inventories or route registries. Sidebar also locks selected/active as a
+ * muted secondary-blue wash distinct from yellow hover
+ * (repair-sidebar-active-muted-secondary-003).
  *
  * Surfaces:
  * 1. search / globe / GitHub
  * 2. TOC (current + non-current)
- * 3. sidebar rows (wide primary-yellow hover background)
+ * 3. sidebar rows (muted secondary-blue selected wash + wide primary-yellow hover)
  * 4. header text / icons
  * 5. breadcrumb
  */
@@ -26,6 +28,7 @@ import {
 import {
   DOCS_CHROME_SIDEBAR_FACTORY_DARK,
   DOCS_CHROME_SIDEBAR_SURFACE_ROLES,
+  DOCS_CHROME_SIDEBAR_TOKENS,
 } from "@/features/docs/styles/docs-chrome-sidebar";
 import {
   DOCS_CHROME_TOC_CURRENT_SURFACE_ROLES,
@@ -56,18 +59,28 @@ export type DocsChromeTokenMapSurfaceExpectation = {
   mapSurfaces: readonly DocsChromeHighlightingSurface[];
   /** Resting role(s) visible without hover. */
   restRoles: readonly DocsChromeHighlightingRoleName[];
-  /** Hover/active overlay role (always primary yellow for this map). */
+  /** Hover overlay role (always primary yellow for this map). */
   hoverActiveRole: DocsChromeHighlightingRoleName;
   /** Whether hover paints a fill background or a text/icon overlay. */
   hoverActiveKind: "overlay" | "background";
   /** Factory-dark hex proofs for rest colors (color or background). */
   restProofs: readonly string[];
-  /** Factory-dark hex proof for hover/active primary yellow. */
+  /** Factory-dark hex proof for hover primary yellow. */
   hoverActiveProof: string;
+  /**
+   * Selected/active role at rest (sidebar only). Muted secondary blue —
+   * distinct from hover yellow. Omitted on surfaces without a selected wash.
+   */
+  selectedActiveRole?: DocsChromeHighlightingRoleName;
+  /** Factory-dark solid secondary-blue proof for the selected wash base. */
+  selectedActiveProof?: string;
+  /** CSS token expression for the muted selected wash (`color-mix` …). */
+  selectedActiveBackgroundToken?: string;
 };
 
 /**
- * Observable resting vs hover/active expectations for all five surfaces.
+ * Observable resting vs hover expectations for all five surfaces.
+ * Sidebar also encodes selected/active secondary-blue wash (not yellow).
  * Proofs resolve through the locked factory-dark chrome hex map.
  */
 export const DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS = {
@@ -98,6 +111,9 @@ export const DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS = {
     hoverActiveKind: "background",
     restProofs: [DOCS_CHROME_SIDEBAR_FACTORY_DARK.restText],
     hoverActiveProof: DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverBackground,
+    selectedActiveRole: "secondaryBlue",
+    selectedActiveProof: DOCS_CHROME_SIDEBAR_FACTORY_DARK.activeBackground,
+    selectedActiveBackgroundToken: DOCS_CHROME_SIDEBAR_TOKENS.activeBackground,
   },
   headerTextIcons: {
     mapSurfaces: ["headerTextIcons"],
