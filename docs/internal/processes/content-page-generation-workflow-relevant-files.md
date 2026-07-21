@@ -62,6 +62,11 @@ mounting trailing Related / References footer chrome:
 - Colocated concepts page tests that required Related To / References headings
   or curated Related-footer links must assert absence (or drop those asserts);
   do not reintroduce a related surface to keep old link asserts green.
+- Formalize absence on every concepts `*-page.test.tsx` English render proof:
+  `queryByRole("heading", { name: "Related To"|"References" })` null,
+  `#related` / `#references` DOM null, and Tags heading still present.
+  Keep teaching-section link asserts (SPC `where-it-appears`) separate from
+  footer chrome.
 - `src/lib/navigation/local-docs-toc.test.ts` uses the loop concept page — after
   the strip, assert Tags presence and Related To / References TOC absence.
 - After MDX strip, clean owned concepts `messages/*.json`: drop
