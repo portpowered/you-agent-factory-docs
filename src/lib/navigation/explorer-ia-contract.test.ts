@@ -6,9 +6,12 @@
  * R02 story 002 also locks eight Program documentation page membership under
  * declared subgroups and Concepts Skills / MCP / Tool calling / Tokens groups.
  *
- * Story 006 locks the three-level Program documentation contract end-to-end:
- * FAQ stays top-level outside Program documentation, and the former ten-group
- * Basics/Feature support/Functions/… separator order is no longer required.
+ * Story 006 locks the full PS-100 explorer IA end-to-end: locked top-level
+ * order, Program Orientation/Capabilities/Interfaces/Operations with
+ * Configuring secondary, Reference nesting (Contracts/Schemas/Limits +
+ * Factories/Workers/Workstations), Internal architecture / Miscellanea
+ * membership, FAQ last outside Program, and rejection of former Program
+ * separator names (flat ten-group and intermediate System-feature-set era).
  */
 import { describe, expect, test } from "bun:test";
 import {
@@ -56,65 +59,55 @@ const DECLARED_DOCUMENTATION_GROUP_ORDER = Object.values(
 
 const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
   FACTORY_EXPLORER_FOLDER_LABELS.guides,
+  FACTORY_EXPLORER_FOLDER_LABELS.documentation,
   FACTORY_EXPLORER_FOLDER_LABELS.concepts,
   FACTORY_EXPLORER_FOLDER_LABELS.techniques,
-  FACTORY_EXPLORER_FOLDER_LABELS.documentation,
   FACTORY_EXPLORER_FOLDER_LABELS.references,
-  FACTORY_EXPLORER_FOLDER_LABELS.factories,
-  FACTORY_EXPLORER_FOLDER_LABELS.workers,
-  FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+  "Internal architecture",
+  "Miscellanea",
 ] as const;
 
 /**
  * R01 Program documentation pages that remain explorer members after W18
- * move-stub demotion. Stub R01 routes stay published for compatibility only.
+ * move-stub demotion and PS-100 demotions.
  */
 const R01_PROGRAM_DOCUMENTATION_EXPLORER_PAGES = [
-  { slug: "throttling-and-limits", group: "factory-configuration" },
-  { slug: "packaged-documents", group: "packaged-factories" },
+  { slug: "packaged-documents", group: "capabilities" },
 ] as const;
 
 /**
- * Story 003 — non-secondary Program documentation top groups and their pages.
- * Factory Configuration / System Operations nesting is owned by story 004.
- * W18 move stubs are excluded from explorer membership.
+ * Direct Program documentation top groups and their pages under locked PS-100.
+ * Operations → Configuring secondary membership is owned by STORY_004_SECONDARY_PAGES;
+ * the Operations list below is direct children only (no Configuring nest).
  */
 const STORY_003_DIRECT_TOP_GROUP_PAGES = {
-  "system-feature-set": [
+  orientation: ["what-is-you-agent-factory"],
+  capabilities: [
     "harness-support",
     "replays-records",
     "submitting-work",
+    "packaged-documents",
   ],
   interfaces: ["cli", "mcp"],
-  "packaged-factories": ["packaged-documents"],
-  "internal-architecture": ["architecture-of-system", "petri"],
-  "additional-references": [
-    "what-is-you-agent-factory",
-    "install",
-    "contributing-to-these-docs",
-    "dashboard-ui-overview",
-    "security-trust-boundaries",
-    "troubleshooting",
-  ],
+  operations: ["logs", "metrics", "dashboard-ui-overview"],
 } as const;
 
 /**
- * Story 004 — exact secondary membership under Factory Configuration and
- * System Operations after W18 move-stub demotion. Empty Workers / Workstations /
- * Factories secondaries are omitted by the sidebar builder. replays-records
- * stays under System feature set only.
+ * Operations → Configuring secondary membership, including cross-collection
+ * factories config pages that keep `/docs/factories/...` routes.
  */
 const STORY_004_SECONDARY_PAGES = {
-  "factory-configuration": {
-    resources: ["resources", "throttling-and-limits"],
-  },
-  "system-operations": {
-    observability: ["logs", "metrics"],
+  operations: {
+    configuring: [
+      "resources",
+      "factories/configuration",
+      "factories/global-configuration",
+    ],
   },
 } as const;
 
-/** Config / ops pages that must not leak into System feature set. */
-const SYSTEM_FEATURE_SET_EXCLUDED_SLUGS = [
+/** Config / ops pages that must not leak into Capabilities. */
+const CAPABILITIES_EXCLUDED_SLUGS = [
   "workers",
   "poller-workers",
   "script-workers",
@@ -131,13 +124,25 @@ const SYSTEM_FEATURE_SET_EXCLUDED_SLUGS = [
   "metrics",
 ] as const;
 
+/** Locked PS-100 demotions — published but absent from Program explorer. */
+const PROGRAM_DOCUMENTATION_DEMOTED_EXPLORER_SLUGS = [
+  "install",
+  "throttling-and-limits",
+  "architecture-of-system",
+  "petri",
+  "troubleshooting",
+  "security-trust-boundaries",
+  "contributing-to-these-docs",
+] as const;
+
 /**
- * Former flat Program documentation separators (Basics → … → Additional
- * reference). Story 006 proves these are no longer the explorer contract.
+ * Former Program documentation separators rejected by story 006.
+ * Includes the flat Basics→…→Additional-reference era and the intermediate
+ * System-feature-set / Factory-Configuration taxonomy so neither can regress.
  * Keep exact historical spellings (including "Internal architecture" and
- * singular "Additional reference") so regressions to the old IA fail CI.
+ * singular "Additional reference").
  */
-const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
+const FORMER_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Basics",
   "Feature support",
   "Functions",
@@ -148,6 +153,11 @@ const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Operational",
   "Internal architecture",
   "Additional reference",
+  "System feature set",
+  "Packaged factories",
+  "Factory Configuration",
+  "System Operations",
+  "Additional references",
 ] as const;
 
 /** R00 Concepts pages required under declared explorer subgroups. */
@@ -182,16 +192,15 @@ function urlEndsWithSlug(
 }
 
 describe("explorer IA exact-order contract", () => {
-  test("declared top-level section order is collection folders then FAQ", () => {
+  test("declared top-level section order is collection folders, virtual folders, then FAQ", () => {
     expect(FACTORY_EXPLORER_SECTION_ORDER).toEqual([
       { kind: "collection", id: "guides" },
+      { kind: "collection", id: "documentation" },
       { kind: "collection", id: "concepts" },
       { kind: "collection", id: "techniques" },
-      { kind: "collection", id: "documentation" },
       { kind: "collection", id: "references" },
-      { kind: "collection", id: "factories" },
-      { kind: "collection", id: "workers" },
-      { kind: "collection", id: "workstations" },
+      { kind: "virtual-folder", id: "internal-architecture" },
+      { kind: "virtual-folder", id: "miscellanea" },
       { kind: "page", docsSlug: "documentation/faq" },
     ]);
   });
@@ -250,19 +259,9 @@ describe("explorer IA exact-order contract", () => {
     expect(
       secondaryFolderNamesUnderSeparator(
         documentation,
-        SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
+        SIDEBAR_GROUP_LABELS.documentation.operations,
       ),
-    ).toEqual(["Resources"]);
-    expect(
-      secondaryFolderNamesUnderSeparator(
-        documentation,
-        SIDEBAR_GROUP_LABELS.documentation["system-operations"],
-      ),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
-      ),
-    );
+    ).toEqual(Object.values(DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations));
     expect(
       pageEntriesInFolder(documentation).some((page) =>
         page.url.endsWith("/docs/documentation/faq"),
@@ -276,9 +275,102 @@ describe("explorer IA exact-order contract", () => {
         `${oldRoute} must not appear in Program documentation explorer`,
       ).toBe(false);
     }
+
+    const reference = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    );
+    expect(reference).toBeTruthy();
+    if (!reference) {
+      throw new Error("expected Reference folder");
+    }
+    expect(FACTORY_EXPLORER_FOLDER_LABELS.references).toBe("Reference");
+    expect(separatorNamesInFolder(reference)).toEqual([
+      ...Object.values(SIDEBAR_GROUP_LABELS.references),
+    ]);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.limits,
+      ).some((page) =>
+        page.url.endsWith("/docs/documentation/throttling-and-limits"),
+      ),
+    ).toBe(true);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.contracts,
+      ).some((page) => page.url.endsWith("/docs/references/api")),
+    ).toBe(true);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.schemas,
+      ).some((page) => page.url.endsWith("/docs/references/factory-schema")),
+    ).toBe(true);
+
+    const nestedFolderNames = reference.children
+      .filter((node) => node.type === "folder")
+      .map((node) => node.name);
+    expect(nestedFolderNames).toEqual([
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    ]);
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    );
+
+    const internalArchitecture = folderSignatureByName(
+      signature,
+      "Internal architecture",
+    );
+    expect(internalArchitecture).toBeTruthy();
+    if (!internalArchitecture) {
+      throw new Error("expected Internal architecture folder");
+    }
+    expect(
+      pageEntriesInFolder(internalArchitecture).map((page) => page.url),
+    ).toEqual([
+      "/docs/documentation/architecture-of-system",
+      "/docs/documentation/petri",
+    ]);
+
+    const miscellanea = folderSignatureByName(signature, "Miscellanea");
+    expect(miscellanea).toBeTruthy();
+    if (!miscellanea) {
+      throw new Error("expected Miscellanea folder");
+    }
+    expect(pageEntriesInFolder(miscellanea).map((page) => page.url)).toEqual([
+      "/docs/documentation/troubleshooting",
+      "/docs/documentation/security-trust-boundaries",
+      "/docs/documentation/contributing-to-these-docs",
+    ]);
+
+    expect(
+      pageEntriesInFolder(documentation).some((page) =>
+        page.url.endsWith("/docs/documentation/install"),
+      ),
+    ).toBe(false);
+    expect(
+      pageEntriesInFolder(internalArchitecture).some((page) =>
+        page.url.endsWith("/docs/documentation/install"),
+      ),
+    ).toBe(false);
+    expect(
+      pageEntriesInFolder(miscellanea).some((page) =>
+        page.url.endsWith("/docs/documentation/install"),
+      ),
+    ).toBe(false);
   });
 
-  test("default-locale Program documentation places feature, interface, packaged, architecture, and additional pages under declared top groups", async () => {
+  test("default-locale Program documentation places orientation, capability, interface, and operations pages under declared top groups", async () => {
     const messages = await loadUiMessages("en");
     const signature = buildExplorerTreeSignature(
       localizePageTree(source.pageTree, "en", { messages }),
@@ -303,11 +395,30 @@ describe("explorer IA exact-order contract", () => {
       [keyof typeof STORY_003_DIRECT_TOP_GROUP_PAGES, readonly string[]]
     >) {
       const groupLabel = SIDEBAR_GROUP_LABELS.documentation[groupId];
-      expect(
-        secondaryFolderNamesUnderSeparator(documentation, groupLabel),
-      ).toEqual([]);
+      if (groupId !== "operations") {
+        expect(
+          secondaryFolderNamesUnderSeparator(documentation, groupLabel),
+        ).toEqual([]);
+      }
 
       const underGroup = pageEntriesUnderSeparator(documentation, groupLabel);
+      if (groupId === "operations") {
+        for (const slug of slugs) {
+          expect(
+            FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+              slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+            ],
+          ).toBe(groupId);
+          expect(
+            underGroup.some((entry) =>
+              urlEndsWithSlug(entry.url, "documentation", slug),
+            ),
+            `${slug} must sit under Program documentation top group ${groupLabel}`,
+          ).toBe(true);
+        }
+        continue;
+      }
+
       const underGroupSlugs = underGroup.map((entry) => {
         const match = entry.url.match(/\/documentation\/([^/]+)$/);
         expect(
@@ -334,21 +445,30 @@ describe("explorer IA exact-order contract", () => {
       }
     }
 
-    const systemFeaturePages = pageEntriesUnderSeparator(
+    const capabilitiesPages = pageEntriesUnderSeparator(
       documentation,
-      SIDEBAR_GROUP_LABELS.documentation["system-feature-set"],
+      SIDEBAR_GROUP_LABELS.documentation.capabilities,
     );
-    for (const slug of SYSTEM_FEATURE_SET_EXCLUDED_SLUGS) {
+    for (const slug of CAPABILITIES_EXCLUDED_SLUGS) {
       expect(
-        systemFeaturePages.some((entry) =>
+        capabilitiesPages.some((entry) =>
           urlEndsWithSlug(entry.url, "documentation", slug),
         ),
-        `${slug} must not appear under System feature set`,
+        `${slug} must not appear under Capabilities`,
+      ).toBe(false);
+    }
+
+    for (const slug of PROGRAM_DOCUMENTATION_DEMOTED_EXPLORER_SLUGS) {
+      expect(
+        pageEntriesInFolder(documentation).some((entry) =>
+          urlEndsWithSlug(entry.url, "documentation", slug),
+        ),
+        `${slug} must not appear in Program documentation explorer`,
       ).toBe(false);
     }
   });
 
-  test("default-locale Program documentation nests Factory Configuration and System Operations secondaries with exact page membership", async () => {
+  test("default-locale Program documentation nests Operations Configuring secondary with exact page membership", async () => {
     const messages = await loadUiMessages("en");
     const signature = buildExplorerTreeSignature(
       localizePageTree(source.pageTree, "en", { messages }),
@@ -363,24 +483,11 @@ describe("explorer IA exact-order contract", () => {
       throw new Error("expected Program documentation folder");
     }
 
-    const factoryConfigurationLabel =
-      SIDEBAR_GROUP_LABELS.documentation["factory-configuration"];
-    const systemOperationsLabel =
-      SIDEBAR_GROUP_LABELS.documentation["system-operations"];
+    const operationsLabel = SIDEBAR_GROUP_LABELS.documentation.operations;
 
     expect(
-      secondaryFolderNamesUnderSeparator(
-        documentation,
-        factoryConfigurationLabel,
-      ),
-    ).toEqual(["Resources"]);
-    expect(
-      secondaryFolderNamesUnderSeparator(documentation, systemOperationsLabel),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
-      ),
-    );
+      secondaryFolderNamesUnderSeparator(documentation, operationsLabel),
+    ).toEqual(Object.values(DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations));
 
     for (const [groupId, secondaries] of Object.entries(
       STORY_004_SECONDARY_PAGES,
@@ -404,12 +511,18 @@ describe("explorer IA exact-order contract", () => {
           secondaryLabel,
         );
         const underSecondarySlugs = underSecondary.map((entry) => {
-          const match = entry.url.match(/\/documentation\/([^/]+)$/);
+          const documentationMatch = entry.url.match(
+            /\/docs\/documentation\/([^/]+)$/,
+          );
+          if (documentationMatch?.[1]) {
+            return documentationMatch[1];
+          }
+          const factoriesMatch = entry.url.match(/\/docs\/(factories\/[^/]+)$/);
           expect(
-            match?.[1],
-            `${entry.url} must be a documentation page`,
+            factoriesMatch?.[1],
+            `${entry.url} must be a documentation or factories config page`,
           ).toBeTruthy();
-          return match?.[1] ?? "";
+          return factoriesMatch?.[1] ?? "";
         });
 
         expect(underSecondarySlugs.sort()).toEqual([...slugs].sort());
@@ -425,9 +538,14 @@ describe("explorer IA exact-order contract", () => {
               ? String(membership.secondary)
               : undefined,
           ).toBe(secondaryId);
+          const slashIndex = slug.indexOf("/");
+          const collection =
+            slashIndex === -1 ? "documentation" : slug.slice(0, slashIndex);
+          const pathSlug =
+            slashIndex === -1 ? slug : slug.slice(slashIndex + 1);
           expect(
             underSecondary.some((entry) =>
-              urlEndsWithSlug(entry.url, "documentation", slug),
+              urlEndsWithSlug(entry.url, collection, pathSlug),
             ),
             `${slug} must sit under ${groupLabel} → ${secondaryLabel}`,
           ).toBe(true);
@@ -435,47 +553,60 @@ describe("explorer IA exact-order contract", () => {
       }
     }
 
-    const observabilityPages = pageEntriesInSecondaryFolderUnderSeparator(
+    const configuringPages = pageEntriesInSecondaryFolderUnderSeparator(
       documentation,
-      systemOperationsLabel,
-      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"].observability,
+      operationsLabel,
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations.configuring,
     );
     expect(
-      observabilityPages.some((entry) =>
+      configuringPages.some((entry) =>
         urlEndsWithSlug(entry.url, "documentation", "replays-records"),
       ),
-      "replays-records must not duplicate under Observability",
+      "replays-records must not duplicate under Configuring",
     ).toBe(false);
 
-    const systemFeaturePages = pageEntriesUnderSeparator(
+    const capabilitiesPages = pageEntriesUnderSeparator(
       documentation,
-      SIDEBAR_GROUP_LABELS.documentation["system-feature-set"],
+      SIDEBAR_GROUP_LABELS.documentation.capabilities,
     );
     expect(
-      systemFeaturePages.some((entry) =>
+      capabilitiesPages.some((entry) =>
         urlEndsWithSlug(entry.url, "documentation", "replays-records"),
       ),
-      "replays-records must remain under System feature set",
+      "replays-records must remain under Capabilities",
     ).toBe(true);
 
-    const factoryConfigurationPages = pageEntriesUnderSeparator(
+    const operationsPages = pageEntriesUnderSeparator(
       documentation,
-      factoryConfigurationLabel,
+      operationsLabel,
     );
     for (const invented of ["model-workers", "hosted-workers"] as const) {
       expect(
-        factoryConfigurationPages.some((entry) =>
+        operationsPages.some((entry) =>
           urlEndsWithSlug(entry.url, "documentation", invented),
         ),
-        `${invented} must not be invented under Workers`,
+        `${invented} must not be invented under Operations`,
       ).toBe(false);
     }
   });
 
-  test("story 006 locks three-level Program documentation IA with FAQ outside and former ten-group order rejected", async () => {
+  test("story 006 locks Program / Reference / virtual-folder IA with FAQ last and former separators rejected", async () => {
     const messages = await loadUiMessages("en");
     const signature = buildExplorerTreeSignature(
       localizePageTree(source.pageTree, "en", { messages }),
+    );
+
+    expect(topLevelFolderNames(signature)).toEqual([
+      ...DECLARED_TOP_LEVEL_FOLDER_ORDER,
+    ]);
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
     );
 
     const faq = topLevelPageEntries(signature);
@@ -500,12 +631,67 @@ describe("explorer IA exact-order contract", () => {
     expect(separatorNamesInFolder(documentation)).toEqual([
       ...DECLARED_DOCUMENTATION_GROUP_ORDER,
     ]);
-    for (const former of FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS) {
+    for (const former of FORMER_PROGRAM_DOCUMENTATION_SEPARATORS) {
       expect(
         separatorNamesInFolder(documentation),
-        `former ten-group separator "${former}" must not be the Program documentation contract`,
+        `former Program separator "${former}" must not be the Program documentation contract`,
       ).not.toContain(former);
     }
+
+    const reference = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    );
+    expect(reference).toBeTruthy();
+    if (!reference) {
+      throw new Error("expected Reference folder");
+    }
+    expect(separatorNamesInFolder(reference)).toEqual([
+      ...Object.values(SIDEBAR_GROUP_LABELS.references),
+    ]);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.limits,
+      ).some((page) =>
+        page.url.endsWith("/docs/documentation/throttling-and-limits"),
+      ),
+    ).toBe(true);
+    expect(
+      reference.children
+        .filter((node) => node.type === "folder")
+        .map((node) => node.name),
+    ).toEqual([
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    ]);
+
+    const internalArchitecture = folderSignatureByName(
+      signature,
+      "Internal architecture",
+    );
+    expect(internalArchitecture).toBeTruthy();
+    if (!internalArchitecture) {
+      throw new Error("expected Internal architecture folder");
+    }
+    expect(
+      pageEntriesInFolder(internalArchitecture).map((page) => page.url),
+    ).toEqual([
+      "/docs/documentation/architecture-of-system",
+      "/docs/documentation/petri",
+    ]);
+
+    const miscellanea = folderSignatureByName(signature, "Miscellanea");
+    expect(miscellanea).toBeTruthy();
+    if (!miscellanea) {
+      throw new Error("expected Miscellanea folder");
+    }
+    expect(pageEntriesInFolder(miscellanea).map((page) => page.url)).toEqual([
+      "/docs/documentation/troubleshooting",
+      "/docs/documentation/security-trust-boundaries",
+      "/docs/documentation/contributing-to-these-docs",
+    ]);
 
     expect(
       pageEntriesInFolder(documentation).some((page) =>
@@ -516,19 +702,9 @@ describe("explorer IA exact-order contract", () => {
     expect(
       secondaryFolderNamesUnderSeparator(
         documentation,
-        SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
+        SIDEBAR_GROUP_LABELS.documentation.operations,
       ),
-    ).toEqual(["Resources"]);
-    expect(
-      secondaryFolderNamesUnderSeparator(
-        documentation,
-        SIDEBAR_GROUP_LABELS.documentation["system-operations"],
-      ),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
-      ),
-    );
+    ).toEqual(Object.values(DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations));
 
     for (const oldRoute of listDocumentationRouteMigrationOldRoutes()) {
       expect(
@@ -539,44 +715,68 @@ describe("explorer IA exact-order contract", () => {
       ).toBe(false);
     }
 
-    const resourcesPages = pageEntriesInSecondaryFolderUnderSeparator(
+    const configuringPages = pageEntriesInSecondaryFolderUnderSeparator(
       documentation,
-      SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
-      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].resources,
+      SIDEBAR_GROUP_LABELS.documentation.operations,
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations.configuring,
     );
     expect(
-      resourcesPages.some((entry) =>
-        urlEndsWithSlug(entry.url, "documentation", "throttling-and-limits"),
+      configuringPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "resources"),
       ),
     ).toBe(true);
     expect(
+      configuringPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "factories", "configuration"),
+      ),
+    ).toBe(true);
+    expect(
+      configuringPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "factories", "global-configuration"),
+      ),
+    ).toBe(true);
+    expect(
+      configuringPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "throttling-and-limits"),
+      ),
+    ).toBe(false);
+    expect(
       secondaryFolderNamesUnderSeparator(
         documentation,
-        SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
+        SIDEBAR_GROUP_LABELS.documentation.operations,
       ),
-    ).toEqual([
-      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].resources,
-    ]);
+    ).toEqual([DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations.configuring]);
 
-    const observabilityPages = pageEntriesInSecondaryFolderUnderSeparator(
+    const operationsPages = pageEntriesUnderSeparator(
       documentation,
-      SIDEBAR_GROUP_LABELS.documentation["system-operations"],
-      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"].observability,
+      SIDEBAR_GROUP_LABELS.documentation.operations,
     );
     expect(
-      observabilityPages.some((entry) =>
+      operationsPages.some((entry) =>
         urlEndsWithSlug(entry.url, "documentation", "logs"),
       ),
     ).toBe(true);
     expect(
-      observabilityPages.some((entry) =>
+      operationsPages.some((entry) =>
         urlEndsWithSlug(entry.url, "documentation", "metrics"),
       ),
     ).toBe(true);
 
+    for (const slug of PROGRAM_DOCUMENTATION_DEMOTED_EXPLORER_SLUGS) {
+      expect(
+        pageEntriesInFolder(documentation).some((entry) =>
+          urlEndsWithSlug(entry.url, "documentation", slug),
+        ),
+        `${slug} must not appear in Program documentation explorer`,
+      ).toBe(false);
+    }
+
     for (const slug of Object.keys(
       FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
     )) {
+      if (slug.includes("/")) {
+        continue;
+      }
       expect(slug).not.toBe("faq");
       const membership =
         FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
@@ -654,20 +854,27 @@ describe("explorer IA exact-order contract", () => {
         localizePageTree(source.pageTree, locale, { messages }),
       );
 
-      expect(topLevelFolderNames(signature)).toEqual([
+      const topLevelFolders = topLevelFolderNames(signature);
+      const declaredCollectionFolders = [
         explorer.folders.guides,
+        explorer.folders.documentation,
         explorer.folders.concepts,
         explorer.folders.techniques,
-        explorer.folders.documentation,
         explorer.folders.references,
-        ...(locale === "en"
-          ? [
-              explorer.folders.factories,
-              explorer.folders.workers,
-              explorer.folders.workstations,
-            ]
-          : []),
-      ]);
+      ];
+      expect(
+        isSubsequence(topLevelFolders, [
+          ...declaredCollectionFolders,
+          explorer.virtualFolders["internal-architecture"],
+          explorer.virtualFolders.miscellanea,
+        ]),
+      ).toBe(true);
+      expect(
+        topLevelFolders.slice(0, declaredCollectionFolders.length),
+      ).toEqual(declaredCollectionFolders);
+      expect(topLevelFolders).not.toContain(explorer.folders.factories);
+      expect(topLevelFolders).not.toContain(explorer.folders.workers);
+      expect(topLevelFolders).not.toContain(explorer.folders.workstations);
 
       const faq = topLevelPageEntries(signature);
       expect(faq).toHaveLength(1);
@@ -716,10 +923,10 @@ describe("explorer IA exact-order contract", () => {
         isSubsequence(documentationSeparators, declaredLocalizedOrder),
       ).toBe(true);
       expect(documentationSeparators[0]).toBe(
-        explorer.documentationGroups["system-feature-set"],
+        explorer.documentationGroups.orientation,
       );
       expect(documentationSeparators.at(-1)).toBe(
-        explorer.documentationGroups["additional-references"],
+        explorer.documentationGroups.operations,
       );
 
       for (const page of R01_PROGRAM_DOCUMENTATION_EXPLORER_PAGES) {
@@ -733,37 +940,19 @@ describe("explorer IA exact-order contract", () => {
         ).toBe(true);
       }
 
-      const factoryConfigurationSecondaries = [
-        explorer.documentationSecondaries.resources,
+      const configuringSecondaries = [
+        explorer.documentationSecondaries.configuring,
       ];
-      const presentFactorySecondaries = secondaryFolderNamesUnderSeparator(
+      const presentConfiguringSecondaries = secondaryFolderNamesUnderSeparator(
         documentation,
-        explorer.documentationGroups["factory-configuration"],
+        explorer.documentationGroups.operations,
       );
       expect(
-        isSubsequence(
-          presentFactorySecondaries,
-          factoryConfigurationSecondaries,
-        ),
-        `${locale}: Factory Configuration secondaries use localized labels in declared order`,
+        isSubsequence(presentConfiguringSecondaries, configuringSecondaries),
+        `${locale}: Operations secondaries use localized Configuring label in declared order`,
       ).toBe(true);
-      for (const name of presentFactorySecondaries) {
-        expect(factoryConfigurationSecondaries).toContain(name);
-      }
-
-      const presentObservabilitySecondaries =
-        secondaryFolderNamesUnderSeparator(
-          documentation,
-          explorer.documentationGroups["system-operations"],
-        );
-      expect(
-        isSubsequence(presentObservabilitySecondaries, [
-          explorer.documentationSecondaries.observability,
-        ]),
-        `${locale}: System Operations secondaries use localized Observability label`,
-      ).toBe(true);
-      for (const name of presentObservabilitySecondaries) {
-        expect(name).toBe(explorer.documentationSecondaries.observability);
+      for (const name of presentConfiguringSecondaries) {
+        expect(configuringSecondaries).toContain(name);
       }
     }
   });
@@ -810,6 +999,8 @@ describe("explorer IA fail-closed locale contract", () => {
         interfaces: "",
       },
       documentationSecondaries: messages.explorer.documentationSecondaries,
+      referenceGroups: messages.explorer.referenceGroups,
+      virtualFolders: messages.explorer.virtualFolders,
     };
 
     expect(() =>
@@ -825,12 +1016,52 @@ describe("explorer IA fail-closed locale contract", () => {
       documentationGroups: messages.explorer.documentationGroups,
       documentationSecondaries: {
         ...messages.explorer.documentationSecondaries,
-        resources: "",
+        configuring: "",
+      },
+      referenceGroups: messages.explorer.referenceGroups,
+      virtualFolders: messages.explorer.virtualFolders,
+    };
+
+    expect(() =>
+      resolveExplorerMessages({ ...messages, explorer: incomplete }),
+    ).toThrow(/documentationSecondaries\.configuring/);
+  });
+
+  test("assertExplorerMessages rejects incomplete Reference group catalogs", async () => {
+    const messages = await loadUiMessages("en");
+    const incomplete = {
+      folders: messages.explorer.folders,
+      conceptsGroups: messages.explorer.conceptsGroups,
+      documentationGroups: messages.explorer.documentationGroups,
+      documentationSecondaries: messages.explorer.documentationSecondaries,
+      referenceGroups: {
+        ...messages.explorer.referenceGroups,
+        contracts: "",
+      },
+      virtualFolders: messages.explorer.virtualFolders,
+    };
+
+    expect(() =>
+      resolveExplorerMessages({ ...messages, explorer: incomplete }),
+    ).toThrow(/referenceGroups\.contracts/);
+  });
+
+  test("assertExplorerMessages rejects incomplete virtual folder catalogs", async () => {
+    const messages = await loadUiMessages("zh-CN");
+    const incomplete = {
+      folders: messages.explorer.folders,
+      conceptsGroups: messages.explorer.conceptsGroups,
+      documentationGroups: messages.explorer.documentationGroups,
+      documentationSecondaries: messages.explorer.documentationSecondaries,
+      referenceGroups: messages.explorer.referenceGroups,
+      virtualFolders: {
+        ...messages.explorer.virtualFolders,
+        "internal-architecture": "",
       },
     };
 
     expect(() =>
       resolveExplorerMessages({ ...messages, explorer: incomplete }),
-    ).toThrow(/documentationSecondaries\.resources/);
+    ).toThrow(/virtualFolders\.internal-architecture/);
   });
 });

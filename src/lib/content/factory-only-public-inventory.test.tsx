@@ -66,13 +66,12 @@ const RETIRED_ATLAS_BROWSE_LABELS = [
 
 const FACTORY_SIDEBAR_FOLDER_NAMES = [
   "Guides",
+  "Program documentation",
   "Concepts",
   "Techniques",
-  "Program documentation",
-  "References",
-  "Factories",
-  "Workers",
-  "Workstations",
+  "Reference",
+  "Internal architecture",
+  "Miscellanea",
 ] as const;
 
 const FACTORY_SECTION_INDEX_CASES = [

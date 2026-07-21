@@ -67,6 +67,7 @@ export const DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS = [
   "glossary",
   "concepts",
   "documentation",
+  "references",
 ] as const;
 
 export type DocsCollectionSidebarGroupingResolverId =

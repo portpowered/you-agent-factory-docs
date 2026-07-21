@@ -10,6 +10,7 @@ import {
   getSidebarGroupLabel,
   isDeferredDocumentationExplorerMembershipSlug,
   isModeAProgramOverviewPendingExplorerMembership,
+  PROGRAM_DOCUMENTATION_DEMOTED_SLUGS,
 } from "@/lib/content/sidebar-grouping";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
 import {
@@ -188,9 +189,14 @@ describe("docs sidebar grouping adapter", () => {
     expect(countPageNodes(nodes)).toBe(pages.length);
   });
 
-  test("Program documentation emits three-level nesting without FAQ, W18 stubs, pending Mode A overviews, or deferred-membership pages", () => {
+  test("Program documentation emits three-level nesting without FAQ, W18 stubs, pending Mode A overviews, deferred-membership, or PS-100 demotions", () => {
     const allDocumentationPages = loadPublishedDocsPagesSync("en").filter(
       (page) => page.docsSlug.startsWith("documentation/"),
+    );
+    const factoriesConfiguringPages = loadPublishedDocsPagesSync("en").filter(
+      (page) =>
+        page.docsSlug === "factories/configuration" ||
+        page.docsSlug === "factories/global-configuration",
     );
     const pages = allDocumentationPages.filter((page) => {
       if (isDocsExplorerTopLevelFaqPage(page.docsSlug)) {
@@ -203,48 +209,52 @@ describe("docs sidebar grouping adapter", () => {
         return false;
       }
       const slug = page.docsSlug.slice("documentation/".length);
-      return !isDeferredDocumentationExplorerMembershipSlug(slug);
+      if (isDeferredDocumentationExplorerMembershipSlug(slug)) {
+        return false;
+      }
+      if (
+        (PROGRAM_DOCUMENTATION_DEMOTED_SLUGS as readonly string[]).includes(
+          slug,
+        )
+      ) {
+        return false;
+      }
+      return (
+        FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
+          slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG
+        ] !== undefined
+      );
     });
-    const nodes = buildGroupedSidebarNodes(
-      "documentation",
-      allDocumentationPages,
-    );
+    const nodes = buildGroupedSidebarNodes("documentation", [
+      ...allDocumentationPages,
+      ...factoriesConfiguringPages,
+    ]);
     const separators = getSeparatorLabels(nodes);
     const byGroup = collectGroupedPageUrls(nodes);
 
     expect(separators).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
 
-    expect(
-      secondaryFolderNamesAfterSeparator(nodes, "Factory Configuration"),
-    ).toEqual(["Resources"]);
-    expect(
-      secondaryFolderNamesAfterSeparator(nodes, "System Operations"),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
-      ),
+    expect(secondaryFolderNamesAfterSeparator(nodes, "Operations")).toEqual(
+      Object.values(DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations),
     );
-    expect(
-      secondaryFolderNamesAfterSeparator(nodes, "System feature set"),
-    ).toEqual([]);
+    expect(secondaryFolderNamesAfterSeparator(nodes, "Orientation")).toEqual(
+      [],
+    );
+    expect(secondaryFolderNamesAfterSeparator(nodes, "Capabilities")).toEqual(
+      [],
+    );
     expect(secondaryFolderNamesAfterSeparator(nodes, "Interfaces")).toEqual([]);
 
     const expectedByGroup: Record<string, string[]> = {
-      "System feature set": [],
+      Orientation: [],
+      Capabilities: [],
       Interfaces: [],
-      "Packaged factories": [],
-      "Factory Configuration": [],
-      "System Operations": [],
-      "Internal Architecture": [],
-      "Additional references": [],
+      Operations: [],
     };
 
     for (const page of pages) {
@@ -272,82 +282,85 @@ describe("docs sidebar grouping adapter", () => {
       ).toBe(membership.group);
     }
 
+    for (const page of factoriesConfiguringPages) {
+      expectedByGroup.Operations.push(page.url);
+    }
+
     for (const [label, urls] of Object.entries(expectedByGroup)) {
       expect(byGroup[label]?.slice().sort()).toEqual(urls.slice().sort());
     }
 
     const exactDirectTopGroupSlugs = {
-      "System feature set": [
+      Orientation: ["what-is-you-agent-factory"],
+      Capabilities: [
         "harness-support",
         "replays-records",
         "submitting-work",
+        "packaged-documents",
       ],
       Interfaces: ["cli", "mcp"],
-      "Packaged factories": ["packaged-documents"],
-      "Internal Architecture": ["architecture-of-system", "petri"],
-      "Additional references": [
-        "what-is-you-agent-factory",
-        "install",
-        "contributing-to-these-docs",
+      Operations: [
+        "logs",
+        "metrics",
         "dashboard-ui-overview",
-        "security-trust-boundaries",
-        "troubleshooting",
+        "resources",
+        "factories/configuration",
+        "factories/global-configuration",
       ],
     } as const;
 
     for (const [label, slugs] of Object.entries(exactDirectTopGroupSlugs)) {
       const urls = byGroup[label] ?? [];
       expect(
-        urls.map((url) => url.slice("/docs/documentation/".length)).sort(),
+        urls
+          .map((url) =>
+            url.startsWith("/docs/documentation/")
+              ? url.slice("/docs/documentation/".length)
+              : url.slice("/docs/".length),
+          )
+          .sort(),
       ).toEqual([...slugs].sort());
     }
 
-    const exactSecondarySlugs = {
-      "Factory Configuration": {
-        Resources: ["resources", "throttling-and-limits"],
-      },
-      "System Operations": {
-        Observability: ["logs", "metrics"],
-      },
-    } as const;
+    const configuringLabel =
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS.operations.configuring;
+    const configuringUrls = pageUrlsInSecondaryFolderAfterSeparator(
+      nodes,
+      "Operations",
+      configuringLabel,
+    );
+    expect(configuringUrls.sort()).toEqual(
+      [
+        "/docs/documentation/resources",
+        "/docs/factories/configuration",
+        "/docs/factories/global-configuration",
+      ].sort(),
+    );
 
-    for (const [groupLabel, secondaries] of Object.entries(
-      exactSecondarySlugs,
-    )) {
-      for (const [secondaryLabel, slugs] of Object.entries(secondaries)) {
-        const urls = pageUrlsInSecondaryFolderAfterSeparator(
-          nodes,
-          groupLabel,
-          secondaryLabel,
-        );
-        expect(
-          urls.map((url) => url.slice("/docs/documentation/".length)).sort(),
-        ).toEqual([...slugs].sort());
-      }
+    for (const demoted of [
+      "install",
+      "throttling-and-limits",
+      "architecture-of-system",
+      "petri",
+      "troubleshooting",
+      "security-trust-boundaries",
+      "contributing-to-these-docs",
+    ] as const) {
+      expect(
+        Object.values(byGroup)
+          .flat()
+          .some((url) => url.endsWith(`/docs/documentation/${demoted}`)),
+        `${demoted} must not appear in Program documentation explorer`,
+      ).toBe(false);
     }
-
-    expect(
-      pageUrlsInSecondaryFolderAfterSeparator(
-        nodes,
-        "System Operations",
-        "Observability",
-      ).some((url) => url.endsWith("/docs/documentation/replays-records")),
-    ).toBe(false);
-    expect(
-      byGroup["System feature set"]?.some((url) =>
-        url.endsWith("/docs/documentation/replays-records"),
-      ),
-    ).toBe(true);
 
     for (const excluded of [
       "configuration",
       "workers",
-      "logs",
-      "metrics",
       "throttling-and-limits",
     ] as const) {
       expect(
-        byGroup["System feature set"]?.some((url) =>
+        byGroup.Capabilities?.some((url) =>
           url.endsWith(`/docs/documentation/${excluded}`),
         ),
       ).toBe(false);
@@ -375,7 +388,9 @@ describe("docs sidebar grouping adapter", () => {
       ).toBe(false);
     }
 
-    expect(countPageNodes(nodes)).toBe(pages.length);
+    expect(countPageNodes(nodes)).toBe(
+      pages.length + factoriesConfiguringPages.length,
+    );
     expect(
       FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
         "faq" as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG

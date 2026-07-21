@@ -44,53 +44,53 @@ import {
   resolveHostSemanticThemeTokens,
 } from "@/lib/theme/host-semantic-theme-tokens";
 
-/** R01 eight Program documentation pages (published; stubs demoted from explorer). */
+/** R01 Program documentation pages (published; stubs and demotions excluded from explorer). */
 const R01_PROGRAM_DOCUMENTATION_PAGES = [
   {
     slug: "mock-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.mock-workers",
     explorerMember: false,
   },
   {
     slug: "throttling-and-limits",
-    group: "factory-configuration",
+    group: "limits",
     registryId: "documentation.throttling-and-limits",
-    explorerMember: true,
+    explorerMember: false,
   },
   {
     slug: "script-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.script-workers",
     explorerMember: false,
   },
   {
     slug: "poller-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.poller-workers",
     explorerMember: false,
   },
   {
     slug: "agent-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.agent-workers",
     explorerMember: false,
   },
   {
     slug: "inference-workers",
-    group: "factory-configuration",
+    group: "operations",
     registryId: "documentation.inference-workers",
     explorerMember: false,
   },
   {
     slug: "packaged-documents",
-    group: "packaged-factories",
+    group: "capabilities",
     registryId: "documentation.packaged-documents",
     explorerMember: true,
   },
   {
     slug: "packaged-factories",
-    group: "packaged-factories",
+    group: "capabilities",
     registryId: "documentation.packaged-factories",
     explorerMember: false,
   },
@@ -178,18 +178,36 @@ describe("plan-issues R02 tip reconciliation", () => {
     expect(signature.rootName).toBe("You Agent Factory");
     expect(topLevelFolderNames(signature)).toEqual([
       "Guides",
+      "Program documentation",
       "Concepts",
       "Techniques",
-      "Program documentation",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
+      "Reference",
+      "Internal architecture",
+      "Miscellanea",
     ]);
     expect(topLevelFolderNames(signature)).not.toContain("Glossary");
+    expect(topLevelFolderNames(signature)).not.toContain("Factories");
+    expect(topLevelFolderNames(signature)).not.toContain("Workers");
+    expect(topLevelFolderNames(signature)).not.toContain("Workstations");
     expect(topLevelPageEntries(signature).map((page) => page.url)).toContain(
       DOCS_EXPLORER_TOP_LEVEL_FAQ_URL,
     );
+
+    const reference = folderSignatureByName(signature, "Reference");
+    expect(reference).toBeTruthy();
+    if (!reference) {
+      throw new Error("expected Reference folder");
+    }
+    expect(
+      reference.children
+        .filter((node) => node.type === "folder")
+        .map((node) => node.name),
+    ).toEqual(["Factories", "Workers", "Workstations"]);
+    expect(
+      pageEntriesInFolder(reference).some((page) =>
+        page.url.endsWith("/docs/documentation/throttling-and-limits"),
+      ),
+    ).toBe(true);
 
     const concepts = folderSignatureByName(signature, "Concepts");
     expect(concepts).toBeTruthy();
@@ -228,13 +246,10 @@ describe("plan-issues R02 tip reconciliation", () => {
       "Model inference",
     ]);
     expect(Object.values(SIDEBAR_GROUP_LABELS.documentation)).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
   });
 

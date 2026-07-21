@@ -1,4 +1,7 @@
-import { FACTORY_EXPLORER_FOLDER_LABELS } from "@/lib/content/factory-breadcrumb-sidebar";
+import {
+  FACTORY_EXPLORER_FOLDER_LABELS,
+  FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS,
+} from "@/lib/content/factory-breadcrumb-sidebar";
 import {
   DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
   SIDEBAR_GROUP_LABELS,
@@ -44,6 +47,8 @@ export function assertExplorerMessages(
   const conceptsGroups = record.conceptsGroups;
   const documentationGroups = record.documentationGroups;
   const documentationSecondaries = record.documentationSecondaries;
+  const referenceGroups = record.referenceGroups;
+  const virtualFolders = record.virtualFolders;
 
   if (!folders || typeof folders !== "object") {
     throw new ExplorerLabelsError(
@@ -66,6 +71,16 @@ export function assertExplorerMessages(
   ) {
     throw new ExplorerLabelsError(
       "Explorer Program documentation secondary messages are missing; localized explorer chrome fails closed without English fallback.",
+    );
+  }
+  if (!referenceGroups || typeof referenceGroups !== "object") {
+    throw new ExplorerLabelsError(
+      "Explorer Reference group messages are missing; localized explorer chrome fails closed without English fallback.",
+    );
+  }
+  if (!virtualFolders || typeof virtualFolders !== "object") {
+    throw new ExplorerLabelsError(
+      "Explorer virtual folder messages are missing; localized explorer chrome fails closed without English fallback.",
     );
   }
 
@@ -102,6 +117,24 @@ export function assertExplorerMessages(
     assertNonEmptyLabel(
       `explorer.documentationSecondaries.${id}`,
       (documentationSecondaries as Record<string, unknown>)[id],
+    );
+  }
+
+  for (const id of Object.keys(SIDEBAR_GROUP_LABELS.references) as Array<
+    keyof typeof SIDEBAR_GROUP_LABELS.references
+  >) {
+    assertNonEmptyLabel(
+      `explorer.referenceGroups.${id}`,
+      (referenceGroups as Record<string, unknown>)[id],
+    );
+  }
+
+  for (const id of Object.keys(FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS) as Array<
+    keyof typeof FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS
+  >) {
+    assertNonEmptyLabel(
+      `explorer.virtualFolders.${id}`,
+      (virtualFolders as Record<string, unknown>)[id],
     );
   }
 }
@@ -148,14 +181,18 @@ export function buildDefaultGroupLabelLocalizer(
     localized.set(defaultLabel, explorer.documentationGroups[id]);
   }
 
+  for (const [id, defaultLabel] of Object.entries(
+    SIDEBAR_GROUP_LABELS.references,
+  ) as Array<[keyof ExplorerMessages["referenceGroups"], string]>) {
+    localized.set(defaultLabel, explorer.referenceGroups[id]);
+  }
+
   return localized;
 }
 
 /**
  * Default-locale English Program documentation secondary folder label →
- * localized label. Covers live Resources / Observability secondaries only
- * (empty Workers / Workstations / Factories stub-nesting labels were removed
- * after W18 move-stub demotion).
+ * localized label. Covers the locked Operations → Configuring secondary.
  */
 export function buildDefaultSecondaryLabelLocalizer(
   explorer: ExplorerMessages,
@@ -166,6 +203,24 @@ export function buildDefaultSecondaryLabelLocalizer(
     DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
   ) as Array<[keyof ExplorerMessages["documentationSecondaries"], string]>) {
     localized.set(defaultLabel, explorer.documentationSecondaries[id]);
+  }
+
+  return localized;
+}
+
+/**
+ * Default-locale English virtual explorer folder label → localized label.
+ * Covers Internal architecture / Miscellanea (not DocsCollectionIds).
+ */
+export function buildDefaultVirtualFolderLabelLocalizer(
+  explorer: ExplorerMessages,
+): Map<string, string> {
+  const localized = new Map<string, string>();
+
+  for (const [id, defaultLabel] of Object.entries(
+    FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS,
+  ) as Array<[keyof ExplorerMessages["virtualFolders"], string]>) {
+    localized.set(defaultLabel, explorer.virtualFolders[id]);
   }
 
   return localized;

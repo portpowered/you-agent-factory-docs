@@ -1,6 +1,5 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
-import { FACTORY_SIDEBAR_COLLECTION_IDS } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import {
   getDocsShellPageTreeSettings,
@@ -10,9 +9,11 @@ import {
   collectSidebarPageLinks,
   findSidebarPageLink,
 } from "@/lib/navigation/docs-sidebar-contract";
-import { DOCS_SIDEBAR_SECTION_ORDER } from "@/lib/navigation/docs-sidebar-sections";
+import {
+  buildDocsSidebarSectionNodes,
+  DOCS_SIDEBAR_SECTION_ORDER,
+} from "@/lib/navigation/docs-sidebar-sections";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
-import { buildShellCollectionPageTree } from "@/lib/navigation/shell-collection-page-tree";
 import {
   buildNonAiShellFixturePageTree,
   listNonAiShellFixtureCollectionDefinitions,
@@ -81,38 +82,59 @@ describe("docs sidebar adapter extraction parity", () => {
   test("adapter-wired collection folders match generated tree for factory collections", () => {
     const baseTree = { name: "Docs", children: [] };
     const generatedTree = buildGeneratedDocsPageTree(baseTree);
-    const { definitions, groupingResolvers } = getDocsShellPageTreeSettings();
-    const adapterTree = buildShellCollectionPageTree(baseTree, {
-      pages: loadPublishedDocsPagesSync("en"),
-      definitions,
-      collectionIds: [...FACTORY_SIDEBAR_COLLECTION_IDS],
-      groupingResolvers,
-    });
+    const { definitions, groupingResolvers, resolveCollectionId } =
+      getDocsShellPageTreeSettings();
+    // Canonical explorer nesting lives in buildDocsSidebarSectionNodes; shell
+    // remains a flat collection builder for generic fixtures. Parity compares
+    // generated tree against the same section-builder path wired from settings.
+    const adapterTree = {
+      ...baseTree,
+      name: "You Agent Factory",
+      children: buildDocsSidebarSectionNodes({
+        pages: loadPublishedDocsPagesSync("en"),
+        definitions,
+        groupingResolvers,
+      }),
+    };
 
     const factoryFolderNames = [
       "Guides",
+      "Program documentation",
       "Concepts",
       "Techniques",
-      "Program documentation",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
+      "Reference",
+      "Internal architecture",
+      "Miscellanea",
     ] as const;
 
     expect(getTopLevelFolderNames(generatedTree)).toEqual([
+      ...factoryFolderNames,
+    ]);
+    expect(getTopLevelFolderNames(adapterTree)).toEqual([
       ...factoryFolderNames,
     ]);
     expect(
       DOCS_SIDEBAR_SECTION_ORDER.flatMap((section) =>
         section.kind === "collection" ? [section.id] : [],
       ),
-    ).toEqual([...FACTORY_SIDEBAR_COLLECTION_IDS]);
+    ).toEqual([
+      "guides",
+      "documentation",
+      "concepts",
+      "techniques",
+      "references",
+    ]);
+    expect(
+      DOCS_SIDEBAR_SECTION_ORDER.filter(
+        (section) => section.kind === "virtual-folder",
+      ).map((section) => section.id),
+    ).toEqual(["internal-architecture", "miscellanea"]);
     expect(DOCS_SIDEBAR_SECTION_ORDER.at(-1)).toEqual({
       kind: "page",
       docsSlug: "documentation/faq",
     });
     expect(getTopLevelFolderNames(generatedTree)).not.toContain("Glossary");
+    expect(getTopLevelFolderNames(generatedTree)).not.toContain("Factories");
     expect(generatedTree.name).toBe("You Agent Factory");
     expect(generatedTree.children.at(-1)).toEqual({
       type: "page",
@@ -127,14 +149,20 @@ describe("docs sidebar adapter extraction parity", () => {
 
     for (const folderName of factoryFolderNames) {
       const generatedLinks = getFolderPageLinks(generatedTree, folderName);
-      const adapterLinks = getFolderPageLinks(adapterTree, folderName).filter(
-        (link) =>
-          folderName !== "Program documentation" ||
-          link.url !== "/docs/documentation/faq",
-      );
+      const adapterLinks = getFolderPageLinks(adapterTree, folderName);
 
       expect(generatedLinks).toEqual(adapterLinks);
     }
+
+    // resolveCollectionId remains wired for Program + Reference overrides.
+    expect(resolveCollectionId({ docsSlug: "factories/configuration" })).toBe(
+      "documentation",
+    );
+    expect(
+      resolveCollectionId({
+        docsSlug: "documentation/throttling-and-limits",
+      }),
+    ).toBe("references");
   });
 
   test("grouped concepts folder keeps separator label and representative page placement", () => {
@@ -159,26 +187,20 @@ describe("docs sidebar adapter extraction parity", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const children = getFolderChildren(pageTree, "Program documentation");
     const links = collectSidebarPageLinks(children);
-    const additionalReferencesUrl =
-      "/docs/documentation/what-is-you-agent-factory";
+    const whatIsUrl = "/docs/documentation/what-is-you-agent-factory";
     const secondaryFolderNames = children
       .filter((node) => node.type === "folder")
       .map((node) => String(node.name));
 
-    expect(findSidebarPageLink(links, additionalReferencesUrl)?.url).toBe(
-      additionalReferencesUrl,
-    );
-    expect(findPrecedingSeparatorLabel(children, additionalReferencesUrl)).toBe(
-      "Additional references",
+    expect(findSidebarPageLink(links, whatIsUrl)?.url).toBe(whatIsUrl);
+    expect(findPrecedingSeparatorLabel(children, whatIsUrl)).toBe(
+      "Orientation",
     );
     expect(getSeparatorLabels(children)).toEqual([
-      "System feature set",
+      "Orientation",
+      "Capabilities",
       "Interfaces",
-      "Packaged factories",
-      "Factory Configuration",
-      "System Operations",
-      "Internal Architecture",
-      "Additional references",
+      "Operations",
     ]);
     for (const former of [
       "Basics",
@@ -191,6 +213,11 @@ describe("docs sidebar adapter extraction parity", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
+      "System feature set",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Additional references",
     ] as const) {
       expect(getSeparatorLabels(children)).not.toContain(former);
     }
@@ -202,13 +229,15 @@ describe("docs sidebar adapter extraction parity", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).toContain("Configuring you-agent-factory");
     expect(secondaryFolderNames).not.toContain("Workers");
-    expect(secondaryFolderNames).toContain("Observability");
+    expect(secondaryFolderNames).not.toContain("Observability");
     expect(
-      findSidebarPageLink(links, "/docs/documentation/throttling-and-limits")
-        ?.url,
-    ).toBe("/docs/documentation/throttling-and-limits");
+      findSidebarPageLink(links, "/docs/documentation/resources")?.url,
+    ).toBe("/docs/documentation/resources");
+    expect(
+      findSidebarPageLink(links, "/docs/documentation/throttling-and-limits"),
+    ).toBeUndefined();
     expect(
       findSidebarPageLink(links, "/docs/documentation/mock-workers"),
     ).toBeUndefined();

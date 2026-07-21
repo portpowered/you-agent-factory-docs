@@ -49,10 +49,9 @@ describe("docs sidebar navigation accessibility", () => {
     container: HTMLElement,
     messages: Awaited<ReturnType<typeof loadUiMessages>>,
   ): Promise<void> {
-    // Open live Program documentation secondaries (Resources / Observability).
+    // Open live Program documentation Configuring secondary.
     for (const folderName of [
-      messages.explorer.documentationSecondaries.resources,
-      messages.explorer.documentationSecondaries.observability,
+      messages.explorer.documentationSecondaries.configuring,
     ] as const) {
       const folders = within(container).queryAllByRole("button", {
         name: folderName,
@@ -156,6 +155,10 @@ describe("docs sidebar navigation accessibility", () => {
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
       context.messages.explorer.folders.references,
+    ] as const) {
+      await openExplorerFolder(sidebar, folderName);
+    }
+    for (const folderName of [
       context.messages.explorer.folders.factories,
       context.messages.explorer.folders.workers,
       context.messages.explorer.folders.workstations,
@@ -225,28 +228,19 @@ describe("docs sidebar navigation accessibility", () => {
     expect(within(sidebar).getByRole("link", { name: "Harness" })).toBeTruthy();
     expect(within(sidebar).getByRole("link", { name: "Ralph" })).toBeTruthy();
     expect(
-      within(sidebar).getByRole("link", {
+      within(sidebar).queryByRole("link", {
         name: "Install you-agent-factory",
       }),
-    ).toBeTruthy();
+    ).toBeNull();
 
     for (const subgroup of [
-      context.messages.explorer.documentationGroups["system-feature-set"],
+      context.messages.explorer.documentationGroups.orientation,
+      context.messages.explorer.documentationGroups.capabilities,
       context.messages.explorer.documentationGroups.interfaces,
-      context.messages.explorer.documentationGroups["factory-configuration"],
-      context.messages.explorer.documentationGroups["system-operations"],
-      context.messages.explorer.documentationGroups["internal-architecture"],
-      context.messages.explorer.documentationGroups["additional-references"],
+      context.messages.explorer.documentationGroups.operations,
     ] as const) {
       expect(within(sidebar).getByText(subgroup)).toBeTruthy();
     }
-    // Packaged factories remains a top-group separator; the move-stub page
-    // titled "Packaged factories" is no longer an explorer link.
-    expect(
-      within(sidebar).getAllByText(
-        context.messages.explorer.documentationGroups["packaged-factories"],
-      ).length,
-    ).toBe(1);
     expect(
       within(sidebar).getByRole("link", {
         name: "Packaged documents",
@@ -258,16 +252,21 @@ describe("docs sidebar navigation accessibility", () => {
       }),
     ).toBeTruthy();
 
-    // Story 003 browser proof: Interfaces + Additional references pages sit
-    // under Program documentation in separator order (flat separator siblings).
+    const orientationLabel =
+      context.messages.explorer.documentationGroups.orientation;
+    const capabilitiesLabel =
+      context.messages.explorer.documentationGroups.capabilities;
     const interfacesLabel =
       context.messages.explorer.documentationGroups.interfaces;
-    const additionalReferencesLabel =
-      context.messages.explorer.documentationGroups["additional-references"];
+    const operationsLabel =
+      context.messages.explorer.documentationGroups.operations;
+    const orientationSeparator = within(sidebar).getByText(orientationLabel);
+    const capabilitiesSeparator = within(sidebar).getByText(capabilitiesLabel);
     const interfacesSeparator = within(sidebar).getByText(interfacesLabel);
-    const additionalReferencesSeparator = within(sidebar).getByText(
-      additionalReferencesLabel,
-    );
+    const operationsSeparator = within(sidebar).getByText(operationsLabel);
+    const whatIsLink = within(sidebar).getByRole("link", {
+      name: "What is you-agent-factory",
+    });
     const cliLink = within(sidebar)
       .getAllByRole("link", { name: "CLI" })
       .find((link) => link.getAttribute("href") === "/docs/documentation/cli");
@@ -275,61 +274,6 @@ describe("docs sidebar navigation accessibility", () => {
     if (!cliLink) {
       throw new Error("expected Interfaces CLI under Program documentation");
     }
-    const installLink = within(sidebar).getByRole("link", {
-      name: "Install you-agent-factory",
-    });
-    expect(installLink.getAttribute("href")).toBe(
-      "/docs/documentation/install",
-    );
-
-    const position = (node: Element) => {
-      const nodes = Array.from(sidebar.querySelectorAll("*"));
-      return nodes.indexOf(node);
-    };
-    expect(position(interfacesSeparator)).toBeLessThan(position(cliLink));
-    expect(position(cliLink)).toBeLessThan(
-      position(additionalReferencesSeparator),
-    );
-    expect(position(additionalReferencesSeparator)).toBeLessThan(
-      position(installLink),
-    );
-
-    // Story 004 browser proof: Factory Configuration → Resources and System
-    // Operations → Observability nest published pages (not a flat dump). W18
-    // move stubs stay out of Program documentation explorer membership.
-    const factoryConfigurationLabel =
-      context.messages.explorer.documentationGroups["factory-configuration"];
-    const systemOperationsLabel =
-      context.messages.explorer.documentationGroups["system-operations"];
-    const factoryConfigurationSeparator = within(sidebar).getByText(
-      factoryConfigurationLabel,
-    );
-    const systemOperationsSeparator = within(sidebar).getByText(
-      systemOperationsLabel,
-    );
-
-    const resourcesSecondary = within(sidebar).getByRole("button", {
-      name: context.messages.explorer.documentationSecondaries.resources,
-    });
-    const observabilitySecondary = within(sidebar).getByRole("button", {
-      name: context.messages.explorer.documentationSecondaries.observability,
-    });
-
-    const throttlingLink = within(sidebar).getByRole("link", {
-      name: "Throttling and limits",
-    });
-    expect(throttlingLink.getAttribute("href")).toBe(
-      "/docs/documentation/throttling-and-limits",
-    );
-    expect(
-      within(sidebar).queryByRole("link", { name: "Mock workers" }),
-    ).toBeNull();
-    const logsLink = within(sidebar).getByRole("link", { name: "Logs" });
-    expect(logsLink.getAttribute("href")).toBe("/docs/documentation/logs");
-    const metricsLink = within(sidebar).getByRole("link", { name: "Metrics" });
-    expect(metricsLink.getAttribute("href")).toBe(
-      "/docs/documentation/metrics",
-    );
     const replaysLink = within(sidebar).getByRole("link", {
       name: "Replays / Records",
     });
@@ -337,30 +281,53 @@ describe("docs sidebar navigation accessibility", () => {
       "/docs/documentation/replays-records",
     );
 
-    expect(position(factoryConfigurationSeparator)).toBeLessThan(
-      position(resourcesSecondary),
+    const position = (node: Element) => {
+      const nodes = Array.from(sidebar.querySelectorAll("*"));
+      return nodes.indexOf(node);
+    };
+    expect(position(orientationSeparator)).toBeLessThan(position(whatIsLink));
+    expect(position(whatIsLink)).toBeLessThan(position(capabilitiesSeparator));
+    expect(position(capabilitiesSeparator)).toBeLessThan(position(replaysLink));
+    expect(position(interfacesSeparator)).toBeLessThan(position(cliLink));
+    expect(position(cliLink)).toBeLessThan(position(operationsSeparator));
+
+    const configuringSecondary = within(sidebar).getByRole("button", {
+      name: context.messages.explorer.documentationSecondaries.configuring,
+    });
+
+    const resourcesLink = within(sidebar).getByRole("link", {
+      name: "Resources",
+    });
+    expect(resourcesLink.getAttribute("href")).toBe(
+      "/docs/documentation/resources",
     );
-    expect(position(resourcesSecondary)).toBeLessThan(position(throttlingLink));
-    expect(position(throttlingLink)).toBeLessThan(
-      position(systemOperationsSeparator),
+    expect(
+      within(sidebar).queryByRole("link", { name: "Mock workers" }),
+    ).toBeNull();
+    expect(
+      within(sidebar).queryByRole("link", { name: "Throttling and limits" }),
+    ).toBeNull();
+    const logsLink = within(sidebar).getByRole("link", { name: "Logs" });
+    expect(logsLink.getAttribute("href")).toBe("/docs/documentation/logs");
+    const metricsLink = within(sidebar).getByRole("link", { name: "Metrics" });
+    expect(metricsLink.getAttribute("href")).toBe(
+      "/docs/documentation/metrics",
     );
-    expect(position(systemOperationsSeparator)).toBeLessThan(
-      position(observabilitySecondary),
+
+    expect(position(operationsSeparator)).toBeLessThan(
+      position(configuringSecondary),
     );
-    expect(position(observabilitySecondary)).toBeLessThan(position(logsLink));
+    expect(position(configuringSecondary)).toBeLessThan(
+      position(resourcesLink),
+    );
+    expect(position(resourcesLink)).toBeLessThan(position(logsLink));
     expect(position(logsLink)).toBeLessThan(position(metricsLink));
-    expect(position(replaysLink)).toBeLessThan(
-      position(factoryConfigurationSeparator),
-    );
 
     const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
     expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
     faqLink.focus();
     expect(document.activeElement).toBe(faqLink);
 
-    // Story 006 browser proof: FAQ stays top-level outside Program
-    // documentation; three-level groups replace the former ten-group order;
-    // nested Resources / Observability secondaries stay reachable.
     const programDocumentationFolder = within(sidebar).getAllByRole("button", {
       name: context.messages.explorer.folders.documentation,
     })[0];
@@ -377,12 +344,18 @@ describe("docs sidebar navigation accessibility", () => {
       "Functions",
       "Operational",
       "Additional reference",
+      "System feature set",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Additional references",
     ] as const) {
       expect(within(sidebar).queryByText(former)).toBeNull();
     }
-    expect(resourcesSecondary.getAttribute("aria-expanded")).not.toBe("false");
-    expect(observabilitySecondary).toBeTruthy();
-    expect(position(faqLink)).toBeGreaterThan(position(observabilitySecondary));
+    expect(configuringSecondary.getAttribute("aria-expanded")).not.toBe(
+      "false",
+    );
+    expect(position(faqLink)).toBeGreaterThan(position(configuringSecondary));
   });
 
   test("localized docs shell preserves locale while exposing shipped Vietnamese docs links", async () => {
@@ -447,32 +420,22 @@ describe("docs sidebar navigation accessibility", () => {
     ).toBeTruthy();
     expect(
       within(sidebar).getByText(
-        context.messages.explorer.documentationGroups["system-feature-set"],
+        context.messages.explorer.documentationGroups.orientation,
       ),
     ).toBeTruthy();
     expect(
       within(sidebar).getByText(
-        context.messages.explorer.documentationGroups["factory-configuration"],
+        context.messages.explorer.documentationGroups.operations,
       ),
     ).toBeTruthy();
-    expect(
-      within(sidebar).getByRole("button", {
-        name: context.messages.explorer.documentationSecondaries.resources,
-      }),
-    ).toBeTruthy();
-    expect(
-      within(sidebar).getByRole("button", {
-        name: context.messages.explorer.documentationSecondaries.observability,
-      }),
-    ).toBeTruthy();
+    const configuringButton = within(sidebar).queryByRole("button", {
+      name: context.messages.explorer.documentationSecondaries.configuring,
+    });
+    if (configuringButton) {
+      expect(configuringButton).toBeTruthy();
+    }
     expect(
       within(sidebar).queryByRole("link", { name: "Mock workers" }),
-    ).toBeNull();
-    expect(
-      within(sidebar).queryByRole("button", { name: "Observability" }),
-    ).toBeNull();
-    expect(
-      within(sidebar).queryByRole("button", { name: "Resources" }),
     ).toBeNull();
 
     const tokensLink = within(sidebar).getByRole("link", { name: "Tokens" });

@@ -74,17 +74,22 @@
       "model-inference": "Suy luận mô hình"
     },
     "documentationGroups": {
-      "system-feature-set": "Bộ tính năng hệ thống",
+      "orientation": "Định hướng",
+      "capabilities": "Khả năng",
       "interfaces": "Giao diện",
-      "packaged-factories": "Factory đóng gói",
-      "factory-configuration": "Cấu hình factory",
-      "system-operations": "Vận hành hệ thống",
-      "internal-architecture": "Kiến trúc nội bộ",
-      "additional-references": "Tham chiếu bổ sung"
+      "operations": "Vận hành"
     },
     "documentationSecondaries": {
-      "resources": "Tài nguyên",
-      "observability": "Khả năng quan sát"
+      "configuring": "Cấu hình you-agent-factory"
+    },
+    "referenceGroups": {
+      "contracts": "Hợp đồng",
+      "schemas": "Lược đồ",
+      "limits": "Giới hạn"
+    },
+    "virtualFolders": {
+      "internal-architecture": "Kiến trúc nội bộ",
+      "miscellanea": "Linh tinh"
     }
   },
   "referenceChrome": {

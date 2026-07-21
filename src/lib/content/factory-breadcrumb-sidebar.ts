@@ -1,20 +1,80 @@
 import {
-  DIRECT_DOCS_ROUTE_FAMILY_IDS,
   DOCS_COLLECTION_IDS,
   type DocsCollectionId,
 } from "@/lib/docs/collection-definition-contract";
-import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import { isDeletedAiSearchUrl } from "@/lib/search/factory-search-deleted-records";
 
 /**
- * Reader-visible docs explorer folder order: CLI collections, then W15 route
- * families in topology order (references → factories → workers →
- * workstations). Glossary stays reachable via browse, search, and direct
- * routes but is not an explorer folder.
+ * Reader-visible docs explorer top-level collection folders under locked
+ * PS-100: Guides → Program documentation → Concepts → Techniques → Reference.
+ * Factories / Workers / Workstations nest under Reference (not top-level peers).
+ * Glossary stays reachable via browse, search, and direct routes but is not an
+ * explorer folder. Virtual folders (Internal architecture / Miscellanea) are
+ * separate section refs — see `FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS`.
+ */
+export const FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS = [
+  "guides",
+  "documentation",
+  "concepts",
+  "techniques",
+  "references",
+] as const satisfies readonly DocsCollectionId[];
+
+/**
+ * W15 route-family collections nested under the Reference explorer folder.
+ */
+export const FACTORY_REFERENCE_NESTED_COLLECTION_IDS = [
+  "factories",
+  "workers",
+  "workstations",
+] as const satisfies readonly DocsCollectionId[];
+
+/**
+ * Top-level virtual explorer folders that are not docs collection route
+ * families. Pages keep existing `/docs/documentation/...` routes.
+ */
+export const FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS = [
+  "internal-architecture",
+  "miscellanea",
+] as const;
+
+/**
+ * Locked PS-100 membership for virtual explorer folders (ordered). Install is
+ * intentionally omitted (demoted from explorer; content merge is PS-200).
+ */
+export const FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP = {
+  "internal-architecture": [
+    "documentation/architecture-of-system",
+    "documentation/petri",
+  ],
+  miscellanea: [
+    "documentation/troubleshooting",
+    "documentation/security-trust-boundaries",
+    "documentation/contributing-to-these-docs",
+  ],
+} as const satisfies Record<
+  (typeof FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS)[number],
+  readonly string[]
+>;
+
+/** English default labels for virtual explorer folders. */
+export const FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS = {
+  "internal-architecture": "Internal architecture",
+  miscellanea: "Miscellanea",
+} as const satisfies Record<
+  (typeof FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS)[number],
+  string
+>;
+
+/**
+ * All collection ids that appear as explorer folders (top-level or nested under
+ * Reference). Used for sidebar definitions / folder labels; top-level order is
+ * `FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS`. Virtual folders are not
+ * collections and are omitted here.
  */
 export const FACTORY_SIDEBAR_COLLECTION_IDS = [
-  ...CLI_DOCS_COLLECTION_IDS,
-  ...DIRECT_DOCS_ROUTE_FAMILY_IDS,
+  ...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS,
+  ...FACTORY_REFERENCE_NESTED_COLLECTION_IDS,
 ] as const satisfies readonly DocsCollectionId[];
 
 /**
@@ -26,6 +86,15 @@ export const FACTORY_NAV_COLLECTION_IDS = DOCS_COLLECTION_IDS;
 
 export type FactorySidebarCollectionId =
   (typeof FACTORY_SIDEBAR_COLLECTION_IDS)[number];
+
+export type FactoryExplorerTopLevelCollectionId =
+  (typeof FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS)[number];
+
+export type FactoryReferenceNestedCollectionId =
+  (typeof FACTORY_REFERENCE_NESTED_COLLECTION_IDS)[number];
+
+export type FactoryExplorerVirtualFolderId =
+  (typeof FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS)[number];
 
 export type FactoryNavCollectionId = DocsCollectionId;
 
@@ -41,7 +110,12 @@ export const DOCS_EXPLORER_TOP_LEVEL_FAQ_URL =
 
 export type FactoryExplorerCollectionSectionRef = {
   kind: "collection";
-  id: FactorySidebarCollectionId;
+  id: FactoryExplorerTopLevelCollectionId;
+};
+
+export type FactoryExplorerVirtualFolderSectionRef = {
+  kind: "virtual-folder";
+  id: FactoryExplorerVirtualFolderId;
 };
 
 export type FactoryExplorerPageSectionRef = {
@@ -51,19 +125,29 @@ export type FactoryExplorerPageSectionRef = {
 
 export type FactoryExplorerSectionRef =
   | FactoryExplorerCollectionSectionRef
+  | FactoryExplorerVirtualFolderSectionRef
   | FactoryExplorerPageSectionRef;
 
 /**
- * Full explorer top-level order: CLI + W15 family collection folders, then
- * FAQ as a sibling page entry outside Program documentation.
+ * Full explorer top-level order under locked PS-100: Guides → Program
+ * documentation → Concepts → Techniques → Reference → Internal architecture →
+ * Miscellanea → FAQ. Factories / Workers / Workstations nest under Reference
+ * (see `FACTORY_REFERENCE_NESTED_COLLECTION_IDS`).
  */
 export const FACTORY_EXPLORER_SECTION_ORDER = [
-  ...FACTORY_SIDEBAR_COLLECTION_IDS.map(
+  ...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.map(
     (id) =>
       ({
         kind: "collection",
         id,
       }) as const satisfies FactoryExplorerCollectionSectionRef,
+  ),
+  ...FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS.map(
+    (id) =>
+      ({
+        kind: "virtual-folder",
+        id,
+      }) as const satisfies FactoryExplorerVirtualFolderSectionRef,
   ),
   {
     kind: "page",
@@ -71,6 +155,9 @@ export const FACTORY_EXPLORER_SECTION_ORDER = [
   } as const satisfies FactoryExplorerPageSectionRef,
 ] as const satisfies readonly FactoryExplorerSectionRef[];
 
+const VIRTUAL_FOLDER_DOCS_SLUG_SET = new Set<string>(
+  Object.values(FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP).flat(),
+);
 /**
  * Explorer-visible page-tree root / brand name for the docs sidebar chrome.
  * Technical package/repo/route identifiers remain literal `you-agent-factory`.
@@ -80,8 +167,9 @@ export const DOCS_PAGE_TREE_ROOT_NAME = "You Agent Factory" as const;
 /**
  * Sidebar folder labels and breadcrumb collection crumb labels for factory
  * docs collections. Retired Atlas folder names are not part of this map.
- * Documentation's explorer label is Program documentation; glossary keeps a
- * crumb label for direct glossary routes outside the explorer folder list.
+ * Documentation's explorer label is Program documentation; Reference (singular)
+ * is the locked PS-100 folder label; glossary keeps a crumb label for direct
+ * glossary routes outside the explorer folder list.
  */
 export const FACTORY_SIDEBAR_FOLDER_LABELS = {
   guides: "Guides",
@@ -89,13 +177,13 @@ export const FACTORY_SIDEBAR_FOLDER_LABELS = {
   techniques: "Techniques",
   documentation: "Program documentation",
   glossary: "Glossary",
-  references: "References",
+  references: "Reference",
   factories: "Factories",
   workers: "Workers",
   workstations: "Workstations",
 } as const satisfies Record<FactoryNavCollectionId, string>;
 
-/** Explorer folder labels only (no Glossary folder). */
+/** Explorer folder labels (top-level + nested under Reference; no Glossary). */
 export const FACTORY_EXPLORER_FOLDER_LABELS = {
   guides: FACTORY_SIDEBAR_FOLDER_LABELS.guides,
   concepts: FACTORY_SIDEBAR_FOLDER_LABELS.concepts,
@@ -213,23 +301,25 @@ export function assertFactoryBreadcrumbSegments(
 
 /**
  * Fail closed when sidebar collection-folder order drifts from the explorer
- * folder contract (CLI + W15 families; Glossary is not an explorer folder).
+ * top-level collection contract (Guides → Program documentation → Concepts →
+ * Techniques → Reference; Glossary is not an explorer folder; Factories /
+ * Workers / Workstations nest under Reference; virtual folders are separate).
  */
 export function assertFactorySidebarSectionOrder(
   sectionIds: readonly string[],
 ): void {
-  if (sectionIds.length !== FACTORY_SIDEBAR_COLLECTION_IDS.length) {
+  if (sectionIds.length !== FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.length) {
     throw new Error(
-      `Docs sidebar section order length ${sectionIds.length} does not match factory explorer collections (${FACTORY_SIDEBAR_COLLECTION_IDS.join(", ")}).`,
+      `Docs sidebar section order length ${sectionIds.length} does not match factory explorer top-level collections (${FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.join(", ")}).`,
     );
   }
 
   for (
     let index = 0;
-    index < FACTORY_SIDEBAR_COLLECTION_IDS.length;
+    index < FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.length;
     index += 1
   ) {
-    const expected = FACTORY_SIDEBAR_COLLECTION_IDS[index];
+    const expected = FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS[index];
     const actual = sectionIds[index];
     if (actual !== expected) {
       throw new Error(
@@ -250,12 +340,16 @@ function describeExplorerSectionRef(
     return `collection:${section.id}`;
   }
 
+  if (section.kind === "virtual-folder") {
+    return `virtual-folder:${section.id}`;
+  }
+
   return `page:${section.docsSlug}`;
 }
 
 /**
  * Fail closed when the full explorer top-level order drifts from the
- * collection-folder + top-level FAQ contract.
+ * collection-folder + virtual-folder + top-level FAQ contract.
  */
 export function assertFactoryExplorerSectionOrder(
   sections: ReadonlyArray<FactoryExplorerSectionRef>,
@@ -295,6 +389,22 @@ export function assertFactoryExplorerSectionOrder(
 
 export function isDocsExplorerTopLevelFaqPage(docsSlug: string): boolean {
   return docsSlug === DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG;
+}
+
+export function isDocsExplorerVirtualFolderPage(docsSlug: string): boolean {
+  return VIRTUAL_FOLDER_DOCS_SLUG_SET.has(docsSlug);
+}
+
+export function resolveFactoryExplorerVirtualFolderLabel(
+  id: FactoryExplorerVirtualFolderId,
+): string {
+  return FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS[id];
+}
+
+export function listFactoryExplorerVirtualFolderMembership(
+  id: FactoryExplorerVirtualFolderId,
+): readonly string[] {
+  return FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP[id];
 }
 
 /**

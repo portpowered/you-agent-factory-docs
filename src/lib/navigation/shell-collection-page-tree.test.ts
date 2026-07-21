@@ -110,4 +110,59 @@ describe("shell collection page tree", () => {
       "Maintenance Reference",
     ]);
   });
+
+  test("buildShellCollectionPageTreeChildren respects resolveCollectionId overrides", () => {
+    const children = buildShellCollectionPageTreeChildren({
+      pages: [
+        createTestPage("factories/configuration", "Configuration"),
+        createTestPage("factories/sessions", "Factory Sessions"),
+        createTestPage("documentation/resources", "Resources"),
+      ],
+      definitions: [
+        {
+          id: "documentation",
+          routeSlug: "documentation",
+          frontmatterKind: "documentation",
+          sidebarLabel: "Program documentation",
+        },
+        {
+          id: "factories",
+          routeSlug: "factories",
+          frontmatterKind: "factories",
+          sidebarLabel: "Factories",
+        },
+      ],
+      collectionIds: ["documentation", "factories"],
+      resolveCollectionId: (page) =>
+        page.docsSlug === "factories/configuration"
+          ? "documentation"
+          : undefined,
+    });
+
+    const documentation = children.find(
+      (node) => node.type === "folder" && node.name === "Program documentation",
+    );
+    const factories = children.find(
+      (node) => node.type === "folder" && node.name === "Factories",
+    );
+    expect(documentation?.type).toBe("folder");
+    expect(factories?.type).toBe("folder");
+    if (documentation?.type !== "folder" || factories?.type !== "folder") {
+      throw new Error("expected documentation and factories folders");
+    }
+
+    expect(
+      getPageNodeEntries(documentation.children)
+        .map((entry) => entry.url)
+        .sort(),
+    ).toEqual(
+      [
+        "/fixture/docs/documentation/resources",
+        "/fixture/docs/factories/configuration",
+      ].sort(),
+    );
+    expect(
+      getPageNodeEntries(factories.children).map((entry) => entry.url),
+    ).toEqual(["/fixture/docs/factories/sessions"]);
+  });
 });

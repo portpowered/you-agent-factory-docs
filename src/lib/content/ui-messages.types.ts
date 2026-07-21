@@ -78,19 +78,31 @@ export type ExplorerConceptsGroupMessages = {
 };
 
 export type ExplorerDocumentationGroupMessages = {
-  "system-feature-set": string;
+  orientation: string;
+  capabilities: string;
   interfaces: string;
-  "packaged-factories": string;
-  "factory-configuration": string;
-  "system-operations": string;
-  "internal-architecture": string;
-  "additional-references": string;
+  operations: string;
 };
 
-/** Nested Program documentation secondary folder labels (Resources, Observability). */
+/** Nested Program documentation secondary folder labels (Configuring). */
 export type ExplorerDocumentationSecondaryMessages = {
-  resources: string;
-  observability: string;
+  configuring: string;
+};
+
+/** Reference subgroup separator labels (Contracts / Schemas / Limits). */
+export type ExplorerReferenceGroupMessages = {
+  contracts: string;
+  schemas: string;
+  limits: string;
+};
+
+/**
+ * Top-level virtual explorer folder labels (Internal architecture /
+ * Miscellanea). Not DocsCollectionIds — see FACTORY_EXPLORER_VIRTUAL_FOLDER_*.
+ */
+export type ExplorerVirtualFolderMessages = {
+  "internal-architecture": string;
+  miscellanea: string;
 };
 
 export type ExplorerMessages = {
@@ -98,6 +110,8 @@ export type ExplorerMessages = {
   conceptsGroups: ExplorerConceptsGroupMessages;
   documentationGroups: ExplorerDocumentationGroupMessages;
   documentationSecondaries: ExplorerDocumentationSecondaryMessages;
+  referenceGroups: ExplorerReferenceGroupMessages;
+  virtualFolders: ExplorerVirtualFolderMessages;
 };
 
 /**

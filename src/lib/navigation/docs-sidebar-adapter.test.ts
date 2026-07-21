@@ -17,7 +17,7 @@ const EXPECTED_DOCS_SIDEBAR_FOLDER_LABELS = [
   "Concepts",
   "Techniques",
   "Program documentation",
-  "References",
+  "Reference",
   "Factories",
   "Workers",
   "Workstations",

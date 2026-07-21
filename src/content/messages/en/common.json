@@ -63,7 +63,7 @@
       "concepts": "Concepts",
       "techniques": "Techniques",
       "documentation": "Program documentation",
-      "references": "References",
+      "references": "Reference",
       "factories": "Factories",
       "workers": "Workers",
       "workstations": "Workstations"
@@ -74,17 +74,22 @@
       "model-inference": "Model inference"
     },
     "documentationGroups": {
-      "system-feature-set": "System feature set",
+      "orientation": "Orientation",
+      "capabilities": "Capabilities",
       "interfaces": "Interfaces",
-      "packaged-factories": "Packaged factories",
-      "factory-configuration": "Factory Configuration",
-      "system-operations": "System Operations",
-      "internal-architecture": "Internal Architecture",
-      "additional-references": "Additional references"
+      "operations": "Operations"
     },
     "documentationSecondaries": {
-      "resources": "Resources",
-      "observability": "Observability"
+      "configuring": "Configuring you-agent-factory"
+    },
+    "referenceGroups": {
+      "contracts": "Contracts",
+      "schemas": "Schemas",
+      "limits": "Limits"
+    },
+    "virtualFolders": {
+      "internal-architecture": "Internal architecture",
+      "miscellanea": "Miscellanea"
     }
   },
   "referenceChrome": {

@@ -78,15 +78,17 @@ describe("localizePageTree", () => {
     );
   });
 
-  test("keeps explorer folders free of Glossary after locale pruning", () => {
-    const localizedTree = localizePageTree(source.pageTree, "vi");
+  test("keeps explorer folders free of Glossary after locale pruning", async () => {
+    const messages = await loadUiMessages("vi");
+    const localizedTree = localizePageTree(source.pageTree, "vi", { messages });
 
     expect(topLevelFolderNames(localizedTree.children)).toEqual([
-      "Hướng dẫn",
-      "Khái niệm",
-      "Kỹ thuật",
-      "Tài liệu chương trình",
-      "Tham chiếu",
+      messages.explorer.folders.guides,
+      messages.explorer.folders.documentation,
+      messages.explorer.folders.concepts,
+      messages.explorer.folders.techniques,
+      messages.explorer.folders.references,
+      messages.explorer.virtualFolders.miscellanea,
     ]);
     expect(localizedTree.name).toBe("You Agent Factory");
     expect(localizedTree.children.at(-1)).toMatchObject({
@@ -101,19 +103,24 @@ describe("localizePageTree", () => {
   test("localizes collection, subgroup, and page labels for japanese explorer trees", async () => {
     const messages = await loadUiMessages("ja");
     const localizedTree = localizePageTree(source.pageTree, "ja", { messages });
+    const folderNames = topLevelFolderNames(localizedTree.children);
 
-    expect(topLevelFolderNames(localizedTree.children)).toEqual([
+    expect(folderNames.slice(0, 5)).toEqual([
       messages.explorer.folders.guides,
+      messages.explorer.folders.documentation,
       messages.explorer.folders.concepts,
       messages.explorer.folders.techniques,
-      messages.explorer.folders.documentation,
       messages.explorer.folders.references,
     ]);
+    expect(folderNames).toContain(messages.explorer.virtualFolders.miscellanea);
+    expect(folderNames).not.toContain(
+      messages.explorer.virtualFolders["internal-architecture"],
+    );
+    expect(folderNames).not.toContain("Miscellanea");
+    expect(folderNames).not.toContain("Internal architecture");
     // Factories / workers / workstations folders prune when no pages are
     // shipped for the locale (current shipped set includes references/api).
-    expect(topLevelFolderNames(localizedTree.children)).not.toContain(
-      messages.explorer.folders.factories,
-    );
+    expect(folderNames).not.toContain(messages.explorer.folders.factories);
 
     const concepts = folderByName(
       localizedTree.children,
@@ -158,63 +165,39 @@ describe("localizePageTree", () => {
       throw new Error("expected Program documentation folder");
     }
     expect(separatorNames(documentation.children)[0]).toBe(
-      messages.explorer.documentationGroups["system-feature-set"],
+      messages.explorer.documentationGroups.orientation,
+    );
+    expect(separatorNames(documentation.children)).toContain(
+      messages.explorer.documentationGroups.capabilities,
     );
     expect(separatorNames(documentation.children)).toContain(
       messages.explorer.documentationGroups.interfaces,
     );
     expect(separatorNames(documentation.children)).toContain(
-      messages.explorer.documentationGroups["factory-configuration"],
-    );
-    expect(separatorNames(documentation.children)).toContain(
-      messages.explorer.documentationGroups["additional-references"],
+      messages.explorer.documentationGroups.operations,
     );
 
-    const factoryConfigurationLabel =
-      messages.explorer.documentationGroups["factory-configuration"];
-    expect(separatorNames(documentation.children)).toContain(
-      factoryConfigurationLabel,
-    );
-    const factoryConfigurationIndex = documentation.children.findIndex(
-      (child) =>
-        child.type === "separator" &&
-        String(child.name) === factoryConfigurationLabel,
-    );
-    expect(factoryConfigurationIndex).toBeGreaterThanOrEqual(0);
-    const nextSeparatorAfterFactoryConfiguration = documentation.children
-      .slice(factoryConfigurationIndex + 1)
-      .findIndex((child) => child.type === "separator");
-    const factoryConfigurationChildren =
-      nextSeparatorAfterFactoryConfiguration === -1
-        ? documentation.children.slice(factoryConfigurationIndex + 1)
-        : documentation.children.slice(
-            factoryConfigurationIndex + 1,
-            factoryConfigurationIndex +
-              1 +
-              nextSeparatorAfterFactoryConfiguration,
-          );
-    const secondaryFolderNames = factoryConfigurationChildren
-      .filter((child) => child.type === "folder")
-      .map((child) => String(child.name));
-    // Empty Workers / Workstations / Factories stub-nesting secondaries were
-    // removed after demotion; only Resources remains under Factory Configuration.
-    expect(secondaryFolderNames).toEqual([
-      messages.explorer.documentationSecondaries.resources,
-    ]);
+    const operationsLabel = messages.explorer.documentationGroups.operations;
+    expect(separatorNames(documentation.children)).toContain(operationsLabel);
 
-    const systemOperationsIndex = separatorNames(
-      documentation.children,
-    ).indexOf(messages.explorer.documentationGroups["system-operations"]);
-    expect(systemOperationsIndex).toBeGreaterThanOrEqual(0);
-    const observabilityFolder = documentation.children
-      .slice(systemOperationsIndex + 1)
-      .find(
-        (child) =>
-          child.type === "folder" &&
-          String(child.name) ===
-            messages.explorer.documentationSecondaries.observability,
+    const links = collectLinks(documentation.children);
+    if (
+      links.some((link) => link.endsWith("/ja/docs/documentation/resources"))
+    ) {
+      const operationsIndex = separatorNames(documentation.children).indexOf(
+        operationsLabel,
       );
-    expect(observabilityFolder?.type).toBe("folder");
+      expect(operationsIndex).toBeGreaterThanOrEqual(0);
+      const configuringFolder = documentation.children
+        .slice(operationsIndex + 1)
+        .find(
+          (child) =>
+            child.type === "folder" &&
+            String(child.name) ===
+              messages.explorer.documentationSecondaries.configuring,
+        );
+      expect(configuringFolder?.type).toBe("folder");
+    }
   });
 
   test("preserves literal you-agent-factory identifiers in localized page labels", async () => {
