@@ -87,6 +87,13 @@ const R02_DISCOVERABLE_PROGRAM_DOCUMENTATION_PAGES = [
     kind: "documentation" as const,
     searchQuery: "packaged docs",
   },
+  {
+    slug: "packaged-factories",
+    registryId: "documentation.packaged-factories",
+    title: "Packaged Factories",
+    kind: "documentation" as const,
+    searchQuery: "you run --named",
+  },
 ] as const;
 
 /**
@@ -133,14 +140,6 @@ const R02_DEMOTED_PROGRAM_DOCUMENTATION_STUBS = [
     kind: "documentation" as const,
     searchQuery: "INFERENCE_WORKER",
     familyUrl: "/docs/workers/inference",
-  },
-  {
-    slug: "packaged-factories",
-    registryId: "documentation.packaged-factories",
-    title: "Packaged factories",
-    kind: "documentation" as const,
-    searchQuery: "packaged factories",
-    familyUrl: "/docs/factories/packaged",
   },
 ] as const;
 

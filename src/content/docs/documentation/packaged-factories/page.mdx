@@ -1,6 +1,6 @@
 ---
-title: "Packaged factories"
-description: "This page moved to /docs/factories/packaged."
+title: "Packaged Factories"
+description: "Packaged factories are catalog-backed @you/* built-ins you discover and run by canonical name with you run --named—not the same as Packaged documents (you docs topics)."
 kind: "documentation"
 registryId: "documentation.packaged-factories"
 messageNamespace: "local"
@@ -8,11 +8,61 @@ assetNamespace: "local"
 status: "published"
 tags: []
 aliases:
+  - "Packaged Factories"
   - "packaged factories"
   - "@you"
   - "you run --named"
-updatedAt: "2026-07-18"
+updatedAt: "2026-07-21"
 ---
 
-{/* W18 static compatibility document: preserves the inbound URL and links to the family target. */}
-<DocumentationRouteCompatibilityDocument oldRoute="/docs/documentation/packaged-factories" />
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="how-it-fits" titleKey="sections.howItFits.title">
+  <T k="sections.howItFits.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/factories/packaged",
+        labelKey: "links.packagedFactoriesDepth",
+      },
+      {
+        href: "/docs/documentation/packaged-documents",
+        labelKey: "links.packagedDocumentsOverview",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.packaged-factories" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.packaged-factories" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.packaged-factories" />
+</Section>

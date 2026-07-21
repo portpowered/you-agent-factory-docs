@@ -92,21 +92,6 @@ export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMi
       status: "closed",
     },
     {
-      oldRoute: "/docs/documentation/packaged-factories",
-      targetRoute: "/docs/factories/packaged",
-      status: "closed",
-    },
-    {
-      oldRoute: "/docs/documentation/dynamic-workflows",
-      targetRoute: "/docs/factories/dynamic-workflows",
-      status: "closed",
-    },
-    {
-      oldRoute: "/docs/documentation/factory-session",
-      targetRoute: "/docs/factories/sessions",
-      status: "closed",
-    },
-    {
       oldRoute: "/docs/documentation/workers",
       targetRoute: "/docs/workers",
       status: "closed",
@@ -207,8 +192,12 @@ export type DocumentationRouteMigrationLedger =
 export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER_SIZE =
   DOCUMENTATION_ROUTE_MIGRATION_LEDGER.length;
 
-/** Expected §10 inventory size from plan / W00 baseline. */
-export const DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT = 14;
+/**
+ * Active §10 move-stub inventory size (W00 baseline minus routes restored as
+ * Mode A Program overviews — factory-session, dynamic-workflows, and
+ * packaged-factories via PS-210).
+ */
+export const DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT = 11;
 
 export function listDocumentationRouteMigrationRows(): readonly DocumentationRouteMigrationRow[] {
   return DOCUMENTATION_ROUTE_MIGRATION_LEDGER;
@@ -389,10 +378,6 @@ export const DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS = {
   "documentation.configuration": "documentation.factories-configuration",
   "documentation.global-configuration-factories":
     "documentation.factories-global-configuration",
-  "documentation.packaged-factories": "documentation.factories-packaged",
-  "documentation.dynamic-workflows":
-    "documentation.factories-dynamic-workflows",
-  "documentation.factory-session": "documentation.factories-sessions",
   "documentation.agent-workers": "documentation.workers-agent",
   "documentation.inference-workers": "documentation.workers-inference",
   "documentation.script-workers": "documentation.workers-script",

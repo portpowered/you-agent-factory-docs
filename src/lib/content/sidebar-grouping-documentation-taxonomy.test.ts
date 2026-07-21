@@ -16,6 +16,7 @@ import {
   getDocumentationSidebarSecondaryLabel,
   isDeferredDocumentationExplorerMembershipSlug,
   isDocumentationSidebarSecondaryGroup,
+  MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
   SIDEBAR_GROUP_LABELS,
 } from "@/lib/content/sidebar-grouping";
 
@@ -69,9 +70,6 @@ const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
   "cli-command-index",
   "configuration",
   "global-configuration-factories",
-  "packaged-factories",
-  "dynamic-workflows",
-  "factory-session",
   "workers",
   "agent-workers",
   "inference-workers",
@@ -166,7 +164,7 @@ describe("Program documentation three-level taxonomy", () => {
     }
   });
 
-  test("every published documentation page except FAQ, W18 move stubs, and deferred-membership pages has exactly one membership path", () => {
+  test("every published documentation page except FAQ, W18 move stubs, Mode A overviews pending explorer membership, and deferred-membership pages has exactly one membership path", () => {
     const publishedSlugs = loadPublishedDocsPagesSync("en")
       .filter((page) => page.docsSlug.startsWith("documentation/"))
       .map((page) => page.docsSlug.slice("documentation/".length));
@@ -175,6 +173,9 @@ describe("Program documentation three-level taxonomy", () => {
       FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
     );
     const moveStubSlugSet = new Set<string>(W18_DOCUMENTATION_MOVE_STUB_SLUGS);
+    const pendingExplorerSlugSet = new Set<string>(
+      MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
+    );
 
     expect(membershipSlugs).not.toContain("faq");
     expect(getDocumentationSidebarMembership("faq")).toBeUndefined();
@@ -188,6 +189,13 @@ describe("Program documentation three-level taxonomy", () => {
       expect(membershipSlugs).not.toContain(stubSlug);
       expect(getDocumentationSidebarMembership(stubSlug)).toBeUndefined();
       expect(publishedSlugs).toContain(stubSlug);
+    }
+
+    for (const overviewSlug of MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
+      expect(membershipSlugs).not.toContain(overviewSlug);
+      expect(getDocumentationSidebarMembership(overviewSlug)).toBeUndefined();
+      expect(publishedSlugs).toContain(overviewSlug);
+      expect(moveStubSlugSet.has(overviewSlug)).toBe(false);
     }
 
     for (const deferredSlug of DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS) {
@@ -204,7 +212,7 @@ describe("Program documentation three-level taxonomy", () => {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }
-      if (moveStubSlugSet.has(slug)) {
+      if (moveStubSlugSet.has(slug) || pendingExplorerSlugSet.has(slug)) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }

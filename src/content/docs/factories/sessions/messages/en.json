@@ -57,6 +57,7 @@
     "workflowStatusLabel": "Read lifecycle status and progress for that same session id:",
     "workflowResultLabel": "Read the final or partial result for that same session id:",
     "durableInspectionNounsNote": "Dispatch, FactoryArtifact, and FactoryEvent records for child work all point back to the same Factory Session id returned at start. Keep validate → start → status/result on one session; MCP host setup and full dynamic-workflow authoring stay on sibling pages.",
+    "factorySessionsOverview": "What Factory Sessions are",
     "cliDocs": "CLI docs",
     "submittingWorkDocs": "Submitting work",
     "dynamicWorkflowsDocs": "Dynamic workflows",

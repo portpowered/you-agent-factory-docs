@@ -148,6 +148,11 @@ describe("factories/sessions documentation page", () => {
 
     expect(
       screen
+        .getAllByRole("link", { name: "What Factory Sessions are" })[0]
+        ?.getAttribute("href"),
+    ).toBe("/docs/documentation/factory-session");
+    expect(
+      screen
         .getAllByRole("link", { name: "CLI docs" })[0]
         ?.getAttribute("href"),
     ).toBe("/docs/documentation/cli");
@@ -176,6 +181,9 @@ describe("factories/sessions documentation page", () => {
 
     const related = document.getElementById("related");
     expect(related).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/factory-session"]'),
+    ).toBeTruthy();
     expect(
       related?.querySelector('a[href="/docs/factories/configuration"]'),
     ).toBeTruthy();

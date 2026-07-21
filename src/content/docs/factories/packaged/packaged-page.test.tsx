@@ -147,6 +147,11 @@ describe("factories/packaged documentation page", () => {
 
     expect(
       screen
+        .getAllByRole("link", { name: "What Packaged Factories are" })[0]
+        ?.getAttribute("href"),
+    ).toBe("/docs/documentation/packaged-factories");
+    expect(
+      screen
         .getAllByRole("link", {
           name: "Configuration (factory.json topology)",
         })[0]
@@ -173,6 +178,11 @@ describe("factories/packaged documentation page", () => {
 
     const related = document.getElementById("related");
     expect(related).toBeTruthy();
+    expect(
+      related?.querySelector(
+        'a[href="/docs/documentation/packaged-factories"]',
+      ),
+    ).toBeTruthy();
     expect(
       related?.querySelector('a[href="/docs/factories/configuration"]'),
     ).toBeTruthy();
