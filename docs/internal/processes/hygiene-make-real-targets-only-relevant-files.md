@@ -99,12 +99,27 @@ instructions (not a second parallel contract):
 - `factory/docs/overview.md` **Quality Gates** — same rule + primary list,
   cross-links README / AGENTS
 
+## Planner temp scrub (story 004 — applied)
+
+UTC re-check of `docs/temp/**` for instructional `make ui-build` / `ui-build`
+as something to **run**:
+
+| Surface | Result |
+| --- | --- |
+| This worktree `docs/temp/references/**` (committed W00 baseline) | Clean — no Make/`ui-build` instructions |
+| Shared planner state (`docs/temp/customer-ask.md`, `checklist.md`, `meta.md`, `progress.md`, `batches/*`) | Remaining `ui-build` mentions are HY-make **problem statements**, checklist **tracking**, or pre-audit notes that say the target does **not** exist / was temp-only — not live “run this” commands |
+| Instructional “run/use `make ui-build`” hits | **None** found; nothing to rewrite into a runnable false target |
+
+Planner outcome/checklist language for HY-make was left as tracking until this
+lane merges. Committed instruction fixes + maintainer entrypoint note already
+landed in stories 002–003 (temp scrub alone is not the PR).
+
 ## Follow-on work (other PRD stories)
 
 1. ~~Replace false live instructions listed above with real targets.~~ Done in story 002.
 2. ~~Add or tighten a short primary-entrypoints maintainer note (README /
    AGENTS / factory overview) pointing at the root Makefile.~~ Done in story 003.
-3. Opportunistically scrub `docs/temp/**` if instructional `ui-build` reappears.
+3. ~~Opportunistically scrub `docs/temp/**` if instructional `ui-build` reappears.~~ Done in story 004 (confirmed clean for run instructions).
 4. Confirm lane fences: instruction docs/scripts comments only; no new Make
    targets; no page-chrome / IA / feature-package moves.
 
