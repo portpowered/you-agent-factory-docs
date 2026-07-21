@@ -294,6 +294,20 @@ describe("FactoryResponseEvent catalog UI", () => {
       screen.getByTestId("response-event-dimension-provenance"),
     ).toBeTruthy();
 
+    const payloadDimension = screen.getByTestId(
+      "response-event-dimension-payload",
+    );
+    const payloadVariantLinks = within(payloadDimension).getAllByRole("link");
+    expect(payloadVariantLinks.length).toBe(catalog.payloadVariants.length);
+    for (const link of payloadVariantLinks) {
+      expect(link.className).toContain("font-mono");
+      expect(link.className).toContain("text-secondary");
+      expect(link.className).toContain("text-sm");
+      expect(link.className).toContain("underline-offset-4");
+      expect(link.className).toContain("hover:underline");
+      expect(link.className).not.toMatch(/\btext-primary\b/);
+    }
+
     // Envelope $ref components render as full schema definitions, not labels only.
     const kindDef = screen.getByTestId("response-event-kind-schema-definition");
     expect(kindDef.getAttribute("data-schema-definition-pointer")).toBe(

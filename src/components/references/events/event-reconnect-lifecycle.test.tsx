@@ -262,9 +262,14 @@ describe("Event reconnect lifecycle UI", () => {
         '[data-event-json-reconnect-outcome="UNKNOWN_SESSION"]',
       ),
     ).toBeTruthy();
-    expect(
-      screen.getByRole("link", { name: /API transport summary/i }),
-    ).toBeTruthy();
+    const transportSummary = screen.getByRole("link", {
+      name: /API transport summary/i,
+    });
+    expect(transportSummary).toBeTruthy();
+    expect(transportSummary.className).toContain("text-secondary");
+    expect(transportSummary.className).toContain("underline-offset-4");
+    expect(transportSummary.className).toContain("hover:underline");
+    expect(transportSummary.className).not.toMatch(/\btext-primary\b/);
     expect(
       section.querySelector(
         '[data-event-json-reconnect-retry-field="omitAfterEventId"]',

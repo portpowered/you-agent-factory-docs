@@ -350,7 +350,12 @@ Events-local ordinary textual links in
 `event-json-reconnect-probe.tsx` and `response-event-matrix.tsx` use
 `text-secondary` (keep `underline-offset-4 hover:underline`; matrix also
 keeps `font-mono text-sm`) — not `text-primary` yellow. SchemaRefLink /
-API navigator accents are separate ownership. Browser-verify with
+API navigator accents are separate ownership. Lock those accents in the
+colocated component tests (`event-reconnect-lifecycle.test.tsx` for the
+probe transport-summary link; `factory-response-event-catalog.test.tsx`
+for matrix payload-variant links) by asserting rendered `className`
+contains `text-secondary` and does not match `\btext-primary\b`.
+Browser-verify with
 `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1` and
 fetch `/docs/references/events` (no trailing slash, or `curl -L`).
 
