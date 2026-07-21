@@ -71,4 +71,42 @@ describe("SiteFooter", () => {
 
     expect(html).not.toContain('data-testid="site-footer-art"');
   });
+
+  test("renders provided art node inside the footer art slot", () => {
+    const html = renderToStaticMarkup(
+      <SiteFooter
+        columns={fixtureColumns}
+        meta={fixtureMeta}
+        art={
+          <div
+            data-testid="fixture-art-placeholder"
+            style={{ background: "crimson" }}
+          >
+            Footer art placeholder
+          </div>
+        }
+      />,
+    );
+
+    expect(html).toContain('data-testid="site-footer-art"');
+    expect(html).toContain('data-testid="fixture-art-placeholder"');
+    expect(html).toContain("Footer art placeholder");
+    expect(html).toContain("crimson");
+    expect(html).toContain('data-testid="site-footer-columns"');
+    expect(html).toContain('data-testid="site-footer-meta"');
+  });
+
+  test("uses footer landmark and labeled nav; columns stack on narrow viewports", () => {
+    const html = renderToStaticMarkup(
+      <SiteFooter columns={fixtureColumns} meta={fixtureMeta} />,
+    );
+
+    expect(html).toContain("<footer");
+    expect(html).toContain('aria-label="Site footer"');
+    expect(html).toContain("grid-cols-1");
+    expect(html).toContain("sm:grid-cols-2");
+    expect(html).toContain("lg:grid-cols-4");
+    expect(html).toContain("focus-visible:ring-2");
+    expect(html).toContain('href="/docs/guides"');
+  });
 });
