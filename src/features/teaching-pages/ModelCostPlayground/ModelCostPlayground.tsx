@@ -1,7 +1,9 @@
 "use client";
 
 import { useId, useState } from "react";
+import { ComparativeBarChart } from "@/features/teaching-ui/charts";
 import { cn } from "@/lib/utils";
+import { derivePlaygroundBarChartProps } from "./derive-playground-chart-props";
 import {
   DEFAULT_TOKEN_FIELDS,
   derivePlaygroundCostState,
@@ -32,6 +34,10 @@ export function ModelCostPlayground({
     primaryModelId,
     secondaryModelId,
     tokens,
+  });
+  const barChartProps = derivePlaygroundBarChartProps({
+    costState,
+    messages,
   });
 
   const primarySelectId = `${reactId}-primary`;
@@ -238,6 +244,16 @@ export function ModelCostPlayground({
           </p>
         </div>
       ) : null}
+
+      <div
+        data-cost-comparison-chart=""
+        data-focus-series-id={barChartProps.focusSeriesId ?? ""}
+        data-recommended-plan={
+          costState.status === "success" ? costState.recommendedPlan : ""
+        }
+      >
+        <ComparativeBarChart {...barChartProps} />
+      </div>
     </section>
   );
 }

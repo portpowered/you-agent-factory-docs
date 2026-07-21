@@ -10,10 +10,14 @@ chart recipe implementations, orchestrator matrix UI, inventory integrate, or
 
 * `src/features/teaching-pages/ModelCostPlayground/`
   Client composer: primary/secondary model selects, planner/executor token
-  inputs, live total R + breakdown via `calculateSplitPlanCost`.
+  inputs, live total R + breakdown via `calculateSplitPlanCost`, and a
+  comparative bar chart focused on the recommended plan.
 * `src/features/teaching-pages/ModelCostPlayground/derive-playground-cost-state.ts`
   Pure parse + cost derivation (no React / filesystem). Prefer asserting tests
   against this + displayed totals rather than Recharts pixels.
+* `src/features/teaching-pages/ModelCostPlayground/derive-playground-chart-props.ts`
+  Pure cost-state → `ComparativeBarChart` props. Series ids are
+  `primary-only` / `split`; `focusSeriesId` equals `recommendedPlan`.
 * `src/features/teaching-pages/ModelCostPlayground/types.ts`
   Public props contract: parent-supplied `models`, default model ids, and
   host-resolved `messages` strings (no hard-coded product copy in the widget).
@@ -24,7 +28,14 @@ chart recipe implementations, orchestrator matrix UI, inventory integrate, or
 
 * `src/lib/content/model-cost.ts` — `calculateModelCost` / `calculateSplitPlanCost`
 * `src/lib/content/model-pricing.ts` — `ModelPricingRecord` type
-* `src/features/teaching-ui/charts/**` — comparative chart exports (story 002+)
+* `src/features/teaching-ui/charts/**` — public `ComparativeBarChart` /
+  `ComparativeLineChart` exports (compose; do not rewrite recipes)
+
+## Dev harness
+
+* `src/app/(dev)/model-cost-playground-harness/` — gated fixture mount
+  (`notFound()` when `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"`).
+  Inline `ModelPricingRecord[]` subset; no MDX / registry ownership.
 
 ## Patterns
 
@@ -32,9 +43,16 @@ chart recipe implementations, orchestrator matrix UI, inventory integrate, or
   load registry JSON itself.
 * Keep calc logic in pure helpers so component tests can prove displayed USD
   equals `calculateSplitPlanCost` for the same inputs.
+* Chart values must come from the same derive helper as R — never hand-wave a
+  second number path. Assert `focusSeriesId === recommendedPlan` and accent /
+  muted CSS vars; do not pixel-assert Recharts output.
 * Empty models, missing selected ids, and invalid token fields use explicit
-  empty/error UI (`data-state`) — never silent NaN totals.
-* Message keys are resolved by the host; the widget only receives strings.
+  empty/error UI (`data-state`) — never silent NaN totals. Chart gets the
+  matching `state="empty"|"error"` panel.
+* Message keys are resolved by the host; the widget only receives strings
+  (including chart title / axis / category labels).
+* Gated `(dev)` harnesses use `notFound()` when
+  `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"`.
 
 ## Out of scope
 

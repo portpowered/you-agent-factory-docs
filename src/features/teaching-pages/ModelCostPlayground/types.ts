@@ -23,6 +23,14 @@ export type ModelCostPlaygroundMessages = {
   modelsLegend: string;
   tokensLegend: string;
   breakdownLegend: string;
+  /** Comparative bar chart title (host-resolved). */
+  chartTitle: string;
+  /** Single bar category label (e.g. "Total cost"). */
+  chartCategoryLabel: string;
+  /** Optional X-axis label for the comparative bar chart. */
+  chartXLabel: string;
+  /** Y-axis label for the comparative bar chart (e.g. "USD"). */
+  chartYLabel: string;
 };
 
 export type ModelCostPlaygroundProps = {
