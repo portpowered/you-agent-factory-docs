@@ -1276,6 +1276,16 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   footer absence (`Related To` / `References` headings, `section#related`,
   curated related-footer link queries). Do not require How To Use / Limits
   absence on factories pages that still ship those non-intro sections.
+  Browser-verify Related / References footer strip on the representative
+  configuration route with
+  `bun src/content/docs/factories/assert-factories-related-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port `3691` default,
+  or `FACTORIES_RELATED_STRIP_PROBE_BASE_URL` when a server is already warm;
+  Playwright; kill server on exit). Assert absent Related To / References
+  headings and `#related` / `#references`; present How To Use + Factory Root
+  schema teaching (`data-schema-status="ready"`); teaching LocalizedLinkList
+  hrefs still exposed (`/docs/references/schema`, `/docs/references/api`,
+  `/docs/workers`, `/docs/workstations`, `/docs/documentation/resources`).
   Browser-verify Factories intro strip on the five child routes with
   `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1`
   (Turbopack often fails in parent-hoisted worktrees). Fetch SSR HTML and
