@@ -40,8 +40,8 @@ page-formatting / homepage-2 / SEO work.
 
 Prior soft-skip rows (2026-07-21 ~11:11 UTC) that treated Wave B customer routes as
 absent from `main` are **superseded**. Destinations landed via #232 / #233;
-cost-playground harness landed via #231. Soft-wire MDX edits remain a separate
-integrate follow-up once inventory marks destinations present.
+cost-playground harness landed via #231. Soft-wire hops and live-route/a11y smoke
+are recorded in the pass logs below (Wave B landed follow-up stories `002`–`004`).
 
 ### Soft-wire pass log
 
@@ -65,11 +65,15 @@ unlanded pages.
 | `/docs/techniques/planner-executor-in-action/` live-route + a11y smoke | Soft-skipped — route absent on `origin/main` / integrate HEAD; no browser verify | 2026-07-21 11:16 UTC |
 | `/blog/comparing-orchestrators/` live-route + a11y smoke | Soft-skipped — route absent on `origin/main` / integrate HEAD; no browser verify | 2026-07-21 11:16 UTC |
 | Wave B customer routes (inventory status) | **Present** on `main` (#232 / #233) — smoke notes deferred to follow-up integrate story (routes no longer inventoried as absent) | 2026-07-21 11:55 UTC |
-| `/model-cost-playground-harness` | Maintainer-only harness (landed #231) — not a customer smoke target for public-page claims | 2026-07-21 11:55 UTC |
-| Model pricing + orchestrator registries (`make validate-data`) | **Passed** — `bun ./scripts/validate-registry.ts` → “Registry validation passed.” (same hook as `make ci`) | 2026-07-21 11:16 UTC |
+| `/docs/techniques/planner-executor-in-action/` live-route + a11y smoke | **Passed** — Playwright@`127.0.0.1:3431` loaded HTTP 200 / h1 “Planner-Executor In Action”; sections `intro`/`pattern-list`/`playground`/`compare-chart`/`recommendation` present; teaching-list + playground placeholder + comparative bar chart reachable; Tab focused back-link `/docs/techniques/planner-executor` | 2026-07-21 12:25 UTC |
+| `/blog/comparing-orchestrators/` live-route + a11y smoke | **Passed** — Playwright@`127.0.0.1:3431` loaded HTTP 200 / h1 “Comparing orchestrators by feature attributes”; matrix + focus controls + table present; Tab reached Focus column/row `<select>`s and a filter checkbox; programmatic focus OK on both selects + first checkbox; reverse link to `/blog/comparing-agent-factories` present | 2026-07-21 12:25 UTC |
+| `/model-cost-playground-harness` (+ teaching-ui harnesses) | **Maintainer-only** — not customer smoke targets for public-page claims (landed #231; Wave A harnesses remain `(dev)`) | 2026-07-21 12:25 UTC |
+| Model pricing + orchestrator registries (`make validate-data`) | **Passed** — `make validate-data` → `bun ./scripts/validate-registry.ts` → “Registry validation passed.” (same hook as `make ci`); reconfirmed after Wave B landings | 2026-07-21 12:25 UTC |
 
-When a soft-skipped customer route later lands on the base branch, re-run a short
-live-route load + keyboard smoke for that page and append a new row here.
+Prior absent-route soft-skip smoke rows (2026-07-21 11:16 UTC) are **superseded** by the
+2026-07-21 12:25 UTC Passed rows above. When a soft-skipped customer route later
+lands on the base branch, re-run a short live-route load + keyboard smoke for
+that page and append a new row here.
 
 ### Components API fence pass log
 
@@ -97,8 +101,10 @@ Confirm Wave A/B teaching integrate work did not expand
   this lane.
 * Live-route / a11y smoke notes belong in this process pass log (and a short
   inventory pointer): soft-skip missing Wave B customer routes; never invent
-  browser smoke fiction for unlanded pages; after landings, append a fresh smoke
-  row rather than leaving the absent-route soft-skip as live truth.
+  browser smoke fiction for unlanded pages; after landings, append a fresh
+  **Passed** smoke row (route load + Tab/focus on critical controls) rather than
+  leaving the absent-route soft-skip as live truth. Harness routes stay
+  maintainer-only — not customer smoke targets.
 * Teaching stays site-internal under `src/features/teaching-ui/` +
   `src/features/teaching-pages/` + page-local composers — no
   `@you-agent-factory/components` API expansion.

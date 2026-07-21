@@ -128,26 +128,32 @@ techniques (beside `planner-executor`)
 - `planner-executor-in-action` (`/docs/techniques/planner-executor-in-action/`) —
   **present** (landed #233, 2026-07-21 UTC). Content under
   `src/content/docs/techniques/planner-executor-in-action/`. Soft-wire
-  glossary→in-action hop is a follow-up integrate story (destination ready).
+  glossary→in-action hop **done** (LocalizedLinkList on
+  `/docs/techniques/planner-executor/`).
 
 blog (beside comparing agent factories)
 - `comparing-orchestrators` (`/blog/comparing-orchestrators/`) — **present**
   (landed #232, 2026-07-21 UTC). Content under
   `src/content/blog/comparing-orchestrators/`. Soft-wire reciprocal hop from
-  `comparing-agent-factories` is a follow-up integrate story (destination ready).
+  `comparing-agent-factories` **done** (in-body markdown link).
 
 ### Live-route / a11y smoke + registry verify (W-integrate)
 
 Maintainer verify trail for this stream (detail in
 `docs/internal/processes/teaching-integrate-inventory-crosslinks-relevant-files.md`):
 
-- Wave B teaching customer routes above — **present** on base branch; live-route /
-  a11y smoke notes are a follow-up integrate story (destinations no longer
-  soft-skipped as absent).
-- Cost-playground / model-cost harness — maintainer-only (not a customer smoke
-  target for public-page claims).
+- `/docs/techniques/planner-executor-in-action/` — live-route + a11y smoke
+  **passed** (2026-07-21 12:25 UTC): route loaded; critical sections + Tab to
+  planner-executor back-link.
+- `/blog/comparing-orchestrators/` — live-route + a11y smoke **passed**
+  (2026-07-21 12:25 UTC): route loaded; matrix focus `<select>`s + filter
+  checkboxes keyboard-reachable.
+- Cost-playground / model-cost harness (`/model-cost-playground-harness`) and
+  teaching-ui harnesses — **maintainer-only** (not customer smoke targets for
+  public-page claims).
 - Model pricing + orchestrator registries — `make validate-data` **passed**
-  (2026-07-21 11:16 UTC); same registry validation hook runs under `make ci`.
+  (2026-07-21 12:25 UTC reconfirm); same registry validation hook runs under
+  `make ci`.
 
 ### Components API fence (W-integrate)
 
