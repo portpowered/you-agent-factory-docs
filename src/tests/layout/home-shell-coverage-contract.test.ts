@@ -6,9 +6,9 @@ import { PHASE_1_SHELL_COVERAGE_COMPONENTS } from "@/lib/docs/component-manifest
 const repoRoot = join(import.meta.dir, "../../..");
 
 const PHASE_1_SHELL_SOURCE_FILES = [
-  "src/components/home/home-brush-header.tsx",
-  "src/components/home/home-article.tsx",
-  "src/components/home/home-browse-link.tsx",
+  "src/features/home/home-brush-header.tsx",
+  "src/features/home/home-article.tsx",
+  "src/features/home/home-browse-link.tsx",
   "src/features/layout/primary-nav.ts",
   "src/features/layout/docs-header.tsx",
   "src/features/layout/canonical-docs-layout.tsx",

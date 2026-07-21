@@ -29,6 +29,9 @@ export const FACTORY_UI_MANIFEST_PREFIX = "src/features/factory-ui/";
 /** Site/docs layout chrome package (header, primary nav, canonical layout). */
 export const LAYOUT_MANIFEST_PREFIX = "src/features/layout/";
 
+/** Legacy home article package (HomeArticle, brush header, browse, command block). */
+export const HOME_MANIFEST_PREFIX = "src/features/home/";
+
 export type CoverageRow = {
   file: string;
   linePercent: number;
@@ -175,6 +178,9 @@ export function isAllowedManifestPath(file: string): boolean {
   if (file.startsWith(LAYOUT_MANIFEST_PREFIX)) {
     return true;
   }
+  if (file.startsWith(HOME_MANIFEST_PREFIX)) {
+    return true;
+  }
   return false;
 }
 
@@ -257,7 +263,7 @@ export function evaluateComponentCoverageGate(options: {
   for (const entry of [...components, ...thinWrappers]) {
     if (!isAllowedManifestPath(entry.file)) {
       errors.push(
-        `Manifest path not allowed (use src/components/**, src/features/**/components/**, ${SEARCH_UI_MANIFEST_PREFIX}, ${DOCS_TAG_LIST_MANIFEST_PREFIX}, ${FACTORY_UI_MANIFEST_PREFIX}, or ${LAYOUT_MANIFEST_PREFIX}): ${entry.file}`,
+        `Manifest path not allowed (use src/components/**, src/features/**/components/**, ${SEARCH_UI_MANIFEST_PREFIX}, ${DOCS_TAG_LIST_MANIFEST_PREFIX}, ${FACTORY_UI_MANIFEST_PREFIX}, ${LAYOUT_MANIFEST_PREFIX}, or ${HOME_MANIFEST_PREFIX}): ${entry.file}`,
       );
     }
   }

@@ -3,11 +3,6 @@ import type { SharedProps } from "fumadocs-ui/contexts/search";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { ComponentType } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import {
-  HomeBrowseLink,
-  HomeBrowseList,
-} from "@/components/home/home-browse-link";
-import { HomeBrushHeader } from "@/components/home/home-brush-header";
 import { DocsIndexEntryList } from "@/features/docs/components/DocsIndexEntryList";
 import { searchInlineResultsListClassName } from "@/features/docs/components/list-decoration";
 import { proseAutoLinkClassName } from "@/features/docs/components/prose-auto-link-class";
@@ -18,6 +13,11 @@ import {
   DOCS_CHROME_TOKEN_MAP_SURFACES,
 } from "@/features/docs/styles/docs-chrome-highlighting-token-map-contract";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
+import {
+  HomeBrowseLink,
+  HomeBrowseList,
+} from "@/features/home/home-browse-link";
+import { HomeBrushHeader } from "@/features/home/home-brush-header";
 import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import type { TagResourceKindGroup } from "@/lib/content/tag-resources";
 import type { TagIndexCategoryGroup } from "@/lib/content/tags";

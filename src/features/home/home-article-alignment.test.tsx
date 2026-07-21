@@ -1,11 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
+import { bulletlessListClassName } from "@/features/docs/components/list-decoration";
 import {
   HOME_ARTICLE_CLASS,
   HOME_ARTICLE_CONTENT_COLUMN_SURFACE,
   HomeArticle,
-} from "@/components/home/home-article";
-import { bulletlessListClassName } from "@/features/docs/components/list-decoration";
+} from "@/features/home/home-article";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   CONTENT_COLUMN_CONSUMER_SURFACES,

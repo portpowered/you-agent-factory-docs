@@ -1,12 +1,12 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { renderTagLandingPage } from "@/app/(site)/site-renderers";
-import { HomeArticle } from "@/components/home/home-article";
 import {
   encodeSearchPageHandoffKey,
   resolveInitialSearchPageQuery,
   resolveSearchPageHandoff,
 } from "@/features/docs/search/search-page-query";
+import { HomeArticle } from "@/features/home/home-article";
 import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { docsSearchApi } from "@/lib/search/search-server";

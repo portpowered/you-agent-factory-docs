@@ -1,10 +1,10 @@
+import { bulletlessListClassName } from "@/features/docs/components/list-decoration";
 import {
   HomeBrowseLink,
   HomeBrowseList,
-} from "@/components/home/home-browse-link";
-import { HomeBrushHeader } from "@/components/home/home-brush-header";
-import { HomeCommandBlock } from "@/components/home/home-command-block";
-import { bulletlessListClassName } from "@/features/docs/components/list-decoration";
+} from "@/features/home/home-browse-link";
+import { HomeBrushHeader } from "@/features/home/home-brush-header";
+import { HomeCommandBlock } from "@/features/home/home-command-block";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";

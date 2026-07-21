@@ -7,7 +7,7 @@ import {
   renderBrowseIndexPage,
 } from "@/app/(site)/site-renderers";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
-import { HomeArticle } from "@/components/home/home-article";
+import { HomeArticle } from "@/features/home/home-article";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import {
   DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,

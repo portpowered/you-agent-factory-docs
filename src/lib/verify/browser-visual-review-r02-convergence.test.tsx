@@ -11,7 +11,7 @@ import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, screen } from "@testing-library/react";
 import { act } from "react";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
-import { HomeArticle } from "@/components/home/home-article";
+import { HomeArticle } from "@/features/home/home-article";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import {
   DOCS_EXPLORER_TOP_LEVEL_FAQ_URL,

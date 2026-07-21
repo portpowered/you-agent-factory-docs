@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { HomeArticle } from "@/components/home/home-article";
+import { HomeArticle } from "@/features/home/home-article";
 import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {

@@ -151,7 +151,7 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   or the header search trigger here. Prove with `list-decoration.test.ts` and
   `docs-resource-card-hover.browser.test.ts` (Playwright fixture; no Next
   build).
-* `src/components/home/home-article-alignment.test.tsx`
+* `src/features/home/home-article-alignment.test.tsx`
   Locks home article/Browse shared left-edge contract (surface marker, no
   nested inset, `ps-0` bulletless lists, no negative-margin compensation).
 * `/browse` (`browse-index`) and `/blog` (`blog-index`): wire
@@ -240,7 +240,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   as a layout-move regression. Coverage gate allowlist must include
   `LAYOUT_MANIFEST_PREFIX` (`src/features/layout/`) in
   `component-coverage-gate.ts` when layout entries live in the reusable
-  coverage manifest.
+  coverage manifest. Same pattern for home ownership moves: add
+  `HOME_MANIFEST_PREFIX` (`src/features/home/`) when home package entries
+  leave `src/components/home` for the features tree — otherwise
+  `isAllowedManifestPath` rejects the relocated manifest paths.
 * Layout + providers/i18n ownership-lane merge conflicts: when `main` has
   already moved `@/features/providers/*` and `@/features/i18n/*` while this
   lane moved `@/features/layout/*`, resolve the three shell layouts
