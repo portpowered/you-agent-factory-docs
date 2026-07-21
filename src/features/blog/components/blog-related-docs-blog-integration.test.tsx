@@ -41,6 +41,7 @@ describe("blog related docs integration", () => {
       'href="/docs/documentation/what-is-you-agent-factory"',
     );
     expect(html).toContain('href="/docs/concepts/harness"');
+    expect(html).toContain('href="/blog/comparing-orchestrators"');
     expect(html).not.toContain("documentation.what-is-you-agent-factory");
     expect(html).not.toContain("concept.harness");
   });
