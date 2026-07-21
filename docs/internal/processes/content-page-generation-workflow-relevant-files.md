@@ -970,6 +970,13 @@ MDX strip, remove owned `sections.related` / `sections.references` footer
 title keys and Related-footer-only `links.*` keys
 (`workersFamilyIndex`, `sibling*`) from workers `messages/*.json` so bundles
 match the page; keep companion / schema / example / selection labels.
+End-to-end browser proof for the strip lives at
+`src/content/docs/workers/assert-workers-related-references-strip-browser.ts`
+(`/docs/workers/agent` + `/docs/workers` family index; webpack via
+`scripts/run-next.ts`, unique port `WORKERS_RELATED_STRIP_PROBE_PORT` default
+3573; kill server on exit). Run with
+`bun src/content/docs/workers/assert-workers-related-references-strip-browser.ts`.
+Do not commit `next-env.d.ts` drift from the probe.
 
 On `/docs/workers/agent`, JSON examples render through shared `CodePanel` (not
 bare unstyled `<pre><code>`). Do not restore `#tags` / `#references`
