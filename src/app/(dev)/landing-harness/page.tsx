@@ -1,11 +1,14 @@
 import { notFound } from "next/navigation";
 import { LandingPage } from "@/features/landing-page/LandingPage";
-import { composeWaveAFooterSlot } from "./compose-wave-a-slots";
+import {
+  composeWaveAFooterSlot,
+  composeWaveAWhaleBubblesSlot,
+} from "./compose-wave-a-slots";
 
 /**
  * Non-production Homepage-2 landing chassis harness.
  *
- * Wave A fill (incremental): real SiteFooter in the footer slot; remaining
+ * Wave A fill (incremental): real SiteFooter + WhaleBubblesSection; remaining
  * slots stay labeled placeholders until later integrate stories. Hidden in
  * production unless ENABLE_COMPONENT_EXAMPLES=1. Does not flip production `/`.
  */
@@ -17,5 +20,10 @@ export default function LandingHarnessPage() {
     notFound();
   }
 
-  return <LandingPage footer={composeWaveAFooterSlot()} />;
+  return (
+    <LandingPage
+      footer={composeWaveAFooterSlot()}
+      whaleBubbles={composeWaveAWhaleBubblesSlot()}
+    />
+  );
 }

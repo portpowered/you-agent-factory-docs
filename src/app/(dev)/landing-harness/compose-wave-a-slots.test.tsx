@@ -3,8 +3,14 @@ import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import {
+  WHALE_BUBBLES_FIXTURE_ITEMS,
+  WHALE_BUBBLES_FIXTURE_SRC,
+} from "@/features/landing-page/whale-bubbles.fixtures";
+import {
   composeWaveAFooterSlot,
+  composeWaveAWhaleBubblesSlot,
   mapFixtureFooterToSiteFooterProps,
+  mapFixtureWhaleBubblesToSectionProps,
 } from "./compose-wave-a-slots";
 
 describe("composeWaveAFooterSlot", () => {
@@ -49,5 +55,37 @@ describe("composeWaveAFooterSlot", () => {
     expect(html).toContain("© you-agent-factory");
     expect(html).toContain('data-testid="site-footer-art"');
     expect(html).not.toContain('data-landing-placeholder="footer"');
+  });
+});
+
+describe("composeWaveAWhaleBubblesSlot", () => {
+  test("maps fixture whaleSrc and bubbles onto WhaleBubblesSection props", () => {
+    const props = mapFixtureWhaleBubblesToSectionProps(
+      fixtureLandingPageData.whaleBubbles,
+    );
+
+    expect(props.whaleSrc).toBe(fixtureLandingPageData.whaleBubbles.whaleSrc);
+    expect(props.items).toEqual(fixtureLandingPageData.whaleBubbles.bubbles);
+  });
+
+  test("falls back to WHALE_BUBBLES_FIXTURE_* when fixture fields are empty", () => {
+    const props = mapFixtureWhaleBubblesToSectionProps({ bubbles: [] });
+
+    expect(props.whaleSrc).toBe(WHALE_BUBBLES_FIXTURE_SRC);
+    expect(props.items).toEqual(WHALE_BUBBLES_FIXTURE_ITEMS);
+  });
+
+  test("composeWaveAWhaleBubblesSlot renders section markers from fixture", () => {
+    const html = renderToStaticMarkup(
+      composeWaveAWhaleBubblesSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-whale-bubbles-section=""');
+    expect(html).toContain('data-whale-plate=""');
+    expect(html).toContain('data-whale-bubbles-item-count="3"');
+    expect(html).toContain("Harness");
+    expect(html).toContain("Loop");
+    expect(html).toContain("Worktree");
+    expect(html).not.toContain('data-landing-placeholder="whaleBubbles"');
   });
 });

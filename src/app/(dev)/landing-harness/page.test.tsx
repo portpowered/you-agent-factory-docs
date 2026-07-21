@@ -33,10 +33,10 @@ afterEach(() => {
   }
 });
 
-const WIRED_WAVE_A_SLOTS = new Set<string>(["footer"]);
+const WIRED_WAVE_A_SLOTS = new Set<string>(["footer", "whaleBubbles"]);
 
 describe("LandingHarnessPage", () => {
-  test("renders Wave A footer fill, remaining placeholders, and theme CSS vars", async () => {
+  test("renders Wave A footer + whaleBubbles fills, remaining placeholders, and theme CSS vars", async () => {
     setNodeEnv("development");
     delete process.env.ENABLE_COMPONENT_EXAMPLES;
 
@@ -51,6 +51,13 @@ describe("LandingHarnessPage", () => {
     expect(html).toContain("Community");
     expect(html).toContain("© you-agent-factory");
     expect(html).not.toContain('data-landing-placeholder="footer"');
+
+    expect(html).toContain('data-whale-bubbles-section=""');
+    expect(html).toContain('data-whale-plate=""');
+    expect(html).toContain("Harness");
+    expect(html).toContain("Loop");
+    expect(html).toContain("Worktree");
+    expect(html).not.toContain('data-landing-placeholder="whaleBubbles"');
 
     for (const slot of LANDING_SLOT_ORDER) {
       if (WIRED_WAVE_A_SLOTS.has(slot)) {
