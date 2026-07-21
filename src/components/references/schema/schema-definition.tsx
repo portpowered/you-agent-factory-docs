@@ -95,9 +95,18 @@ export type SchemaDefinitionProps = {
    * catalog views opt out via EventsSchemaDefinition.
    */
   showPointerPathChrome?: boolean;
+  /**
+   * Where SchemaExamplePanel renders relative to the definition body
+   * (composition + fields). Default `"after-fields"` preserves today’s order
+   * (header → composition → fields → examples). `"before-body"` places
+   * examples after header metadata and before composition/fields.
+   */
+  examplesPlacement?: SchemaExamplesPlacement;
   className?: string;
   "data-testid"?: string;
 };
+
+export type SchemaExamplesPlacement = "after-fields" | "before-body";
 
 function definitionTypeSummary(
   definition: SchemaDefinitionModel,
@@ -140,6 +149,7 @@ export function SchemaDefinition({
   showPointerBreadcrumb = true,
   showFieldPathWhenDistinct = false,
   showPointerPathChrome = true,
+  examplesPlacement = "after-fields",
   className,
   "data-testid": testId = "schema-definition",
 }: SchemaDefinitionProps) {
@@ -190,6 +200,50 @@ export function SchemaDefinition({
 
   const refTarget = definition.refTarget;
   const headingId = `schema-def-${anchor}`;
+  const examplesBeforeBody = examplesPlacement === "before-body";
+
+  const examplesPanel = (
+    <SchemaExamplePanel
+      data-testid="schema-definition-examples"
+      exampleInputs={exampleInputs}
+      examples={examples}
+      showEmpty={showEmptyExamples}
+      values={
+        examples === undefined && exampleInputs === undefined
+          ? definition.examples
+          : undefined
+      }
+    />
+  );
+
+  const definitionBody = (
+    <>
+      {hasComposition && definition.composition !== undefined ? (
+        <SchemaComposition
+          composition={definition.composition}
+          pagePath={pagePath}
+          resolve={resolve}
+        />
+      ) : null}
+
+      {nodes.length > 0 ? (
+        <section
+          aria-label={`Fields for ${title}`}
+          className="min-w-0"
+          data-schema-definition-fields=""
+        >
+          <h3 className="mb-2 font-medium text-foreground text-sm">Fields</h3>
+          <SchemaFieldTree
+            defaultExpanded={defaultExpanded}
+            nodes={nodes}
+            pagePath={pagePath}
+            showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+            showPointerPathChrome={showPointerPathChrome}
+          />
+        </section>
+      ) : null}
+    </>
+  );
 
   return (
     <article
@@ -199,6 +253,7 @@ export function SchemaDefinition({
         className,
       )}
       data-schema-definition-pointer={definition.address.pointer}
+      data-schema-examples-placement={examplesPlacement}
       data-testid={testId}
       id={anchor}
       tabIndex={-1}
@@ -260,42 +315,9 @@ export function SchemaDefinition({
         ) : null}
       </header>
 
-      {hasComposition && definition.composition !== undefined ? (
-        <SchemaComposition
-          composition={definition.composition}
-          pagePath={pagePath}
-          resolve={resolve}
-        />
-      ) : null}
-
-      {nodes.length > 0 ? (
-        <section
-          aria-label={`Fields for ${title}`}
-          className="min-w-0"
-          data-schema-definition-fields=""
-        >
-          <h3 className="mb-2 font-medium text-foreground text-sm">Fields</h3>
-          <SchemaFieldTree
-            defaultExpanded={defaultExpanded}
-            nodes={nodes}
-            pagePath={pagePath}
-            showFieldPathWhenDistinct={showFieldPathWhenDistinct}
-            showPointerPathChrome={showPointerPathChrome}
-          />
-        </section>
-      ) : null}
-
-      <SchemaExamplePanel
-        data-testid="schema-definition-examples"
-        exampleInputs={exampleInputs}
-        examples={examples}
-        showEmpty={showEmptyExamples}
-        values={
-          examples === undefined && exampleInputs === undefined
-            ? definition.examples
-            : undefined
-        }
-      />
+      {examplesBeforeBody ? examplesPanel : null}
+      {definitionBody}
+      {examplesBeforeBody ? null : examplesPanel}
     </article>
   );
 }
