@@ -62,6 +62,12 @@ Colocated guides `*-page.test.tsx` files must assert Related / References /
 RelatedDocs footer absence (`Related To` / `References` headings, `#related` /
 `#references`, `curated-related-docs` / `derived-related-docs` test ids) while
 keeping install-merge and teaching / common-pitfalls link proofs.
+End-to-end browser proof for the strip lives at
+`src/content/docs/guides/assert-guides-related-references-strip-browser.ts`
+(Getting Started + write-review-loops; webpack `bun run next` via
+`scripts/run-next.ts`, unique port `GUIDES_RELATED_STRIP_PROBE_PORT` default
+3571; kill server on exit). Run with
+`bun src/content/docs/guides/assert-guides-related-references-strip-browser.ts`.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
