@@ -5,6 +5,7 @@ import { LANDING_SLOT_ORDER } from "@/features/landing-page/LandingPage";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { landingThemeToCssVars } from "@/features/landing-page/landing-page.theme";
 import { WIRED_WAVE_A_SLOTS } from "./compose-wave-a-slots";
+import { WIRED_WAVE_B_SLOTS } from "./compose-wave-b-slots";
 
 mock.module("next/navigation", () => ({
   notFound: () => {
@@ -35,7 +36,10 @@ afterEach(() => {
   }
 });
 
-const WIRED_SLOT_SET = new Set<string>(WIRED_WAVE_A_SLOTS);
+const WIRED_SLOT_SET = new Set<string>([
+  ...WIRED_WAVE_A_SLOTS,
+  ...WIRED_WAVE_B_SLOTS,
+]);
 
 describe("LandingHarnessPage", () => {
   test("renders wired Wave A fills from fixtures and keeps unwired slots as placeholders", async () => {
@@ -76,7 +80,16 @@ describe("LandingHarnessPage", () => {
     expect(html).toContain(fixtureLandingPageData.cta.installCommand);
     expect(html).not.toContain('data-landing-placeholder="hero"');
 
-    // Unwired Wave B slots stay labeled placeholders
+    // Wired Wave B carousel (FactoryCarousel) from fixture slides
+    expect(html).toContain('data-factory-carousel=""');
+    expect(html).not.toContain('data-landing-placeholder="carousel"');
+    for (const slide of fixtureLandingPageData.carousel.slides) {
+      expect(html).toContain(slide.title);
+      expect(html).toContain(slide.blurb);
+      expect(html).toContain(slide.command);
+    }
+
+    // Remaining unwired slots stay labeled placeholders
     for (const slot of LANDING_SLOT_ORDER) {
       if (WIRED_SLOT_SET.has(slot)) {
         continue;
@@ -84,8 +97,9 @@ describe("LandingHarnessPage", () => {
       expect(html).toContain(`data-landing-placeholder="${slot}"`);
     }
 
-    // Unwired Wave B fixture content trees are not mounted as filled slots
-    // (command strings may still appear via soft-wired Terminal chrome).
+    // Unwired fixture content trees are not mounted as filled slots
+    // (command strings may still appear via soft-wired Terminal chrome /
+    // FactoryCarousel slides).
     expect(html).not.toContain(fixtureLandingPageData.hero.title);
     expect(html).not.toContain(fixtureLandingPageData.hero.subtitle);
     expect(html).not.toContain(
@@ -97,9 +111,6 @@ describe("LandingHarnessPage", () => {
     );
     expect(html).not.toContain(fixtureLandingPageData.cta.headline);
     expect(html).not.toContain(fixtureLandingPageData.cta.supporting);
-    expect(html).not.toContain(
-      fixtureLandingPageData.carousel.slides[0]?.blurb ?? "",
-    );
 
     const vars = landingThemeToCssVars();
     expect(html).toContain(
