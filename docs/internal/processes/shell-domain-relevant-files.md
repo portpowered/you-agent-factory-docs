@@ -358,12 +358,17 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Built-HTML / bundled-CSS convergence helpers for footer card accent-hover
   classes, muted directional sublabels, the yellow + dark-text CSS pairing
   (`bundledCssHasFooterYellowDarkTextRule` /
-  `assertDocsFooterYellowDarkTextCssConvergence`), and compact padding/gap
+  `assertDocsFooterYellowDarkTextCssConvergence`), compact padding/gap
   overrides (`FOOTER_COMPACT_PADDING` / `FOOTER_COMPACT_GAP`) that must cover
-  both accent-hover and `family-docs-footer-neighbors` selectors. Use
-  `assertDocsFooterChromeCssConvergence` when both repairs must stay locked
-  together. Source/CSS string helpers are supporting contracts only —
-  behavioral proof lives in the browser test above.
+  both accent-hover and `family-docs-footer-neighbors` selectors, and title
+  underline absence with retained focus-visible ring
+  (`FOOTER_TITLE_TEXT_DECORATION` /
+  `bundledCssHasFooterTitleUnderlineAbsenceRule` /
+  `assertDocsFooterTitleUnderlineAbsenceCssConvergence`). Use
+  `assertDocsFooterChromeCssConvergence` when yellow+dark, compact sizing, and
+  underline-absence/focus-ring must stay locked together. Source/CSS string
+  helpers are supporting contracts only — behavioral proof lives in the
+  browser test above.
 * Worktree browser verify for footer chrome: Turbopack rejects hoisted
   out-of-root `node_modules` symlinks, so `bun run dev` often cannot start in
   a worktree. Prefer the committed Playwright `page.setContent` fixture in

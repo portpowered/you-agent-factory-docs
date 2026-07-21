@@ -16,6 +16,7 @@ import {
   docsPageFooterCompactPadding,
   docsPageFooterTitleTextDecoration,
 } from "@/features/docs/styles/docs-page-footer-chrome";
+import { FOOTER_TITLE_TEXT_DECORATION } from "@/lib/navigation/docs-page-footer-contract";
 import {
   closePlaywrightBrowserWithTimeout,
   launchPlaywrightBrowser,
@@ -255,6 +256,9 @@ describe("docs page footer chrome behavioral (always-on)", () => {
   test("compact token exports stay aligned with rem→px fixture expectations", () => {
     expect(docsPageFooterCompactPadding).toBe("0.5rem 0.75rem");
     expect(docsPageFooterCompactGap).toBe("0.25rem");
+    expect(docsPageFooterTitleTextDecoration).toBe(
+      FOOTER_TITLE_TEXT_DECORATION,
+    );
     expect(docsPageFooterTitleTextDecoration).toBe("none");
     expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverBackground).toBe(
       "var(--docs-chrome-primary-yellow)",
@@ -264,7 +268,7 @@ describe("docs page footer chrome behavioral (always-on)", () => {
     );
   });
 
-  test("Playwright fixture: hover/focus show yellow highlight with dark text and compact sizing", async () => {
+  test("Playwright fixture: density, no title underline, focus ring, and yellow+dark hover hold together", async () => {
     const browser = await launchPlaywrightBrowser();
     try {
       const page = await browser.newPage({
@@ -319,10 +323,12 @@ describe("docs page footer chrome behavioral (always-on)", () => {
 
           await card.hover();
           const hovered = await probeFooterCard(page, cardKey);
+          expectCompactSizing(hovered);
           expectNoTitleUnderline(hovered);
 
           await card.focus();
           const focused = await probeFooterCard(page, cardKey);
+          expectCompactSizing(focused);
           expectNoTitleUnderline(focused);
           expect(parsePx(focused.outlineWidth)).toBeGreaterThanOrEqual(2);
           expect(focused.outlineStyle).toBe("solid");

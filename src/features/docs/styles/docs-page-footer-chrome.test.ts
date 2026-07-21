@@ -14,9 +14,11 @@ import {
 import {
   assertDocsFooterChromeCssConvergence,
   assertDocsFooterCompactSizingCssConvergence,
+  assertDocsFooterTitleUnderlineAbsenceCssConvergence,
   assertDocsFooterYellowDarkTextCssConvergence,
   FOOTER_COMPACT_GAP,
   FOOTER_COMPACT_PADDING,
+  FOOTER_TITLE_TEXT_DECORATION,
 } from "@/lib/navigation/docs-page-footer-contract";
 
 const footerChromeCss = readFileSync(
@@ -50,16 +52,22 @@ describe("docs page footer chrome CSS contract", () => {
     expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverForeground).toBe(
       "var(--primary-foreground)",
     );
+    expect(docsPageFooterTitleTextDecoration).toBe(
+      FOOTER_TITLE_TEXT_DECORATION,
+    );
     expect(docsPageFooterTitleTextDecoration).toBe("none");
   });
 
-  test("shared chrome stylesheet converges on yellow+dark-text and compact sizing together", () => {
+  test("shared chrome stylesheet converges on yellow+dark-text, compact sizing, and underline absence together", () => {
     expect(assertDocsFooterChromeCssConvergence(footerChromeCss)).toBeNull();
     expect(
       assertDocsFooterYellowDarkTextCssConvergence(footerChromeCss),
     ).toBeNull();
     expect(
       assertDocsFooterCompactSizingCssConvergence(footerChromeCss),
+    ).toBeNull();
+    expect(
+      assertDocsFooterTitleUnderlineAbsenceCssConvergence(footerChromeCss),
     ).toBeNull();
 
     expect(footerChromeCss).toContain(
@@ -91,6 +99,9 @@ describe("docs page footer chrome CSS contract", () => {
       "background-color: var(--docs-chrome-primary-yellow)",
     );
     expect(footerChromeCss).toContain("color: var(--primary-foreground)");
+    expect(
+      assertDocsFooterTitleUnderlineAbsenceCssConvergence(footerChromeCss),
+    ).toBeNull();
   });
 
   test("selector exports stay wired into the shared chrome stylesheet", () => {
