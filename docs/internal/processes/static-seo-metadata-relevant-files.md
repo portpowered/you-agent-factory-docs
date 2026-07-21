@@ -49,7 +49,7 @@ social assets, sitemap, robots).
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx` | Component-level old→target link + unknown-route error proofs |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
-| `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
+| `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`); emits `languages["x-default"]` → English canonical whenever locale alternates are advertised (`seo-hreflang`) |
 | `src/app/docs/docs-slug-renderer.tsx` | Docs `buildDocsPageAlternates` fail-closed filter via `isDocsPageShippedForLocale` |
 | `src/lib/navigation/site-metadata-path.ts` | Public-asset / non-Metadata path helpers; do not double-prefix Metadata fields |
 | `src/lib/build/static-export.ts` | `resolveGitHubPagesBasePath` / normalize helpers shared with metadataBase |

@@ -84,7 +84,7 @@ are display-only and are not contract description prose.
 | `src/lib/i18n/reference-chrome-context.tsx` | `ReferenceChromeProvider` / optional hook for client inventory surfaces |
 | `src/content/messages/{locale}/common.json` → `referenceChrome` | en/ja/zh-CN/vi filter, status, badge, a11y, inventory chrome catalogs |
 | `src/features/docs/components/DocsPageProviders.tsx` | Wires `referenceChrome` into local docs pages via provider |
-| `src/lib/i18n/route-locale.ts` | `localizedRouteAlternates` (all locales) + `localizedShippedDocsPageAlternates` (fail-closed shipped filter) |
+| `src/lib/i18n/route-locale.ts` | `localizedRouteAlternates` (all locales + `x-default` → English canonical) + `localizedShippedDocsPageAlternates` (fail-closed shipped filter; keeps `x-default` when language alternates remain) |
 | `src/lib/content/shipped-localized-docs.server.ts` | Derive shipped-locale manifest; includes `references` family-index slug when published + locale messages exist |
 | `src/lib/content/generated/shipped-localized-docs.generated.ts` | Client-safe generated artifact for language switcher / gating |
 | `src/components/references/shared/*` | Shared chrome surfaces that resolve catalogs via prop or provider |
@@ -108,7 +108,7 @@ _(none — W17 stories 001–006 complete)_
 | Path | Role |
 | --- | --- |
 | `src/lib/content/shipped-localized-docs.server.ts` | Derives `references` (family index) + `references/*` child slugs from colocated locale messages |
-| `src/lib/i18n/route-locale.ts` → `localizedShippedDocsPageAlternates` | Shared fail-closed hreflang filter for docs/reference routes |
+| `src/lib/i18n/route-locale.ts` → `localizedShippedDocsPageAlternates` | Shared fail-closed hreflang filter for docs/reference routes; preserves `x-default` → English canonical after shipped-locale filtering |
 | `src/app/docs/docs-slug-renderer.tsx` | Docs child pages use shipped alternates helper |
 | `src/app/(site)/docs/references/page.tsx` + `[locale]` twin | Family index metadata uses shipped alternates (not all-locale advertising) |
 | `src/features/layout/language-switcher.tsx` | Unavailable for unshipped `references/*` child locales via generated manifest |
