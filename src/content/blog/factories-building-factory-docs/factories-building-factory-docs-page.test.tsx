@@ -28,10 +28,8 @@ describe("factories-building-factory-docs blog post examination", () => {
     expect(html).toContain("/docs/techniques/planner-executor");
     expect(html).toContain("/docs/techniques/writer-reviewer");
     expect(html).toContain("/docs/concepts/task-queue");
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain(
-      'data-testid="blog-related-docs-partial-unavailable"',
-    );
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("/docs/concepts/worktree");
     expect(html).toContain("/docs/concepts/loop");

@@ -144,7 +144,8 @@ describe("useful-factory-links blog discoverability (003)", () => {
     expect(html).toContain("Relevant ecosystem reading");
     expect(html).toContain('href="/docs/documentation/cli"');
     expect(html).toContain('href="/docs/documentation/mcp"');
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
   });
 
   test("post title is a relative self-link for Pages representative nav hrefs", async () => {

@@ -98,21 +98,19 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   rejects out-of-root `node_modules` symlinks; prefer SSR `renderBlogPostPage` +
   `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification
   instead of inventing a second package layout.
-* `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve related-doc kinds
-  wired through `getRegistryRecordById` (concept, module, model, and other tagged
-  kinds in that lookup). Published `documentation.*` and `technique.*` ids
-  validate in frontmatter `relatedDocIds` but currently render as missing in the
-  component (`getRegistryRecordById` returns undefined for those kinds). Until
-  that lookup gap is fixed, pass only resolvable concept (or other lookup-backed)
-  ids to `<BlogRelatedDocs />` and link documentation/technique routes in MDX
-  prose so readers still reach those pages. Passing an unresolved
-  `documentation.*` or `technique.*` id into the component still shows
-  `blog-related-docs` when at least one concept resolves, but also emits
-  `blog-related-docs-partial-unavailable` — prefer prose for those routes so the
-  related list stays clean. Colocated discoverability SSR tests should assert
-  `data-testid="blog-related-docs"` and the absence of
-  `blog-related-docs-partial-unavailable` (href substring checks alone can pass
-  via prose links while the related-docs list is still partial).
+* Published blog posts no longer render `## Related reference pages` /
+  `<BlogRelatedDocs />` chrome. Keep frontmatter `relatedDocIds` for metadata
+  when useful, and link canonical docs from MDX prose instead. Colocated
+  discoverability/page SSR tests should assert absence of
+  `data-testid="blog-related-docs"` and the heading `Related reference pages`,
+  while still checking in-prose hrefs (for example `/docs/concepts/...`). The
+  `BlogRelatedDocs` component may remain for unit/contract coverage of the
+  wrapper itself; do not reintroduce it on published post bodies.
+* Historical note: `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve
+  related-doc kinds wired through `getRegistryRecordById` (concept, module,
+  model, and other tagged kinds in that lookup). Published `documentation.*`
+  and `technique.*` ids validate in frontmatter `relatedDocIds` but render as
+  missing in the component when used — prefer prose links for those routes.
 * Page-local blog illustrations (DataTable, charts) need the same
   `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
   switch as concept SPC graphs: relative imports in `page.mdx` do not resolve

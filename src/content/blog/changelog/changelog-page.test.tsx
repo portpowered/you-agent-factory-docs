@@ -47,9 +47,8 @@ describe("changelog blog hub (001)", () => {
     expect(html).toContain("Install documentation");
     expect(html).toContain("CLI documentation");
     expect(html).toContain("CLI command index");
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain("blog-related-docs-unavailable");
-    expect(html).not.toContain("blog-related-docs-partial-unavailable");
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/concepts/harness"');
     expect(html).toContain('href="/docs/concepts/worktree"');
     expect(html).toContain("Freshness ownership");

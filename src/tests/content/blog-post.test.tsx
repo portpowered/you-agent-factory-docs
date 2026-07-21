@@ -101,9 +101,9 @@ describe("blog post page render", () => {
     expect(html).toContain("Saturated task queue");
     expect(html).toContain("Where one stage caps the run");
     expect(html).toContain("bottlenecks-stage-throughput-chart");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/concepts/bottlenecks"');
-    expect(html).toContain("Related reference pages");
   });
 
   it("returns missing-page behavior for unpublished legacy Atlas blog slugs", async () => {

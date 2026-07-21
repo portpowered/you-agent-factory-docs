@@ -83,6 +83,7 @@ describe("bottlenecks blog discoverability (004)", () => {
     expect(html).toContain("Where one stage caps the run");
     expect(html).toContain("bottlenecks-stage-throughput-chart");
     expect(html).toContain("/docs/concepts/bottlenecks");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
   });
 });

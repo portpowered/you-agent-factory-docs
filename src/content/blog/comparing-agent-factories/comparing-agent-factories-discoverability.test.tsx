@@ -102,7 +102,9 @@ describe("comparing-agent-factories blog discoverability (004)", () => {
     expect(html).toContain("agent-factories-comparison-table");
     expect(html).toContain("you-agent-factory");
     expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).toContain("/docs/concepts/harness");
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
   });
 
   test("post title is a relative self-link for Pages representative nav hrefs", async () => {

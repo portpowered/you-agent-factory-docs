@@ -146,15 +146,12 @@ describe("cursor-composer-six-billion-tokens blog discoverability (004)", () => 
 
     expect(html).toContain(BLOG_TITLE);
     expect(html).toContain("Why this examination exists");
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain(
-      'data-testid="blog-related-docs-partial-unavailable"',
-    );
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("/docs/concepts/bottlenecks");
     expect(html).toContain("/docs/concepts/compaction");
-    // In-prose harness-support link only — do not put documentation.* ids in
-    // BlogRelatedDocs (getRegistryRecordById returns missing for that kind).
+    // In-prose harness-support link remains in the article body.
     expect(html).toContain("/docs/documentation/harness-support");
   });
 });

@@ -55,19 +55,22 @@ and the shared related-registry-docs component/blog wrapper.
   Curated related-docs list with reason labels and expand/collapse; styling reference
   for docs chrome links.
 
-## Blog wrapper (story 003)
+## Blog wrapper (legacy component; not on published posts)
 
 * `src/features/blog/components/BlogRelatedDocs.tsx`
   Blog wrapper accepting `relatedDocIds` and delegating to `RelatedRegistryDocs` with
   blog-specific empty/all-unavailable fallback copy and `testId="blog-related-docs"`.
+  Published blog MDX posts no longer render this chrome; keep the component for
+  unit/contract coverage and docs-family reuse patterns.
 * `src/features/blog/components/BlogRelatedDocs.test.tsx`
   Wrapper render/fallback tests with injectable `resolveOptions`.
 * `src/features/blog/components/blog-related-docs-blog-integration.test.tsx`
   Loads remaining factory blog posts (`bottlenecks`, `comparing-agent-factories`)
-  and asserts explicit frontmatter ids render as compact published docs links via
-  `renderBlogPostShell`.
+  and asserts published shells keep `relatedDocIds` metadata and in-prose docs
+  links without rendering `blog-related-docs` chrome.
 * `src/lib/content/blog-mdx-components.tsx`
-  Registers `BlogRelatedDocs` for MDX blog posts.
+  Still registers `BlogRelatedDocs` for MDX if referenced; published posts should
+  not import or render it.
 
 ## Component examples (browser verification)
 

@@ -44,7 +44,8 @@ describe("lies-damned-lies-evals blog post shell (001)", () => {
       "Evaluate agent-factory workflows with live operational signals",
     );
     expect(html).toContain("The wrong scoreboard");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/documentation/metrics"');
     expect(html).toContain(
       'href="/docs/concepts/statistical-process-control-graphs"',
@@ -86,15 +87,12 @@ describe("lies-damned-lies-evals related factory docs (003)", () => {
     ]);
   });
 
-  test("renders metrics prose link and BlogRelatedDocs concept routes", async () => {
+  test("renders metrics and concept routes as in-prose links without related-docs chrome", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
 
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain('data-testid="blog-related-docs-unavailable"');
-    expect(html).not.toContain(
-      'data-testid="blog-related-docs-partial-unavailable"',
-    );
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/documentation/metrics"');
     expect(html).toContain(
       'href="/docs/concepts/statistical-process-control-graphs"',

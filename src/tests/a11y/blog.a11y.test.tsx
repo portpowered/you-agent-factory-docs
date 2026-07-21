@@ -146,14 +146,19 @@ describe("blog accessibility", () => {
     });
     expect(comparisonTable).toBeTruthy();
 
-    const relatedDocs = screen.getByTestId("blog-related-docs");
-    expect(relatedDocs).toBeTruthy();
-    const relatedLinks = within(relatedDocs).getAllByRole("link");
-    expect(relatedLinks.length).toBeGreaterThan(0);
-    for (const link of relatedLinks) {
-      link.focus();
-      expect(document.activeElement).toBe(link);
-    }
+    expect(screen.queryByTestId("blog-related-docs")).toBeNull();
+    expect(
+      screen.queryByRole("heading", {
+        level: 2,
+        name: "Related reference pages",
+      }),
+    ).toBeNull();
+
+    const bodyDocsLink = screen.getByRole("link", {
+      name: "What is you-agent-factory",
+    });
+    bodyDocsLink.focus();
+    expect(document.activeElement).toBe(bodyDocsLink);
 
     const controls = listKeyboardFocusableControls(document);
     expect(controls.every((control) => control.name.length > 0)).toBe(true);

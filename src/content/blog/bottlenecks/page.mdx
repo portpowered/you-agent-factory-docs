@@ -15,7 +15,6 @@ status: "published"
 import { Callout } from "@/features/docs/components/Callout";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
 
 # <T k="title" />
 
@@ -83,11 +82,7 @@ Start with the stage that is saturated while neighbors still have spare capacity
 - If solo stages look fine and multi-stage runs collapse, inspect shared locks, rate limits, and I/O budgets.
 - If turns stall on compaction or context budget with free workers, shrink or compact context before scaling concurrency.
 
-For the stable definition of a factory bottleneck—the limiting stage that caps overall throughput even when other stages have spare capacity—use the related concept page below. This listicle stays on examples and tradeoffs rather than restating that glossary entry.
-
-## Related reference pages
-
-<BlogRelatedDocs relatedDocIds={["concept.bottlenecks"]} />
+For the stable definition of a factory bottleneck—the limiting stage that caps overall throughput even when other stages have spare capacity—see the [Bottlenecks](/docs/concepts/bottlenecks) concept page. This listicle stays on examples and tradeoffs rather than restating that glossary entry.
 
 ## Tags
 
