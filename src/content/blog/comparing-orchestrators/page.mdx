@@ -62,21 +62,11 @@ worktrees, MCP, and persistence describe what an orchestrator claims to cover
 in practice for agent-oriented work—not a guarantee that every technique page
 maps one-to-one onto every product.
 
-## Where planner–executor fits
+## Reading notes
 
-Many orchestrators express work as plan-then-execute loops. The
-[planner–executor technique](/docs/techniques/planner-executor) is the stable
-docs definition of that pattern for you-agent-factory workflows. Use it when
-you need the technique itself; use the feature matrix when you need to compare
-which orchestrators advertise loops, persistence, or related capabilities.
+<ComparingOrchestratorsNotesList />
 
-## Systems in the registry
-
-The committed orchestrator feature registry currently includes entries such as
-**you-agent-factory** and **Custom scripts**. you-agent-factory is a local,
-open-source, MIT-licensed option with loops, worktrees, MCP, and persistence
-among its capability tags. Custom scripts remain useful for small disposable
-loops and are a weak default once recovery and multi-session work matter.
-
-More orchestrators can land in the same registry without changing how readers
-scan columns against rows.
+For the stable docs definition of plan-then-execute loops, see
+[planner–executor](/docs/techniques/planner-executor). More orchestrators can
+land in the same registry without changing how readers scan columns against
+rows.

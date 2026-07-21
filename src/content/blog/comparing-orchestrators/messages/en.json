@@ -15,5 +15,25 @@
       "attr.hosting": "Hosting",
       "attr.capabilities": "Capabilities"
     }
+  },
+  "notes": {
+    "listLabel": "Reading notes for comparing orchestrators",
+    "items": [
+      {
+        "id": "note-planner-executor",
+        "title": "Planner–executor is the technique page",
+        "description": "Many orchestrators express work as plan-then-execute loops. Use the planner–executor technique docs when you need the pattern itself; use this matrix when you need to compare which orchestrators advertise loops, persistence, or related capabilities."
+      },
+      {
+        "id": "note-registry-entries",
+        "title": "Registry entries today",
+        "description": "The committed orchestrator feature registry currently includes you-agent-factory and Custom scripts. you-agent-factory is a local, open-source, MIT-licensed option with loops, worktrees, MCP, and persistence among its capability tags. Custom scripts remain useful for small disposable loops and are a weak default once recovery and multi-session work matter."
+      },
+      {
+        "id": "note-not-benchmarks",
+        "title": "Feature attributes, not scores",
+        "description": "This post explores registry attributes such as open source, license, hosting, and capabilities. It is not a benchmark leaderboard, and it is distinct from the agent-factories comparison that weighs product shape and durability in prose."
+      }
+    ]
   }
 }

@@ -1,5 +1,6 @@
 /**
- * Post-owned render proof for blog/comparing-orchestrators (story 001).
+ * Post-owned render proof for blog/comparing-orchestrators
+ * (stories 001–003: shell, matrix, Intro → notes order).
  */
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -10,7 +11,7 @@ const BLOG_TITLE = "Comparing orchestrators by feature attributes";
 const BLOG_DESCRIPTION =
   "Explore orchestrator tradeoffs across open source, license, hosting, and capabilities—feature-attribute comparison, not a benchmark leaderboard.";
 
-describe("comparing-orchestrators blog shell (001)", () => {
+describe("comparing-orchestrators blog composition (001–003)", () => {
   test("renders published post shell with title, description, and intro teaching signal", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
@@ -51,5 +52,33 @@ describe("comparing-orchestrators blog shell (001)", () => {
     expect(html).toContain("Open source");
     expect(html).toContain("you-agent-factory");
     expect(html).toContain("Custom scripts");
+  });
+
+  test("renders Intro, matrix, and NotesList TeachingList in top-to-bottom order", async () => {
+    const page = await renderBlogPostPage(BLOG_SLUG);
+    const html = renderToStaticMarkup(page);
+
+    const introIdx = html.indexOf("What an orchestrator is");
+    const howToReadIdx = html.indexOf("How to read the feature matrix");
+    const matrixIdx = html.indexOf(
+      'data-testid="comparing-orchestrators-matrix"',
+    );
+    const notesHeadingIdx = html.indexOf("Reading notes");
+    const notesListIdx = html.indexOf(
+      'aria-label="Reading notes for comparing orchestrators"',
+    );
+    const noteTitleIdx = html.indexOf("Planner–executor is the technique page");
+
+    expect(introIdx).toBeGreaterThan(-1);
+    expect(howToReadIdx).toBeGreaterThan(introIdx);
+    expect(matrixIdx).toBeGreaterThan(howToReadIdx);
+    expect(notesHeadingIdx).toBeGreaterThan(matrixIdx);
+    expect(notesListIdx).toBeGreaterThan(notesHeadingIdx);
+    expect(noteTitleIdx).toBeGreaterThan(notesListIdx);
+
+    expect(html).toContain('data-testid="teaching-list"');
+    expect(html).toContain("Registry entries today");
+    expect(html).toContain("Feature attributes, not scores");
+    expect(html).not.toContain("teaching-ui-lists-harness");
   });
 });

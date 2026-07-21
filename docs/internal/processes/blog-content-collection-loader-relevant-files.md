@@ -155,6 +155,12 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   colocated `messages/en.json` (host `labels` map keyed by attribute id). Focus
   controls stay page-local—the matrix recipe consumes focus ids but does not
   ship a focus picker.
+* Optional NotesList on the same post: colocate a thin wrapper that imports
+  `TeachingList` from `@/features/teaching-ui/lists` (not the top-level
+  teaching-ui barrel), pass messages-owned `items` + required `listLabel`, and
+  export it from the post `page-mdx-components.tsx` beside the matrix composer.
+  MDX section order is Intro prose → matrix composer → Reading notes
+  (`TeachingList`). Do not register NotesList in shared `blog-mdx-components.tsx`.
 * Empty `tags: []` is valid when no published tag fits. Discoverability then
   relies on the blog index card plus prose/title search documents (not tag
   landings). Keep that proof colocated under
