@@ -68,7 +68,7 @@ surfaces (home, browse, search, docs/harness-support, blog).
   Clears Fumadocs `aria-selected` on native `<button>` result rows (axe
   `aria-allowed-attr` critical). Active-row text styles also key off
   `group-[.bg-fd-accent]:…` because selection chrome still uses that class.
-* `src/components/providers/app-providers.tsx`
+* `src/features/providers/app-providers.tsx`
   Lazy `DocsSearchDialog` is wrapped in `<Suspense fallback={null}>` (Fumadocs
   SearchProvider also Suspense-wraps the dialog slot).
 * Prefer factory-current result queries (for example `ralph` / `harness`); do
