@@ -23,6 +23,7 @@ import {
 import {
   closePlaywrightBrowserWithTimeout,
   launchPlaywrightBrowser,
+  PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
 } from "@/lib/verify/launch-playwright-browser";
 
 const ROOT = process.cwd();
@@ -210,109 +211,131 @@ describe("docs chrome highlighting token-map behavioral (five surfaces)", () => 
     ).toBe("background");
   });
 
-  test("Playwright fixture: all five surfaces match locked rest and hover token map", async () => {
-    const browser = await launchPlaywrightBrowser();
-    try {
-      const page = await browser.newPage({
-        viewport: { width: 1280, height: 900 },
-      });
+  test(
+    "Playwright fixture: all five surfaces match locked rest and hover token map",
+    async () => {
+      const browser = await launchPlaywrightBrowser();
       try {
-        await page.setContent(buildFiveSurfaceFixtureHtml(), {
-          waitUntil: "load",
+        const page = await browser.newPage({
+          viewport: { width: 1280, height: 900 },
         });
+        try {
+          await page.setContent(buildFiveSurfaceFixtureHtml(), {
+            waitUntil: "load",
+          });
 
-        // --- Resting states ---
-        const searchRest = await probe(page, '[data-probe="search"]');
-        expect(searchRest.backgroundColor).toBe(SURROUNDING_RGB);
+          // --- Resting states ---
+          const searchRest = await probe(page, '[data-probe="search"]');
+          expect(searchRest.backgroundColor).toBe(SURROUNDING_RGB);
 
-        const globeRest = await probe(page, '[data-probe="globe"]');
-        expect(globeRest.backgroundColor).toBe(SURROUNDING_RGB);
+          const globeRest = await probe(page, '[data-probe="globe"]');
+          expect(globeRest.backgroundColor).toBe(SURROUNDING_RGB);
 
-        const githubRest = await probe(page, '[data-probe="github"]');
-        expect(githubRest.backgroundColor).toBe(SURROUNDING_RGB);
+          const githubRest = await probe(page, '[data-probe="github"]');
+          expect(githubRest.backgroundColor).toBe(SURROUNDING_RGB);
 
-        const tocCurrentRest = await probe(page, '[data-probe="toc-current"]');
-        expect(tocCurrentRest.color).toBe(SECONDARY_BLUE_RGB);
+          const tocCurrentRest = await probe(
+            page,
+            '[data-probe="toc-current"]',
+          );
+          expect(tocCurrentRest.color).toBe(SECONDARY_BLUE_RGB);
 
-        const tocNonCurrentRest = await probe(
-          page,
-          '[data-probe="toc-non-current"]',
-        );
-        expect(tocNonCurrentRest.color).toBe(MUTED_WHITE_RGB);
+          const tocNonCurrentRest = await probe(
+            page,
+            '[data-probe="toc-non-current"]',
+          );
+          expect(tocNonCurrentRest.color).toBe(MUTED_WHITE_RGB);
 
-        const tocThumbRest = await probe(page, '[data-probe="toc-thumb"]');
-        expect(tocThumbRest.backgroundColor).toBe(SECONDARY_BLUE_RGB);
+          const tocThumbRest = await probe(page, '[data-probe="toc-thumb"]');
+          expect(tocThumbRest.backgroundColor).toBe(SECONDARY_BLUE_RGB);
 
-        const sidebarRest = await probe(page, '[data-probe="sidebar-row"]');
-        expect(sidebarRest.color).toBe(WHITE_RGB);
-        expect(sidebarRest.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+          const sidebarRest = await probe(page, '[data-probe="sidebar-row"]');
+          expect(sidebarRest.color).toBe(WHITE_RGB);
+          expect(sidebarRest.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
 
-        const headerTextRest = await probe(page, '[data-probe="header-text"]');
-        expect(headerTextRest.color).toBe(WHITE_RGB);
+          const headerTextRest = await probe(
+            page,
+            '[data-probe="header-text"]',
+          );
+          expect(headerTextRest.color).toBe(WHITE_RGB);
 
-        const headerIconRest = await probe(page, '[data-probe="header-icon"]');
-        expect(headerIconRest.color).toBe(WHITE_RGB);
+          const headerIconRest = await probe(
+            page,
+            '[data-probe="header-icon"]',
+          );
+          expect(headerIconRest.color).toBe(WHITE_RGB);
 
-        const breadcrumbRest = await probe(
-          page,
-          '[data-probe="breadcrumb-link"]',
-        );
-        expect(breadcrumbRest.color).toBe(MUTED_WHITE_RGB);
+          const breadcrumbRest = await probe(
+            page,
+            '[data-probe="breadcrumb-link"]',
+          );
+          expect(breadcrumbRest.color).toBe(MUTED_WHITE_RGB);
 
-        const breadcrumbPageRest = await probe(
-          page,
-          '[data-probe="breadcrumb-page"]',
-        );
-        expect(breadcrumbPageRest.color).toBe(MUTED_WHITE_RGB);
+          const breadcrumbPageRest = await probe(
+            page,
+            '[data-probe="breadcrumb-page"]',
+          );
+          expect(breadcrumbPageRest.color).toBe(MUTED_WHITE_RGB);
 
-        // --- Hover / active overlays ---
-        await page.locator('[data-probe="search"]').hover();
-        const searchHover = await probe(page, '[data-probe="search"]');
-        expect(searchHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          // --- Hover / active overlays ---
+          await page.locator('[data-probe="search"]').hover();
+          const searchHover = await probe(page, '[data-probe="search"]');
+          expect(searchHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
 
-        await page.locator('[data-probe="globe"]').hover();
-        const globeHover = await probe(page, '[data-probe="globe"]');
-        expect(globeHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          await page.locator('[data-probe="globe"]').hover();
+          const globeHover = await probe(page, '[data-probe="globe"]');
+          expect(globeHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
 
-        await page.locator('[data-probe="github"]').hover();
-        const githubHover = await probe(page, '[data-probe="github"]');
-        expect(githubHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          await page.locator('[data-probe="github"]').hover();
+          const githubHover = await probe(page, '[data-probe="github"]');
+          expect(githubHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
 
-        await page.locator('[data-probe="toc-current"]').hover();
-        const tocCurrentHover = await probe(page, '[data-probe="toc-current"]');
-        expect(tocCurrentHover.color).toBe(PRIMARY_YELLOW_RGB);
+          await page.locator('[data-probe="toc-current"]').hover();
+          const tocCurrentHover = await probe(
+            page,
+            '[data-probe="toc-current"]',
+          );
+          expect(tocCurrentHover.color).toBe(PRIMARY_YELLOW_RGB);
 
-        await page.locator('[data-probe="toc-non-current"]').hover();
-        const tocNonCurrentHover = await probe(
-          page,
-          '[data-probe="toc-non-current"]',
-        );
-        expect(tocNonCurrentHover.color).toBe(PRIMARY_YELLOW_RGB);
+          await page.locator('[data-probe="toc-non-current"]').hover();
+          const tocNonCurrentHover = await probe(
+            page,
+            '[data-probe="toc-non-current"]',
+          );
+          expect(tocNonCurrentHover.color).toBe(PRIMARY_YELLOW_RGB);
 
-        await page.locator('[data-probe="sidebar-row"]').hover();
-        const sidebarHover = await probe(page, '[data-probe="sidebar-row"]');
-        expect(sidebarHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(sidebarHover.color).toBe(PRIMARY_FOREGROUND_RGB);
+          await page.locator('[data-probe="sidebar-row"]').hover();
+          const sidebarHover = await probe(page, '[data-probe="sidebar-row"]');
+          expect(sidebarHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(sidebarHover.color).toBe(PRIMARY_FOREGROUND_RGB);
 
-        await page.locator('[data-probe="header-text"]').hover();
-        const headerTextHover = await probe(page, '[data-probe="header-text"]');
-        expect(headerTextHover.color).toBe(PRIMARY_YELLOW_RGB);
+          await page.locator('[data-probe="header-text"]').hover();
+          const headerTextHover = await probe(
+            page,
+            '[data-probe="header-text"]',
+          );
+          expect(headerTextHover.color).toBe(PRIMARY_YELLOW_RGB);
 
-        await page.locator('[data-probe="header-icon"]').hover();
-        const headerIconHover = await probe(page, '[data-probe="header-icon"]');
-        expect(headerIconHover.color).toBe(PRIMARY_YELLOW_RGB);
+          await page.locator('[data-probe="header-icon"]').hover();
+          const headerIconHover = await probe(
+            page,
+            '[data-probe="header-icon"]',
+          );
+          expect(headerIconHover.color).toBe(PRIMARY_YELLOW_RGB);
 
-        await page.locator('[data-probe="breadcrumb-link"]').hover();
-        const breadcrumbHover = await probe(
-          page,
-          '[data-probe="breadcrumb-link"]',
-        );
-        expect(breadcrumbHover.color).toBe(PRIMARY_YELLOW_RGB);
+          await page.locator('[data-probe="breadcrumb-link"]').hover();
+          const breadcrumbHover = await probe(
+            page,
+            '[data-probe="breadcrumb-link"]',
+          );
+          expect(breadcrumbHover.color).toBe(PRIMARY_YELLOW_RGB);
+        } finally {
+          await page.close();
+        }
       } finally {
-        await page.close();
+        await closePlaywrightBrowserWithTimeout(browser);
       }
-    } finally {
-      await closePlaywrightBrowserWithTimeout(browser);
-    }
-  }, 120_000);
+    },
+    PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
+  );
 });

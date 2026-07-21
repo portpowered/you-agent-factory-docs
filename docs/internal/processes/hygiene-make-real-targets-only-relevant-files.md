@@ -138,6 +138,22 @@ Files in the reviewed diff: `AGENTS.md`, `README.md`, `docs/contributors/CONTRIB
 
 Quality gates on this checkout after the doc/comment changes: `make check` passed; `make test` passed (1822 tests). Ensure `make setup` has populated `node_modules/@you-agent-factory/api` before relying on W02 SSE package-backed suites.
 
+## Mergeability follow-up (post story 005)
+
+PR `#201` `pull_request` unit-tests flaked on always-on docs Playwright fixtures
+timing out at Bun’s 120s while CI Chromium launch serialization could wait
+longer. Push-event CI on the same SHA stayed green.
+
+Follow-up (not a new Make-target story):
+
+- `src/lib/verify/launch-playwright-browser.ts` — fail-closed retryable launch-slot
+  wait timeout (45s), reclaim stale slots after 90s, export
+  `PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS` (240s)
+- Docs chrome fixture browser tests use that exported Bun timeout
+- Helper unit tests cover slot-wait retry classification
+
+Record this in PR conversation when landed.
+
 ## Companion contract note (story 002)
 
 `src/lib/governance/architectural-checklist-audit.ts` requires the operator
