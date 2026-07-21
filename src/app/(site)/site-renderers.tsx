@@ -7,7 +7,6 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HomeArticle } from "@/components/home/home-article";
-import { loadReferencesFamilyFreshnessSummary } from "@/content/docs/references/family-index/load-references-family-freshness";
 import { loadReferencesFamilyIndex } from "@/content/docs/references/family-index/load-references-family-index";
 import { ReferencesFamilyIndex } from "@/content/docs/references/family-index/ReferencesFamilyIndex";
 import {
@@ -346,9 +345,9 @@ export async function renderSectionCollectionIndexPage(
 }
 
 /**
- * Authored `/docs/references` family index: localized introduction,
- * eight-route discoverability cards, and package/version freshness from the
- * public API manifest—owned by the references index lane.
+ * Authored `/docs/references` family index: unlabeled openingSummary purpose
+ * lead and eight-route Contract surfaces discoverability cards—owned by the
+ * references index lane.
  */
 export async function renderReferencesFamilyIndexPage(
   locale: SiteLocale = defaultLocale,
@@ -356,7 +355,6 @@ export async function renderReferencesFamilyIndexPage(
   const uiMessages = await loadUiMessages(locale);
   const referenceChrome = resolveReferenceChromeMessages(uiMessages);
   const index = await loadReferencesFamilyIndex(locale);
-  const freshness = loadReferencesFamilyFreshnessSummary();
   const title = index.messages.title || uiMessages.referencesIndex.title;
   const description =
     index.messages.description || uiMessages.referencesIndex.description;
@@ -376,11 +374,7 @@ export async function renderReferencesFamilyIndexPage(
           messages={index.messages}
           referenceChrome={referenceChrome}
         >
-          <ReferencesFamilyIndex
-            chrome={referenceChrome}
-            freshness={freshness}
-            messages={index.messages}
-          />
+          <ReferencesFamilyIndex messages={index.messages} />
         </DocsPageProviders>
         {familyNeighbors ? (
           <FamilyDocsFooterNeighbors neighbors={familyNeighbors} />

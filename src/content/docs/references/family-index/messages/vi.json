@@ -7,10 +7,6 @@
       "title": "Các bề mặt hợp đồng",
       "body": "Mỗi thẻ mở một họ hợp đồng. Nhãn vẫn dễ đọc trên khung nhìn hẹp."
     },
-    "freshness": {
-      "title": "Độ mới của gói",
-      "body": "Họ trang này ghi nhận danh tính gói API công khai đã cài đặt bên dưới. Phiên bản và source commit đến từ manifest gói đã xuất bản—không phải chuỗi chép tay."
-    },
     "api": {
       "title": "HTTP API",
       "body": "Các thao tác OpenAPI và hợp đồng request/response cho bề mặt HTTP của factory."
@@ -42,12 +38,6 @@
     "javascript-runtime": {
       "title": "JavaScript runtime",
       "body": "Binding JavaScript runtime và bề mặt gói để nhúng công việc factory."
-    }
-  },
-  "callouts": {
-    "freshnessUnavailable": {
-      "title": "Không lấy được độ mới của gói",
-      "body": "Không đọc được manifest gói API đã xuất bản cho bản dựng này. Các thẻ bề mặt hợp đồng bên dưới vẫn khả dụng; danh tính và phiên bản gói sẽ hiện ở đây khi manifest được giải quyết."
     }
   }
 }

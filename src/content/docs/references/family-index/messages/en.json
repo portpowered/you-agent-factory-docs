@@ -7,10 +7,6 @@
       "title": "Contract surfaces",
       "body": "Each card opens one contract family. Labels stay readable on narrow viewports."
     },
-    "freshness": {
-      "title": "Package freshness",
-      "body": "This family documents the installed public API package identity below. Version and source commit come from the published package manifest—not hand-copied strings."
-    },
     "api": {
       "title": "HTTP API",
       "body": "OpenAPI operations and request/response contracts for the factory HTTP surface."
@@ -42,12 +38,6 @@
     "javascript-runtime": {
       "title": "JavaScript runtime",
       "body": "JavaScript runtime bindings and package surface for embedding factory work."
-    }
-  },
-  "callouts": {
-    "freshnessUnavailable": {
-      "title": "Package freshness unavailable",
-      "body": "The published API package manifest could not be read for this build. Contract surface cards below remain available; package identity and version appear here when the manifest resolves."
     }
   }
 }
