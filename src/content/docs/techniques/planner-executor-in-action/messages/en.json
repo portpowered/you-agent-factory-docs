@@ -1,0 +1,4 @@
+{
+  "title": "Planner-Executor In Action",
+  "description": "Practice planner-executor as a multi-model cost tradeoff: when a larger planner and smaller executor win over one shared model."
+}
