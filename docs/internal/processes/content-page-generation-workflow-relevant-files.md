@@ -669,6 +669,24 @@ those paths only accept collection section refs.
   documentation→documentation discovery with page-local `<LocalizedLinkList>`
   plus aligned registry `relatedIds`; `<RelatedDocs />` alone will not render
   documentation-kind siblings.
+- Deferred Program documentation explorer membership (page-only lanes such as
+  PS-220 `/docs/documentation/api`): publish the page bundle + registry with
+  status `published`, add the slug to
+  `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS` in
+  `src/lib/content/sidebar-grouping.ts`, and keep
+  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` unchanged until the IA lane
+  (PS-300) wires Interfaces membership. The sidebar adapter omits deferred
+  slugs from the explorer tree the same way it omits FAQ and W18 move stubs;
+  do not leave an unassigned published page to append after the last top group
+  (that leaks into Additional references under `pageEntriesUnderSeparator`).
+  Direct URL, documentation section index, and search still include the page.
+- Dual-page API how-to proof (`documentation/api` vs `references/api`): colocate
+  page-local tests under `src/content/docs/documentation/api/api-page.test.tsx`.
+  Assert Mode A how-to identity, default base URL / factory-running / session-flow
+  teaching, a reader-visible `a[href="/docs/references/api"]` (How To Use + Related),
+  and absence of catalog UI markers (`[data-api-reference-projection]`,
+  `[data-api-operation-navigator]`, `[data-api-fumadocs-operations]`). Do not
+  assert explorer sidebar membership or Lane A maps from that page-local proof.
 - `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
   units). When rewriting or consuming that page, retarget program-doc related
   links and `relatedIds` that treated Tokens as the factory/work-token glossary
