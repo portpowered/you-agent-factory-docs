@@ -162,11 +162,60 @@ describe("planner-executor-in-action technique page", () => {
       "/docs/techniques/planner-executor",
     );
 
+    const intro = document.getElementById("intro");
+    const patternList = document.getElementById("pattern-list");
+    const playground = document.getElementById("playground");
+    const compareChart = document.getElementById("compare-chart");
+    const recommendation = document.getElementById("recommendation");
+    expect(intro).toBeTruthy();
+    expect(patternList).toBeTruthy();
+    expect(playground).toBeTruthy();
+    expect(compareChart).toBeTruthy();
+    expect(recommendation).toBeTruthy();
+    expect(
+      Boolean(
+        intro &&
+          patternList &&
+          intro.compareDocumentPosition(patternList) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+    expect(
+      Boolean(
+        patternList &&
+          playground &&
+          patternList.compareDocumentPosition(playground) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+    expect(
+      Boolean(
+        playground &&
+          compareChart &&
+          playground.compareDocumentPosition(compareChart) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+    expect(
+      Boolean(
+        compareChart &&
+          recommendation &&
+          compareChart.compareDocumentPosition(recommendation) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
     expect(document.getElementById("related")).toBeNull();
     expect(document.getElementById("references")).toBeNull();
+    expect(document.getElementById("tags")).toBeNull();
     expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(screen.queryByTestId("curated-related-docs")).toBeNull();
+    expect(screen.queryByTestId("derived-related-docs")).toBeNull();
+    expect(
+      document.querySelectorAll('[data-testid$="-related-docs"]').length,
+    ).toBe(0);
   });
 });
