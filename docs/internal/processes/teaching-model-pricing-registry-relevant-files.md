@@ -41,6 +41,10 @@ own ModelCostPlayground UI, technique/blog pages, or live provider price APIs.
 * Invalid fixtures live under test temp dirs, never as committed broken production JSON.
 * `generate-registry-runtime` ignores `registry/models/**` — load via `model-pricing.ts` only.
 * No live price fetches; freshness is the committed `asOf` date.
+* `src/content/registry/models` is **not** on `RETIRED_AI_CONTENT_OWNED_PATHS`
+  (teaching pricing). Atlas `/docs/models` routes, `kind: "model"`, and
+  `src/content/docs/models` remain denylisted so the path does not re-enter the
+  page compile graph.
 
 ## Wave A closeout (this lane)
 
