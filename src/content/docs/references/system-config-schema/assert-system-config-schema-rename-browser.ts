@@ -1,9 +1,11 @@
 /**
  * Browser verify for repaired `/docs/references/system-config-schema`:
  * System config title, local-storage lead, trimmed filter/catalog chrome,
- * clear root header, authored operator-config example, no you-config-schema
- * redirect, and inbound/family-index links to the new URL
- * (repair-you-config-system-config-rename story 007).
+ * clear root header, authored operator-config example above definition
+ * fields/body (Q5 examples-before-body), no you-config-schema redirect, and
+ * inbound/family-index links to the new URL
+ * (repair-you-config-system-config-rename story 007 +
+ * repair-system-config-examples-above-definition story 003).
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
@@ -158,6 +160,25 @@ try {
       hasExamplesPresent: Boolean(
         surface?.querySelector('[data-schema-examples="present"]'),
       ),
+      examplesPlacement:
+        surface
+          ?.querySelector(
+            '[data-testid="system-config-schema-reference-definition"]',
+          )
+          ?.getAttribute("data-schema-examples-placement") ?? null,
+      examplesBeforeFields: (() => {
+        const examples = surface?.querySelector(
+          '[data-testid="schema-definition-examples"][data-schema-examples="present"]',
+        );
+        const fields = surface?.querySelector(
+          "[data-schema-definition-fields]",
+        );
+        if (!examples || !fields) return false;
+        return Boolean(
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+        );
+      })(),
       exampleCode:
         document.getElementById("schema-example-code-operator-config-defaults")
           ?.textContent ??
@@ -209,6 +230,14 @@ try {
   );
   requireTrue(polish.hasExamplesPresent, "examples present marker");
   requireTrue(polish.hasAuthoredExample, "authored example visible");
+  requireTrue(
+    polish.examplesPlacement === "before-body",
+    "examplesPlacement is before-body",
+  );
+  requireTrue(
+    polish.examplesBeforeFields,
+    "authored examples precede definition fields in DOM order",
+  );
   requireTrue(
     /workerModelProvider[\s\S]*codex/.test(polish.exampleCode),
     "example includes workerModelProvider codex",
@@ -335,6 +364,8 @@ try {
       {
         title: polish.title,
         schemaStatus: polish.schemaStatus,
+        examplesPlacement: polish.examplesPlacement,
+        examplesBeforeFields: polish.examplesBeforeFields,
         oldSlugStatus: oldStatus,
         oldFinalUrl,
       },
