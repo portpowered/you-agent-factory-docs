@@ -54,9 +54,10 @@ function findElementOfType(
 }
 
 /**
- * Wave C production route flip: `/` mounts LandingPage via renderHomePage.
- * HomeArticle remains available for other surfaces but is not the production
- * home composition.
+ * Wave C production route flip regression: `/` (and localized home sharing
+ * renderHomePage) mounts LandingPage with wired MERGED fills. HomeArticle
+ * remains available for other surfaces but is not the production home
+ * composition. Carousel may stay a labeled placeholder.
  */
 describe("production home mounts LandingPage (Wave C route flip)", () => {
   test("renderHomePage mounts LandingPage and does not mount HomeArticle", async () => {
@@ -68,19 +69,47 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     expect(types.has(HomeArticle)).toBe(false);
   });
 
-  test("production home exposes landing markers and omits HomeArticle surface", async () => {
+  test("localized renderHomePage shares the LandingPage composition", async () => {
+    const tree = (await renderHomePage("vi")) as ReactElement;
+    const types = new Set<unknown>();
+    collectElementTypes(tree, types);
+
+    expect(types.has(LandingPage)).toBe(true);
+    expect(types.has(HomeArticle)).toBe(false);
+
+    const landingPage = findElementOfType(tree, LandingPage);
+    expect(landingPage).not.toBeNull();
+    const html = renderToStaticMarkup(landingPage as ReactElement);
+    expect(html).toContain('data-landing-page=""');
+  });
+
+  test("production home exposes wired landing markers and keeps carousel placeholder", async () => {
     const tree = (await renderHomePage()) as ReactElement;
     const landingPage = findElementOfType(tree, LandingPage);
     expect(landingPage).not.toBeNull();
 
     const html = renderToStaticMarkup(landingPage as ReactElement);
 
+    // Root + wired MERGED slots (header / hero+sphere / capability / youi /
+    // whale / footer). Carousel stays a labeled placeholder by design.
     expect(html).toContain('data-landing-page=""');
     expect(html).toContain('data-landing-header=""');
     expect(html).toContain('data-hero-section=""');
+    expect(html).toContain('data-particle-sphere=""');
+    expect(html).toContain('data-capability-strip=""');
+    expect(html).toContain('data-youi-showcase=""');
+    expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-testid="site-footer"');
+    expect(html).toContain('data-landing-footer-art=""');
+    expect(html).toContain('data-landing-placeholder="carousel"');
+
+    // Reject docs-home composition and harness-only hero surface.
     expect(html).not.toContain(
       `data-content-column-surface="${HOME_ARTICLE_CONTENT_COLUMN_SURFACE}"`,
     );
+    expect(html).not.toContain('data-landing-harness-hero=""');
+    expect(html).not.toContain('data-landing-placeholder="header"');
+    expect(html).not.toContain('data-landing-placeholder="hero"');
+    expect(html).not.toContain('data-landing-placeholder="footer"');
   });
 });
