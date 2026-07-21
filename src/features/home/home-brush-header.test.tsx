@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { HomeBrushHeader } from "@/components/home/home-brush-header";
+import { HomeBrushHeader } from "@/features/home/home-brush-header";
 
 describe("HomeBrushHeader", () => {
   test("omits oversized bottom margin on the hero wrapper", () => {

@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import {
   HOME_ARTICLE_CONTENT_COLUMN_SURFACE,
   HomeArticle,
-} from "@/components/home/home-article";
+} from "@/features/home/home-article";
 import { LandingPage } from "@/features/landing-page/LandingPage";
 import { renderHomePage } from "./site-renderers";
 

@@ -9,7 +9,7 @@ install/run CTAs, why/features sections, featured links, or locale shell copy.
 | --- | --- |
 | `src/content/messages/en/common.json` (`home.title` / `home.subtitle` / `home.intro`) | Default-locale product identity rendered by `HomeBrushHeader` and used as page metadata description |
 | `src/content/messages/{ja,zh-CN,vi}/common.json` | Localized home shell strings (reader-facing `home.*` prose filled for ja / zh-CN / vi; install/run command literals stay identical to en; must not say Model Atlas) |
-| `src/components/home/home-article.tsx` | Renders `home.title` / `home.subtitle` via `HomeBrushHeader`; does not currently render `home.intro` in the article body |
+| `src/features/home/home-article.tsx` | Renders `home.title` / `home.subtitle` via `HomeBrushHeader`; does not currently render `home.intro` in the article body |
 | `src/app/(site)/page.tsx` / `src/app/[locale]/page.tsx` | `generateMetadata` binds `title` ← `messages.home.title`, `description` ← `messages.home.intro` |
 | `src/app/root-layout.shared.tsx` (`siteMetadata`) | Layout-level fallback metadata; keep aligned with you-agent-factory identity (not Model Atlas) |
 | `src/tests/content/home-page.test.tsx` | Asserts default-locale identity and rendered header copy |
@@ -19,8 +19,8 @@ install/run CTAs, why/features sections, featured links, or locale shell copy.
 | File | Role |
 | --- | --- |
 | `src/content/messages/*/common.json` (`home.install*`) | Section title, OS labels, and copyable install commands for all locales |
-| `src/components/home/home-command-block.tsx` | Always-visible `<pre><code>` command block (no hover-only reveal) |
-| `src/components/home/home-article.tsx` (`#install`) | Install section before run/browse; uses `HomeCommandBlock` for both OS paths |
+| `src/features/home/home-command-block.tsx` | Always-visible `<pre><code>` command block (no hover-only reveal) |
+| `src/features/home/home-article.tsx` (`#install`) | Install section before run/browse; uses `HomeCommandBlock` for both OS paths |
 | `src/lib/navigation/home-page-toc.ts` | TOC includes `#install`, then later sections, then `#browse` |
 | `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for install section + TOC label |
 
@@ -34,7 +34,7 @@ Canonical install commands (product repo releases):
 | File | Role |
 | --- | --- |
 | `src/content/messages/*/common.json` (`home.run*`) | Section title, label, and `you run --named @goal/...` command |
-| `src/components/home/home-article.tsx` (`#run`) | First-run section after install; uses `HomeCommandBlock` |
+| `src/features/home/home-article.tsx` (`#run`) | First-run section after install; uses `HomeCommandBlock` |
 | `src/lib/navigation/home-page-toc.ts` | TOC includes `#run` between `#install` and `#browse` |
 | `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for run section + `onThisPageRun` |
 
@@ -47,7 +47,7 @@ Canonical first-run example:
 | File | Role |
 | --- | --- |
 | `src/content/messages/*/common.json` (`home.why*`, `home.feature*`, `home.features*`) | Why body + feature list copy for all locales |
-| `src/components/home/home-article.tsx` (`#why`, `#features`) | Why prose + bulletless feature list in normal article flow |
+| `src/features/home/home-article.tsx` (`#why`, `#features`) | Why prose + bulletless feature list in normal article flow |
 | `src/lib/navigation/home-page-toc.ts` | TOC order: `#install` → `#run` → `#why` → `#features` → `#browse` |
 | `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for why/features + `onThisPageWhy` / `onThisPageFeatures` |
 
@@ -63,7 +63,7 @@ Required meaning (wording may vary):
 | `src/lib/site/you-agent-factory-site-config.ts` (`homeFeaturedLinks`) | Default CLI destinations: guides, docs/browse, blogIndex (no glossary) |
 | `src/content/messages/*/common.json` (`home.guidesLink*`, `home.docsLink*`, `home.blogLink*`) | Featured link title/description bindings |
 | `src/lib/site/site-config-resolution.ts` | `resolveSiteConfigHomeFeaturedLinks` / href helpers used by `HomeArticle` |
-| `src/components/home/home-article.tsx` (`#browse`) | Renders resolved featured links; does not hard-code hrefs |
+| `src/features/home/home-article.tsx` (`#browse`) | Renders resolved featured links; does not hard-code hrefs |
 | `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for CLI featured-link copy |
 
 Default en hrefs: `/docs/guides`, `/browse`, `/blog`.
@@ -81,7 +81,7 @@ Default en hrefs: `/docs/guides`, `/browse`, `/blog`.
 
 Homepage Wave B / integrate should import command presentation from
 `src/features/code/**`, not from docs `DocsCodeBlock` or
-`src/components/home/home-command-block.tsx`.
+`src/features/home/home-command-block.tsx`.
 
 | File | Role |
 | --- | --- |

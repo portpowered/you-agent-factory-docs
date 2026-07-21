@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { HomeArticle } from "@/components/home/home-article";
+import { HomeArticle } from "@/features/home/home-article";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { PLACEHOLDER_SIDEBAR_DESCRIPTION } from "@/lib/navigation/docs-sidebar-contract";
 import { buildHomeTableOfContents } from "@/lib/navigation/home-page-toc";

@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import {
   HomeBrowseLink,
   HomeBrowseList,
-} from "@/components/home/home-browse-link";
+} from "@/features/home/home-browse-link";
 
 describe("HomeBrowseList", () => {
   test("uses bulletless list styling without list-disc or prose list inset", () => {

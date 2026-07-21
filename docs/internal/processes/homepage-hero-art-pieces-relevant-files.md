@@ -3,7 +3,7 @@
 Use these files when owning Homepage-2 **W-hero-art** (Wave B): TornEdge,
 HeroPortrait, CapabilityStrip, YouiShowcase, optional HeroSection chrome, and
 the production-gated `(dev)/hero-art-harness`. Do **not** own carousel,
-FAQ/CTA/header, whale, SiteFooter package, HY-home (`src/components/home/**`),
+FAQ/CTA/header, whale, SiteFooter package, HY-home (`src/features/home/**`),
 or production `/`.
 
 Control docs live under planner-local `docs/temp/homepage-2/` (gitignored).
@@ -33,4 +33,4 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored).
 - Sphere/terminal: pass ReactNode holes into `HeroSection` — never re-implement ParticleSphere Canvas or Terminal chrome in this lane.
 - Match other `(dev)` harnesses: gate with `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"` → `notFound()`.
 - Worktree browser verify: when `node_modules` lives only in the main checkout, prefer `bun ./scripts/run-next.ts dev --webpack -p <unique-port>`; kill the server before exit. Harness URL is `/hero-art-harness`.
-- Keep production `/` and `src/components/home/**` untouched.
+- Keep production `/` and `src/features/home/**` untouched.

@@ -37,22 +37,22 @@ export type ThinWrapperEntry = {
 /** Phase 1 home/header/tag shell components touched by surface-polish work. */
 export const PHASE_1_SHELL_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
   {
-    file: "src/components/home/home-brush-header.tsx",
+    file: "src/features/home/home-brush-header.tsx",
     label: "HomeBrushHeader",
     minReachableLinePercent: 90,
-    unitTests: ["src/components/home/home-brush-header.test.tsx"],
+    unitTests: ["src/features/home/home-brush-header.test.tsx"],
   },
   {
-    file: "src/components/home/home-article.tsx",
+    file: "src/features/home/home-article.tsx",
     label: "HomeArticle",
     minReachableLinePercent: 90,
     unitTests: ["src/tests/content/home-page.test.tsx"],
   },
   {
-    file: "src/components/home/home-browse-link.tsx",
+    file: "src/features/home/home-browse-link.tsx",
     label: "HomeBrowseLink",
     minReachableLinePercent: 90,
-    unitTests: ["src/components/home/home-browse-link.test.tsx"],
+    unitTests: ["src/features/home/home-browse-link.test.tsx"],
   },
   {
     file: "src/features/layout/primary-nav.ts",
@@ -289,22 +289,22 @@ export const REUSABLE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
     ],
   },
   {
-    file: "src/components/home/home-brush-header.tsx",
+    file: "src/features/home/home-brush-header.tsx",
     label: "HomeBrushHeader",
     minReachableLinePercent: 90,
-    unitTests: ["src/components/home/home-brush-header.test.tsx"],
+    unitTests: ["src/features/home/home-brush-header.test.tsx"],
   },
   {
-    file: "src/components/home/home-article.tsx",
+    file: "src/features/home/home-article.tsx",
     label: "HomeArticle",
     minReachableLinePercent: 90,
     unitTests: ["src/tests/content/home-page.test.tsx"],
   },
   {
-    file: "src/components/home/home-browse-link.tsx",
+    file: "src/features/home/home-browse-link.tsx",
     label: "HomeBrowseLink",
     minReachableLinePercent: 90,
-    unitTests: ["src/components/home/home-browse-link.test.tsx"],
+    unitTests: ["src/features/home/home-browse-link.test.tsx"],
   },
   {
     file: "src/features/layout/primary-nav.ts",
