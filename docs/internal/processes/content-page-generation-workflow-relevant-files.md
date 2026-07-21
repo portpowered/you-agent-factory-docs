@@ -63,7 +63,9 @@ exit). Run with
 `bun src/content/docs/techniques/assert-techniques-related-references-strip-browser.ts`.
 Other published collections may still mount RelatedDocs until their
 PF-L-strip lane removes it; that remaining chrome is not a contracts-lane
-failure. FAQ-only strip remains PF-D2.
+failure. FAQ (`documentation/faq`) is already list-only (PF-D2): Q&A sections
+with in-answer `LocalizedLinkList` only — no Related / Tags / References /
+Limits footer chrome.
 
 ### PF-L-strip: workstations collection (stop-mount)
 
@@ -169,8 +171,9 @@ For published non-FAQ documentation under
 - Keep Tags (`TagPillList`) and teaching-section `LocalizedLinkList` mounts
   (for example limits-and-assumptions links on what-is-you-agent-factory, or
   per-scenario lists on troubleshooting).
-- Leave `documentation/faq/**` unchanged — FAQ Related chrome stays for
-  `#190` / PF-D2.
+- Leave `documentation/faq/**` alone — FAQ is already list-only (PF-D2): Q&A
+  sections with in-answer `LocalizedLinkList` only; no Related / Tags /
+  References / Limits footer chrome. Do not reintroduce FAQ footer mounts.
 - Prefer stop-mounting over rewriting shared `RelatedDocs` behavior; do not
   invent a replacement related surface.
 - Colocated documentation page / discoverability tests that required Related To
@@ -180,16 +183,17 @@ For published non-FAQ documentation under
 - Formalize absence on every non-FAQ documentation `*-page.test.tsx` English
   render proof for stripped pages: `queryByRole("heading", { name: "Related
   To"|"References" })` null, `#related` / `#references` DOM null, and Tags
-  heading present. Keep FAQ page tests on Related presence until `#190` /
-  PF-D2. Pages that had no colocated test (for example cli, resources,
+  heading present. FAQ page tests already fail-closed on Related / Tags /
+  References / Limits absence (list-only); leave them alone in PF-L-strip
+  lanes. Pages that had no colocated test (for example cli, resources,
   what-is-you-agent-factory) get a lean page-owned render proof with the same
   absence block.
 - After MDX strip, clean owned non-FAQ `messages/*.json`: remove
   `sections.related` / `sections.references` footer titles; drop link / label
   keys used only by stripped Related-footer lists; keep teaching-body link
-  keys and `sections.tags`. Leave `documentation/faq/**/messages` unchanged.
-  Align every owned locale (en and present ja / zh-CN / vi) for the stripped
-  keys.
+  keys and `sections.tags`. Leave `documentation/faq/**/messages` alone (already
+  list-only; no footer chrome keys). Align every owned locale (en and present
+  ja / zh-CN / vi) for the stripped keys.
 - Browser-verify stripped documentation routes with
   `bun src/content/docs/documentation/assert-documentation-related-chrome-strip-browser.ts`
   (webpack `next dev` via `scripts/run-next.ts`, unique port 3591 default,
@@ -197,8 +201,9 @@ For published non-FAQ documentation under
   References footer headings and `#related` / `#references` mounts while
   proving at least one teaching section id remains. Prefer
   `DOC_RELATED_CHROME_STRIP_PROBE_BASE_URL` when a server is already warm. Do
-  not include `documentation/faq` in the absence probe (FAQ stays fenced for
-  `#190` / PF-D2).
+  not include `documentation/faq` in this PF-L-strip absence probe (FAQ is
+  already list-only under PF-D2; prove FAQ separately with list-only absence
+  asserts).
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
@@ -298,12 +303,13 @@ Before the first authored page under a rewrite-era CLI collection can pass
    In parent-hoisted worktrees, plain Turbopack `bun run dev` often fails to
    resolve `next` from `src/app` — use
    `bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` instead.
-   For FAQ PF-D chrome proofs on `/docs/documentation/faq`, assert from SSR
-   HTML: no `Limits And Assumptions` / `#limits-and-assumptions`, no `h2`
-   titled exactly `Related To` (do not grep the bare substring — empty-tag
-   copy like “related topics” false-positives), `#related` keeps
-   `data-testid="curated-related-docs"` without `list-disc`, answer-section
-   ids still mount their links, and Tags / References headings remain.
+   For FAQ list-only (PF-D2) chrome proofs on `/docs/documentation/faq`, assert
+   from SSR HTML: no `Limits And Assumptions` / `#limits-and-assumptions`, no
+   `h2` titled exactly `Related To` / `Tags` / `References` (do not grep bare
+   substrings — empty-tag copy like “related topics” false-positives), no
+   `#related` / `#tags` / `#references` mounts and no
+   `data-testid="curated-related-docs"`, while answer-section ids still mount
+   their in-answer `LocalizedLinkList` links.
 7. Do not run overlapping `prepare:content-runtime` / `fumadocs-mdx`
    invocations in parallel on the same worktree — concurrent prep can delete
    `.source` mid-validate and fail with `Cannot find module '../../.source/server'`.
@@ -1391,10 +1397,11 @@ Documentation kind is outside `listRelatedRegistryRecords()` /
 documentation→documentation curated links. Keep registry `relatedIds` aligned with
 those published siblings for search/metadata when useful; omit unpublished ids such
 as factory-session until those registry records and pages exist. Keep
-`<RelatedDocs />` in `#related` for when related-runtime can resolve curated ids.
-The same `#related` + `<LocalizedLinkList>` pattern applies to other documentation
-lookup surfaces such as `documentation/troubleshooting` and `documentation/faq`
-(cross-link FAQ↔Troubleshooting plus a short curated canonical set).
+`<RelatedDocs />` in `#related` for when related-runtime can resolve curated ids
+on pages that still mount Related chrome. Exception: `documentation/faq` is
+list-only (PF-D2) — discovery stays inside answer-section `LocalizedLinkList`
+mounts (including FAQ↔Troubleshooting cross-links); do not remount `#related` /
+`<RelatedDocs />` / Tags / References footer chrome on FAQ.
 
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
