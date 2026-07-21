@@ -32,8 +32,8 @@ social assets, sitemap, robots).
 | `src/lib/seo/export-robots.ts` | `buildPublicRobots` / `resolveProductionSitemapUrl` + `verifyExportRobots` for `out/robots.txt` |
 | `src/lib/seo/export-robots.test.ts` | Production sitemap reference proofs + no legacy Atlas advertising |
 | `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`; requires `export const dynamic = "force-static"`) |
-| `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
-| `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract; requires locale homes + shipped localized docs locs; fail-closed on Atlas / §10 migration-old; fixture emits `hreflang="x-default"` on multi-locale pages and keeps blog English-only (`seo-hreflang`) |
+| `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates (incl. `x-default` + blog English-only policy via `verifyExportLocalizedAlternates`) + sitemap + robots; does not expand sitemap locale inventory |
+| `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract; requires locale homes + shipped localized docs locs; fail-closed on Atlas / §10 migration-old; fixture emits `hreflang="x-default"` on multi-locale pages and keeps blog English-only; composite gate fails when home omits `x-default` or blog advertises false non-English locales (`seo-hreflang`) |
 | `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects); canonical slug/path remap helpers |
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
@@ -145,7 +145,7 @@ social assets, sitemap, robots).
     omitted), reject non-slash absolute locs (compare against
     `resolveProductionSitemapLocHref`, not `resolveProductionMetadataHref`), and
     still fail closed on retired Atlas / §10 migration-old exclusion URLs.
-11. **Robots + discovery gate** (story 007): `buildPublicRobots` /
+11. **Robots + discovery gate** (story 007 + `seo-hreflang`): `buildPublicRobots` /
     `src/app/robots.ts` emit `out/robots.txt` with a normal allow-all policy
     and `Sitemap:` pointing at the absolute production sitemap URL
     (`https://portpowered.github.io/you-agent-factory-docs/sitemap.xml` on
@@ -153,9 +153,13 @@ social assets, sitemap, robots).
     Allow/Disallow. Use `verifyExportRobots` for the robots file and
     `verifyExportSeoDiscovery` as the composite gate over canonicals, OG,
     social images, localized alternates, sitemap, and robots against an
-    exported `out/`. Both `src/app/sitemap.ts` and `src/app/robots.ts` must
-    export `dynamic = "force-static"` so `output: "export"` can emit the
-    discovery files at build time.
+    exported `out/`. Discovery fixtures must expect `x-default` on home/docs
+    when language alternates are advertised and keep blog English-only (no
+    false `ja` / `zh-CN` / `vi` hreflang). Hreflang/alternates lanes must not
+    expand sitemap locale inventory, remount root-layout GA, or edit
+    page-formatting / homepage-2 / graph-pages. Both `src/app/sitemap.ts` and
+    `src/app/robots.ts` must export `dynamic = "force-static"` so
+    `output: "export"` can emit the discovery files at build time.
 12. **Build-contract wiring:** keep `package.json` `test:build-contract` as
     `bun ./scripts/run-build-contract-required-tests.ts`. Add new SEO focused
     tests to `BUILD_CONTRACT_REQUIRED_TEST_PATHS` in

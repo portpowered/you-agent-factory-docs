@@ -259,6 +259,61 @@ describe("verifyExportSeoDiscovery", () => {
     );
   });
 
+  test("fails when home omits hreflang x-default", () => {
+    const dir = mkdtempSync(join(tmpdir(), "seo-discovery-no-x-default-"));
+    try {
+      writeDiscoveryFixture(dir);
+      writeFileSync(
+        join(dir, "index.html"),
+        pageHtml("/").replace(
+          /\s*<link rel="alternate" hreflang="x-default"[^>]*>/i,
+          "",
+        ),
+      );
+      const result = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.gate).toBe("localized-alternates");
+        expect(result.reason).toMatch(/x-default/i);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("fails when blog proof advertises a false non-English locale alternate", () => {
+    const dir = mkdtempSync(join(tmpdir(), "seo-discovery-false-blog-locale-"));
+    try {
+      writeDiscoveryFixture(dir);
+      const blogRelative = exportHtmlRelativePath("/blog/bottlenecks");
+      const falseJa = resolveProductionMetadataHref(
+        "/ja/blog/bottlenecks",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      writeFileSync(
+        join(dir, blogRelative),
+        pageHtml("/blog/bottlenecks").replace(
+          "</head>",
+          `<link rel="alternate" hreflang="ja" href="${falseJa}" />\n</head>`,
+        ),
+      );
+      const result = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.gate).toBe("localized-alternates");
+        expect(result.reason).toMatch(/blog\/bottlenecks|hreflang/i);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   test("fails when sitemap lists a §10 documentation-migration exclusion route", () => {
     const dir = mkdtempSync(join(tmpdir(), "seo-discovery-migration-sitemap-"));
     try {
