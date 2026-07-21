@@ -15,14 +15,8 @@
       "title": "Limits And Assumptions",
       "body": "Architecture of system stays at the system-structure overview. It is not a field dump, not a sync of packaged CLI docs, and not a deep dive into MCP, API, logs, or metrics surfaces. Sibling field-reference and runtime pages own those contracts when they are published."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

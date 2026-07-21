@@ -8,7 +8,7 @@
  * locale-shipping surface for this lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -98,9 +98,11 @@ describe("security-trust-boundaries documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const howToUseSection = document.getElementById("how-to-use");
     expect(howToUseSection?.textContent).toMatch(
@@ -115,30 +117,6 @@ describe("security-trust-boundaries documentation page", () => {
       /does not claim automatic secret redaction/i,
     );
     expect(limitsSection?.textContent).toMatch(/roadmap/i);
-
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection).toBeTruthy();
-    const relatedQueries = within(relatedSection as HTMLElement);
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Dashboard / UI Overview" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/dashboard-ui-overview");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Configuration" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/configuration");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Factory Session" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/sessions");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Metrics" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/metrics");
 
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
     expect(document.body.textContent).not.toMatch(/Model Atlas/i);

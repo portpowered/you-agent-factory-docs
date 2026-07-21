@@ -85,18 +85,18 @@ describe("harness-support documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const supportMatrixSection = document.getElementById("support-matrix");
     const howToUseSection = document.getElementById("how-to-use");
     const limitsSection = document.getElementById("limits-and-assumptions");
-    const relatedSection = document.getElementById("related");
     expect(supportMatrixSection).toBeTruthy();
     expect(howToUseSection).toBeTruthy();
     expect(limitsSection).toBeTruthy();
-    expect(relatedSection).toBeTruthy();
     expect(supportMatrixSection?.textContent).toMatch(/feature coverage|MCP/i);
     expect(howToUseSection?.textContent).toMatch(
       /MCP|worktrees|external models/i,
@@ -138,37 +138,5 @@ describe("harness-support documentation page", () => {
     ]) {
       expect(matrixQueries.getByRole("cell", { name: feature })).toBeTruthy();
     }
-
-    const relatedQueries = within(relatedSection as HTMLElement);
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Harness concept" })
-        .getAttribute("href"),
-    ).toBe("/docs/concepts/harness");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Worktree concept" })
-        .getAttribute("href"),
-    ).toBe("/docs/concepts/worktree");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Loop concept" })
-        .getAttribute("href"),
-    ).toBe("/docs/concepts/loop");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Thinking concept" })
-        .getAttribute("href"),
-    ).toBe("/docs/concepts/thinking");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "CLI docs" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/cli");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Configuration" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/configuration");
   });
 });

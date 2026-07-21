@@ -55,9 +55,11 @@ describe("submitting-work documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     expect(
       screen.getAllByText(/FACTORY_REQUEST_BATCH/i).length,

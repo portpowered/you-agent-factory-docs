@@ -13,12 +13,9 @@ aliases:
 updatedAt: "2026-07-09"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-
 
 <Section id="install" titleKey="sections.install.title">
   <T k="sections.install.body" />
@@ -164,14 +161,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <RelatedDocs registryId="documentation.cli" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.cli" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.cli" />
 </Section>

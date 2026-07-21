@@ -11,14 +11,8 @@
       "title": "Limits And Assumptions",
       "body": "Logs covers runtime logs and CLI diagnostics for you-agent-factory. It is not a sync of packaged CLI docs, not the metrics reference, not record/replay artifact management, not FactoryEvent or session event-stream contracts, not agent-run tool-diagnostics inspection, and not the OpenAPI or API reference. Sibling links and packaged you docs topics aid discovery only; they are not required to understand runtime logs and CLI diagnostics here."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -50,9 +44,6 @@
     "diagnosticsExampleCommand": "you run --dir ./factory --verbose",
     "channelBoundaryLabel": "Channel boundaries",
     "systemLogsBoundary": "System logs include command stdout and stderr only on command failures.",
-    "environmentDetailsBoundary": "Environment details are record-channel diagnostics only, not the runtime-log channel.",
-    "cliDocs": "CLI docs",
-    "factorySessionDocs": "Factory Session",
-    "replaysRecordsDocs": "Replays / Records"
+    "environmentDetailsBoundary": "Environment details are record-channel diagnostics only, not the runtime-log channel."
   }
 }

@@ -13,13 +13,10 @@ aliases:
 updatedAt: "2026-07-09"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
@@ -37,14 +34,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <RelatedDocs registryId="documentation.what-is-you-agent-factory" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.what-is-you-agent-factory" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.what-is-you-agent-factory" />
 </Section>

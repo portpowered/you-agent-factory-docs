@@ -15,14 +15,8 @@
       "title": "Giới hạn và giả định",
       "body": "Trang này là tài liệu tham chiếu CLI trên web cho điểm vào cài đặt và ma trận lệnh cốt lõi. Nó không phải dump cờ đầy đủ, không phải đồng bộ tài liệu CLI đã đóng gói, và không phải trang sâu về harness, MCP, hay cấu hình. Hướng dẫn chạy lần đầu và biến thể cài đặt theo OS hoặc executor thuộc các bề mặt cài đặt và Bắt đầu riêng khi các trang đó được xuất bản."
     },
-    "related": {
-      "title": "Liên quan"
-    },
     "tags": {
       "title": "Thẻ"
-    },
-    "references": {
-      "title": "Tài liệu tham khảo"
     }
   },
   "links": {

@@ -10,25 +10,9 @@
       "title": "Limits And Assumptions",
       "body": "Current you-agent-factory trust boundaries for the local operator service stay at the behaviors below. It is not a penetration-test report, not a compliance certification, and not an enterprise hardening program. Current behavior does not invent default TLS, multi-tenant authentication, or single sign-on (SSO) on the local service bind. The product does not claim automatic secret redaction across prompts, payloads, logs, or replay artifacts, and it does not automatically delete old replay recordings. Broader remote hardening, multi-tenant auth, and transport expansion remain roadmap or out of scope unless a shipped surface documents them. The product does not rebuild or harden the factory dashboard UI; the dashboard remains the local operator surface served by the running factory host."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "dashboardUiOverviewDocs": "Dashboard / UI Overview",
-    "configurationDocs": "Configuration",
-    "factorySessionDocs": "Factory Session",
-    "metricsDocs": "Metrics",
-    "mcpDocs": "MCP",
-    "logsDocs": "Logs",
-    "cliDocs": "CLI",
-    "replaysRecordsDocs": "Replays / Records"
   },
   "openingSummary": "Local you-agent-factory trust boundaries define what the service trusts and exposes today—not a compliance certification claim."
 }

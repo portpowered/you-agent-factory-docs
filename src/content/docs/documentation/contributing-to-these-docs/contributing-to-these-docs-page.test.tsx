@@ -62,6 +62,13 @@ describe("contributing-to-these-docs documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
+    expect(loadedPage.messages.sections?.references).toBeUndefined();
 
     const howToUse = document.getElementById("how-to-use");
     expect(howToUse?.textContent).toMatch(/make validate-data/);

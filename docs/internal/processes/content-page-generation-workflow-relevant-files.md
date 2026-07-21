@@ -158,6 +158,48 @@ mounting trailing Related / References footer chrome:
   (Metrics documentation / Bottlenecks / Tokens) still visible. Prefer
   `CONCEPTS_RELATED_STRIP_PROBE_BASE_URL` when a server is already warm.
 
+### Documentation collection PF-L-strip (published MDX, minus FAQ)
+
+For published non-FAQ documentation under
+`src/content/docs/documentation/**/page.mdx` (except `documentation/faq/**`):
+
+- Strip trailing `Section id="related"` / `id="references"` footer chrome and
+  drop unused `RelatedDocs` / References `CitationList` / Related-only
+  `LocalizedLinkList` imports.
+- Keep Tags (`TagPillList`) and teaching-section `LocalizedLinkList` mounts
+  (for example limits-and-assumptions links on what-is-you-agent-factory, or
+  per-scenario lists on troubleshooting).
+- Leave `documentation/faq/**` unchanged — FAQ Related chrome stays for
+  `#190` / PF-D2.
+- Prefer stop-mounting over rewriting shared `RelatedDocs` behavior; do not
+  invent a replacement related surface.
+- Colocated documentation page / discoverability tests that required Related To
+  / References headings or `#related` curated links must assert absence (or
+  drop those asserts) in the same lane as the MDX strip so CI stays green;
+  keep teaching-body link asserts.
+- Formalize absence on every non-FAQ documentation `*-page.test.tsx` English
+  render proof for stripped pages: `queryByRole("heading", { name: "Related
+  To"|"References" })` null, `#related` / `#references` DOM null, and Tags
+  heading present. Keep FAQ page tests on Related presence until `#190` /
+  PF-D2. Pages that had no colocated test (for example cli, resources,
+  what-is-you-agent-factory) get a lean page-owned render proof with the same
+  absence block.
+- After MDX strip, clean owned non-FAQ `messages/*.json`: remove
+  `sections.related` / `sections.references` footer titles; drop link / label
+  keys used only by stripped Related-footer lists; keep teaching-body link
+  keys and `sections.tags`. Leave `documentation/faq/**/messages` unchanged.
+  Align every owned locale (en and present ja / zh-CN / vi) for the stripped
+  keys.
+- Browser-verify stripped documentation routes with
+  `bun src/content/docs/documentation/assert-documentation-related-chrome-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3591 default,
+  Playwright; kill server on exit). Fail closed on Related / Related To /
+  References footer headings and `#related` / `#references` mounts while
+  proving at least one teaching section id remains. Prefer
+  `DOC_RELATED_CHROME_STRIP_PROBE_BASE_URL` when a server is already warm. Do
+  not include `documentation/faq` in the absence probe (FAQ stays fenced for
+  `#190` / PF-D2).
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a

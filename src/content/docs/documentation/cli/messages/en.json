@@ -15,14 +15,8 @@
       "title": "Limits And Assumptions",
       "body": "CLI coverage here is install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

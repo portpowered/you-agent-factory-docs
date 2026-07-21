@@ -19,19 +19,8 @@
       "title": "Limits And Assumptions",
       "body": "Factory Sessions covers the live runtime unit and when it matters. It is not a CLI flag dump, not schema or OpenAPI inventory, not dynamic-workflow authoring, and not submitting-work batch schema. Operator commands, lifecycle detail, and Factory relationship depth live on the Factory Sessions reference page."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "factorySessionsDepth": "Factory Sessions reference",
-    "cliDocs": "CLI docs",
-    "submittingWorkDocs": "Submitting work"
   }
 }

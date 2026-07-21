@@ -95,10 +95,6 @@ describe("packaged-factories documentation Mode A overview", () => {
         /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
       );
 
-      expect(loadedPage.messages.links?.packagedFactoriesDepth).toMatch(
-        /Packaged Factories reference/i,
-      );
-
       render(
         <main>
           <DocsPageProviders
@@ -127,22 +123,19 @@ describe("packaged-factories documentation Mode A overview", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
 
       const whatItIsSection = document.getElementById("what-it-is");
       expect(whatItIsSection?.textContent).toMatch(/@you\/*/i);
       expect(whatItIsSection?.textContent).toMatch(/Packaged documents/i);
 
-      const depthLink = screen.getByRole("link", {
-        name: "Packaged Factories reference",
-      });
-      expect(depthLink.getAttribute("href")).toBe("/docs/factories/packaged");
-
-      const packagedDocumentsLink = screen.getByRole("link", {
-        name: "Packaged documents",
-      });
-      expect(packagedDocumentsLink.getAttribute("href")).toBe(
-        "/docs/documentation/packaged-documents",
+      const limitsSection = document.getElementById("limits-and-assumptions");
+      expect(limitsSection?.textContent).toMatch(
+        /Packaged Factories reference/i,
       );
     },
     PAGE_RENDER_TIMEOUT_MS,

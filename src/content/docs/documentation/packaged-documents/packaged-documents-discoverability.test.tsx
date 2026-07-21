@@ -3,12 +3,10 @@
  * Covers documentation index listing, search queries, sitemap, and page metadata.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, within } from "@testing-library/react";
+import { cleanup } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import DocumentationIndexPage from "@/app/(site)/docs/documentation/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
-import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
-import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadPublishedDocsPages } from "@/lib/content/pages";
 import { loadRegistry } from "@/lib/content/registry";
 import { buildSearchDocuments } from "@/lib/search/build-documents";
@@ -27,8 +25,6 @@ const DISCOVERY_QUERIES = [
   "you docs",
   "packaged topics",
 ] as const;
-
-const PAGE_RENDER_TIMEOUT_MS = 30_000;
 
 describe("packaged-documents documentation discoverability (005)", () => {
   afterEach(() => {
@@ -96,49 +92,5 @@ describe("packaged-documents documentation discoverability (005)", () => {
       expect(results.some((result) => result.url === DOCS_ROUTE)).toBe(true);
     },
     { timeout: 20_000 },
-  );
-
-  test(
-    "related section shows Configuration, Dynamic workflows, CLI, and Packaged factories",
-    async () => {
-      const loadedPage = await loadLocalDocsPage({
-        section: "documentation",
-        slug: "packaged-documents",
-      });
-
-      render(
-        <main>
-          <DocsPageProviders
-            messages={loadedPage.messages}
-            assets={loadedPage.assets}
-          >
-            {loadedPage.content}
-          </DocsPageProviders>
-        </main>,
-      );
-
-      const relatedSection = document.getElementById("related");
-      expect(relatedSection).toBeTruthy();
-      const relatedQueries = within(relatedSection as HTMLElement);
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "Configuration" })
-          .getAttribute("href"),
-      ).toBe("/docs/factories/configuration");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "Dynamic workflows" })
-          .getAttribute("href"),
-      ).toBe("/docs/factories/dynamic-workflows");
-      expect(
-        relatedQueries.getByRole("link", { name: "CLI" }).getAttribute("href"),
-      ).toBe("/docs/documentation/cli");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "Packaged factories" })
-          .getAttribute("href"),
-      ).toBe("/docs/factories/packaged");
-    },
-    PAGE_RENDER_TIMEOUT_MS,
   );
 });

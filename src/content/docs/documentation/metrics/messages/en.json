@@ -19,14 +19,8 @@
       "title": "Limits And Assumptions",
       "body": "Metrics covers factory metrics exposure for you-agent-factory operators watching a live Factory Session. It is not a sync of packaged CLI docs, not a logs or diagnostic-event reference, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -46,11 +40,6 @@
     "statusResourcesMeaning": "Optional resource usage entries when the factory declares resources.",
     "statusReadTogetherNote": "A factory can be RUNNING while runtimeStatus is IDLE when the host is up but no work is in flight. Read factoryState, runtimeStatus, and categories together when deciding whether to submit more work or wait for completion.",
     "dashboardUrlLabel": "Default local dashboard URL (service started without quiet mode):",
-    "dashboardHostNote": "Use the same host and port as the API unless the process that bound the listener used a different server or port setting.",
-    "siblingDiscoveryIntro": "Use factory-session for discover, inspect, and lifecycle control; SPC graphs for control-limit reading; bottlenecks and Petri for interpretation depth. Logs and API doc pages will cover diagnostic event surfaces and broader OpenAPI contracts when those documentation siblings are published.",
-    "factorySessionDocs": "Factory session",
-    "spcGraphsConcept": "Statistical process control graphs",
-    "bottlenecksConcept": "Bottlenecks",
-    "petriDocs": "Petri / Colored Petri Net (CPN)"
+    "dashboardHostNote": "Use the same host and port as the API unless the process that bound the listener used a different server or port setting."
   }
 }

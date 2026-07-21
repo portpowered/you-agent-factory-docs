@@ -23,14 +23,8 @@
       "title": "Limits And Assumptions",
       "body": "API coverage here is how to interact with the local HTTP API: default base URL, factory-running precondition, trust-boundary pointer, and a typical session-oriented flow. It is not the operations catalog, not an OpenAPI playground, not a pasted OpenAPI document, and not agent CLI-ingress policy replacement—it does not render OpenAPI or an operations embed. Exact HTTP operations live on the Reference API catalog. Autonomous agents must submit work only through the CLI; dashboard submit and operator HTTP submit paths remain operator surfaces."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -39,10 +33,7 @@
     "sessionListLabel": "Confirm a live Factory Session before submit or status reads",
     "statusReadLabel": "Example status read against the default local host",
     "apiReferenceCatalog": "Reference API (operations catalog)",
-    "securityTrustBoundariesDocs": "Security / Trust Boundaries",
-    "factorySessionsDocs": "Factory Sessions",
-    "cliDocs": "CLI docs",
-    "mcpDocs": "MCP docs"
+    "securityTrustBoundariesDocs": "Security / Trust Boundaries"
   },
   "callouts": {
     "factoryMustBeRunning": {

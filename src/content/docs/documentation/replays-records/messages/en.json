@@ -11,14 +11,8 @@
       "title": "Limits And Assumptions",
       "body": "Replays / Records covers capturing live runs and replaying saved history. It is not a sync of packaged CLI docs, not factory-session pause, resume, or status, not mock-worker selection contracts, not a logs, metrics, or API reference, and not a full factory-authoring walkthrough. Replay artifacts are sensitive because they can contain prompts, payloads, stdout, stderr, and diagnostic metadata. The product does not delete old artifacts automatically — operators manage retention, and real customer-run recordings must not be committed. Sibling links and packaged you docs topics aid discovery only; they are not required to understand record and replay here."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -42,9 +36,6 @@
     "recordExampleLabel": "Record to an explicit path",
     "recordExampleCommand": "you run --dir ./factory --record ./docs/examples/sample-run.replay.json",
     "replayExampleLabel": "Replay a saved artifact",
-    "replayExampleCommand": "you run --dir ./factory --replay ./docs/examples/sample-run.replay.json",
-    "cliDocs": "CLI docs",
-    "configurationDocs": "Configuration",
-    "submittingWorkDocs": "Submitting Work"
+    "replayExampleCommand": "you run --dir ./factory --replay ./docs/examples/sample-run.replay.json"
   }
 }
