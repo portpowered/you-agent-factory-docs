@@ -4,8 +4,8 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render } from "@testing-library/react";
-import { generateMetadata as generateWorkersMetadata } from "@/app/(site)/docs/workers/page";
-import { generateMetadata as generateWorkstationsMetadata } from "@/app/(site)/docs/workstations/page";
+import { generateMetadata as generateWorkersMetadata } from "@/app/(site)/(with-docs-chrome)/docs/workers/page";
+import { generateMetadata as generateWorkstationsMetadata } from "@/app/(site)/(with-docs-chrome)/docs/workstations/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { loadWorkersFamilyIndexBundle } from "@/content/docs/workers/load-workers-family-index";
 import { WorkersFamilyIndexContent } from "@/content/docs/workers/WorkersFamilyIndexContent";

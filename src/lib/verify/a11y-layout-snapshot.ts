@@ -13,7 +13,8 @@ import { measurePageLevelOverflow } from "./a11y-responsive-probes";
 /** Selectors for critical chrome regions included in layout snapshots. */
 export const CRITICAL_LAYOUT_CHROME_SELECTORS = [
   'header, [role="banner"]',
-  'nav[aria-label="Primary"]',
+  // Docs chrome uses Primary; production landing home uses Landing.
+  'nav[aria-label="Primary"], nav[aria-label="Landing"]',
   'main, [role="main"]',
 ] as const;
 
@@ -112,9 +113,11 @@ export function captureCriticalLayoutSnapshot(
   const banner =
     root.querySelector('header, [role="banner"]') ??
     scope.querySelector('header, [role="banner"]');
-  const primaryNav =
-    root.querySelector('nav[aria-label="Primary"]') ??
-    scope.querySelector('nav[aria-label="Primary"]');
+  const siteNav =
+    root.querySelector(
+      'nav[aria-label="Primary"], nav[aria-label="Landing"]',
+    ) ??
+    scope.querySelector('nav[aria-label="Primary"], nav[aria-label="Landing"]');
   const main =
     root.querySelector('main, [role="main"]') ??
     scope.querySelector('main, [role="main"]');
@@ -123,8 +126,8 @@ export function captureCriticalLayoutSnapshot(
     normalizeText(el.textContent ?? ""),
   );
 
-  const primaryNavHrefs = primaryNav
-    ? Array.from(primaryNav.querySelectorAll("a[href]")).map(
+  const primaryNavHrefs = siteNav
+    ? Array.from(siteNav.querySelectorAll("a[href]")).map(
         (anchor) => anchor.getAttribute("href") ?? "",
       )
     : [];
@@ -169,7 +172,7 @@ export function captureCriticalLayoutSnapshot(
 
   return {
     hasBanner: Boolean(banner),
-    hasPrimaryNavigation: Boolean(primaryNav),
+    hasPrimaryNavigation: Boolean(siteNav),
     hasMain: Boolean(main),
     h1Texts,
     primaryNavHrefs,
@@ -309,7 +312,9 @@ export function assertCriticalLayoutContract(
     throw new Error("Layout contract: expected banner/header landmark");
   }
   if (!snapshot.hasPrimaryNavigation) {
-    throw new Error('Layout contract: expected nav[aria-label="Primary"]');
+    throw new Error(
+      'Layout contract: expected site nav (aria-label="Primary" or "Landing")',
+    );
   }
   if (!snapshot.hasMain) {
     throw new Error("Layout contract: expected main landmark");
@@ -382,13 +387,15 @@ export function evaluateCriticalLayoutSnapshotInBrowser(
     value.replace(/\s+/g, " ").trim();
 
   const banner = document.querySelector('header, [role="banner"]');
-  const primaryNav = document.querySelector('nav[aria-label="Primary"]');
+  const siteNav = document.querySelector(
+    'nav[aria-label="Primary"], nav[aria-label="Landing"]',
+  );
   const main = document.querySelector('main, [role="main"]');
   const h1Texts = Array.from(document.querySelectorAll("h1")).map((el) =>
     normalize(el.textContent ?? ""),
   );
-  const primaryNavHrefs = primaryNav
-    ? Array.from(primaryNav.querySelectorAll("a[href]")).map(
+  const primaryNavHrefs = siteNav
+    ? Array.from(siteNav.querySelectorAll("a[href]")).map(
         (anchor) => anchor.getAttribute("href") ?? "",
       )
     : [];
@@ -429,7 +436,7 @@ export function evaluateCriticalLayoutSnapshotInBrowser(
 
   return {
     hasBanner: Boolean(banner),
-    hasPrimaryNavigation: Boolean(primaryNav),
+    hasPrimaryNavigation: Boolean(siteNav),
     hasMain: Boolean(main),
     h1Texts,
     primaryNavHrefs,

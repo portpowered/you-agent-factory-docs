@@ -11,6 +11,9 @@ describe("LandingPage", () => {
   test("defaults all nine slots to labeled placeholders in contract order", () => {
     const html = renderToStaticMarkup(<LandingPage />);
 
+    expect(html).toContain('data-landing-main=""');
+    expect(html).toContain("<main");
+
     const placeholderIndexes = LANDING_SLOT_ORDER.map((slot) => {
       const marker = `data-landing-placeholder="${slot}"`;
       const index = html.indexOf(marker);

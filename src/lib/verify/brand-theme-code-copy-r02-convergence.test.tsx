@@ -80,7 +80,7 @@ describe("R02 brand / alignment / theme / code-copy convergence", () => {
     expect(messages.home.title).toBe("You Agent Factory");
   });
 
-  test("home / browse / blog / docs share content-column alignment surfaces", () => {
+  test("browse / blog / docs share content-column alignment surfaces on docs chrome", () => {
     expect([...CONTENT_COLUMN_CONSUMER_SURFACES]).toEqual([
       "header-docs-nav",
       "home-article-browse",
@@ -89,13 +89,15 @@ describe("R02 brand / alignment / theme / code-copy convergence", () => {
       "docs-page",
     ]);
 
+    // Production `/` is full-bleed LandingPage — brand-alignment served matrix
+    // covers docs-chrome routes only. HomeArticle surface remains a unit contract.
     const routeIds = BRAND_ALIGNMENT_VERIFICATION_ROUTES.map(
       (route) => route.id,
     );
-    expect(routeIds).toEqual(["home", "browse", "blog", "docs-page"]);
+    expect(routeIds).toEqual(["browse", "blog", "docs-page"]);
     expect(
       BRAND_ALIGNMENT_VERIFICATION_ROUTES.map((route) => route.path),
-    ).toEqual(["/", "/browse", "/blog", THEME_CODE_COPY_R00_ROUTE]);
+    ).toEqual(["/browse", "/blog", THEME_CODE_COPY_R00_ROUTE]);
 
     expect(DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS).toContain(
       CONTENT_COLUMN_INSET_CLASS,

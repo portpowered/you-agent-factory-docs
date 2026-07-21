@@ -11,7 +11,7 @@ import {
   renderBrowseIndexPage,
   renderTagsIndexPage,
 } from "@/app/(site)/site-renderers";
-import { generateStaticParams as generateLocalizedDocsStaticParams } from "@/app/[locale]/docs/[[...slug]]/page";
+import { generateStaticParams as generateLocalizedDocsStaticParams } from "@/app/[locale]/(with-docs-chrome)/docs/[[...slug]]/page";
 import { generateStaticParams as generateDefaultDocsStaticParams } from "@/app/docs/[[...slug]]/page";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
 import { resolveFactorySearchBootstrapFrom } from "@/lib/content/factory-locale-base-path";

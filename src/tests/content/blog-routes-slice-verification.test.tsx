@@ -12,13 +12,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import {
   generateMetadata as generateBlogPostMetadata,
   generateStaticParams as generateBlogPostStaticParams,
-} from "@/app/(site)/blog/[slug]/page";
-import { generateMetadata as generateBlogIndexMetadata } from "@/app/(site)/blog/page";
+} from "@/app/(site)/(with-docs-chrome)/blog/[slug]/page";
+import { generateMetadata as generateBlogIndexMetadata } from "@/app/(site)/(with-docs-chrome)/blog/page";
 import {
   renderBlogIndexPage,
   renderBlogPostPage,
 } from "@/app/(site)/site-renderers";
-import { generateMetadata as generateLocalizedBlogIndexMetadata } from "@/app/[locale]/blog/page";
+import { generateMetadata as generateLocalizedBlogIndexMetadata } from "@/app/[locale]/(with-docs-chrome)/blog/page";
 import { blogIndexHref, blogPostHref } from "@/lib/content/blog-page-load";
 
 const BOTTLENECKS_SLUG = "bottlenecks";

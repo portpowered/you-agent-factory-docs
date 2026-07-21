@@ -11,8 +11,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cleanup } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import ConceptsIndexPage from "@/app/(site)/docs/concepts/page";
-import DocumentationIndexPage from "@/app/(site)/docs/documentation/page";
+import ConceptsIndexPage from "@/app/(site)/(with-docs-chrome)/docs/concepts/page";
+import DocumentationIndexPage from "@/app/(site)/(with-docs-chrome)/docs/documentation/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { loadPublishedDocsPages } from "@/lib/content/pages";
 import {

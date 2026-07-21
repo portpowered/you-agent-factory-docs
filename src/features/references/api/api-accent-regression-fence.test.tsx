@@ -13,7 +13,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import FactoriesIndexPage from "@/app/(site)/docs/factories/page";
+import FactoriesIndexPage from "@/app/(site)/(with-docs-chrome)/docs/factories/page";
 import { renderBrowseIndexPage } from "@/app/(site)/site-renderers";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { createOpenApiOperationSummary } from "@/lib/references/family-normalized-models";

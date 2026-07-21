@@ -54,35 +54,64 @@ function findElementOfType(
 }
 
 /**
- * W-integrate Wave A fill wires LandingPage slots on landing-harness only.
- * Production `/` stays on DocsPage + HomeArticle until Header is also real.
+ * Wave C production route flip regression: `/` (and localized home sharing
+ * renderHomePage) mounts LandingPage with wired MERGED fills. HomeArticle
+ * remains available for other surfaces but is not the production home
+ * composition. Carousel may stay a labeled placeholder.
  */
-describe("production home remains docs home (W-integrate Wave A)", () => {
-  test("renderHomePage still composes HomeArticle and does not mount LandingPage", async () => {
+describe("production home mounts LandingPage (Wave C route flip)", () => {
+  test("renderHomePage mounts LandingPage and does not mount HomeArticle", async () => {
     const tree = (await renderHomePage()) as ReactElement;
     const types = new Set<unknown>();
     collectElementTypes(tree, types);
 
-    expect(types.has(HomeArticle)).toBe(true);
-    expect(types.has(LandingPage)).toBe(false);
+    expect(types.has(LandingPage)).toBe(true);
+    expect(types.has(HomeArticle)).toBe(false);
   });
 
-  test("docs-home HomeArticle markers are present without Wave A landing fills", async () => {
+  test("localized renderHomePage shares the LandingPage composition", async () => {
+    const tree = (await renderHomePage("vi")) as ReactElement;
+    const types = new Set<unknown>();
+    collectElementTypes(tree, types);
+
+    expect(types.has(LandingPage)).toBe(true);
+    expect(types.has(HomeArticle)).toBe(false);
+
+    const landingPage = findElementOfType(tree, LandingPage);
+    expect(landingPage).not.toBeNull();
+    const html = renderToStaticMarkup(landingPage as ReactElement);
+    expect(html).toContain('data-landing-page=""');
+  });
+
+  test("production home exposes wired landing markers and keeps carousel placeholder", async () => {
     const tree = (await renderHomePage()) as ReactElement;
-    const homeArticle = findElementOfType(tree, HomeArticle);
-    expect(homeArticle).not.toBeNull();
+    const landingPage = findElementOfType(tree, LandingPage);
+    expect(landingPage).not.toBeNull();
 
-    // HomeArticle renders without DocsLayout; full DocsPage SSR needs layout context.
-    const html = renderToStaticMarkup(homeArticle as ReactElement);
+    const html = renderToStaticMarkup(landingPage as ReactElement);
 
-    expect(html).toContain(
+    // Root + wired MERGED slots (header / hero+sphere / capability / youi /
+    // whale / footer). Carousel stays a labeled placeholder by design.
+    expect(html).toContain('data-landing-page=""');
+    expect(html).toContain('data-landing-main=""');
+    expect(html).toContain("<main");
+    expect(html).toContain('data-landing-header=""');
+    expect(html).toContain('data-hero-section=""');
+    expect(html).toContain('data-particle-sphere=""');
+    expect(html).toContain('data-capability-strip=""');
+    expect(html).toContain('data-youi-showcase=""');
+    expect(html).toContain('data-whale-bubbles-section=""');
+    expect(html).toContain('data-testid="site-footer"');
+    expect(html).toContain('data-landing-footer-art=""');
+    expect(html).toContain('data-landing-placeholder="carousel"');
+
+    // Reject docs-home composition and harness-only hero surface.
+    expect(html).not.toContain(
       `data-content-column-surface="${HOME_ARTICLE_CONTENT_COLUMN_SURFACE}"`,
     );
-    expect(html).not.toContain('data-landing-page=""');
-    expect(html).not.toContain("data-landing-placeholder=");
-    expect(html).not.toContain('data-testid="site-footer"');
-    expect(html).not.toContain('data-whale-bubbles-section=""');
-    expect(html).not.toContain('data-particle-sphere=""');
     expect(html).not.toContain('data-landing-harness-hero=""');
+    expect(html).not.toContain('data-landing-placeholder="header"');
+    expect(html).not.toContain('data-landing-placeholder="hero"');
+    expect(html).not.toContain('data-landing-placeholder="footer"');
   });
 });

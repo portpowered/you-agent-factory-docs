@@ -5,7 +5,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import ConceptsIndexPage from "@/app/(site)/docs/concepts/page";
+import ConceptsIndexPage from "@/app/(site)/(with-docs-chrome)/docs/concepts/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { loadPublishedDocsPages } from "@/lib/content/pages";
 import { loadRegistry } from "@/lib/content/registry";

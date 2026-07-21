@@ -2,9 +2,11 @@ import "./mock-navigation";
 import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, screen } from "@testing-library/react";
 import { act } from "react";
-import { HomeArticle } from "@/components/home/home-article";
+import { BrowseIndexPage } from "@/features/docs/components/BrowseIndexPage";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
-import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
+import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
+import { buildDocsBrowseSections } from "@/lib/docs/browse-collection-sections";
+import { defaultLocale } from "@/lib/i18n/locale-routing";
 import {
   MOBILE_DRAWER_MOTION_CHROME,
   REDUCED_MOTION_CHROME_SELECTOR,
@@ -30,13 +32,20 @@ describe("prefers-reduced-motion (always-on)", () => {
   test("mobile drawer chrome is marked and carries motion-reduce classes", async () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
+    const pages = await loadShippedLocalizedDocsPages(defaultLocale);
+    const sections = buildDocsBrowseSections({
+      pages,
+      locale: defaultLocale,
+      messages: context.messages,
+    });
+
+    // Docs chrome drawer lives on CanonicalDocsLayout surfaces (browse), not
+    // production `/` LandingPage.
     await act(async () => {
       await renderWithAppProviders(
         <CanonicalDocsLayout messages={context.messages}>
-          <HomeArticle
-            messages={context.messages}
-            siteConfig={youAgentFactorySiteConfig}
-          />
+          <h1>{context.messages.browseIndex.title}</h1>
+          <BrowseIndexPage messages={context.messages} sections={sections} />
         </CanonicalDocsLayout>,
         { context },
       );

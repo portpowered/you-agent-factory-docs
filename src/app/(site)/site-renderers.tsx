@@ -6,7 +6,6 @@ import {
 } from "fumadocs-ui/layouts/docs/page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { HomeArticle } from "@/components/home/home-article";
 import { loadReferencesFamilyIndex } from "@/content/docs/references/family-index/load-references-family-index";
 import { ReferencesFamilyIndex } from "@/content/docs/references/family-index/ReferencesFamilyIndex";
 import {
@@ -32,6 +31,7 @@ import {
 import { TagLandingEmptyState } from "@/features/docs/tags/TagLandingEmptyState";
 import { TagSearchHandoff } from "@/features/docs/tags/TagSearchHandoff";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
+import { LandingPage } from "@/features/landing-page/LandingPage";
 import { loadPublishedArchitectureEntries } from "@/lib/content/architecture";
 import { resolveNextPublishedBlogPost } from "@/lib/content/blog-next-post";
 import {
@@ -70,11 +70,10 @@ import {
 } from "@/lib/i18n/locale-routing";
 import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
-import { buildHomeTableOfContents } from "@/lib/navigation/home-page-toc";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
-import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
+import { composeProductionLandingSlots } from "./compose-production-landing-slots";
 
 export type SearchPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -205,25 +204,10 @@ export async function renderBlogIndexPage(
   );
 }
 
-export async function renderHomePage(locale: SiteLocale = defaultLocale) {
-  const messages = await loadUiMessages(locale);
-  const { home } = messages;
-
-  return (
-    <DocsPage
-      toc={buildHomeTableOfContents(home)}
-      breadcrumb={{ enabled: false }}
-      footer={{ enabled: false }}
-    >
-      <DocsBody>
-        <HomeArticle
-          messages={messages}
-          siteConfig={youAgentFactorySiteConfig}
-          locale={locale}
-        />
-      </DocsBody>
-    </DocsPage>
-  );
+export async function renderHomePage(_locale: SiteLocale = defaultLocale) {
+  // Locale retained for callers (default + localized home). Fixture landing
+  // content is English until a later i18n pass; chrome bypass is story 003.
+  return <LandingPage {...composeProductionLandingSlots()} />;
 }
 
 export async function renderBrowseIndexPage(

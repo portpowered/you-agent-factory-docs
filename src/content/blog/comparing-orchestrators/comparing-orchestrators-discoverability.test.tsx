@@ -11,7 +11,7 @@ import {
   renderBlogIndexPage,
   renderBlogPostPage,
 } from "@/app/(site)/site-renderers";
-import { generateStaticParams as generateLocalizedBlogPostStaticParams } from "@/app/[locale]/blog/[slug]/page";
+import { generateStaticParams as generateLocalizedBlogPostStaticParams } from "@/app/[locale]/(with-docs-chrome)/blog/[slug]/page";
 import { hasBlogPostMessagesForLocale } from "@/lib/content/blog-post-list";
 import { BLOG_ROOT } from "@/lib/content/content-paths";
 import { loadRegistry } from "@/lib/content/registry";

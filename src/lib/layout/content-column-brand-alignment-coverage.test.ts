@@ -14,20 +14,15 @@ describe("brand + content-column alignment coverage contract", () => {
     expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("YOU");
   });
 
-  test("covers home, browse, blog, and docs surfaces at four viewports", () => {
+  test("covers browse, blog, and docs surfaces at four viewports", () => {
     expect(
       BRAND_ALIGNMENT_VERIFICATION_ROUTES.map((route) => route.id),
-    ).toEqual(["home", "browse", "blog", "docs-page"]);
+    ).toEqual(["browse", "blog", "docs-page"]);
     expect(
       BRAND_ALIGNMENT_VERIFICATION_ROUTES.map(
         (route) => route.contentColumnSurface,
       ),
-    ).toEqual([
-      "home-article-browse",
-      "browse-index",
-      "blog-index",
-      "docs-page",
-    ]);
+    ).toEqual(["browse-index", "blog-index", "docs-page"]);
     expect(BRAND_ALIGNMENT_VIEWPORTS.map((viewport) => viewport.width)).toEqual(
       [390, 768, 1024, 1440],
     );

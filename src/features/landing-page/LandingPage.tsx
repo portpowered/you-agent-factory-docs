@@ -92,13 +92,15 @@ export function LandingPage({
       style={cssVars}
     >
       {slotOrPlaceholder("header", header)}
-      {slotOrPlaceholder("hero", hero)}
-      {slotOrPlaceholder("capability", capability)}
-      {slotOrPlaceholder("carousel", carousel)}
-      {slotOrPlaceholder("youi", youi)}
-      {slotOrPlaceholder("faq", faq)}
-      {slotOrPlaceholder("whaleBubbles", whaleBubbles)}
-      {slotOrPlaceholder("cta", cta)}
+      <main className="flex w-full flex-1 flex-col" data-landing-main="">
+        {slotOrPlaceholder("hero", hero)}
+        {slotOrPlaceholder("capability", capability)}
+        {slotOrPlaceholder("carousel", carousel)}
+        {slotOrPlaceholder("youi", youi)}
+        {slotOrPlaceholder("faq", faq)}
+        {slotOrPlaceholder("whaleBubbles", whaleBubbles)}
+        {slotOrPlaceholder("cta", cta)}
+      </main>
       {slotOrPlaceholder("footer", footer)}
     </div>
   );

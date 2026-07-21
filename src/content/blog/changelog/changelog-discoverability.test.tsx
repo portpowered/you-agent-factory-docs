@@ -4,7 +4,7 @@
  */
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { generateMetadata as generateBlogPostMetadata } from "@/app/(site)/blog/[slug]/page";
+import { generateMetadata as generateBlogPostMetadata } from "@/app/(site)/(with-docs-chrome)/blog/[slug]/page";
 import {
   renderBlogIndexPage,
   renderBlogPostPage,
