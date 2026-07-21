@@ -1,11 +1,11 @@
 /**
  * Browser verify for Documentation Program **core product** pages after intro
- * strip (repair-documentation-program-intro-strip-core story 003).
+ * strip (and Opening summary chrome retirement).
  *
- * Proves on each owned route: no What It Covers / Key Concepts; purpose lead via
- * DocsOpeningSummary ([data-opening-summary] / [data-testid="folded-summary"]);
- * at least one teaching section still present; #how-to-use absent when it was
- * stripped as opening boilerplate.
+ * Proves on each owned route: no What It Covers / Key Concepts; no bordered
+ * Opening summary chrome ([data-opening-summary] / [data-testid="folded-summary"]
+ * / aria-label="Opening summary"); at least one teaching section still present;
+ * #how-to-use absent when it was stripped as opening boilerplate.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  *
@@ -133,7 +133,11 @@ async function waitForReady(url: string, timeoutMs: number): Promise<void> {
   throw new Error(`Dev server not ready within ${timeoutMs}ms at ${url}`);
 }
 
-async function warmRoute(baseUrl: string, path: string): Promise<void> {
+async function warmRoute(
+  baseUrl: string,
+  path: string,
+  teachingSectionIds: readonly string[],
+): Promise<void> {
   const start = Date.now();
   while (Date.now() - start < PAGE_TIMEOUT_MS) {
     try {
@@ -143,8 +147,8 @@ async function warmRoute(baseUrl: string, path: string): Promise<void> {
       if (response.ok) {
         const html = await response.text();
         if (
-          html.includes('data-testid="folded-summary"') ||
-          html.includes('data-opening-summary="folded"')
+          !html.includes("Application error") &&
+          teachingSectionIds.some((id) => html.includes(`id="${id}"`))
         ) {
           return;
         }
@@ -155,7 +159,7 @@ async function warmRoute(baseUrl: string, path: string): Promise<void> {
     await Bun.sleep(2_000);
   }
   throw new Error(
-    `${path} did not warm with opening-summary markers within ${PAGE_TIMEOUT_MS}ms`,
+    `${path} did not warm with teaching section among [${teachingSectionIds.join(", ")}] within ${PAGE_TIMEOUT_MS}ms`,
   );
 }
 
@@ -206,7 +210,7 @@ try {
     });
 
     for (const route of ROUTES) {
-      await warmRoute(baseUrl, route.path);
+      await warmRoute(baseUrl, route.path, route.teachingSectionIds);
 
       const response = await page.goto(`${baseUrl}${route.path}`, {
         waitUntil: "domcontentloaded",
@@ -219,10 +223,7 @@ try {
         continue;
       }
 
-      await page.waitForSelector(
-        '[data-testid="folded-summary"], [data-opening-summary="folded"]',
-        { timeout: 60_000 },
-      );
+      await page.waitForSelector("h1", { timeout: 60_000 });
 
       const probe = await page.evaluate(
         ({ teachingSectionIds }) => {
@@ -245,7 +246,8 @@ try {
               document.getElementById("key-concepts"),
             ),
             openingSummaryPresent: Boolean(
-              document.querySelector('[data-opening-summary="folded"]'),
+              document.querySelector('[data-opening-summary="folded"]') ||
+                document.querySelector('[aria-label="Opening summary"]'),
             ),
             foldedSummaryPresent: Boolean(
               document.querySelector('[data-testid="folded-summary"]'),
@@ -268,9 +270,9 @@ try {
       if (probe.hasKeyConceptsHeading || probe.keyConceptsIdPresent) {
         failures.push(`${route.path}: Key Concepts intro still present`);
       }
-      if (!probe.openingSummaryPresent || !probe.foldedSummaryPresent) {
+      if (probe.openingSummaryPresent || probe.foldedSummaryPresent) {
         failures.push(
-          `${route.path}: purpose openingSummary lead missing (DocsOpeningSummary)`,
+          `${route.path}: folded Opening summary chrome still present`,
         );
       }
       if (probe.teachingSectionIdsPresent.length === 0) {

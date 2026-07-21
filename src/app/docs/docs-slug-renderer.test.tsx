@@ -300,6 +300,9 @@ describe("docs slug renderer locale gating", () => {
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
       "Harness",
     );
+    expect(
+      document.querySelector('article[data-registry-id="concept.harness"]'),
+    ).toBeTruthy();
     expect(screen.queryByTestId("folded-summary")).toBeNull();
     expect(screen.queryByLabelText("Opening summary")).toBeNull();
     expect(
@@ -368,6 +371,11 @@ describe("docs slug renderer locale gating", () => {
     expect(screen.getByRole("heading", { level: 1 }).textContent).toMatch(
       /install/i,
     );
+    expect(
+      document.querySelector(
+        'article[data-registry-id="documentation.install"]',
+      ),
+    ).toBeTruthy();
     expect(screen.queryByTestId("folded-summary")).toBeNull();
     expect(screen.queryByLabelText("Opening summary")).toBeNull();
     expect(
