@@ -4,7 +4,7 @@
  * Resolves the W09 packaged OpenAPI corpus at build/static-render time and
  * mounts the public EventsSurface + stream-role + catalog + reconnect/lifecycle
  * + static SSE sections. Page wiring only — does not edit renderer internals
- * under components/references/events.
+ * under features/references/events.
  *
  * `EventsCorpusMountView` accepts an already-resolved mount model so page-local
  * tests can prove empty/error published-route states without mocking OpenAPI
