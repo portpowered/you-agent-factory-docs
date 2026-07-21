@@ -10,6 +10,10 @@ import { FACTORY_PUBLISHED_TAG_SLUGS } from "@/lib/content/factory-tags-browse";
 import { PUBLISHED_DOCS_SECTIONS } from "@/lib/content/published-docs-registry-contract";
 import { listPublishedDocsEntries } from "@/lib/content/published-docs-registry-ids";
 import {
+  getShippedLocalizedDocsSlugs,
+  type NonDefaultLocale,
+} from "@/lib/content/shipped-localized-docs";
+import {
   listDocumentationRouteMigrationOldRoutes,
   listDocumentationRouteMigrationTargetRoutes,
 } from "@/lib/seo/documentation-route-migration";
@@ -35,6 +39,22 @@ export const PUBLIC_SITEMAP_SHELL_ROUTES = [
 export const PUBLIC_SITEMAP_LOCALE_HOME_ROUTES = FACTORY_SHIPPED_LOCALES.filter(
   (locale) => locale !== defaultLocale,
 ).map((locale) => buildLocalizedRoute({ surface: "home" }, locale));
+
+/**
+ * Shipped localized docs routes from the fail-closed
+ * {@link getShippedLocalizedDocsSlugs} manifest — only locale×slug pairs that
+ * actually ship, never a cartesian product over English published docs × all
+ * locales. Built via {@link buildLocalizedRoute} (`docs-page`).
+ */
+export function listPublicSitemapLocalizedDocsRoutes(): string[] {
+  return FACTORY_SHIPPED_LOCALES.filter(
+    (locale): locale is NonDefaultLocale => locale !== defaultLocale,
+  ).flatMap((locale) =>
+    getShippedLocalizedDocsSlugs(locale).map((slug) =>
+      buildLocalizedRoute({ surface: "docs-page", slug }, locale),
+    ),
+  );
+}
 
 /**
  * Docs collection index routes (section roots), including architecture.
@@ -97,18 +117,21 @@ function uniqueSortedPaths(paths: readonly string[]): string[] {
  * Lists app-relative public factory routes for the sitemap. Fail-closed against
  * retired Atlas collections, deleted Atlas blogs, and §10 migration old routes
  * via {@link isCanonicalPublicDiscoveryPath}. Includes shipped non-default
- * locale homes from {@link PUBLIC_SITEMAP_LOCALE_HOME_ROUTES}.
+ * locale homes from {@link PUBLIC_SITEMAP_LOCALE_HOME_ROUTES} and shipped
+ * localized docs from {@link listPublicSitemapLocalizedDocsRoutes}.
  */
 export function listPublicSitemapRoutes(): string[] {
   const docsArticles = listPublishedDocsEntries().map((entry) => entry.url);
   const blogPosts = listBlogSlugs().map((slug) => blogPostHref(slug));
   const tagPages = FACTORY_PUBLISHED_TAG_SLUGS.map((slug) => tagPageHref(slug));
+  const localizedDocs = listPublicSitemapLocalizedDocsRoutes();
 
   const candidates = [
     ...PUBLIC_SITEMAP_SHELL_ROUTES,
     ...PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
     ...PUBLIC_SITEMAP_DOCS_SECTION_ROUTES,
     ...docsArticles,
+    ...localizedDocs,
     ...blogPosts,
     ...tagPages,
   ];

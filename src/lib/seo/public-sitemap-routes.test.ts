@@ -6,6 +6,11 @@ import {
   FACTORY_SHIPPED_LOCALES,
 } from "@/lib/content/factory-locale-base-path";
 import {
+  getShippedLocalizedDocsSlugs,
+  isShippedLocalizedDocsSlug,
+  type NonDefaultLocale,
+} from "@/lib/content/shipped-localized-docs";
+import {
   PRODUCTION_SITE_ORIGIN,
   resolveProductionSitemapLocHref,
 } from "@/lib/seo/production-metadata-base";
@@ -13,6 +18,7 @@ import {
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES,
   listPublicSitemapAbsoluteUrls,
+  listPublicSitemapLocalizedDocsRoutes,
   listPublicSitemapRoutes,
   PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
   SITEMAP_EXCLUSION_PROOF_ROUTES,
@@ -23,6 +29,12 @@ const PROJECT_SITE_EXPORT_ENV = {
   NEXT_STATIC_EXPORT: "1",
   GITHUB_PAGES_BASE_PATH: BUILT_APP_GITHUB_PAGES_BASE_PATH,
 } as const;
+
+/** Known shipped localized docs article used as an inclusion proof. */
+const SHIPPED_LOCALIZED_DOCS_PROOF_SLUG = "concepts/harness";
+
+/** Published English docs slug that is not shipped for non-default locales. */
+const UNSHIPPED_LOCALIZED_DOCS_PROOF_SLUG = "workstations/poller";
 
 describe("public-sitemap-routes unit", () => {
   test("inclusion proofs resolve under production project-site base", () => {
@@ -70,6 +82,69 @@ describe("public-sitemap-routes unit", () => {
       );
       expect(urls).toContain(absolute);
     }
+  });
+
+  test("includes shipped localized docs routes only (fail-closed, no cartesian product)", () => {
+    const routes = listPublicSitemapRoutes();
+    const urls = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+    const localizedCandidates = listPublicSitemapLocalizedDocsRoutes();
+    const nonDefaultLocales = FACTORY_SHIPPED_LOCALES.filter(
+      (locale): locale is NonDefaultLocale => locale !== defaultLocale,
+    );
+
+    expect(
+      isShippedLocalizedDocsSlug(SHIPPED_LOCALIZED_DOCS_PROOF_SLUG, "ja"),
+    ).toBe(true);
+    expect(
+      isShippedLocalizedDocsSlug(UNSHIPPED_LOCALIZED_DOCS_PROOF_SLUG, "ja"),
+    ).toBe(false);
+
+    for (const locale of nonDefaultLocales) {
+      const expectedFromManifest = getShippedLocalizedDocsSlugs(locale).map(
+        (slug) => buildLocalizedRoute({ surface: "docs-page", slug }, locale),
+      );
+      for (const route of expectedFromManifest) {
+        expect(localizedCandidates).toContain(route);
+      }
+
+      const shippedProof = buildLocalizedRoute(
+        { surface: "docs-page", slug: SHIPPED_LOCALIZED_DOCS_PROOF_SLUG },
+        locale,
+      );
+      expect(routes).toContain(shippedProof);
+      expect(shippedProof.endsWith("/")).toBe(false);
+      const absolute = resolveProductionSitemapLocHref(
+        shippedProof,
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      expect(absolute.endsWith("/")).toBe(true);
+      expect(absolute).toBe(
+        `${PRODUCTION_SITE_ORIGIN}${BUILT_APP_GITHUB_PAGES_BASE_PATH}${shippedProof}/`,
+      );
+      expect(urls).toContain(absolute);
+
+      const unshippedGhost = buildLocalizedRoute(
+        { surface: "docs-page", slug: UNSHIPPED_LOCALIZED_DOCS_PROOF_SLUG },
+        locale,
+      );
+      expect(localizedCandidates).not.toContain(unshippedGhost);
+      expect(routes).not.toContain(unshippedGhost);
+      expect(urls).not.toContain(
+        resolveProductionSitemapLocHref(
+          unshippedGhost,
+          PROJECT_SITE_EXPORT_ENV,
+        ),
+      );
+    }
+
+    // Candidate list is exactly the manifest expansion — not English×locale.
+    expect(localizedCandidates).toEqual(
+      nonDefaultLocales.flatMap((locale) =>
+        getShippedLocalizedDocsSlugs(locale).map((slug) =>
+          buildLocalizedRoute({ surface: "docs-page", slug }, locale),
+        ),
+      ),
+    );
   });
 
   test("exclusion proofs stay out of app-relative and absolute sitemap inventories", () => {

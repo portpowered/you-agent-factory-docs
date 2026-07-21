@@ -22,9 +22,10 @@ social assets, sitemap, robots).
 | `src/lib/seo/export-social-preview-images.test.ts` | Metadata + temp-`out/` proofs that social images resolve under production origin/base path |
 | `src/lib/seo/export-localized-alternates.ts` | Export HTML hreflang extraction + shipped-only absolute production alternate verification |
 | `src/lib/seo/export-localized-alternates.test.ts` | Multi-locale home + subset-locale docs (`concepts/task-queue`) metadata and temp-`out/` proofs |
-| `src/lib/seo/public-sitemap-routes.ts` | Live public factory route inventory for sitemap (shell, non-default locale homes from `FACTORY_SHIPPED_LOCALES` / `buildLocalizedRoute`, docs sections/articles, blog, tags) |
-| `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths + locale homes (`/ja`, `/zh-CN`, `/vi`); absolute locs must end with `/` while app-relative stay non-slash |
+| `src/lib/seo/public-sitemap-routes.ts` | Live public factory route inventory for sitemap (shell, non-default locale homes from `FACTORY_SHIPPED_LOCALES` / `buildLocalizedRoute`, shipped localized docs from `getShippedLocalizedDocsSlugs` via `listPublicSitemapLocalizedDocsRoutes`, docs sections/articles, blog, tags) |
+| `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths + locale homes (`/ja`, `/zh-CN`, `/vi`) + shipped localized docs (fail-closed; no unshipped locale×slug ghosts); absolute locs must end with `/` while app-relative stay non-slash |
 | `src/lib/content/factory-locale-base-path.ts` | `FACTORY_SHIPPED_LOCALES` + `buildLocalizedRoute` / `defaultLocale` — drive sitemap locale-home membership (no hard-coded one-offs disconnected from the shipped set) |
+| `src/lib/content/shipped-localized-docs.ts` | `getShippedLocalizedDocsSlugs` / `isShippedLocalizedDocsSlug` — fail-closed manifest for sitemap localized docs inclusion (never cartesian English×locale) |
 | `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml` |
 | `src/lib/seo/export-sitemap.test.ts` | Trailing-slash absolute loc proofs (collection indexes + docs/blog/home) + non-slash app-relative + temp-`out/` verification |
 | `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`; requires `export const dynamic = "force-static"`) |
@@ -115,17 +116,23 @@ social assets, sitemap, robots).
     `listPublicSitemapRoutes` stays app-relative non-slash and includes
     non-default locale homes from `PUBLIC_SITEMAP_LOCALE_HOME_ROUTES`
     (`FACTORY_SHIPPED_LOCALES` minus default `en`, via `buildLocalizedRoute` —
-    `/ja`, `/zh-CN`, `/vi`; never invent `/en`).
+    `/ja`, `/zh-CN`, `/vi`; never invent `/en`) plus shipped localized docs
+    from `listPublicSitemapLocalizedDocsRoutes` (`getShippedLocalizedDocsSlugs`
+    × `buildLocalizedRoute({ surface: "docs-page" })` — fail-closed; no
+    cartesian product over English published docs × locales).
     `listPublicSitemapAbsoluteUrls` / `buildPublicSitemapEntries` emit
     trailing-slash absolute production locs via
     `resolveProductionSitemapLocHref` (for example
-    `…/you-agent-factory-docs/ja/`). Project-site export writes
-    `out/sitemap.xml` via `src/app/sitemap.ts`.
+    `…/you-agent-factory-docs/ja/` and
+    `…/you-agent-factory-docs/ja/docs/concepts/harness/`). Project-site export
+    writes `out/sitemap.xml` via `src/app/sitemap.ts`.
     Inclusion proofs: `/`, `/search`, `/browse`, `/tags`, `/blog`,
     `/blog/bottlenecks`, `/docs/concepts`, `/docs/concepts/harness`, plus
-    locale homes `/ja`, `/zh-CN`, `/vi`.
+    locale homes `/ja`, `/zh-CN`, `/vi`, plus representative shipped localized
+    docs (for example `/ja/docs/concepts/harness`).
     Exclusion proofs: retired `/docs/models|modules|papers|training|systems`,
-    `/topology`, `/docs/timeline`, deleted Atlas blog slugs. Use
+    `/topology`, `/docs/timeline`, deleted Atlas blog slugs, and unshipped
+    locale×docs-slug ghosts. Use
     `verifyExportSitemap` / `sitemapLocsMatchPublicFactoryContract`.
     Export SEO discovery (`verifyExportSeoDiscovery`) and `verifyExportSitemap`
     reject non-slash absolute locs (compare against
