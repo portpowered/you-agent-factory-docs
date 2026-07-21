@@ -79,6 +79,15 @@ For published non-FAQ documentation under
   keys and `sections.tags`. Leave `documentation/faq/**/messages` unchanged.
   Align every owned locale (en and present ja / zh-CN / vi) for the stripped
   keys.
+- Browser-verify stripped documentation routes with
+  `bun src/content/docs/documentation/assert-documentation-related-chrome-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3591 default,
+  Playwright; kill server on exit). Fail closed on Related / Related To /
+  References footer headings and `#related` / `#references` mounts while
+  proving at least one teaching section id remains. Prefer
+  `DOC_RELATED_CHROME_STRIP_PROBE_BASE_URL` when a server is already warm. Do
+  not include `documentation/faq` in the absence probe (FAQ stays fenced for
+  `#190` / PF-D2).
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
