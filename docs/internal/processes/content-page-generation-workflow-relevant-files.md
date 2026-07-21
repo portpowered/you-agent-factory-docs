@@ -115,6 +115,15 @@ Before the first authored page under a rewrite-era CLI collection can pass
    use `bun run dev`) before curling the route, or the HTML will still show
    the previous copy. Prefer a unique port in `3100-3999`,
    `curl --max-time 10`, and kill the server before the command exits.
+   In parent-hoisted worktrees, plain Turbopack `bun run dev` often fails to
+   resolve `next` from `src/app` — use
+   `bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` instead.
+   For FAQ PF-D chrome proofs on `/docs/documentation/faq`, assert from SSR
+   HTML: no `Limits And Assumptions` / `#limits-and-assumptions`, no `h2`
+   titled exactly `Related To` (do not grep the bare substring — empty-tag
+   copy like “related topics” false-positives), `#related` keeps
+   `data-testid="curated-related-docs"` without `list-disc`, answer-section
+   ids still mount their links, and Tags / References headings remain.
 7. Do not run overlapping `prepare:content-runtime` / `fumadocs-mdx`
    invocations in parallel on the same worktree — concurrent prep can delete
    `.source` mid-validate and fail with `Cannot find module '../../.source/server'`.

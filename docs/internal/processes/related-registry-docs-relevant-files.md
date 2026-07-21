@@ -91,6 +91,9 @@ and the shared related-registry-docs component/blog wrapper.
   `content-page-generation-workflow-relevant-files.md` §5b. Prove no
   Related-footer `LocalizedLinkList` via `#related` lacking
   `ul.mt-3.list-disc` (RelatedDocList uses `ul.space-y-3`).
+  Browser-verify unlabeled Related with an exact `Related To` heading check
+  (not a bare substring grep — empty-tag copy such as “related topics”
+  false-positives).
 * Do not reintroduce Atlas chrome **`Related Concepts And Modules`** in concept
   (or other) page messages, `docs/templates/concept.messages.en.json`, or
   `docs/templates/glossary.messages.en.json`. The retired path
