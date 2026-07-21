@@ -1,0 +1,162 @@
+# Hygiene — Make Real Targets Only (relevant files)
+
+Use this note when auditing or fixing living Make instructions so agents and
+maintainers only copy **real** root `Makefile` targets.
+
+## Source of truth
+
+Primary shared entrypoints (non-exhaustive): `setup`, `check`, `build`, `ci`,
+`dev`, `a11y`, `test`, `linkcheck`, `validate-data`, `budget`,
+`component-coverage`.
+
+The full target list lives in the root `Makefile` `.PHONY` line. Do **not**
+invent names such as `ui-build`, `all`, `links`, or resurrect retired
+`build-export` as a live command.
+
+Intent → real target (common replacements):
+
+| Intent | Real target |
+| --- | --- |
+| Static export / site build | `make build` |
+| Full local required path | `make ci` |
+| Typecheck + lint | `make check` |
+| Internal link validation | `make linkcheck` |
+
+## Surfaces checked (story 001 audit)
+
+Compared committed instruction surfaces against root `Makefile` `.PHONY`
+targets (UTC audit for HY-make).
+
+| Surface | Result |
+| --- | --- |
+| `AGENTS.md` | Clean — no Make prescriptions |
+| `README.md` | Clean — real targets only (`setup`, `check`, `build`, `ci`, `linkcheck`, …) |
+| `docs/contributors/CONTRIBUTING.md` | Mostly clean; see **must-fix** for retired Phase-1 verifier names still listed as existing optional targets |
+| `scripts/**` comments | Clean — real targets (`make test`, `make build`, `make validate-data`, …) |
+| `factory/docs/overview.md` | **Must fix** — foreign Go-README local-check language |
+| `docs/governance/architectural-checklist-mechanism-status.md` | **Must fix** — present-tense `make build-export` verification/build guidance |
+| `docs/operations.md` | Historical only — retirement wording for `make build-export` (keep) |
+| `docs/internal/processes/ci-deploy-foundation-relevant-files.md` | Historical only — explains `make build` vs retired `make build-export` (keep) |
+| Closed-era / conflict-refresh handoffs under `docs/internal/processes/*` that name past CI job labels including `build-export` | Historical reports — leave alone (not live maintainer instructions) |
+| Factory batch archives + `src/tests/ci/planner-deployment-guidance.test.ts` expecting historical `make build-export` in batch-014 payloads | Historical / test contract — leave alone |
+| `docs/temp/**` (opportunistic) | No `make ui-build` instructional hits found at audit time |
+
+## Must-fix status (story 002 — applied)
+
+False live Make / retired-verifier prescriptions below were rewritten to real
+targets. Do not invent Makefile targets to match old wording.
+
+### `factory/docs/overview.md` — fixed
+
+- Read-first CONTRIBUTING bullet and Quality Gates block now use
+  `make check` / `make test` / `make linkcheck` / `make ci` and warn against
+  inventing `ui-build` / `all` / `links`. Foreign Go-README framing removed.
+
+### `docs/governance/architectural-checklist-mechanism-status.md` — fixed
+
+- Deploy section retargeted to `.github/workflows/deploy-pages.yml` +
+  `make build` (with current `GITHUB_PAGES_BASE_PATH`).
+- Present-tense `make build-export` Verification / evidence / README summary
+  rows retargeted to `make build`.
+- Retired `scripts/verify-phase-1-*.ts` Verification commands replaced with
+  `make build` + existing discovery / build-contract tests.
+- Remaining `deploy.yml` evidence paths updated to `deploy-pages.yml`.
+
+Accurate “former / retired” wording elsewhere remains allowed.
+
+### `docs/contributors/CONTRIBUTING.md` — fixed
+
+- Removed nonexistent `make verify-phase-1-*` optional-command rows; noted
+  retirement and pointed contributors at `make build` / `make ci`.
+
+## Historical (allowed — do not “fix” into silence)
+
+- `docs/operations.md` — Atlas/Phase-1 verifiers and `make build-export` **were
+  retired**
+- `docs/internal/processes/ci-deploy-foundation-relevant-files.md` —
+  `make build` vs former `make build-export`
+- `docs/internal/processes/delete-atlas-domain-relevant-files.md` and similar
+  handoffs that record past CI matrix names
+- Closed factory batch JSON / tests that assert historical planner text
+
+## Explicit non-hits
+
+- **No committed surface** instructs `make ui-build` / `ui-build` as a current
+  command at audit time. The HY-make customer ask still requires the maintainer
+  entrypoint note so agents do not invent it later.
+- Root `Makefile` `.PHONY` / target definitions were not changed by this audit.
+
+## Maintainer entrypoint note (story 003 — applied)
+
+Short primary-entrypoints notes now live where agents/maintainers already read
+instructions (not a second parallel contract):
+
+- `AGENTS.md` — **Local Make entrypoints** (`setup`, `check`, `build`, `ci`,
+  `dev`, `a11y`; forbid inventing `ui-build`; point at root `Makefile`
+  `.PHONY` + README Quality Gates)
+- `README.md` **Quality Gates** — explicit real-targets-only preamble before
+  the stage table
+- `factory/docs/overview.md` **Quality Gates** — same rule + primary list,
+  cross-links README / AGENTS
+
+## Planner temp scrub (story 004 — applied)
+
+UTC re-check of `docs/temp/**` for instructional `make ui-build` / `ui-build`
+as something to **run**:
+
+| Surface | Result |
+| --- | --- |
+| This worktree `docs/temp/references/**` (committed W00 baseline) | Clean — no Make/`ui-build` instructions |
+| Shared planner state (`docs/temp/customer-ask.md`, `checklist.md`, `meta.md`, `progress.md`, `batches/*`) | Remaining `ui-build` mentions are HY-make **problem statements**, checklist **tracking**, or pre-audit notes that say the target does **not** exist / was temp-only — not live “run this” commands |
+| Instructional “run/use `make ui-build`” hits | **None** found; nothing to rewrite into a runnable false target |
+
+Planner outcome/checklist language for HY-make was left as tracking until this
+lane merges. Committed instruction fixes + maintainer entrypoint note already
+landed in stories 002–003 (temp scrub alone is not the PR).
+
+## Follow-on work (other PRD stories)
+
+1. ~~Replace false live instructions listed above with real targets.~~ Done in story 002.
+2. ~~Add or tighten a short primary-entrypoints maintainer note (README /
+   AGENTS / factory overview) pointing at the root Makefile.~~ Done in story 003.
+3. ~~Opportunistically scrub `docs/temp/**` if instructional `ui-build` reappears.~~ Done in story 004 (confirmed clean for run instructions).
+4. ~~Confirm lane fences: instruction docs/scripts comments only; no new Make
+   targets; no page-chrome / IA / feature-package moves.~~ Done in story 005.
+
+## Lane fences + quality gates (story 005 — applied)
+
+UTC confirmation against `main...HEAD` for this hygiene lane:
+
+| Fence | Result |
+| --- | --- |
+| Root `Makefile` `.PHONY` / target definitions | **Unchanged** — no invent / rename |
+| Page-formatting chrome, explorer IA, landing-page, teaching-ui, feature-package moves | **None** in the lane diff |
+| Historical factory batch archives / closed-era payloads | **Left alone** (still listed under Historical above) |
+| Diff ownership | Instruction docs + process note + governance mechanism-status + the companion `architectural-checklist-audit` marker alignment required by that doc |
+
+Files in the reviewed diff: `AGENTS.md`, `README.md`, `docs/contributors/CONTRIBUTING.md`, `docs/governance/architectural-checklist-mechanism-status.md`, `docs/internal/processes/hygiene-make-real-targets-only-relevant-files.md`, `factory/docs/overview.md`, `src/lib/governance/architectural-checklist-audit.ts`, `src/lib/governance/architectural-checklist-audit.test.ts`.
+
+Quality gates on this checkout after the doc/comment changes: `make check` passed; `make test` passed (1822 tests). Ensure `make setup` has populated `node_modules/@you-agent-factory/api` before relying on W02 SSE package-backed suites.
+
+## Mergeability follow-up (post story 005)
+
+PR `#201` `pull_request` unit-tests flaked on always-on docs Playwright fixtures
+timing out at Bun’s 120s while CI Chromium launch serialization could wait
+longer. Push-event CI on the same SHA stayed green.
+
+Follow-up (not a new Make-target story):
+
+- `src/lib/verify/launch-playwright-browser.ts` — fail-closed retryable launch-slot
+  wait timeout (45s), reclaim stale slots after 90s, export
+  `PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS` (240s)
+- Docs chrome fixture browser tests use that exported Bun timeout
+- Helper unit tests cover slot-wait retry classification
+
+Record this in PR conversation when landed.
+
+## Companion contract note (story 002)
+
+`src/lib/governance/architectural-checklist-audit.ts` requires the operator
+workflow evidence heading `#### \`.github/workflows/deploy-pages.yml\`` (was
+retired `deploy.yml`). Keep the mechanism-status artifact heading aligned with
+that marker when renaming the live deploy workflow file.

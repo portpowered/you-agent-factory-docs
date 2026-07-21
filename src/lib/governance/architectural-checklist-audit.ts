@@ -48,7 +48,7 @@ const REQUIRED_OPERATOR_CONTROL_MARKERS = [
 
 const REQUIRED_WORKFLOW_EVIDENCE_MARKERS = [
   "#### `.github/workflows/ci.yml`",
-  "#### `.github/workflows/deploy.yml`",
+  "#### `.github/workflows/deploy-pages.yml`",
 ] as const;
 
 const REQUIRED_PHASE_BOUNDARY_MARKERS = [

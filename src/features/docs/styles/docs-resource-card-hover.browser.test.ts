@@ -16,6 +16,7 @@ import {
 import {
   closePlaywrightBrowserWithTimeout,
   launchPlaywrightBrowser,
+  PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
 } from "@/lib/verify/launch-playwright-browser";
 
 const RESOURCE_CARD_HOVER_CSS = readFileSync(
@@ -132,46 +133,50 @@ describe("docs resource card hover behavioral (always-on)", () => {
     );
   });
 
-  test("Playwright fixture: hover and focus-visible show yellow highlight with dark text", async () => {
-    const browser = await launchPlaywrightBrowser();
-    try {
-      const page = await browser.newPage({
-        viewport: { width: 1024, height: 768 },
-      });
+  test(
+    "Playwright fixture: hover and focus-visible show yellow highlight with dark text",
+    async () => {
+      const browser = await launchPlaywrightBrowser();
       try {
-        await page.setContent(buildResourceCardFixtureHtml(), {
-          waitUntil: "load",
+        const page = await browser.newPage({
+          viewport: { width: 1024, height: 768 },
         });
+        try {
+          await page.setContent(buildResourceCardFixtureHtml(), {
+            waitUntil: "load",
+          });
 
-        const card = page.locator("[data-resource-card='sample']");
-        expect(await card.count()).toBe(1);
+          const card = page.locator("[data-resource-card='sample']");
+          expect(await card.count()).toBe(1);
 
-        const resting = await probeResourceCard(page);
-        expect(resting.titleColor).toBe(FOREGROUND_RGB);
-        expect(resting.bodyColor).toBe(MUTED_FOREGROUND_RGB);
-        expect(resting.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+          const resting = await probeResourceCard(page);
+          expect(resting.titleColor).toBe(FOREGROUND_RGB);
+          expect(resting.bodyColor).toBe(MUTED_FOREGROUND_RGB);
+          expect(resting.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
 
-        await card.hover();
-        const hovered = await probeResourceCard(page);
-        expect(hovered.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(hovered.borderColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(hovered.color).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(hovered.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(hovered.bodyColor).toBe(PRIMARY_FOREGROUND_RGB);
+          await card.hover();
+          const hovered = await probeResourceCard(page);
+          expect(hovered.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(hovered.borderColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(hovered.color).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(hovered.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(hovered.bodyColor).toBe(PRIMARY_FOREGROUND_RGB);
 
-        await card.focus();
-        const focused = await probeResourceCard(page);
-        expect(focused.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(focused.borderColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(focused.color).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(focused.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(focused.bodyColor).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(focused.boxShadow).toContain(RING_RGB);
+          await card.focus();
+          const focused = await probeResourceCard(page);
+          expect(focused.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(focused.borderColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(focused.color).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(focused.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(focused.bodyColor).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(focused.boxShadow).toContain(RING_RGB);
+        } finally {
+          await page.close();
+        }
       } finally {
-        await page.close();
+        await closePlaywrightBrowserWithTimeout(browser);
       }
-    } finally {
-      await closePlaywrightBrowserWithTimeout(browser);
-    }
-  }, 120_000);
+    },
+    PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
+  );
 });

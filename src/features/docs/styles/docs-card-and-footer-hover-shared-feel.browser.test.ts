@@ -20,6 +20,7 @@ import { DOCS_PAGE_FOOTER_HOVER_TOKENS } from "@/features/docs/styles/docs-page-
 import {
   closePlaywrightBrowserWithTimeout,
   launchPlaywrightBrowser,
+  PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
 } from "@/lib/verify/launch-playwright-browser";
 
 const RESOURCE_CARD_HOVER_CSS = readFileSync(
@@ -184,62 +185,72 @@ describe("docs card + footer shared yellow/dark hover feel", () => {
     );
   });
 
-  test("Playwright fixture: resource card and footer card share yellow + dark text on hover/focus", async () => {
-    const browser = await launchPlaywrightBrowser();
-    try {
-      const page = await browser.newPage({
-        viewport: { width: 1024, height: 768 },
-      });
+  test(
+    "Playwright fixture: resource card and footer card share yellow + dark text on hover/focus",
+    async () => {
+      const browser = await launchPlaywrightBrowser();
       try {
-        await page.setContent(buildSharedFeelFixtureHtml(), {
-          waitUntil: "load",
+        const page = await browser.newPage({
+          viewport: { width: 1024, height: 768 },
         });
+        try {
+          await page.setContent(buildSharedFeelFixtureHtml(), {
+            waitUntil: "load",
+          });
 
-        const resourceCard = page.locator(
-          "[data-shared-surface='resource-card']",
-        );
-        const footerCard = page.locator("[data-shared-surface='footer-card']");
-        expect(await resourceCard.count()).toBe(1);
-        expect(await footerCard.count()).toBe(1);
+          const resourceCard = page.locator(
+            "[data-shared-surface='resource-card']",
+          );
+          const footerCard = page.locator(
+            "[data-shared-surface='footer-card']",
+          );
+          expect(await resourceCard.count()).toBe(1);
+          expect(await footerCard.count()).toBe(1);
 
-        const resourceRest = await probeSharedSurface(page, "resource-card");
-        const footerRest = await probeSharedSurface(page, "footer-card");
-        expect(resourceRest.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
-        expect(footerRest.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
-        expect(resourceRest.titleColor).toBe(FOREGROUND_RGB);
+          const resourceRest = await probeSharedSurface(page, "resource-card");
+          const footerRest = await probeSharedSurface(page, "footer-card");
+          expect(resourceRest.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+          expect(footerRest.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+          expect(resourceRest.titleColor).toBe(FOREGROUND_RGB);
 
-        await resourceCard.hover();
-        const resourceHover = await probeSharedSurface(page, "resource-card");
-        expect(resourceHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(resourceHover.color).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(resourceHover.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
+          await resourceCard.hover();
+          const resourceHover = await probeSharedSurface(page, "resource-card");
+          expect(resourceHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(resourceHover.color).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(resourceHover.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
 
-        await footerCard.hover();
-        const footerHover = await probeSharedSurface(page, "footer-card");
-        expect(footerHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(footerHover.color).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(footerHover.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
+          await footerCard.hover();
+          const footerHover = await probeSharedSurface(page, "footer-card");
+          expect(footerHover.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(footerHover.color).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(footerHover.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
 
-        expect(resourceHover.backgroundColor).toBe(footerHover.backgroundColor);
-        expect(resourceHover.color).toBe(footerHover.color);
-        expect(resourceHover.titleColor).toBe(footerHover.titleColor);
+          expect(resourceHover.backgroundColor).toBe(
+            footerHover.backgroundColor,
+          );
+          expect(resourceHover.color).toBe(footerHover.color);
+          expect(resourceHover.titleColor).toBe(footerHover.titleColor);
 
-        await resourceCard.focus();
-        const resourceFocus = await probeSharedSurface(page, "resource-card");
-        expect(resourceFocus.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(resourceFocus.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
+          await resourceCard.focus();
+          const resourceFocus = await probeSharedSurface(page, "resource-card");
+          expect(resourceFocus.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(resourceFocus.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
 
-        await footerCard.focus();
-        const footerFocus = await probeSharedSurface(page, "footer-card");
-        expect(footerFocus.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
-        expect(footerFocus.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
-        expect(resourceFocus.backgroundColor).toBe(footerFocus.backgroundColor);
-        expect(resourceFocus.titleColor).toBe(footerFocus.titleColor);
+          await footerCard.focus();
+          const footerFocus = await probeSharedSurface(page, "footer-card");
+          expect(footerFocus.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(footerFocus.titleColor).toBe(PRIMARY_FOREGROUND_RGB);
+          expect(resourceFocus.backgroundColor).toBe(
+            footerFocus.backgroundColor,
+          );
+          expect(resourceFocus.titleColor).toBe(footerFocus.titleColor);
+        } finally {
+          await page.close();
+        }
       } finally {
-        await page.close();
+        await closePlaywrightBrowserWithTimeout(browser);
       }
-    } finally {
-      await closePlaywrightBrowserWithTimeout(browser);
-    }
-  }, 120_000);
+    },
+    PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS,
+  );
 });
