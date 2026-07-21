@@ -1,18 +1,15 @@
 import { notFound } from "next/navigation";
 import { LandingPage } from "@/features/landing-page/LandingPage";
-import {
-  composeWaveAFooterSlot,
-  composeWaveAHeroSlot,
-  composeWaveAWhaleBubblesSlot,
-} from "./compose-wave-a-slots";
+import { composeWaveALandingHarnessSlots } from "./compose-wave-a-slots";
 
 /**
  * Non-production Homepage-2 landing chassis harness.
  *
- * Wave A fill (incremental): real SiteFooter + WhaleBubblesSection +
- * ParticleSphere hero (optional Terminal chrome); remaining slots stay labeled
- * placeholders until later integrate stories. Hidden in production unless
- * ENABLE_COMPONENT_EXAMPLES=1. Does not flip production `/`.
+ * Wave A fill (incremental): only wired slots receive fixture-mapped fills
+ * (SiteFooter, WhaleBubblesSection, ParticleSphere + optional Terminal).
+ * Unwired Wave B slots stay labeled placeholders via LandingPage defaults.
+ * Hidden in production unless ENABLE_COMPONENT_EXAMPLES=1. Does not flip
+ * production `/`.
  */
 export default function LandingHarnessPage() {
   if (
@@ -22,11 +19,5 @@ export default function LandingHarnessPage() {
     notFound();
   }
 
-  return (
-    <LandingPage
-      footer={composeWaveAFooterSlot()}
-      hero={composeWaveAHeroSlot()}
-      whaleBubbles={composeWaveAWhaleBubblesSlot()}
-    />
-  );
+  return <LandingPage {...composeWaveALandingHarnessSlots()} />;
 }

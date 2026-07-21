@@ -9,11 +9,13 @@ import {
 import {
   composeWaveAFooterSlot,
   composeWaveAHeroSlot,
+  composeWaveALandingHarnessSlots,
   composeWaveAWhaleBubblesSlot,
   mapFixtureCommandsToTerminalLines,
   mapFixtureCommandsToTerminalProps,
   mapFixtureFooterToSiteFooterProps,
   mapFixtureWhaleBubblesToSectionProps,
+  WIRED_WAVE_A_SLOTS,
 } from "./compose-wave-a-slots";
 
 describe("composeWaveAFooterSlot", () => {
@@ -149,5 +151,39 @@ describe("composeWaveAHeroSlot", () => {
     expect(html).toContain('data-particle-sphere=""');
     expect(html).not.toContain('data-terminal=""');
     expect(html).not.toContain('data-landing-harness-hero-terminal=""');
+  });
+});
+
+describe("composeWaveALandingHarnessSlots", () => {
+  test("returns only wired Wave A slot keys", () => {
+    const slots = composeWaveALandingHarnessSlots();
+    const keys = Object.keys(slots).sort();
+
+    expect(keys).toEqual([...WIRED_WAVE_A_SLOTS].sort());
+    expect(slots).not.toHaveProperty("header");
+    expect(slots).not.toHaveProperty("capability");
+    expect(slots).not.toHaveProperty("carousel");
+    expect(slots).not.toHaveProperty("youi");
+    expect(slots).not.toHaveProperty("faq");
+    expect(slots).not.toHaveProperty("cta");
+  });
+
+  test("wired slots render real markers; aggregate does not invent Wave B trees", () => {
+    const slots = composeWaveALandingHarnessSlots();
+    const footerHtml = renderToStaticMarkup(slots.footer as ReactElement);
+    const whaleHtml = renderToStaticMarkup(slots.whaleBubbles as ReactElement);
+    const heroHtml = renderToStaticMarkup(slots.hero as ReactElement);
+
+    expect(footerHtml).toContain('data-testid="site-footer"');
+    expect(whaleHtml).toContain('data-whale-bubbles-section=""');
+    expect(heroHtml).toContain('data-particle-sphere=""');
+
+    const combined = `${footerHtml}${whaleHtml}${heroHtml}`;
+    expect(combined).not.toContain(fixtureLandingPageData.hero.title);
+    expect(combined).not.toContain(fixtureLandingPageData.youi.title);
+    expect(combined).not.toContain(
+      fixtureLandingPageData.faq.items[0]?.question ?? "",
+    );
+    expect(combined).not.toContain(fixtureLandingPageData.cta.headline);
   });
 });

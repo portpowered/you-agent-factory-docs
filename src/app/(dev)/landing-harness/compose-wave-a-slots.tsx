@@ -6,6 +6,7 @@ import {
   type WhaleBubblesSectionProps,
 } from "@/features/landing-page";
 import { ParticleSphere } from "@/features/landing-page/components/ParticleSphere";
+import type { LandingPageSlots } from "@/features/landing-page/LandingPage";
 import {
   fixtureLandingPageData,
   type LandingCarouselData,
@@ -17,6 +18,20 @@ import {
   WHALE_BUBBLES_FIXTURE_ITEMS,
   WHALE_BUBBLES_FIXTURE_SRC,
 } from "@/features/landing-page/whale-bubbles.fixtures";
+
+/**
+ * Wave A slots filled on landing-harness. Unwired Wave B slots are omitted so
+ * LandingPage keeps labeled placeholders — no fake Wave B content trees.
+ */
+export const WIRED_WAVE_A_SLOTS = [
+  "footer",
+  "whaleBubbles",
+  "hero",
+] as const satisfies ReadonlyArray<keyof LandingPageSlots>;
+
+export type WiredWaveASlot = (typeof WIRED_WAVE_A_SLOTS)[number];
+
+export type WaveALandingHarnessSlots = Pick<LandingPageSlots, WiredWaveASlot>;
 
 /**
  * Map landing fixture footer data onto the public SiteFooter contract.
@@ -169,4 +184,18 @@ export function composeWaveAHeroSlot(
       ) : null}
     </section>
   );
+}
+
+/**
+ * Aggregate Wave A landing-harness slot props. Returns only wired keys so
+ * unwired Wave B slots stay on LandingPage placeholder defaults — fixture
+ * sections for header/capability/carousel/youi/faq/cta are not mounted as
+ * content trees (carousel/cta command strings may still soft-wire Terminal).
+ */
+export function composeWaveALandingHarnessSlots(): WaveALandingHarnessSlots {
+  return {
+    footer: composeWaveAFooterSlot(),
+    whaleBubbles: composeWaveAWhaleBubblesSlot(),
+    hero: composeWaveAHeroSlot(),
+  };
 }
