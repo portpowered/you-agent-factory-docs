@@ -16,9 +16,13 @@ import {
   listAttributeDefs,
   listOrchestrators,
   type OrchestratorAttributeValue,
+  type OrchestratorRecord,
   OrchestratorRegistryLoadError,
   orchestratorRecordSchema,
+  validateOrchestratorAttributeAgreement,
+  validateOrchestratorsRegistry,
 } from "./orchestrators";
+import { validateRegistryContent } from "./validate-registry";
 
 const orchestratorsRegistryDir = join(getRegistryRoot(), "orchestrators");
 const fixtureRoot = join(import.meta.dir, "__fixtures__", "orchestrators");
@@ -361,6 +365,200 @@ describe("orchestrator registry loaders", () => {
       }
     } finally {
       rmSync(invalidJsonRoot, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("orchestrator attribute type/value agreement", () => {
+  const agreementDefs = attributeDefsFileSchema.parse(
+    minimalAttributeDefsFile,
+  ).attributes;
+  const agreementRecord = orchestratorRecordSchema.parse(minimalOrchestrator);
+
+  test("accepts a good pack that agrees with attribute defs", () => {
+    const errors = validateOrchestratorAttributeAgreement(agreementDefs, [
+      agreementRecord,
+    ]);
+    expect(errors).toEqual([]);
+  });
+
+  test("rejects an unknown attribute key", () => {
+    const record: OrchestratorRecord = {
+      ...agreementRecord,
+      attributes: {
+        ...agreementRecord.attributes,
+        "attr.unknown": true,
+      },
+    };
+    const errors = validateOrchestratorAttributeAgreement(agreementDefs, [
+      record,
+    ]);
+    expect(
+      errors.some((error) => error.code === "unknown-orchestrator-attribute"),
+    ).toBe(true);
+    expect(errors[0]?.message).toContain("attr.unknown");
+  });
+
+  test("rejects a boolean attribute with a non-boolean value", () => {
+    const record: OrchestratorRecord = {
+      ...agreementRecord,
+      attributes: {
+        ...agreementRecord.attributes,
+        "attr.open-source": "yes",
+      },
+    };
+    const errors = validateOrchestratorAttributeAgreement(agreementDefs, [
+      record,
+    ]);
+    expect(
+      errors.some(
+        (error) => error.code === "orchestrator-attribute-type-mismatch",
+      ),
+    ).toBe(true);
+    expect(errors[0]?.message).toContain("expects boolean");
+  });
+
+  test("rejects a multi-tag attribute that is a bare string", () => {
+    const record: OrchestratorRecord = {
+      ...agreementRecord,
+      attributes: {
+        ...agreementRecord.attributes,
+        "attr.capabilities": "loops",
+      },
+    };
+    const errors = validateOrchestratorAttributeAgreement(agreementDefs, [
+      record,
+    ]);
+    expect(
+      errors.some(
+        (error) => error.code === "orchestrator-attribute-type-mismatch",
+      ),
+    ).toBe(true);
+    expect(errors[0]?.message).toContain("expects multi-tag string[]");
+  });
+
+  test("rejects a tag value outside tagEnum", () => {
+    const record: OrchestratorRecord = {
+      ...agreementRecord,
+      attributes: {
+        ...agreementRecord.attributes,
+        "attr.hosting": "on-prem",
+      },
+    };
+    const errors = validateOrchestratorAttributeAgreement(agreementDefs, [
+      record,
+    ]);
+    expect(
+      errors.some(
+        (error) => error.code === "orchestrator-attribute-tag-out-of-enum",
+      ),
+    ).toBe(true);
+    expect(errors[0]?.message).toContain("on-prem");
+  });
+
+  test("rejects a multi-tag element outside tagEnum", () => {
+    const record: OrchestratorRecord = {
+      ...agreementRecord,
+      attributes: {
+        ...agreementRecord.attributes,
+        "attr.capabilities": ["loops", "telepathy"],
+      },
+    };
+    const errors = validateOrchestratorAttributeAgreement(agreementDefs, [
+      record,
+    ]);
+    expect(
+      errors.some(
+        (error) => error.code === "orchestrator-attribute-tag-out-of-enum",
+      ),
+    ).toBe(true);
+    expect(errors[0]?.message).toContain("telepathy");
+  });
+
+  test("rejects a tag-typed def missing tagEnum", () => {
+    const defWithoutEnum = {
+      id: "attr.hosting",
+      labelKey: "attr.hosting",
+      type: "single-tag" as const,
+      filterable: true,
+      sortable: true,
+      order: 1,
+    } as AttributeDef;
+    const errors = validateOrchestratorAttributeAgreement(
+      [defWithoutEnum],
+      [
+        {
+          id: "orchestrator.sample",
+          kind: "orchestrator",
+          name: "Sample",
+          attributes: { "attr.hosting": "local" },
+        },
+      ],
+    );
+    expect(
+      errors.some(
+        (error) => error.code === "orchestrator-attribute-def-missing-tag-enum",
+      ),
+    ).toBe(true);
+  });
+
+  test("validateOrchestratorsRegistry passes for committed seed data", () => {
+    const errors = validateOrchestratorsRegistry(orchestratorsRegistryDir);
+    expect(errors).toEqual([]);
+  });
+
+  test("validateOrchestratorsRegistry is a no-op when the directory is missing", () => {
+    expect(validateOrchestratorsRegistry(missingFixtureRoot)).toEqual([]);
+  });
+
+  test("validateRegistryContent surfaces orchestrator attribute disagreement", async () => {
+    const tempRoot = join(
+      tmpdir(),
+      `orchestrator-validate-registry-${crypto.randomUUID()}`,
+    );
+    const registryRoot = join(tempRoot, "registry");
+    const docsRoot = join(tempRoot, "docs");
+    const orchestratorsRoot = join(registryRoot, "orchestrators");
+    mkdirSync(orchestratorsRoot, { recursive: true });
+    mkdirSync(docsRoot, { recursive: true });
+
+    writeFileSync(
+      join(orchestratorsRoot, "attribute-defs.json"),
+      JSON.stringify(minimalAttributeDefsFile),
+    );
+    writeFileSync(
+      join(orchestratorsRoot, "orchestrator.broken-agreement.json"),
+      JSON.stringify({
+        id: "orchestrator.broken-agreement",
+        kind: "orchestrator",
+        name: "Broken Agreement",
+        attributes: {
+          "attr.open-source": true,
+          "attr.license": "MIT",
+          "attr.hosting": "local",
+          "attr.capabilities": "loops",
+          "attr.not-a-real-def": false,
+        },
+      }),
+    );
+
+    try {
+      const errors = await validateRegistryContent({
+        registryRoot,
+        docsRoot,
+        phase1PageDirectories: [],
+      });
+
+      expect(
+        errors.some(
+          (error) => error.code === "orchestrator-attribute-type-mismatch",
+        ),
+      ).toBe(true);
+      expect(
+        errors.some((error) => error.code === "unknown-orchestrator-attribute"),
+      ).toBe(true);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
     }
   });
 });

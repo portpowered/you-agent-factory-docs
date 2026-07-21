@@ -1,10 +1,11 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { getRegistryRoot } from "./content-paths";
 
 /**
- * Orchestrator feature registry schemas and loaders.
+ * Orchestrator feature registry schemas, loaders, and attribute agreement
+ * validation.
  *
  * Locked contract: docs/temp/graph-pages/registries.md + contracts.md
  * (AttributeDef / AttributeDefsFile / OrchestratorRecord).
@@ -201,4 +202,173 @@ export function listOrchestrators(
   });
 
   return records.sort((left, right) => left.id.localeCompare(right.id));
+}
+
+/** Structured validation issue for orchestrator attribute↔def agreement. */
+export type OrchestratorValidationError = {
+  code: string;
+  message: string;
+  path?: string;
+};
+
+export type ValidateOrchestratorAttributeAgreementOptions = {
+  attributeDefsPath?: string;
+  recordPath?: (record: OrchestratorRecord) => string | undefined;
+};
+
+function describeValueShape(value: OrchestratorAttributeValue): string {
+  if (typeof value === "boolean") {
+    return "boolean";
+  }
+  if (typeof value === "string") {
+    return "string";
+  }
+  return "string[]";
+}
+
+/**
+ * Assert every orchestrator attribute key exists in attribute defs and that
+ * each value matches the def type / tagEnum (registries.md).
+ */
+export function validateOrchestratorAttributeAgreement(
+  attributeDefs: readonly AttributeDef[],
+  orchestrators: readonly OrchestratorRecord[],
+  options: ValidateOrchestratorAttributeAgreementOptions = {},
+): OrchestratorValidationError[] {
+  const errors: OrchestratorValidationError[] = [];
+  const defsById = new Map(attributeDefs.map((def) => [def.id, def]));
+
+  for (const def of attributeDefs) {
+    if (def.type !== "single-tag" && def.type !== "multi-tag") {
+      continue;
+    }
+    if (def.tagEnum === undefined || def.tagEnum.length === 0) {
+      errors.push({
+        code: "orchestrator-attribute-def-missing-tag-enum",
+        message: `AttributeDef "${def.id}" of type "${def.type}" requires a non-empty tagEnum`,
+        path: options.attributeDefsPath,
+      });
+    }
+  }
+
+  for (const record of orchestrators) {
+    const path = options.recordPath?.(record);
+    for (const [attributeId, value] of Object.entries(record.attributes)) {
+      const def = defsById.get(attributeId);
+      if (!def) {
+        errors.push({
+          code: "unknown-orchestrator-attribute",
+          message: `${record.id}: attributes key "${attributeId}" is not defined in attribute-defs`,
+          path,
+        });
+        continue;
+      }
+
+      switch (def.type) {
+        case "boolean": {
+          if (typeof value !== "boolean") {
+            errors.push({
+              code: "orchestrator-attribute-type-mismatch",
+              message: `${record.id}: attribute "${attributeId}" expects boolean, got ${describeValueShape(value)}`,
+              path,
+            });
+          }
+          break;
+        }
+        case "string": {
+          if (typeof value !== "string") {
+            errors.push({
+              code: "orchestrator-attribute-type-mismatch",
+              message: `${record.id}: attribute "${attributeId}" expects string, got ${describeValueShape(value)}`,
+              path,
+            });
+          }
+          break;
+        }
+        case "single-tag": {
+          if (typeof value !== "string") {
+            errors.push({
+              code: "orchestrator-attribute-type-mismatch",
+              message: `${record.id}: attribute "${attributeId}" expects single-tag string, got ${describeValueShape(value)}`,
+              path,
+            });
+            break;
+          }
+          if (def.tagEnum && !def.tagEnum.includes(value)) {
+            errors.push({
+              code: "orchestrator-attribute-tag-out-of-enum",
+              message: `${record.id}: attribute "${attributeId}" value "${value}" is outside tagEnum [${def.tagEnum.join(", ")}]`,
+              path,
+            });
+          }
+          break;
+        }
+        case "multi-tag": {
+          if (!Array.isArray(value)) {
+            errors.push({
+              code: "orchestrator-attribute-type-mismatch",
+              message: `${record.id}: attribute "${attributeId}" expects multi-tag string[], got ${describeValueShape(value)}`,
+              path,
+            });
+            break;
+          }
+          if (!def.tagEnum || def.tagEnum.length === 0) {
+            break;
+          }
+          for (const tag of value) {
+            if (!def.tagEnum.includes(tag)) {
+              errors.push({
+                code: "orchestrator-attribute-tag-out-of-enum",
+                message: `${record.id}: attribute "${attributeId}" tag "${tag}" is outside tagEnum [${def.tagEnum.join(", ")}]`,
+                path,
+              });
+            }
+          }
+          break;
+        }
+        default: {
+          const _exhaustive: never = def.type;
+          throw new Error(`Unexpected attribute type: ${String(_exhaustive)}`);
+        }
+      }
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Load the orchestrators registry directory and validate attribute type/value
+ * agreement. Missing directory is a no-op (same pattern as table registry).
+ * Load/parse failures become validation errors instead of thrown exceptions.
+ */
+export function validateOrchestratorsRegistry(
+  orchestratorsRoot = getOrchestratorsRegistryRoot(),
+): OrchestratorValidationError[] {
+  if (!existsSync(orchestratorsRoot)) {
+    return [];
+  }
+
+  let attributeDefs: AttributeDef[];
+  let orchestrators: OrchestratorRecord[];
+  try {
+    attributeDefs = listAttributeDefs(orchestratorsRoot);
+    orchestrators = listOrchestrators(orchestratorsRoot);
+  } catch (error) {
+    if (error instanceof OrchestratorRegistryLoadError) {
+      return [
+        {
+          code: "orchestrator-registry-load-error",
+          message: error.message,
+          path: error.path,
+        },
+      ];
+    }
+    throw error;
+  }
+
+  return validateOrchestratorAttributeAgreement(attributeDefs, orchestrators, {
+    attributeDefsPath: join(orchestratorsRoot, ATTRIBUTE_DEFS_FILE_NAME),
+    recordPath: (record) => join(orchestratorsRoot, `${record.id}.json`),
+  });
 }

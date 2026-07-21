@@ -8,6 +8,7 @@ import {
 } from "@/lib/i18n/locale-routing";
 import { tagPageHref } from "./content-hrefs";
 import { CONTENT_ROOT, DOCS_ROOT } from "./content-paths";
+import { validateOrchestratorsRegistry } from "./orchestrators";
 import { assetMessageKeys, loadPageAssets } from "./page-assets-load";
 import {
   getMessageString,
@@ -1104,7 +1105,11 @@ export async function validateRegistryContent(
     return registryErrors;
   }
 
-  const errors = [...registryErrors, ...tableRegistry.errors];
+  const errors = [
+    ...registryErrors,
+    ...tableRegistry.errors,
+    ...validateOrchestratorsRegistry(join(registryRoot, "orchestrators")),
+  ];
 
   const pagePaths = await discoverPageMdxFiles(docsRoot);
   const validatedPageDirectories = new Set<string>();
