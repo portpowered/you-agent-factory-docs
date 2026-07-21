@@ -2,9 +2,9 @@
  * Events-page SchemaDefinition adapter.
  *
  * Dedupes field rows by path, omits redundant path labels that equal the leaf
- * name, and suppresses verbose OpenAPI pointer-path chrome so each catalog
- * field stays scannable. Shared W07 defaults for non-events reference pages
- * stay unchanged.
+ * name, and keeps OpenAPI pointer-path chrome suppressed so each catalog field
+ * stays scannable. Shared schema defaults already hide pointer-path chrome;
+ * this adapter still passes `showPointerPathChrome={false}` explicitly.
  */
 
 import {

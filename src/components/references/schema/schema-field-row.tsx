@@ -55,9 +55,9 @@ export type SchemaFieldRowProps = {
    */
   showFieldPathWhenDistinct?: boolean;
   /**
-   * When false, hide visible OpenAPI pointer breadcrumbs and compact `$ref`
-   * labels to the leaf schema name while keeping copyable deep links. Default
-   * true preserves shared schema chrome.
+   * When true, show full OpenAPI pointer breadcrumbs and full-pointer `$ref`
+   * labels. Default false prefers the leaf field name and a compact `$ref`
+   * label while keeping copyable deep links.
    */
   showPointerPathChrome?: boolean;
   /** Nested field tree rendered when expanded. */
@@ -74,7 +74,7 @@ export function SchemaFieldRow({
   pagePath,
   showAnchorCopy = true,
   showFieldPathWhenDistinct = false,
-  showPointerPathChrome = true,
+  showPointerPathChrome = false,
   children,
   className,
   "data-testid": testId = "schema-field-row",

@@ -168,8 +168,11 @@ describe("SchemaFieldTree", () => {
 
     expect(screen.getByText("$ref →")).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: /schema reference: \/\$defs\/Worker/i }),
+      screen.getByRole("link", { name: /schema reference: Worker/i }),
     ).toBeTruthy();
+    expect(screen.getByTestId("schema-ref-link").textContent).toContain(
+      "Worker",
+    );
     expect(
       screen.queryByRole("button", { name: /Expand fields under worker/i }),
     ).toBeNull();
@@ -274,7 +277,7 @@ describe("SchemaFieldTree", () => {
     expect(row.querySelector("[data-schema-field-path-label]")).toBeNull();
   });
 
-  test("showPointerPathChrome false hides OpenAPI pointer breadcrumbs and compact $ref labels", () => {
+  test("default hides OpenAPI pointer breadcrumbs and uses compact $ref labels", () => {
     render(
       <SchemaFieldTree
         fields={[
@@ -288,11 +291,13 @@ describe("SchemaFieldTree", () => {
             refTarget: address("/components/schemas/FactoryEventType"),
           }),
         ]}
-        showPointerPathChrome={false}
       />,
     );
 
     const row = screen.getByTestId("schema-field-row");
+    expect(row.querySelector("[data-schema-field-name]")?.textContent).toBe(
+      "type",
+    );
     expect(
       row.querySelector('[data-schema-breadcrumb-segment="components"]'),
     ).toBeNull();
@@ -307,6 +312,42 @@ describe("SchemaFieldTree", () => {
     );
     expect(row.textContent ?? "").not.toMatch(
       /components\/schemas\/.*\/properties\//,
+    );
+  });
+
+  test("showPointerPathChrome true restores full pointer path segments and $ref labels", () => {
+    render(
+      <SchemaFieldTree
+        fields={[
+          createSchemaFieldModel({
+            path: "type",
+            typeSummary: "FactoryEventType",
+            required: true,
+            address: address(
+              "/components/schemas/FactoryEvent/properties/type",
+            ),
+            refTarget: address("/components/schemas/FactoryEventType"),
+          }),
+        ]}
+        showPointerPathChrome
+      />,
+    );
+
+    const row = screen.getByTestId("schema-field-row");
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="components"]'),
+    ).toBeTruthy();
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="properties"]'),
+    ).toBeTruthy();
+    expect(
+      row
+        .querySelector('[data-testid="schema-breadcrumb"]')
+        ?.getAttribute("data-schema-path-segments"),
+    ).toBe("true");
+    expect(row.querySelector('[data-schema-breadcrumb="copy"]')).toBeTruthy();
+    expect(row.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "/components/schemas/FactoryEventType",
     );
   });
 
