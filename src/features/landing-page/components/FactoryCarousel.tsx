@@ -5,6 +5,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -37,6 +38,9 @@ export type FactoryCarouselProps = {
 
 export type CarouselSlideDepthRole = "active" | "neighbor" | "far";
 
+/** Visual motion mode: depth stack vs static active-only (reduced motion). */
+export type CarouselMotionMode = "depth" | "static";
+
 export type CarouselSlideDepth = {
   role: CarouselSlideDepthRole;
   scale: number;
@@ -48,6 +52,7 @@ export type CarouselSlideDepth = {
 
 const NEIGHBOR_OFFSET_PERCENT = 18;
 const FAR_OFFSET_PERCENT = 28;
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
 /**
  * Pure depth layout for one slide relative to the active index.
@@ -120,7 +125,8 @@ type DragSession = {
 /**
  * Factory depth carousel: active slide in the foreground, neighbors recessed
  * via scale/opacity/z. Prev/next buttons, keyboard arrows, and pointer drag
- * change the active slide (wrapping).
+ * change the active slide (wrapping). When prefers-reduced-motion: reduce is
+ * active, only the static active slide is shown (no neighbor depth travel).
  */
 export function FactoryCarousel({
   slides,
@@ -134,7 +140,18 @@ export function FactoryCarousel({
   const [uncontrolledIndex, setUncontrolledIndex] = useState(() =>
     clampIndex(initialIndex, slides.length),
   );
+  const [reduceMotion, setReduceMotion] = useState(false);
   const dragRef = useRef<DragSession | null>(null);
+
+  useEffect(() => {
+    const media = window.matchMedia(REDUCED_MOTION_QUERY);
+    const sync = () => setReduceMotion(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  const motionMode: CarouselMotionMode = reduceMotion ? "static" : "depth";
 
   const resolvedIndex =
     slides.length === 0
@@ -226,43 +243,9 @@ export function FactoryCarousel({
   }
 
   const activeSlide = slides[resolvedIndex];
-
-  return (
-    <section
-      aria-label="Factory carousel"
-      aria-roledescription="carousel"
-      className={cn(
-        "factory-carousel relative w-full overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-        className,
-      )}
-      data-factory-carousel=""
-      data-carousel-active-index={String(resolvedIndex)}
-      onKeyDown={onKeyDown}
-      style={
-        {
-          "--landing-carousel-transition-ms": `${theme.transitionMs}ms`,
-        } as CSSProperties
-      }
-      // biome-ignore lint/a11y/noNoninteractiveTabindex: WAI-ARIA carousel keyboard surface for ArrowLeft/ArrowRight
-      tabIndex={0}
-    >
-      <div
-        aria-atomic="true"
-        aria-live="polite"
-        className="sr-only"
-        data-carousel-status=""
-      >
-        Slide {resolvedIndex + 1} of {slides.length}: {activeSlide.title}
-      </div>
-
-      <div
-        className="factory-carousel__track relative mx-auto flex min-h-[22rem] w-full max-w-3xl touch-pan-y items-center justify-center"
-        data-carousel-track=""
-        onPointerCancel={onPointerCancel}
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-      >
-        {slides.map((slide, index) => {
+  const depthSlides =
+    motionMode === "depth"
+      ? slides.map((slide, index) => {
           const depth = getCarouselSlideDepth(index, resolvedIndex, theme);
           const isActive = depth.role === "active";
           const slideStyle: CSSProperties = {
@@ -291,7 +274,59 @@ export function FactoryCarousel({
               <FactorySlide {...slide} />
             </div>
           );
-        })}
+        })
+      : null;
+
+  return (
+    <section
+      aria-label="Factory carousel"
+      aria-roledescription="carousel"
+      className={cn(
+        "factory-carousel relative w-full overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        className,
+      )}
+      data-factory-carousel=""
+      data-carousel-active-index={String(resolvedIndex)}
+      data-carousel-motion={motionMode}
+      onKeyDown={onKeyDown}
+      style={
+        {
+          "--landing-carousel-transition-ms": `${theme.transitionMs}ms`,
+        } as CSSProperties
+      }
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: WAI-ARIA carousel keyboard surface for ArrowLeft/ArrowRight
+      tabIndex={0}
+    >
+      <div
+        aria-atomic="true"
+        aria-live="polite"
+        className="sr-only"
+        data-carousel-status=""
+      >
+        Slide {resolvedIndex + 1} of {slides.length}: {activeSlide.title}
+      </div>
+
+      <div
+        className="factory-carousel__track relative mx-auto flex min-h-[22rem] w-full max-w-3xl touch-pan-y items-center justify-center"
+        data-carousel-track=""
+        onPointerCancel={onPointerCancel}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+      >
+        {motionMode === "static" ? (
+          <div
+            key={activeSlide.id}
+            className="factory-carousel__slide relative mx-auto w-[min(100%,28rem)] px-4 select-none"
+            data-active="true"
+            data-carousel-depth="active"
+            data-carousel-slide={activeSlide.id}
+            data-carousel-slide-index={String(resolvedIndex)}
+          >
+            <FactorySlide {...activeSlide} />
+          </div>
+        ) : (
+          depthSlides
+        )}
       </div>
 
       <div

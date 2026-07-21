@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { landingPageTheme } from "@/features/landing-page/landing-page.theme";
 import {
@@ -35,6 +41,24 @@ const fixtureSlides: FactorySlideData[] = [
     command: "you docs agents",
   },
 ];
+
+function mockPrefersReducedMotion(reduce: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: reduce && query.includes("prefers-reduced-motion: reduce"),
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
+const originalMatchMedia = window.matchMedia;
 
 function slideEl(id: string): HTMLElement {
   const el = document.querySelector(
@@ -87,6 +111,10 @@ describe("getCarouselSlideDepth", () => {
 describe("FactoryCarousel", () => {
   afterEach(() => {
     cleanup();
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: originalMatchMedia,
+    });
   });
 
   test("renders a stable empty state for slides: []", () => {
@@ -100,6 +128,7 @@ describe("FactoryCarousel", () => {
   });
 
   test("composes FactorySlide content for each slide", () => {
+    mockPrefersReducedMotion(false);
     render(<FactoryCarousel slides={fixtureSlides} />);
 
     expect(screen.getByText("Install")).toBeTruthy();
@@ -115,8 +144,17 @@ describe("FactoryCarousel", () => {
     );
   });
 
-  test("active slide is primary; neighbors show depth scale/opacity/z", () => {
+  test("active slide is primary; neighbors show depth scale/opacity/z", async () => {
+    mockPrefersReducedMotion(false);
     render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
+
+    await waitFor(() => {
+      expect(
+        document
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("depth");
+    });
 
     const active = slideEl("slide-loop");
     const neighborLeft = slideEl("slide-install");
@@ -157,10 +195,80 @@ describe("FactoryCarousel", () => {
     );
   });
 
-  test("changing activeIndex updates which slide is primary without remounting", () => {
+  test("prefers-reduced-motion: reduce shows only the static active slide", async () => {
+    mockPrefersReducedMotion(true);
+    render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
+
+    await waitFor(() => {
+      expect(
+        document
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("static");
+    });
+
+    const slides = document.querySelectorAll("[data-carousel-slide]");
+    expect(slides.length).toBe(1);
+    expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
+    expect(slideEl("slide-loop").getAttribute("data-carousel-depth")).toBe(
+      "active",
+    );
+    expect(
+      document.querySelector('[data-carousel-slide="slide-install"]'),
+    ).toBeNull();
+    expect(slideEl("slide-loop").style.transform).toBe("");
+    expect(
+      document.querySelectorAll("[data-carousel-depth='neighbor']").length,
+    ).toBe(0);
+    expect(screen.getByText("Loop")).toBeTruthy();
+    expect(screen.queryByText("Install")).toBeNull();
+  });
+
+  test("reduced-motion path still advances via buttons and keyboard", async () => {
+    mockPrefersReducedMotion(true);
+    const user = userEvent.setup();
+    render(<FactoryCarousel slides={fixtureSlides} initialIndex={0} />);
+
+    await waitFor(() => {
+      expect(
+        document
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("static");
+    });
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    expect(root.getAttribute("data-carousel-active-index")).toBe("0");
+    expect(slideEl("slide-install").getAttribute("data-active")).toBe("true");
+
+    await user.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(root.getAttribute("data-carousel-active-index")).toBe("1");
+    expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
+    expect(document.querySelectorAll("[data-carousel-slide]").length).toBe(1);
+
+    root.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(root.getAttribute("data-carousel-active-index")).toBe("2");
+    expect(slideEl("slide-worktree").getAttribute("data-active")).toBe("true");
+
+    await user.click(screen.getByRole("button", { name: "Previous slide" }));
+    expect(root.getAttribute("data-carousel-active-index")).toBe("1");
+    expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
+  });
+
+  test("changing activeIndex updates which slide is primary without remounting", async () => {
+    mockPrefersReducedMotion(false);
     const { rerender, container } = render(
       <FactoryCarousel slides={fixtureSlides} activeIndex={0} />,
     );
+
+    await waitFor(() => {
+      expect(
+        container
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("depth");
+    });
 
     const root = container.querySelector("[data-factory-carousel]");
     expect(root?.getAttribute("data-carousel-active-index")).toBe("0");
@@ -181,6 +289,7 @@ describe("FactoryCarousel", () => {
   });
 
   test("next and previous buttons change which slide is active and wrap", async () => {
+    mockPrefersReducedMotion(false);
     const user = userEvent.setup();
     render(<FactoryCarousel slides={fixtureSlides} initialIndex={0} />);
 
@@ -203,6 +312,7 @@ describe("FactoryCarousel", () => {
   });
 
   test("ArrowLeft and ArrowRight on the focused carousel change the active slide", async () => {
+    mockPrefersReducedMotion(false);
     const user = userEvent.setup();
     render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
 
@@ -221,6 +331,7 @@ describe("FactoryCarousel", () => {
   });
 
   test("pointer drag past threshold changes the active slide", () => {
+    mockPrefersReducedMotion(false);
     render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
 
     const track = document.querySelector(
@@ -257,6 +368,7 @@ describe("FactoryCarousel", () => {
   });
 
   test("exposes carousel semantics and labeled prev/next controls", () => {
+    mockPrefersReducedMotion(false);
     render(<FactoryCarousel slides={fixtureSlides} />);
 
     const root = screen.getByRole("region", { name: "Factory carousel" });
