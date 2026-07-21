@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { RootDocument, siteMetadata } from "@/app/root-layout.shared";
 import { RouteLocaleEffect } from "@/components/i18n/RouteLocaleEffect";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { AppProviders } from "@/components/providers/app-providers";
+import { AppProviders } from "@/features/providers/app-providers";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   generateStaticLocaleParams,
