@@ -17,7 +17,7 @@ import {
   JavaScriptRuntimeInventory,
   type JavaScriptRuntimeInventoryInput,
   JavaScriptRuntimeInventoryProvider,
-} from "@/components/references/javascript";
+} from "@/features/references/javascript";
 import { loadJavascriptRuntimeReferenceInventory } from "@/lib/references/load-javascript-runtime-reference-inventory";
 
 export type JavascriptRuntimeReferenceInventoryProps = {

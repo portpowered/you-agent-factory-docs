@@ -6,12 +6,12 @@
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render } from "@testing-library/react";
-import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
-import type { ApiOperationDetail } from "@/components/references/api/operation-detail";
-import type { ApiOperationNavModel } from "@/components/references/api/operation-navigation";
-import { EventPayloadVariant } from "@/components/references/events";
-import { focusReferenceHashTarget as focusProductionHashTarget } from "@/components/references/shared/ReferenceHashNavigation";
 import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+import { ApiNavigationVerificationHarness } from "@/features/references/api/api-navigation-verification-harness";
+import type { ApiOperationDetail } from "@/features/references/api/operation-detail";
+import type { ApiOperationNavModel } from "@/features/references/api/operation-navigation";
+import { EventPayloadVariant } from "@/features/references/events";
+import { focusReferenceHashTarget as focusProductionHashTarget } from "@/features/references/shared/ReferenceHashNavigation";
 import {
   buildFactoryEventCatalog,
   resolveEventCorpus,

@@ -8,7 +8,7 @@
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render } from "@testing-library/react";
-import { focusReferenceHashTarget } from "@/components/references/shared";
+import { focusReferenceHashTarget } from "@/features/references/shared";
 import { EventsCorpusMount } from "./EventsCorpusMount";
 
 const EVENTS_PAGE_PATH = "/docs/references/events";

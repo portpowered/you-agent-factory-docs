@@ -34,7 +34,7 @@ import {
   ApiReferenceHashController,
   ApiSurface,
   loadApiOpenApiSinglePageProjection,
-} from "@/components/references/api";
+} from "@/features/references/api";
 import "@/features/docs/styles/references-api-accents.css";
 import "@/features/docs/styles/references-api-print.css";
 import { cn } from "@/lib/utils";

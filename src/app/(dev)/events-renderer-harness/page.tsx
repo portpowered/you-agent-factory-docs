@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { eventStreamOperationSummaryModelsFromCorpus } from "@/components/references/events/event-stream-display";
-import { EventsVerificationHarness } from "@/components/references/events/events-verification-harness";
+import { eventStreamOperationSummaryModelsFromCorpus } from "@/features/references/events/event-stream-display";
+import { EventsVerificationHarness } from "@/features/references/events/events-verification-harness";
 import {
   buildEventReconnectLifecycleCorpus,
   buildFactoryEventCatalog,

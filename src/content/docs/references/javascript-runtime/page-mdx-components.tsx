@@ -7,7 +7,7 @@ import {
   JavaScriptRuntimeInventoryChrome,
   JavaScriptRuntimeSharedSchemasList,
   JavaScriptRuntimeSymbolsList,
-} from "@/components/references/javascript";
+} from "@/features/references/javascript";
 import { JavascriptRuntimeOverallExample } from "./JavascriptRuntimeOverallExample";
 import { JavascriptRuntimeReferenceInventory } from "./JavascriptRuntimeReferenceInventory";
 import { JavascriptSymbolMetadataGlossary } from "./JavascriptSymbolMetadataGlossary";

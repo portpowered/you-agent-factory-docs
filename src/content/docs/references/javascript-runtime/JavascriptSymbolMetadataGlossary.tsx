@@ -8,7 +8,7 @@
  * from page messages via the surrounding MDX `<T />`.
  */
 
-import { JAVASCRIPT_SYMBOL_METADATA_GLOSSARY_TERMS } from "@/components/references/javascript/javascript-symbol-metadata-glossary";
+import { JAVASCRIPT_SYMBOL_METADATA_GLOSSARY_TERMS } from "@/features/references/javascript/javascript-symbol-metadata-glossary";
 
 /**
  * Renders the visible symbol-metadata glossary definition list used by

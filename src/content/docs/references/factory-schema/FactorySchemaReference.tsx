@@ -3,7 +3,7 @@
  *
  * Resolves the W03 `schemas/factory` public subpath into a W04 model and mounts
  * the public W07 SchemaReference surface. Ownership stays page-local — do not
- * edit renderer internals under `src/components/references/schema/`.
+ * edit renderer internals under `src/features/references/schema/`.
  *
  * Catalog splay is Factory-page opt-in (`showCatalog`): sibling you-config /
  * mock-workers mounts keep `showCatalog={false}`. The published Factory package
@@ -15,8 +15,8 @@
  * sibling-schema default and not a live Factory host fetch.
  */
 
-import { SchemaReference } from "@/components/references/schema";
-import { ReferenceHashNavigation } from "@/components/references/shared";
+import { SchemaReference } from "@/features/references/schema";
+import { ReferenceHashNavigation } from "@/features/references/shared";
 import {
   loadSchemaVerificationPackageModel,
   type SchemaVerificationPackageModel,

@@ -370,8 +370,8 @@ export const W20_PLAN_SECTION_11_COMPONENT_OWNERSHIP = [
     name: "OpenApiContractLoader",
     planSection: "11.1",
     owner: "W03",
-    implementation: "src/components/references/api/load-openapi-artifact.ts",
-    testSurface: "src/components/references/api/single-page-projection.test.ts",
+    implementation: "src/features/references/api/load-openapi-artifact.ts",
+    testSurface: "src/features/references/api/single-page-projection.test.ts",
   },
   {
     name: "JsonSchemaContractLoader",
@@ -442,177 +442,174 @@ export const W20_PLAN_SECTION_11_COMPONENT_OWNERSHIP = [
     name: "SchemaReference",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-reference.tsx",
-    testSurface: "src/components/references/schema/schema-reference.test.tsx",
+    implementation: "src/features/references/schema/schema-reference.tsx",
+    testSurface: "src/features/references/schema/schema-reference.test.tsx",
   },
   {
     name: "SchemaVariantReference",
     planSection: "11.3",
     owner: "W07",
     implementation:
-      "src/components/references/schema/schema-variant-reference.tsx",
+      "src/features/references/schema/schema-variant-reference.tsx",
     testSurface:
-      "src/components/references/schema/schema-variant-reference.test.tsx",
+      "src/features/references/schema/schema-variant-reference.test.tsx",
   },
   {
     name: "SchemaDefinition",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-definition.tsx",
-    testSurface: "src/components/references/schema/schema-definition.test.tsx",
+    implementation: "src/features/references/schema/schema-definition.tsx",
+    testSurface: "src/features/references/schema/schema-definition.test.tsx",
   },
   {
     name: "SchemaFieldTree",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-field-tree.tsx",
-    testSurface: "src/components/references/schema/schema-field-tree.test.tsx",
+    implementation: "src/features/references/schema/schema-field-tree.tsx",
+    testSurface: "src/features/references/schema/schema-field-tree.test.tsx",
   },
   {
     name: "SchemaFieldRow",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-field-row.tsx",
+    implementation: "src/features/references/schema/schema-field-row.tsx",
     testSurface:
-      "src/components/references/schema/schema-field-metadata.test.tsx",
+      "src/features/references/schema/schema-field-metadata.test.tsx",
   },
   {
     name: "SchemaTypeBadge",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-type-badge.tsx",
+    implementation: "src/features/references/schema/schema-type-badge.tsx",
     testSurface:
-      "src/components/references/schema/schema-field-metadata.test.tsx",
+      "src/features/references/schema/schema-field-metadata.test.tsx",
   },
   {
     name: "SchemaRequiredBadge",
     planSection: "11.3",
     owner: "W07",
-    implementation:
-      "src/components/references/schema/schema-required-badge.tsx",
+    implementation: "src/features/references/schema/schema-required-badge.tsx",
     testSurface:
-      "src/components/references/schema/schema-field-metadata.test.tsx",
+      "src/features/references/schema/schema-field-metadata.test.tsx",
   },
   {
     name: "SchemaConstraintList",
     planSection: "11.3",
     owner: "W07",
-    implementation:
-      "src/components/references/schema/schema-constraint-list.tsx",
+    implementation: "src/features/references/schema/schema-constraint-list.tsx",
     testSurface:
-      "src/components/references/schema/schema-field-metadata.test.tsx",
+      "src/features/references/schema/schema-field-metadata.test.tsx",
   },
   {
     name: "SchemaDefaultValue",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-default-value.tsx",
+    implementation: "src/features/references/schema/schema-default-value.tsx",
     testSurface:
-      "src/components/references/schema/schema-field-metadata.test.tsx",
+      "src/features/references/schema/schema-field-metadata.test.tsx",
   },
   {
     name: "SchemaComposition",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-composition.tsx",
-    testSurface: "src/components/references/schema/schema-composition.test.tsx",
+    implementation: "src/features/references/schema/schema-composition.tsx",
+    testSurface: "src/features/references/schema/schema-composition.test.tsx",
   },
   {
     name: "SchemaRefLink",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-ref-link.tsx",
-    testSurface: "src/components/references/schema/schema-definition.test.tsx",
+    implementation: "src/features/references/schema/schema-ref-link.tsx",
+    testSurface: "src/features/references/schema/schema-definition.test.tsx",
   },
   {
     name: "SchemaExamplePanel",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-example-panel.tsx",
-    testSurface:
-      "src/components/references/schema/schema-example-panel.test.tsx",
+    implementation: "src/features/references/schema/schema-example-panel.tsx",
+    testSurface: "src/features/references/schema/schema-example-panel.test.tsx",
   },
   {
     name: "SchemaBreadcrumb",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-breadcrumb.tsx",
-    testSurface: "src/components/references/schema/schema-surface.test.tsx",
+    implementation: "src/features/references/schema/schema-breadcrumb.tsx",
+    testSurface: "src/features/references/schema/schema-surface.test.tsx",
   },
   {
     name: "SchemaFilter",
     planSection: "11.3",
     owner: "W07",
-    implementation: "src/components/references/schema/schema-filter.tsx",
-    testSurface: "src/components/references/schema/schema-filter.test.tsx",
+    implementation: "src/features/references/schema/schema-filter.tsx",
+    testSurface: "src/features/references/schema/schema-filter.test.tsx",
   },
   // 11.4 Unified API UI
   {
     name: "ApiReferencePage",
     planSection: "11.4",
     owner: "W08",
-    implementation: "src/components/references/api/api-surface.tsx",
-    testSurface: "src/components/references/api/api-surface.test.tsx",
+    implementation: "src/features/references/api/api-surface.tsx",
+    testSurface: "src/features/references/api/api-surface.test.tsx",
   },
   {
     name: "ApiOperationNavigator",
     planSection: "11.4",
     owner: "W08",
-    implementation: "src/components/references/api/api-operation-navigator.tsx",
+    implementation: "src/features/references/api/api-operation-navigator.tsx",
     testSurface:
-      "src/components/references/api/api-operation-navigation.test.tsx",
+      "src/features/references/api/api-operation-navigation.test.tsx",
   },
   {
     name: "ApiOperationSection",
     planSection: "11.4",
     owner: "W08",
-    implementation: "src/components/references/api/api-operation-section.tsx",
-    testSurface: "src/components/references/api/api-operation-section.test.tsx",
+    implementation: "src/features/references/api/api-operation-section.tsx",
+    testSurface: "src/features/references/api/api-operation-section.test.tsx",
   },
   {
     name: "ApiMethodBadge",
     planSection: "11.4",
     owner: "W08",
-    implementation: "src/components/references/api/api-method-badge.tsx",
-    testSurface: "src/components/references/api/api-operation-section.test.tsx",
+    implementation: "src/features/references/api/api-method-badge.tsx",
+    testSurface: "src/features/references/api/api-operation-section.test.tsx",
   },
   {
     name: "ApiExamplePanel",
     planSection: "11.4",
     owner: "W08",
-    implementation: "src/components/references/api/api-operation-examples.tsx",
-    testSurface: "src/components/references/api/api-theme-code-copy.test.tsx",
+    implementation: "src/features/references/api/api-operation-examples.tsx",
+    testSurface: "src/features/references/api/api-theme-code-copy.test.tsx",
   },
   {
     name: "ApiResponseMediaType",
     planSection: "11.4",
     owner: "W08",
-    implementation: "src/components/references/api/api-response-media-type.tsx",
-    testSurface: "src/components/references/api/api-operation-section.test.tsx",
+    implementation: "src/features/references/api/api-response-media-type.tsx",
+    testSurface: "src/features/references/api/api-operation-section.test.tsx",
   },
   {
     name: "ApiSchemaLink",
     planSection: "11.4",
     owner: "W08",
-    implementation: "src/components/references/api/api-operation-section.tsx",
-    testSurface: "src/components/references/api/api-operation-anchors.test.tsx",
+    implementation: "src/features/references/api/api-operation-section.tsx",
+    testSurface: "src/features/references/api/api-operation-anchors.test.tsx",
   },
   {
     name: "ApiReferenceMobileNavigator",
     planSection: "11.4",
     owner: "W08",
     implementation:
-      "src/components/references/api/api-reference-mobile-navigator.tsx",
+      "src/features/references/api/api-reference-mobile-navigator.tsx",
     testSurface:
-      "src/components/references/api/api-operation-navigation.test.tsx",
+      "src/features/references/api/api-operation-navigation.test.tsx",
   },
   {
     name: "ApiReferenceHashController",
     planSection: "11.4",
     owner: "W08",
     implementation:
-      "src/components/references/api/api-reference-hash-controller.tsx",
-    testSurface: "src/components/references/api/api-operation-anchors.test.tsx",
+      "src/features/references/api/api-reference-hash-controller.tsx",
+    testSurface: "src/features/references/api/api-operation-anchors.test.tsx",
   },
   // 11.5 Event-stream UI
   {
@@ -620,98 +617,93 @@ export const W20_PLAN_SECTION_11_COMPONENT_OWNERSHIP = [
     planSection: "11.5",
     owner: "W09",
     implementation:
-      "src/components/references/events/event-stream-operation-summary.tsx",
+      "src/features/references/events/event-stream-operation-summary.tsx",
     testSurface:
-      "src/components/references/events/event-stream-operations.test.tsx",
+      "src/features/references/events/event-stream-operations.test.tsx",
   },
   {
     name: "EventStreamLifecycle",
     planSection: "11.5",
     owner: "W09",
-    implementation:
-      "src/components/references/events/event-stream-lifecycle.tsx",
+    implementation: "src/features/references/events/event-stream-lifecycle.tsx",
     testSurface:
-      "src/components/references/events/event-reconnect-lifecycle.test.tsx",
+      "src/features/references/events/event-reconnect-lifecycle.test.tsx",
   },
   {
     name: "EventReconnectContract",
     planSection: "11.5",
     owner: "W09",
     implementation:
-      "src/components/references/events/event-reconnect-contract.tsx",
+      "src/features/references/events/event-reconnect-contract.tsx",
     testSurface:
-      "src/components/references/events/event-reconnect-lifecycle.test.tsx",
+      "src/features/references/events/event-reconnect-lifecycle.test.tsx",
   },
   {
     name: "EventIdentityHandshake",
     planSection: "11.5",
     owner: "W09",
     implementation:
-      "src/components/references/events/event-identity-handshake.tsx",
+      "src/features/references/events/event-identity-handshake.tsx",
     testSurface:
-      "src/components/references/events/event-reconnect-lifecycle.test.tsx",
+      "src/features/references/events/event-reconnect-lifecycle.test.tsx",
   },
   {
     name: "SseFrameExample",
     planSection: "11.5",
     owner: "W09",
-    implementation: "src/components/references/events/sse-frame-example.tsx",
-    testSurface:
-      "src/components/references/events/sse-static-examples.test.tsx",
+    implementation: "src/features/references/events/sse-frame-example.tsx",
+    testSurface: "src/features/references/events/sse-static-examples.test.tsx",
   },
   {
     name: "EventEnvelopeReference",
     planSection: "11.5",
     owner: "W09",
     implementation:
-      "src/components/references/events/event-envelope-reference.tsx",
+      "src/features/references/events/event-envelope-reference.tsx",
     testSurface:
-      "src/components/references/events/factory-event-catalog.test.tsx",
+      "src/features/references/events/factory-event-catalog.test.tsx",
   },
   {
     name: "EventPayloadCatalog",
     planSection: "11.5",
     owner: "W09",
-    implementation:
-      "src/components/references/events/event-payload-catalog.tsx",
+    implementation: "src/features/references/events/event-payload-catalog.tsx",
     testSurface:
-      "src/components/references/events/factory-event-catalog.test.tsx",
+      "src/features/references/events/factory-event-catalog.test.tsx",
   },
   {
     name: "EventPayloadVariant",
     planSection: "11.5",
     owner: "W09",
-    implementation:
-      "src/components/references/events/event-payload-variant.tsx",
+    implementation: "src/features/references/events/event-payload-variant.tsx",
     testSurface:
-      "src/components/references/events/factory-event-catalog.test.tsx",
+      "src/features/references/events/factory-event-catalog.test.tsx",
   },
   {
     name: "EventDiscriminatorMap",
     planSection: "11.5",
     owner: "W09",
     implementation:
-      "src/components/references/events/event-discriminator-map.tsx",
+      "src/features/references/events/event-discriminator-map.tsx",
     testSurface:
-      "src/components/references/events/factory-event-catalog.test.tsx",
+      "src/features/references/events/factory-event-catalog.test.tsx",
   },
   {
     name: "ResponseEventMatrix",
     planSection: "11.5",
     owner: "W09",
-    implementation:
-      "src/components/references/events/response-event-matrix.tsx",
+    implementation: "src/features/references/events/response-event-matrix.tsx",
     testSurface:
-      "src/components/references/events/factory-response-event-catalog.test.tsx",
+      "src/features/references/events/factory-response-event-catalog.test.tsx",
   },
   {
     name: "EventCanonicalityBadge",
     planSection: "11.5",
     owner: "W09",
     implementation:
-      "src/components/references/events/event-canonicality-badge.tsx",
+      "src/features/references/events/event-canonicality-badge.tsx",
     testSurface:
-      "src/components/references/events/event-stream-operations.test.tsx",
+      "src/features/references/events/event-stream-operations.test.tsx",
   },
   // 11.6 Family-specific reference UI
   {
@@ -727,52 +719,52 @@ export const W20_PLAN_SECTION_11_COMPONENT_OWNERSHIP = [
     name: "McpToolReference",
     planSection: "11.6",
     owner: "W10",
-    implementation: "src/components/references/mcp/McpToolReference.tsx",
-    testSurface: "src/components/references/mcp/mcp-tool-reference.test.tsx",
+    implementation: "src/features/references/mcp/McpToolReference.tsx",
+    testSurface: "src/features/references/mcp/mcp-tool-reference.test.tsx",
   },
   {
     name: "CliCommandReference",
     planSection: "11.6",
     owner: "W10",
-    implementation: "src/components/references/cli/CliCommandReference.tsx",
-    testSurface: "src/components/references/cli/cli-command-reference.test.tsx",
+    implementation: "src/features/references/cli/CliCommandReference.tsx",
+    testSurface: "src/features/references/cli/cli-command-reference.test.tsx",
   },
   {
     name: "CliCapabilityNotice",
     planSection: "11.6",
     owner: "W10",
-    implementation: "src/components/references/cli/CliCapabilityNotice.tsx",
-    testSurface: "src/components/references/cli/cli-command-reference.test.tsx",
+    implementation: "src/features/references/cli/CliCapabilityNotice.tsx",
+    testSurface: "src/features/references/cli/cli-command-reference.test.tsx",
   },
   {
     name: "JavaScriptSymbolReference",
     planSection: "11.6",
     owner: "W10",
     implementation:
-      "src/components/references/javascript/JavaScriptSymbolReference.tsx",
+      "src/features/references/javascript/JavaScriptSymbolReference.tsx",
     testSurface:
-      "src/components/references/javascript/javascript-symbol-reference.test.tsx",
+      "src/features/references/javascript/javascript-symbol-reference.test.tsx",
   },
   {
     name: "ContractSourceBadge",
     planSection: "11.6",
     owner: "W10",
-    implementation: "src/components/references/shared/ContractSourceBadge.tsx",
-    testSurface: "src/components/references/shared/reference-chrome.test.tsx",
+    implementation: "src/features/references/shared/ContractSourceBadge.tsx",
+    testSurface: "src/features/references/shared/reference-chrome.test.tsx",
   },
   {
     name: "ReferenceEmptyState",
     planSection: "11.6",
     owner: "W10",
-    implementation: "src/components/references/shared/ReferenceEmptyState.tsx",
-    testSurface: "src/components/references/shared/reference-chrome.test.tsx",
+    implementation: "src/features/references/shared/ReferenceEmptyState.tsx",
+    testSurface: "src/features/references/shared/reference-chrome.test.tsx",
   },
   {
     name: "ReferenceErrorState",
     planSection: "11.6",
     owner: "W10",
-    implementation: "src/components/references/shared/ReferenceErrorState.tsx",
-    testSurface: "src/components/references/shared/reference-chrome.test.tsx",
+    implementation: "src/features/references/shared/ReferenceErrorState.tsx",
+    testSurface: "src/features/references/shared/reference-chrome.test.tsx",
   },
   // 11.7 Variant overlay infrastructure
   {
@@ -816,9 +808,9 @@ export const W20_PLAN_SECTION_11_COMPONENT_OWNERSHIP = [
     planSection: "11.7",
     owner: "W06",
     implementation:
-      "src/components/references/schema/schema-variant-reference.tsx",
+      "src/features/references/schema/schema-variant-reference.tsx",
     testSurface:
-      "src/components/references/schema/schema-variant-reference.test.tsx",
+      "src/features/references/schema/schema-variant-reference.test.tsx",
   },
   // 11.8 Existing shared components to reuse (site / package wrappers)
   {

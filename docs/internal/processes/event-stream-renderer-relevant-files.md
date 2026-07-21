@@ -5,12 +5,12 @@ event-corpus renderer for the locked W02 hybrid placement.
 
 ## Ownership fence
 
-W09 owns the production events UI under `src/components/references/events/`
+W09 owns the production events UI under `src/features/references/events/`
 plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 
 - reopen integrated vs separate vs hybrid placement (W02 gate selected hybrid)
 - ship W02 spike routes (`/spikes/sse-*`) as the production events experience
-- edit `src/components/references/api/` (W08), `src/components/references/schema/`
+- edit `src/features/references/api/` (W08), `src/features/references/schema/`
   (W07), overlay validators (W06), or CLI/MCP/JS family dirs (W10)
 - own final `/docs/references/events` MDX page/nav/search inventories (W11+)
 - permanently pin `@fumadocs/asyncapi` without a measured production need
@@ -30,11 +30,11 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/events/index.ts` | Public barrel for the W09 events UI ownership surface |
-| `src/components/references/events/types.ts` | Status vocabulary (`loading` / `empty` / `error` / `success`) |
-| `src/components/references/events/events-status.tsx` | Accessible loading/empty/error status messaging |
-| `src/components/references/events/events-surface.tsx` | Boundary that short-circuits non-success statuses or renders success children with hybrid ownership markers |
-| `src/components/references/events/events-surface.test.tsx` | Status semantics + ownership marker proofs |
+| `src/features/references/events/index.ts` | Public barrel for the W09 events UI ownership surface |
+| `src/features/references/events/types.ts` | Status vocabulary (`loading` / `empty` / `error` / `success`) |
+| `src/features/references/events/events-status.tsx` | Accessible loading/empty/error status messaging |
+| `src/features/references/events/events-surface.tsx` | Boundary that short-circuits non-success statuses or renders success children with hybrid ownership markers |
+| `src/features/references/events/events-surface.test.tsx` | Status semantics + ownership marker proofs |
 | `src/lib/references/events/index.ts` | Public barrel for W09 events lib helpers |
 | `src/lib/references/events/stream-operations.ts` | Production SSE operation inventory + roles (migrated from W02 spike) |
 | `src/lib/references/events/hybrid-placement.ts` | Locked hybrid placement + ownership split constants |
@@ -60,13 +60,13 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/events/event-stream-display.ts` | Pure canonicality + summary model helpers (`eventCanonicalityPresentationForRole`, `eventStreamOperationSummaryModelsFromCorpus`) |
-| `src/components/references/events/event-canonicality-badge.tsx` | Accessible role badge: Canonical/Ephemeral/Compatibility-only + Preferred/Not preferred (+ Non-canonical / Not canonical replay) |
-| `src/components/references/events/event-stream-operation-summary.tsx` | One stream summary: path/method, payload root, catalog deep link, role notices |
-| `src/components/references/events/event-stream-operations-list.tsx` | Ordered list (canonical → ephemeral → compatibility-only) |
-| `src/components/references/events/events-verification-harness.tsx` | Non-production harness chrome for browser / RTL proofs |
+| `src/features/references/events/event-stream-display.ts` | Pure canonicality + summary model helpers (`eventCanonicalityPresentationForRole`, `eventStreamOperationSummaryModelsFromCorpus`) |
+| `src/features/references/events/event-canonicality-badge.tsx` | Accessible role badge: Canonical/Ephemeral/Compatibility-only + Preferred/Not preferred (+ Non-canonical / Not canonical replay) |
+| `src/features/references/events/event-stream-operation-summary.tsx` | One stream summary: path/method, payload root, catalog deep link, role notices |
+| `src/features/references/events/event-stream-operations-list.tsx` | Ordered list (canonical → ephemeral → compatibility-only) |
+| `src/features/references/events/events-verification-harness.tsx` | Non-production harness chrome for browser / RTL proofs |
 | `src/app/(dev)/events-renderer-harness/page.tsx` | Dev harness route `/events-renderer-harness` (hidden in prod unless `ENABLE_EVENTS_RENDERER_HARNESS=1`) |
-| `src/components/references/events/event-stream-operations.test.tsx` | Role labeling + live OpenAPI three-stream proofs |
+| `src/features/references/events/event-stream-operations.test.tsx` | Role labeling + live OpenAPI three-stream proofs |
 
 ## Key host files (story 004 — FactoryEvent envelope + discriminator catalog)
 
@@ -74,62 +74,62 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | --- | --- |
 | `src/lib/references/events/factory-event-catalog.ts` | Build FactoryEvent envelope + discriminator → payload catalog from packaged OpenAPI (W04 normalize via `normalizeJsonSchemaArtifact`); also normalizes direct envelope `$ref` components (`FactoryEventType`, `FactoryEventContext`) into `envelopeComponents`; attaches `envelopeExample` via `buildFactoryEventEnvelopeJsonExample`; attaches per-mapping `payloadExample` via `buildPayloadSchemaJsonExample` |
 | `src/lib/references/events/event-envelope-examples.ts` | Corpus-true full FactoryEvent / FactoryResponseEvent envelope JSON examples and per-variant payload JSON examples (OpenAPI authored `example`/`examples` when present; otherwise minimal required-field construction from packaged schemas — never ellipsis or invented keys) |
-| `src/components/references/events/event-envelope-reference.tsx` | Shared FactoryEvent envelope fields via `EventsSchemaDefinition` (composition stripped; single field listing) + full envelope JSON example |
-| `src/components/references/events/event-envelope-json-example.tsx` | CodePanel-backed full envelope JSON example (origin labeled authored vs corpus-constructed) |
-| `src/components/references/events/event-payload-json-example.tsx` | CodePanel-backed payload-only JSON example near each catalog variant |
-| `src/components/references/events/event-envelope-components.tsx` | Render envelope `$ref` component objects (`FactoryEventType`, `FactoryEventContext`) as full schema definitions on the events page |
-| `src/components/references/events/event-discriminator-map.tsx` | Live `type` → payload schema map with payload-variant deep links |
-| `src/components/references/events/event-payload-variant.tsx` | One payload variant under short “Event catalog” label (`data-event-payload-only`) + payload JSON example |
-| `src/components/references/events/event-payload-catalog.tsx` | All mapped payload variants with schema-backed fields |
-| `src/components/references/events/events-schema-definition.tsx` | Events-opt-in SchemaDefinition: path-deduped field rows + distinct-only path labels + suppressed pointer-path chrome |
-| `src/components/references/events/factory-event-catalog-section.tsx` | Compose envelope + envelope components + map + payload catalog |
-| `src/components/references/events/factory-event-catalog.test.tsx` | Live inventory + envelope/payload-only UI proofs |
+| `src/features/references/events/event-envelope-reference.tsx` | Shared FactoryEvent envelope fields via `EventsSchemaDefinition` (composition stripped; single field listing) + full envelope JSON example |
+| `src/features/references/events/event-envelope-json-example.tsx` | CodePanel-backed full envelope JSON example (origin labeled authored vs corpus-constructed) |
+| `src/features/references/events/event-payload-json-example.tsx` | CodePanel-backed payload-only JSON example near each catalog variant |
+| `src/features/references/events/event-envelope-components.tsx` | Render envelope `$ref` component objects (`FactoryEventType`, `FactoryEventContext`) as full schema definitions on the events page |
+| `src/features/references/events/event-discriminator-map.tsx` | Live `type` → payload schema map with payload-variant deep links |
+| `src/features/references/events/event-payload-variant.tsx` | One payload variant under short “Event catalog” label (`data-event-payload-only`) + payload JSON example |
+| `src/features/references/events/event-payload-catalog.tsx` | All mapped payload variants with schema-backed fields |
+| `src/features/references/events/events-schema-definition.tsx` | Events-opt-in SchemaDefinition: path-deduped field rows + distinct-only path labels + suppressed pointer-path chrome |
+| `src/features/references/events/factory-event-catalog-section.tsx` | Compose envelope + envelope components + map + payload catalog |
+| `src/features/references/events/factory-event-catalog.test.tsx` | Live inventory + envelope/payload-only UI proofs |
 
 ## Key host files (story 005 — FactoryResponseEvent envelope + dimensions)
 
 | Path | Role |
 | --- | --- |
 | `src/lib/references/events/factory-response-event-catalog.ts` | Build FactoryResponseEvent envelope + kind/phase/provenance + oneOf payload catalog from packaged OpenAPI; attaches `envelopeExample` via `buildFactoryResponseEventEnvelopeJsonExample`; attaches per-variant `payloadExample` via `buildPayloadSchemaJsonExample` |
-| `src/components/references/events/response-event-envelope-reference.tsx` | Shared FactoryResponseEvent envelope fields via `EventsSchemaDefinition` (ephemeral marker; single field listing) + full envelope JSON example |
-| `src/components/references/events/response-event-matrix.tsx` | Kind / phase / provenance / payload dimensions without claiming Cartesian validity; kind/phase/provenance each render as `EventsSchemaDefinition` (envelope `$ref` components) |
-| `src/components/references/events/response-event-payload-variant.tsx` | One payload oneOf shape under short “Event catalog” label (`data-event-payload-only` + ephemeral) + payload JSON example |
-| `src/components/references/events/response-event-payload-catalog.tsx` | All oneOf payload shapes with schema-backed fields |
-| `src/components/references/events/factory-response-event-catalog-section.tsx` | Compose envelope + matrix + payload catalog |
-| `src/components/references/events/factory-response-event-catalog.test.tsx` | Live inventory + ephemeral / non-Cartesian UI proofs |
+| `src/features/references/events/response-event-envelope-reference.tsx` | Shared FactoryResponseEvent envelope fields via `EventsSchemaDefinition` (ephemeral marker; single field listing) + full envelope JSON example |
+| `src/features/references/events/response-event-matrix.tsx` | Kind / phase / provenance / payload dimensions without claiming Cartesian validity; kind/phase/provenance each render as `EventsSchemaDefinition` (envelope `$ref` components) |
+| `src/features/references/events/response-event-payload-variant.tsx` | One payload oneOf shape under short “Event catalog” label (`data-event-payload-only` + ephemeral) + payload JSON example |
+| `src/features/references/events/response-event-payload-catalog.tsx` | All oneOf payload shapes with schema-backed fields |
+| `src/features/references/events/factory-response-event-catalog-section.tsx` | Compose envelope + matrix + payload catalog |
+| `src/features/references/events/factory-response-event-catalog.test.tsx` | Live inventory + ephemeral / non-Cartesian UI proofs |
 
 ## Key host files (story 006 — reconnect / identity / lifecycle)
 
 | Path | Role |
 | --- | --- |
 | `src/lib/references/events/event-reconnect-lifecycle.ts` | Build reconnect cursors, identity handshake, lifecycle, JSON reconnect-probe models from packaged OpenAPI |
-| `src/components/references/events/event-reconnect-contract.tsx` | Cursor params + `after_event_id` precedence |
-| `src/components/references/events/event-identity-handshake.tsx` | `X-Factory-Session-*` headers + stream-generation invalidation |
-| `src/components/references/events/event-stream-lifecycle.tsx` | Retained history, keepalive, `STREAM_GAP`, stale-cursor recovery |
-| `src/components/references/events/event-json-reconnect-probe.tsx` | `Accept: application/json` → `FactorySessionEventStreamRecovery` outcomes |
-| `src/components/references/events/event-reconnect-lifecycle-section.tsx` | Compose reconnect/identity/lifecycle/probe docs |
-| `src/components/references/events/event-reconnect-lifecycle.test.tsx` | Live OpenAPI + UI proofs (no W08 OpenAPI UI re-implementation) |
+| `src/features/references/events/event-reconnect-contract.tsx` | Cursor params + `after_event_id` precedence |
+| `src/features/references/events/event-identity-handshake.tsx` | `X-Factory-Session-*` headers + stream-generation invalidation |
+| `src/features/references/events/event-stream-lifecycle.tsx` | Retained history, keepalive, `STREAM_GAP`, stale-cursor recovery |
+| `src/features/references/events/event-json-reconnect-probe.tsx` | `Accept: application/json` → `FactorySessionEventStreamRecovery` outcomes |
+| `src/features/references/events/event-reconnect-lifecycle-section.tsx` | Compose reconnect/identity/lifecycle/probe docs |
+| `src/features/references/events/event-reconnect-lifecycle.test.tsx` | Live OpenAPI + UI proofs (no W08 OpenAPI UI re-implementation) |
 
 ## Key host files (story 007 — static SSE frame + reconnect examples)
 
 | Path | Role |
 | --- | --- |
 | `src/lib/references/events/sse-static-examples.ts` | Build static SSE frame + reconnect example models (illustrative fixtures + OpenAPI-authored JSON probe); safety = no live EventSource/proxy |
-| `src/components/references/events/sse-frame-example.tsx` | CodePanel-backed `id:` / `event:` / `data:` frame example |
-| `src/components/references/events/sse-reconnect-example.tsx` | CodePanel-backed reconnect request / JSON probe example |
-| `src/components/references/events/sse-static-examples-section.tsx` | Compose frame + reconnect examples into the events corpus |
-| `src/components/references/events/sse-static-examples.test.tsx` | Wire-field, contract-name, safety, and UI proofs |
+| `src/features/references/events/sse-frame-example.tsx` | CodePanel-backed `id:` / `event:` / `data:` frame example |
+| `src/features/references/events/sse-reconnect-example.tsx` | CodePanel-backed reconnect request / JSON probe example |
+| `src/features/references/events/sse-static-examples-section.tsx` | Compose frame + reconnect examples into the events corpus |
+| `src/features/references/events/sse-static-examples.test.tsx` | Wire-field, contract-name, safety, and UI proofs |
 
 ## Key host files (story 008 — stable anchors, search documents, catalog navigation)
 
 | Path | Role |
 | --- | --- |
 | `src/lib/references/events/event-search-documents.ts` | Build `ReferenceItem` + Orama-ready search documents for FactoryEvent types + FactoryResponseEvent payloads; register collision-checked W04 anchors |
-| `src/components/references/events/event-catalog-navigation.tsx` | Keyboard-accessible `<nav>` + `ReferenceInventoryFilter` (query); overflow-safe (`min-w-0` / `overflow-x-auto`) |
-| `src/components/references/events/event-hash-navigation.tsx` | Hash focus/scroll helper + client mount (`focusEventHashTarget`) |
-| `src/components/references/events/event-catalog-anchors-section.tsx` | Compose search-document nav + hash chrome for the harness |
-| `src/components/references/events/event-payload-variant.tsx` | Payload variant `id` + `CopyableReferenceAnchor` (family `events`) |
-| `src/components/references/events/response-event-payload-variant.tsx` | Response payload variant `id` + `CopyableReferenceAnchor` |
-| `src/components/references/events/event-catalog-navigation.test.tsx` | Search docs, copyable anchors, filter, hash focus, responsive overflow proofs |
+| `src/features/references/events/event-catalog-navigation.tsx` | Keyboard-accessible `<nav>` + `ReferenceInventoryFilter` (query); overflow-safe (`min-w-0` / `overflow-x-auto`) |
+| `src/features/references/events/event-hash-navigation.tsx` | Hash focus/scroll helper + client mount (`focusEventHashTarget`) |
+| `src/features/references/events/event-catalog-anchors-section.tsx` | Compose search-document nav + hash chrome for the harness |
+| `src/features/references/events/event-payload-variant.tsx` | Payload variant `id` + `CopyableReferenceAnchor` (family `events`) |
+| `src/features/references/events/response-event-payload-variant.tsx` | Response payload variant `id` + `CopyableReferenceAnchor` |
+| `src/features/references/events/event-catalog-navigation.test.tsx` | Search docs, copyable anchors, filter, hash focus, responsive overflow proofs |
 
 ## Key host files (story 009 — fail-closed discriminator / payload inventory drift)
 

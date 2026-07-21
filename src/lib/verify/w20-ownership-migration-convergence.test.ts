@@ -125,7 +125,9 @@ describe("W20 ownership + migration convergence catalog", () => {
     expect(evaluation.migrationLedgerRowCount).toBe(
       DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT,
     );
-    expect(evaluation.expectedMigrationLedgerRowCount).toBe(14);
+    expect(evaluation.expectedMigrationLedgerRowCount).toBe(
+      DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT,
+    );
     expect(evaluation.complete).toBe(true);
 
     expect(listOpenDocumentationRouteMigrationRows()).toEqual([]);

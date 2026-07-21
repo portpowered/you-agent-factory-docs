@@ -6,7 +6,7 @@
  * schema-backed. Exhaustive lookup stays on the full schema / API references.
  */
 
-import { SchemaReference } from "@/components/references/schema";
+import { SchemaReference } from "@/features/references/schema";
 import { loadSchemaVerificationPackageModel } from "@/lib/references/load-schema-verification-models";
 import { createReferenceCrossLinkResolver } from "@/lib/references/reference-cross-link-resolver";
 import type { SchemaAddress } from "@/lib/references/schema-model";

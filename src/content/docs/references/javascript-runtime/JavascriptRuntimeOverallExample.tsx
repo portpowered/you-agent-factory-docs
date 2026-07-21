@@ -5,11 +5,11 @@
  * script before scanning the full inventory.
  */
 
+import { CodePanel } from "@/features/factory-ui/data-display";
 import {
   JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE,
   JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_STEPS,
-} from "@/components/references/javascript/javascript-runtime-overall-example";
-import { CodePanel } from "@/features/factory-ui/data-display";
+} from "@/features/references/javascript/javascript-runtime-overall-example";
 
 /**
  * Renders the overall runtime example: walkthrough steps with deep links to

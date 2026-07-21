@@ -1,4 +1,4 @@
-import { SchemaReference } from "@/components/references/schema";
+import { SchemaReference } from "@/features/references/schema";
 import {
   loadWorkstationBaseSchemaEmbedModel,
   WORKSTATION_BASE_DEFINITION_POINTER,

@@ -7,13 +7,13 @@
 
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import { cleanup, render, waitFor } from "@testing-library/react";
-import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
-import { ApiOperationExamples } from "@/components/references/api/api-operation-examples";
-import type { ApiOperationDetail } from "@/components/references/api/operation-detail";
-import type { ApiOperationNavModel } from "@/components/references/api/operation-navigation";
-import { SchemaExamplePanel } from "@/components/references/schema/schema-example-panel";
-import { CopyableReferenceAnchor } from "@/components/references/shared/CopyableReferenceAnchor";
 import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+import { ApiNavigationVerificationHarness } from "@/features/references/api/api-navigation-verification-harness";
+import { ApiOperationExamples } from "@/features/references/api/api-operation-examples";
+import type { ApiOperationDetail } from "@/features/references/api/operation-detail";
+import type { ApiOperationNavModel } from "@/features/references/api/operation-navigation";
+import { SchemaExamplePanel } from "@/features/references/schema/schema-example-panel";
+import { CopyableReferenceAnchor } from "@/features/references/shared/CopyableReferenceAnchor";
 import {
   expectReferenceCopyAnnouncementChrome,
   expectReferenceCopyAnnouncements,

@@ -7,7 +7,7 @@
  * the published Factory schema field set — no invented upstream-only fields.
  */
 
-import type { SchemaExampleInput } from "@/components/references/schema";
+import type { SchemaExampleInput } from "@/features/references/schema";
 
 /**
  * Hermetic minimal Factory configuration — same shape as

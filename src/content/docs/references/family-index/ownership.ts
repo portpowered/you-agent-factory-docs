@@ -21,12 +21,12 @@ export const REFERENCES_FAMILY_INDEX_OWNERSHIP_IMPORT =
  * Sibling contract pages land in parallel W11 slices; this lane only links.
  */
 export const REFERENCES_FAMILY_INDEX_FORBIDDEN_RENDERER_ROOTS = [
-  "src/components/references/api",
-  "src/components/references/schema",
-  "src/components/references/events",
-  "src/components/references/cli",
-  "src/components/references/mcp",
-  "src/components/references/javascript",
+  "src/features/references/api",
+  "src/features/references/schema",
+  "src/features/references/events",
+  "src/features/references/cli",
+  "src/features/references/mcp",
+  "src/features/references/javascript",
 ] as const;
 
 /**

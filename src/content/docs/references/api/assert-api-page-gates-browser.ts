@@ -15,7 +15,7 @@ import {
   API_SCHEMA_COMPONENT_PROBE,
   API_SCHEMA_SLOT_ATTR,
   API_SSE_OPERATIONS,
-} from "@/components/references/api";
+} from "@/features/references/api";
 import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
 
 const PORT = Number(process.env.API_REFERENCE_GATES_PROBE_PORT ?? "3572");

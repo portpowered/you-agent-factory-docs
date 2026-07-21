@@ -11,8 +11,8 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { focusReferenceHashTarget } from "@/components/references/shared";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { focusReferenceHashTarget } from "@/features/references/shared";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 import {

@@ -6,15 +6,15 @@
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render } from "@testing-library/react";
-import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
-import type { ApiOperationDetail } from "@/components/references/api/operation-detail";
-import type { ApiOperationNavModel } from "@/components/references/api/operation-navigation";
-import { EventStreamOperationSummary } from "@/components/references/events";
-import type { EventStreamOperationSummaryModel } from "@/components/references/events/event-stream-display";
-import { SchemaConstraintList } from "@/components/references/schema/schema-constraint-list";
-import { SchemaFieldRow } from "@/components/references/schema/schema-field-row";
-import { SchemaDefinitionEmbed } from "@/components/references/shared/SchemaDefinitionEmbed";
 import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+import { ApiNavigationVerificationHarness } from "@/features/references/api/api-navigation-verification-harness";
+import type { ApiOperationDetail } from "@/features/references/api/operation-detail";
+import type { ApiOperationNavModel } from "@/features/references/api/operation-navigation";
+import { EventStreamOperationSummary } from "@/features/references/events";
+import type { EventStreamOperationSummaryModel } from "@/features/references/events/event-stream-display";
+import { SchemaConstraintList } from "@/features/references/schema/schema-constraint-list";
+import { SchemaFieldRow } from "@/features/references/schema/schema-field-row";
+import { SchemaDefinitionEmbed } from "@/features/references/shared/SchemaDefinitionEmbed";
 import {
   createSchemaDefinitionModel,
   createSchemaFieldModel,

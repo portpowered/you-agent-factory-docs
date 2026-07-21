@@ -7,7 +7,7 @@
  * resolution via `resolveApiPackageArtifact`.
  */
 
-import type { McpToolInventoryInput } from "@/components/references/mcp";
+import type { McpToolInventoryInput } from "@/features/references/mcp";
 import {
   ApiPackageArtifactResolutionError,
   type ApiPackageArtifactResolverDependencies,

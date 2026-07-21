@@ -67,11 +67,11 @@ export const W20_LINK_ANCHOR_SUITE_ENTRIES = [
     families: ["anchor-cli", "anchor-mcp", "anchor-javascript"],
   },
   {
-    path: "src/components/references/api/operation-anchors.test.ts",
+    path: "src/features/references/api/operation-anchors.test.ts",
     families: ["anchor-operations"],
   },
   {
-    path: "src/components/references/schema/schema-composition.test.tsx",
+    path: "src/features/references/schema/schema-composition.test.tsx",
     families: ["anchor-schema-fields"],
   },
 ] as const satisfies readonly W20LinkAnchorSuiteEntry[];

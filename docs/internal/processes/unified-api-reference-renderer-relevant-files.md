@@ -8,14 +8,14 @@ W11).
 ## Ownership fence
 
 W08 owns only the production API UI surface under
-`src/components/references/api/` (and focused tests / integration helpers for
+`src/features/references/api/` (and focused tests / integration helpers for
 that surface). Do **not**:
 
 - reopen W01 OpenAPI spike trees (`src/lib/references-openapi-spike/`) for new
   spike feature work (migrate reusable helpers into the production surface)
 - edit W02 SSE/AsyncAPI spike trees except where a shared helper must move into
   production API ownership
-- edit schema UI (`src/components/references/schema/`, W07)
+- edit schema UI (`src/features/references/schema/`, W07)
 - implement the full event envelope/payload catalog (W09)
 - build CLI/MCP/JS family renderers (W10)
 - publish final `/docs/references/api` MDX page, nav, sitemap, or search
@@ -26,8 +26,8 @@ that surface). Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/api/dependency-selection.ts` | Production `fumadocs-openapi@10.10.3` pin on Fumadocs 16.9, coordinated 11.2/16.10 upgrade-risk notes, explicit `@fumadocs/asyncapi` non-pin for hybrid API-page summaries |
-| `src/components/references/api/dependency-selection.test.ts` | Asserts installed versions match the production pin and AsyncAPI stays out of the production set |
+| `src/features/references/api/dependency-selection.ts` | Production `fumadocs-openapi@10.10.3` pin on Fumadocs 16.9, coordinated 11.2/16.10 upgrade-risk notes, explicit `@fumadocs/asyncapi` non-pin for hybrid API-page summaries |
+| `src/features/references/api/dependency-selection.test.ts` | Asserts installed versions match the production pin and AsyncAPI stays out of the production set |
 | `package.json` / `bun.lock` | Exact `fumadocs-openapi` `10.10.3` plus required peers (`fumadocs-core` / `fumadocs-ui` 16.9 line, `@scalar/api-client-react`) |
 
 ### AsyncAPI policy
@@ -37,7 +37,7 @@ semantics and link toward `/docs/references/events`; W09 owns the event corpus.
 **Do not pin `@fumadocs/asyncapi` for production API summaries.** Residual
 `package.json` entries that only keep merged W02 spike evidence modules
 resolvable are not part of the W08 production pin set and must not be imported
-from `src/components/references/api/`.
+from `src/features/references/api/`.
 
 ### Upgrade risk
 
@@ -51,60 +51,60 @@ hooks, and SSR cost.
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/api/index.ts` | Public barrel: published primary = `ApiReferenceAPIPage`; custom operation chrome is harness/deep-import only (not re-exported) |
-| `src/components/references/api/published-renderer-exports.test.ts` | Proves barrel names Fumadocs as primary and omits superseded custom section/badge/examples/media-type exports |
-| `src/components/references/api/ownership.ts` | Ownership root + forbidden-tree fence helpers |
-| `src/components/references/api/ownership.test.ts` | Ownership root presence + fence proofs |
-| `src/components/references/api/types.ts` | Status vocabulary for loading/empty/invalid/unsupported/ready |
-| `src/components/references/api/api-status.tsx` | Accessible non-ready status messaging |
-| `src/components/references/api/api-surface.tsx` | Boundary that short-circuits non-ready statuses or renders ready children |
-| `src/components/references/api/api-surface.test.tsx` | Status semantics proofs for the ownership boundary |
-| `src/components/references/api/load-openapi-artifact.ts` | W03-backed loader for `@you-agent-factory/api/openapi` (document object + schema id) |
-| `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; Turbopack-safe package load; attaches W04 normalized ops from the same artifact |
-| `src/components/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, request/response `data-api-schema-slot` wrappers, `data-api-operation-summary` + `data-api-operation-path-token`, operationId section wrappers) |
-| `src/components/references/api/api-code-block.tsx` | `renderCodeBlock` → ServerCodeBlock + dual Shiki themes |
-| `src/components/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
-| `src/components/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
-| `src/components/references/api/single-page-projection.test.ts` | W03 acquisition + single-page projection proofs |
-| `src/components/references/api/operation-navigation.ts` | Pure tag-grouped nav model + mobile HTML probe contract |
-| `src/components/references/api/api-operation-navigator.tsx` | Desktop tag-grouped operation deep links |
-| `src/components/references/api/api-reference-mobile-navigator.tsx` | Phone/tablet collapsed `<details>` navigator |
-| `src/components/references/api/api-operation-navigation.tsx` | Responsive composition (`lg+` desktop / `<lg` mobile) + filter |
-| `src/components/references/api/operation-filter.ts` | Pure method/path/summary/operation-ID filter projectors |
-| `src/components/references/api/api-operation-filter.tsx` | Keyboard-accessible filter search + Clear control |
-| `src/components/references/api/load-operation-navigation.ts` | Build nav model from live package artifact + document tag order |
-| `src/components/references/api/assert-operation-navigation.ts` | Happy-dom-safe subprocess proof: nav anchors ↔ `per:"file"` projection |
-| `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + operation sections (detail or stub) + copy links + hash controller |
-| `src/components/references/api/operation-detail.ts` | Pure projectors for parameters, bodies, responses, media types, authored examples |
-| `src/components/references/api/load-operation-details.ts` | Build detail inventory + anchor map from the live package artifact |
-| `src/components/references/api/api-method-badge.tsx` | Harness-only HTTP method text badge (deep-import; not on public barrel) |
-| `src/components/references/api/api-response-media-type.tsx` | Harness-only JSON vs `text/event-stream` vs other labels (deep-import) |
-| `src/components/references/api/api-operation-examples.tsx` | Harness-only CodePanel examples (deep-import; not published Fumadocs path) |
-| `src/components/references/api/api-operation-section.tsx` | Harness/unit custom operation section — **not** the published primary renderer (`ApiReferenceAPIPage` is) |
-| `src/components/references/api/playground-suppression.ts` | Production `playground: { enabled: false }` + no-`proxyUrl` / forbidden proxy-route policy |
-| `src/components/references/api/local-server-base-url.ts` | Pure projectors for OpenAPI `servers` → local base URL + docs-host disclaimer |
-| `src/components/references/api/api-local-server-base-url.tsx` | Visible local-server base URL notice (static-only; no live execution) |
-| `src/components/references/api/load-local-server-base-url.ts` | Load primary local-server notice from the package OpenAPI artifact |
-| `src/components/references/api/assert-playground-suppression-browser.ts` | Playwright harness probe: no Send/try-it/proxy UI + local base URL visible |
-| `src/components/references/api/sse-operations.ts` | Production inventory of the three SSE ops + roles (canonical / ephemeral / compatibility-only) |
-| `src/components/references/api/sse-operation-summary.ts` | Pure hybrid SSE summaries: HTTP transport semantics + `/docs/references/events` catalog links |
-| `src/components/references/api/api-sse-operation-summary.tsx` | SSE summary panel UI (static-only; no live EventSource) |
-| `src/components/references/api/assert-sse-summaries-browser.ts` | Playwright harness probe: three SSE summaries, roles, events links, no full catalog |
-| `src/components/references/api/theme-tokens.ts` | Production semantic theme token classes, secondary/muted-secondary accent roles for tabs/badges/chips, method-badge tones, CodePanel code-copy policy, dual Shiki options |
-| `src/components/references/api/api-accent-chrome.ts` | Accent chrome selectors + stylesheet path + factory-dark RGB proofs for theme-root tab/badge/chip remaps |
-| `src/components/references/api/api-accent-chrome.test.ts` | Playwright fixture proofs: selected/quiet tabs + MethodLabel → secondary / muted-secondary (not primary yellow) |
-| `src/components/references/api/api-accent-regression-fence.test.tsx` | Lane fence: method badges + batch-011 navigator `text-secondary` + batch-010 browse/factories CTAs stay secondary |
-| `src/components/references/api/theme-tokens.test.ts` | Token-class / accent-role / code-copy policy / host contrast proofs |
-| `src/components/references/api/api-theme-code-copy.test.tsx` | CodePanel + copy affordance, method badge tones, theme-root harness wiring |
-| `src/components/references/api/assert-theme-code-copy-browser.ts` | Playwright harness probe: theme root, method badges, CodePanel copy, no playground |
-| `src/components/references/api/a11y-verification.ts` | Phone/tablet/desktop viewports, keyboard focus contract, print policy, reduced-motion scroll helper |
-| `src/components/references/api/api-a11y-print.test.tsx` | Keyboard, overflow, reduced-motion hash focus, and print-readable fact proofs |
-| `src/components/references/api/assert-a11y-print-browser.ts` | Playwright harness probe: overflow × 3 viewports, keyboard, reduced-motion, print, SSE + non-SSE |
+| `src/features/references/api/index.ts` | Public barrel: published primary = `ApiReferenceAPIPage`; custom operation chrome is harness/deep-import only (not re-exported) |
+| `src/features/references/api/published-renderer-exports.test.ts` | Proves barrel names Fumadocs as primary and omits superseded custom section/badge/examples/media-type exports |
+| `src/features/references/api/ownership.ts` | Ownership root + forbidden-tree fence helpers |
+| `src/features/references/api/ownership.test.ts` | Ownership root presence + fence proofs |
+| `src/features/references/api/types.ts` | Status vocabulary for loading/empty/invalid/unsupported/ready |
+| `src/features/references/api/api-status.tsx` | Accessible non-ready status messaging |
+| `src/features/references/api/api-surface.tsx` | Boundary that short-circuits non-ready statuses or renders ready children |
+| `src/features/references/api/api-surface.test.tsx` | Status semantics proofs for the ownership boundary |
+| `src/features/references/api/load-openapi-artifact.ts` | W03-backed loader for `@you-agent-factory/api/openapi` (document object + schema id) |
+| `src/features/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; Turbopack-safe package load; attaches W04 normalized ops from the same artifact |
+| `src/features/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, request/response `data-api-schema-slot` wrappers, `data-api-operation-summary` + `data-api-operation-path-token`, operationId section wrappers) |
+| `src/features/references/api/api-code-block.tsx` | `renderCodeBlock` → ServerCodeBlock + dual Shiki themes |
+| `src/features/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
+| `src/features/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
+| `src/features/references/api/single-page-projection.test.ts` | W03 acquisition + single-page projection proofs |
+| `src/features/references/api/operation-navigation.ts` | Pure tag-grouped nav model + mobile HTML probe contract |
+| `src/features/references/api/api-operation-navigator.tsx` | Desktop tag-grouped operation deep links |
+| `src/features/references/api/api-reference-mobile-navigator.tsx` | Phone/tablet collapsed `<details>` navigator |
+| `src/features/references/api/api-operation-navigation.tsx` | Responsive composition (`lg+` desktop / `<lg` mobile) + filter |
+| `src/features/references/api/operation-filter.ts` | Pure method/path/summary/operation-ID filter projectors |
+| `src/features/references/api/api-operation-filter.tsx` | Keyboard-accessible filter search + Clear control |
+| `src/features/references/api/load-operation-navigation.ts` | Build nav model from live package artifact + document tag order |
+| `src/features/references/api/assert-operation-navigation.ts` | Happy-dom-safe subprocess proof: nav anchors ↔ `per:"file"` projection |
+| `src/features/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + operation sections (detail or stub) + copy links + hash controller |
+| `src/features/references/api/operation-detail.ts` | Pure projectors for parameters, bodies, responses, media types, authored examples |
+| `src/features/references/api/load-operation-details.ts` | Build detail inventory + anchor map from the live package artifact |
+| `src/features/references/api/api-method-badge.tsx` | Harness-only HTTP method text badge (deep-import; not on public barrel) |
+| `src/features/references/api/api-response-media-type.tsx` | Harness-only JSON vs `text/event-stream` vs other labels (deep-import) |
+| `src/features/references/api/api-operation-examples.tsx` | Harness-only CodePanel examples (deep-import; not published Fumadocs path) |
+| `src/features/references/api/api-operation-section.tsx` | Harness/unit custom operation section — **not** the published primary renderer (`ApiReferenceAPIPage` is) |
+| `src/features/references/api/playground-suppression.ts` | Production `playground: { enabled: false }` + no-`proxyUrl` / forbidden proxy-route policy |
+| `src/features/references/api/local-server-base-url.ts` | Pure projectors for OpenAPI `servers` → local base URL + docs-host disclaimer |
+| `src/features/references/api/api-local-server-base-url.tsx` | Visible local-server base URL notice (static-only; no live execution) |
+| `src/features/references/api/load-local-server-base-url.ts` | Load primary local-server notice from the package OpenAPI artifact |
+| `src/features/references/api/assert-playground-suppression-browser.ts` | Playwright harness probe: no Send/try-it/proxy UI + local base URL visible |
+| `src/features/references/api/sse-operations.ts` | Production inventory of the three SSE ops + roles (canonical / ephemeral / compatibility-only) |
+| `src/features/references/api/sse-operation-summary.ts` | Pure hybrid SSE summaries: HTTP transport semantics + `/docs/references/events` catalog links |
+| `src/features/references/api/api-sse-operation-summary.tsx` | SSE summary panel UI (static-only; no live EventSource) |
+| `src/features/references/api/assert-sse-summaries-browser.ts` | Playwright harness probe: three SSE summaries, roles, events links, no full catalog |
+| `src/features/references/api/theme-tokens.ts` | Production semantic theme token classes, secondary/muted-secondary accent roles for tabs/badges/chips, method-badge tones, CodePanel code-copy policy, dual Shiki options |
+| `src/features/references/api/api-accent-chrome.ts` | Accent chrome selectors + stylesheet path + factory-dark RGB proofs for theme-root tab/badge/chip remaps |
+| `src/features/references/api/api-accent-chrome.test.ts` | Playwright fixture proofs: selected/quiet tabs + MethodLabel → secondary / muted-secondary (not primary yellow) |
+| `src/features/references/api/api-accent-regression-fence.test.tsx` | Lane fence: method badges + batch-011 navigator `text-secondary` + batch-010 browse/factories CTAs stay secondary |
+| `src/features/references/api/theme-tokens.test.ts` | Token-class / accent-role / code-copy policy / host contrast proofs |
+| `src/features/references/api/api-theme-code-copy.test.tsx` | CodePanel + copy affordance, method badge tones, theme-root harness wiring |
+| `src/features/references/api/assert-theme-code-copy-browser.ts` | Playwright harness probe: theme root, method badges, CodePanel copy, no playground |
+| `src/features/references/api/a11y-verification.ts` | Phone/tablet/desktop viewports, keyboard focus contract, print policy, reduced-motion scroll helper |
+| `src/features/references/api/api-a11y-print.test.tsx` | Keyboard, overflow, reduced-motion hash focus, and print-readable fact proofs |
+| `src/features/references/api/assert-a11y-print-browser.ts` | Playwright harness probe: overflow × 3 viewports, keyboard, reduced-motion, print, SSE + non-SSE |
 | `src/features/docs/styles/references-api-accents.css` | Theme-root remaps: language tabs / status chips / MethodLabel → secondary + muted-secondary (never primary yellow) |
 | `src/features/docs/styles/references-api-print.css` | Print stylesheet: hide filter/nav/copy chrome; keep method/path/summary + request/response |
-| `src/components/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
-| `src/components/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
-| `src/components/references/api/api-reference-hash-controller.tsx` | Hash-to-focus + back/forward (`hashchange` / `popstate`) without rewriting content |
+| `src/features/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
+| `src/features/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
+| `src/features/references/api/api-reference-hash-controller.tsx` | Hash-to-focus + back/forward (`hashchange` / `popstate`) without rewriting content |
 | `src/app/(dev)/api-renderer-harness/page.tsx` | Non-production harness route (`ENABLE_API_RENDERER_HARNESS=1` in production) |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition used by the production loader |
 | `src/lib/references/normalize-family-artifacts.ts` | W04 `normalizeOpenApiOperationsFromArtifact` — same corpus, not a second OpenAPI source |
@@ -139,7 +139,7 @@ hooks, and SSR cost.
 - Request/response body Schema UI stays on the Fumadocs path: `schemaUI.showExample`,
   `showResponseSchema: true`, and `data-api-schema-slot="request|response"` wrappers
   around `slots.body` / `slots.responses` (promoted from the W01 spike). Do **not**
-  add a bespoke schema explorer under `src/components/references/schema/` for this
+  add a bespoke schema explorer under `src/features/references/schema/` for this
   page — W07 owns that tree separately.
 - Assert operation counts against the **live** package inventory
   (`countOpenApiOperations`), not a frozen product quota. Baseline observation
@@ -232,7 +232,7 @@ hooks, and SSR cost.
   `#/components/parameters/*` refs; project request/response media types and
   **authored** `example` / `examples` only (never invent payloads or walk W07
   schema field trees).
-- Harness-only custom chrome (deep-import; **not** on `@/components/references/api`
+- Harness-only custom chrome (deep-import; **not** on `@/features/references/api`
   barrel): `ApiMethodBadge`, `ApiResponseMediaType`, `ApiOperationExamples`,
   `ApiOperationSection`. Keep them for `/api-renderer-harness` and unit
   a11y/theme/SSE fixtures. Published-page a11y/no-JS/long-token gates must
@@ -261,7 +261,7 @@ hooks, and SSR cost.
 - Harness (`/api-renderer-harness`) mounts the notice and marks
   `data-api-playground-suppressed="true"`. Static examples stay visible without
   a reachable Factory host.
-- Browser probe: `bun src/components/references/api/assert-playground-suppression-browser.ts`
+- Browser probe: `bun src/features/references/api/assert-playground-suppression-browser.ts`
   (unique port, `localhost`, Playwright via `launchPlaywrightBrowser`).
 
 ## Hybrid SSE operation summaries
@@ -286,7 +286,7 @@ hooks, and SSR cost.
 - Do **not** implement the full event envelope/payload catalog here (W09). Do
   not import W02 spike catalog views into the production API tree.
 - Browser probes:
-  - harness: `bun src/components/references/api/assert-sse-summaries-browser.ts`
+  - harness: `bun src/features/references/api/assert-sse-summaries-browser.ts`
   - published page: `bun src/content/docs/references/api/assert-api-page-static-sse-browser.ts`
     (wait for terminal `data-api-status=ready` after Suspense; unique port)
 
@@ -309,7 +309,7 @@ hooks, and SSR cost.
   blanket-remap every `text-fd-primary` under the theme (schema field names
   stay). Do **not** patch `node_modules`.
 - Do **not** introduce page-only hex/oklch color systems under
-  `src/components/references/api/`. Method meaning stays in badge text;
+  `src/features/references/api/`. Method meaning stays in badge text;
   tones are semantic chrome only. Keep `API_TOKEN_CLASSES.primary` as a
   non-accent host alias only — wire tab/badge/chip accents through
   `API_ACCENT_TOKEN_CLASSES` / `API_ACCENT_CSS_VARS`.
@@ -317,13 +317,13 @@ hooks, and SSR cost.
   the shared copy affordance (`data-api-example="copy"`).
 - Harness mounts the theme root marker so browser probes can assert tokenized
   chrome + copy without relying on W01 spike CSS.
-- Browser probe: `bun src/components/references/api/assert-theme-code-copy-browser.ts`
+- Browser probe: `bun src/features/references/api/assert-theme-code-copy-browser.ts`
   (unique port default 3539, `localhost`, Playwright via `launchPlaywrightBrowser`).
   Asserts method-badge computed color is factory-dark secondary blue
   (`API_ACCENT_CHROME_FACTORY_DARK_RGB.selected`), never primary yellow.
-  Accent fixture proofs: `bun test src/components/references/api/api-accent-chrome.test.ts`.
+  Accent fixture proofs: `bun test src/features/references/api/api-accent-chrome.test.ts`.
   Lane regression fence (batch-011 navigator + batch-010 browse/factories CTAs):
-  `bun test src/components/references/api/api-accent-regression-fence.test.tsx`.
+  `bun test src/features/references/api/api-accent-regression-fence.test.tsx`.
 
 ## Responsive, keyboard, reduced-motion, and print
 
@@ -341,14 +341,14 @@ hooks, and SSR cost.
 - Hash focus already honors `prefers-reduced-motion` (instant scroll); prove
   with `focusApiOperationAnchor(..., { reduceMotion: true })` and browser
   `emulateMedia({ reducedMotion: "reduce" })`.
-- Browser probe: `bun src/components/references/api/assert-a11y-print-browser.ts`
+- Browser probe: `bun src/features/references/api/assert-a11y-print-browser.ts`
   (unique port default 3540) — overflow at phone/tablet/desktop, keyboard
   filter/nav/copy, reduced-motion hash focus, print media facts, all 45 ops
   reachable, playground absent, one SSE + one non-SSE section checked.
 
 ## Patterns
 
-- Keep production API UI under `src/components/references/api/` so ownership
+- Keep production API UI under `src/features/references/api/` so ownership
   stays separate from spikes, schema UI, events, and family renderers.
 - Treat `dependency-selection.ts` as the source of truth for production pins;
   do not re-litigate temporary spike status constants as production policy.
@@ -360,25 +360,25 @@ hooks, and SSR cost.
 ## Focused verification
 
 ```bash
-bun test src/components/references/api/dependency-selection.test.ts \
-  src/components/references/api/ownership.test.ts \
-  src/components/references/api/published-renderer-exports.test.ts \
-  src/components/references/api/api-page.test.ts \
-  src/components/references/api/api-surface.test.tsx \
-  src/components/references/api/single-page-projection.test.ts \
-  src/components/references/api/operation-navigation.test.ts \
-  src/components/references/api/operation-filter.test.ts \
-  src/components/references/api/load-operation-navigation.test.ts \
-  src/components/references/api/api-operation-navigation.test.tsx \
-  src/components/references/api/operation-anchors.test.ts \
-  src/components/references/api/api-operation-anchors.test.tsx \
-  src/components/references/api/operation-detail.test.ts \
-  src/components/references/api/api-operation-section.test.tsx \
-  src/components/references/api/playground-suppression.test.ts \
-  src/components/references/api/local-server-base-url.test.tsx \
-  src/components/references/api/sse-operation-summary.test.ts \
-  src/components/references/api/api-sse-operation-summary.test.tsx \
-  src/components/references/api/theme-tokens.test.ts \
-  src/components/references/api/api-theme-code-copy.test.tsx \
-  src/components/references/api/api-a11y-print.test.tsx
+bun test src/features/references/api/dependency-selection.test.ts \
+  src/features/references/api/ownership.test.ts \
+  src/features/references/api/published-renderer-exports.test.ts \
+  src/features/references/api/api-page.test.ts \
+  src/features/references/api/api-surface.test.tsx \
+  src/features/references/api/single-page-projection.test.ts \
+  src/features/references/api/operation-navigation.test.ts \
+  src/features/references/api/operation-filter.test.ts \
+  src/features/references/api/load-operation-navigation.test.ts \
+  src/features/references/api/api-operation-navigation.test.tsx \
+  src/features/references/api/operation-anchors.test.ts \
+  src/features/references/api/api-operation-anchors.test.tsx \
+  src/features/references/api/operation-detail.test.ts \
+  src/features/references/api/api-operation-section.test.tsx \
+  src/features/references/api/playground-suppression.test.ts \
+  src/features/references/api/local-server-base-url.test.tsx \
+  src/features/references/api/sse-operation-summary.test.ts \
+  src/features/references/api/api-sse-operation-summary.test.tsx \
+  src/features/references/api/theme-tokens.test.ts \
+  src/features/references/api/api-theme-code-copy.test.tsx \
+  src/features/references/api/api-a11y-print.test.tsx
 ```

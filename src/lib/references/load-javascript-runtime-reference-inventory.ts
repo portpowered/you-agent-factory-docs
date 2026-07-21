@@ -7,7 +7,7 @@
  * resolution via `resolveApiPackageArtifact`.
  */
 
-import type { JavaScriptRuntimeInventoryInput } from "@/components/references/javascript";
+import type { JavaScriptRuntimeInventoryInput } from "@/features/references/javascript";
 import {
   ApiPackageArtifactResolutionError,
   type ApiPackageArtifactResolverDependencies,

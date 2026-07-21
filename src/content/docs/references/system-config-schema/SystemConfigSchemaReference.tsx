@@ -3,7 +3,7 @@
  *
  * Resolves the W03 `schemas/you-config` public subpath into a W04 model and
  * mounts the public W07 SchemaReference surface. Ownership stays page-local —
- * do not edit renderer internals under `src/components/references/schema/`.
+ * do not edit renderer internals under `src/features/references/schema/`.
  * Upstream package acquisition remains `schemas/you-config`.
  */
 
@@ -11,7 +11,7 @@ import {
   type SchemaExampleInput,
   SchemaReference,
   schemaPointerAnchor,
-} from "@/components/references/schema";
+} from "@/features/references/schema";
 import {
   loadSchemaVerificationPackageModel,
   type SchemaVerificationPackageModel,

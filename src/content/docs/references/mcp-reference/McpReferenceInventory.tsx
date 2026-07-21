@@ -9,7 +9,7 @@
 import {
   McpToolInventory,
   type McpToolInventoryInput,
-} from "@/components/references/mcp";
+} from "@/features/references/mcp";
 import { loadMcpReferenceInventory } from "@/lib/references/load-mcp-reference-inventory";
 
 export type McpReferenceInventoryProps = {

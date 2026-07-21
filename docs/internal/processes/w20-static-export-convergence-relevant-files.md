@@ -35,7 +35,7 @@ B00–B10b / R00–R02.
 * `src/lib/references/reference-display-projection.test.ts` / `reference-search-projection.test.ts`
 * `src/lib/references/reference-model-fixtures.test.ts` — fixture-backed integration
 * `src/lib/references/mcp-input-schema-projection.test.ts`
-* `src/components/references/api/single-page-projection.test.ts`
+* `src/features/references/api/single-page-projection.test.ts`
 * `src/lib/references/family-inventory-contract-drift.test.ts` — CLI / MCP / JS identity drift
 
 ### Reproduce
@@ -91,8 +91,8 @@ make test-w20-content-registry
 * `src/lib/build/validate-links.test.ts` — link inventory helpers + full `validateDocumentationLinks` pass
 * `src/lib/references/reference-anchor-registry.test.ts` — operations, schema-pointer, CLI, MCP, JS, events + collision fail-closed
 * `src/lib/references/assign-family-reference-anchors.test.ts` — CLI / MCP / JS registry anchor assignment
-* `src/components/references/api/operation-anchors.test.ts` — API operation deep-link anchors
-* `src/components/references/schema/schema-composition.test.tsx` — schema-pointer field anchors
+* `src/features/references/api/operation-anchors.test.ts` — API operation deep-link anchors
+* `src/features/references/schema/schema-composition.test.tsx` — schema-pointer field anchors
 
 ### Reproduce
 
@@ -201,7 +201,7 @@ Do not redesign W19 harness ownership.
 
 ### Focused suites (FR-33 / FR-34)
 
-* `src/components/references/api/playground-suppression.test.ts` — playground disabled + proxyUrl unset
+* `src/features/references/api/playground-suppression.test.ts` — playground disabled + proxyUrl unset
 * `src/lib/references/events/events-lib.test.ts` — `EVENT_STREAM_SAFETY` no live host / proxy / playground
 * `src/content/docs/references/published-route-states.test.tsx` — CLI/MCP/JS inventory loads without Factory host env
 * `src/lib/verify/w20-static-export-out-verify.test.ts` — exported HTML corpus markers + forbidden proxy absence

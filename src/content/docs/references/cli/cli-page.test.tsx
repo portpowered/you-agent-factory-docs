@@ -8,11 +8,11 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import {
   CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
   CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
-} from "@/components/references/cli/cli-capability";
-import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+} from "@/features/references/cli/cli-capability";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadCliReferenceInventory } from "@/lib/references/load-cli-reference-inventory";
 import { source } from "@/lib/source";

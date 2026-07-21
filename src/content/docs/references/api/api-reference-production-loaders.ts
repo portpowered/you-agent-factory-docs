@@ -22,7 +22,7 @@ import {
   readOpenApiDocumentTagOrder,
   resolveApiOperationAnchor,
   resolvePrimaryApiLocalServerBaseUrl,
-} from "@/components/references/api";
+} from "@/features/references/api";
 import { apiOpenApiTurbopackLoadDependencies } from "@/lib/references/api-openapi-turbopack";
 import { normalizeOpenApiOperationsFromArtifact } from "@/lib/references/normalize-family-artifacts";
 

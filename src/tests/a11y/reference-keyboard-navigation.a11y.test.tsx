@@ -7,14 +7,14 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
-import type { ApiOperationDetail } from "@/components/references/api/operation-detail";
-import type { ApiOperationNavModel } from "@/components/references/api/operation-navigation";
-import { EventCatalogNavigation } from "@/components/references/events/event-catalog-navigation";
-import { SchemaFieldTree } from "@/components/references/schema/schema-field-tree";
-import type { SchemaFieldTreeNode } from "@/components/references/schema/types";
-import { CopyableReferenceAnchor } from "@/components/references/shared/CopyableReferenceAnchor";
 import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+import { ApiNavigationVerificationHarness } from "@/features/references/api/api-navigation-verification-harness";
+import type { ApiOperationDetail } from "@/features/references/api/operation-detail";
+import type { ApiOperationNavModel } from "@/features/references/api/operation-navigation";
+import { EventCatalogNavigation } from "@/features/references/events/event-catalog-navigation";
+import { SchemaFieldTree } from "@/features/references/schema/schema-field-tree";
+import type { SchemaFieldTreeNode } from "@/features/references/schema/types";
+import { CopyableReferenceAnchor } from "@/features/references/shared/CopyableReferenceAnchor";
 import type { EventCatalogNavEntry } from "@/lib/references/events";
 import { createSchemaFieldModel } from "@/lib/references/schema-model";
 import {
