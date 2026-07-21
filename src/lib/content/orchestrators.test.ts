@@ -1,16 +1,30 @@
 import { describe, expect, test } from "bun:test";
-import { readdirSync, readFileSync } from "node:fs";
+import {
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { getRegistryRoot } from "./content-paths";
 import {
   type AttributeDef,
   attributeDefSchema,
   attributeDefsFileSchema,
+  listAttributeDefs,
+  listOrchestrators,
   type OrchestratorAttributeValue,
+  OrchestratorRegistryLoadError,
   orchestratorRecordSchema,
 } from "./orchestrators";
 
 const orchestratorsRegistryDir = join(getRegistryRoot(), "orchestrators");
+const fixtureRoot = join(import.meta.dir, "__fixtures__", "orchestrators");
+const validFixtureRoot = join(fixtureRoot, "valid");
+const invalidMissingNameRoot = join(fixtureRoot, "invalid-missing-name");
+const missingFixtureRoot = join(fixtureRoot, "does-not-exist");
 
 function readJsonFile(path: string): unknown {
   return JSON.parse(readFileSync(path, "utf8")) as unknown;
@@ -245,6 +259,108 @@ describe("committed orchestrator registry seed JSON", () => {
         }
         expect(valueMatchesAttributeDef(def, value)).toBe(true);
       }
+    }
+  });
+});
+
+describe("orchestrator registry loaders", () => {
+  test("listAttributeDefs round-trips a valid fixture pack ordered by order", () => {
+    const defs = listAttributeDefs(validFixtureRoot);
+    expect(defs.map((def) => def.id)).toEqual([
+      "attr.license",
+      "attr.capabilities",
+      "attr.open-source",
+      "attr.hosting",
+    ]);
+    expect(defs.map((def) => def.order)).toEqual([10, 10, 20, 30]);
+  });
+
+  test("listOrchestrators round-trips valid fixture records and skips non-record JSON", () => {
+    const records = listOrchestrators(validFixtureRoot);
+    expect(records.map((record) => record.id)).toEqual([
+      "orchestrator.alpha",
+      "orchestrator.beta",
+    ]);
+    expect(records[0]?.name).toBe("Alpha");
+    expect(records[1]?.attributes["attr.hosting"]).toBe("cloud");
+  });
+
+  test("committed registry loaders return the seed attribute defs and orchestrators", () => {
+    const defs = listAttributeDefs(orchestratorsRegistryDir);
+    expect(defs.map((def) => def.id)).toEqual([
+      "attr.open-source",
+      "attr.license",
+      "attr.hosting",
+      "attr.capabilities",
+    ]);
+
+    const records = listOrchestrators(orchestratorsRegistryDir);
+    expect(records.map((record) => record.id)).toEqual([
+      "orchestrator.custom-scripts",
+      "orchestrator.you-agent-factory",
+    ]);
+  });
+
+  test("listAttributeDefs fails explicitly when attribute-defs.json is missing", () => {
+    expect(() => listAttributeDefs(missingFixtureRoot)).toThrow(
+      OrchestratorRegistryLoadError,
+    );
+    try {
+      listAttributeDefs(missingFixtureRoot);
+    } catch (error) {
+      expect(error).toBeInstanceOf(OrchestratorRegistryLoadError);
+      if (error instanceof OrchestratorRegistryLoadError) {
+        expect(error.message).toContain("Failed to read");
+        expect(error.path).toContain("attribute-defs.json");
+      }
+    }
+  });
+
+  test("listOrchestrators fails explicitly on an invalid record shape", () => {
+    expect(() => listOrchestrators(invalidMissingNameRoot)).toThrow(
+      OrchestratorRegistryLoadError,
+    );
+    try {
+      listOrchestrators(invalidMissingNameRoot);
+    } catch (error) {
+      expect(error).toBeInstanceOf(OrchestratorRegistryLoadError);
+      if (error instanceof OrchestratorRegistryLoadError) {
+        expect(error.message).toContain("Failed to parse orchestrator record");
+        expect(error.path).toContain("orchestrator.broken.json");
+      }
+    }
+  });
+
+  test("listOrchestrators fails explicitly on invalid JSON", () => {
+    const invalidJsonRoot = join(
+      tmpdir(),
+      `orchestrator-invalid-json-${crypto.randomUUID()}`,
+    );
+    mkdirSync(invalidJsonRoot, { recursive: true });
+    writeFileSync(
+      join(invalidJsonRoot, "attribute-defs.json"),
+      readFileSync(join(validFixtureRoot, "attribute-defs.json"), "utf8"),
+    );
+    writeFileSync(
+      join(invalidJsonRoot, "orchestrator.broken.json"),
+      "{ not valid json\n",
+    );
+
+    try {
+      expect(() => listOrchestrators(invalidJsonRoot)).toThrow(
+        OrchestratorRegistryLoadError,
+      );
+      try {
+        listOrchestrators(invalidJsonRoot);
+      } catch (error) {
+        expect(error).toBeInstanceOf(OrchestratorRegistryLoadError);
+        if (error instanceof OrchestratorRegistryLoadError) {
+          expect(error.message).toContain("Invalid JSON");
+          expect(error.path).toContain("orchestrator.broken.json");
+        }
+      }
+    } finally {
+      rmSync(invalidJsonRoot, { recursive: true, force: true });
     }
   });
 });
