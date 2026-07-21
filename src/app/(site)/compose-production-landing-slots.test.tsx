@@ -1,4 +1,5 @@
-import { describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, test } from "bun:test";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { LandingPage } from "@/features/landing-page/LandingPage";
@@ -28,6 +29,24 @@ import {
   mapFixtureWhaleBubblesToSectionProps,
   WIRED_PRODUCTION_LANDING_SLOTS,
 } from "./compose-production-landing-slots";
+
+function mockPrefersReducedMotion(reduce: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: reduce && query.includes("prefers-reduced-motion: reduce"),
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
+const originalMatchMedia = window.matchMedia;
 
 describe("composeProductionHeaderSlot", () => {
   test("maps fixture brand and nav onto LandingHeader props", () => {
@@ -113,6 +132,14 @@ describe("composeProductionYouiSlot", () => {
 });
 
 describe("composeProductionCarouselSlot", () => {
+  afterEach(() => {
+    cleanup();
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: originalMatchMedia,
+    });
+  });
+
   test("maps fixture slides onto FactoryCarousel public slide contract", () => {
     const props = mapFixtureCarouselToFactoryCarouselProps(
       fixtureLandingPageData.carousel,
@@ -162,6 +189,47 @@ describe("composeProductionCarouselSlot", () => {
       expect(html).toContain(slide.command);
       expect(html).toContain(`data-factory-slide="${slide.id}"`);
     }
+  });
+
+  test("prefers-reduced-motion: reduce reports static carousel motion on production fill", async () => {
+    mockPrefersReducedMotion(true);
+    const { container } = render(
+      composeProductionCarouselSlot() as ReactElement,
+    );
+
+    await waitFor(() => {
+      expect(
+        container
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("static");
+    });
+
+    const activeTitle = fixtureLandingPageData.carousel.slides[0]?.title ?? "";
+    expect(container.querySelectorAll("[data-carousel-slide]").length).toBe(1);
+    expect(container.textContent).toContain(activeTitle);
+    expect(
+      container.querySelectorAll("[data-carousel-depth='neighbor']").length,
+    ).toBe(0);
+  });
+
+  test("no reduced-motion preference keeps depth carousel motion on production fill", async () => {
+    mockPrefersReducedMotion(false);
+    const { container } = render(
+      composeProductionCarouselSlot() as ReactElement,
+    );
+
+    await waitFor(() => {
+      expect(
+        container
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("depth");
+    });
+
+    expect(
+      container.querySelectorAll("[data-carousel-slide]").length,
+    ).toBeGreaterThan(1);
   });
 });
 
@@ -292,14 +360,34 @@ describe("composeProductionFooterSlot", () => {
 });
 
 describe("composeProductionLandingSlots", () => {
+  test("WIRED_PRODUCTION_LANDING_SLOTS includes Wave A keys plus Wave B carousel/faq/cta", () => {
+    expect([...WIRED_PRODUCTION_LANDING_SLOTS]).toEqual([
+      "header",
+      "hero",
+      "capability",
+      "youi",
+      "carousel",
+      "faq",
+      "cta",
+      "whaleBubbles",
+      "footer",
+    ]);
+  });
+
   test("returns only wired production slot keys", () => {
     const slots = composeProductionLandingSlots();
     const keys = Object.keys(slots).sort();
 
     expect(keys).toEqual([...WIRED_PRODUCTION_LANDING_SLOTS].sort());
+    expect(slots).toHaveProperty("header");
+    expect(slots).toHaveProperty("hero");
+    expect(slots).toHaveProperty("capability");
+    expect(slots).toHaveProperty("youi");
     expect(slots).toHaveProperty("carousel");
     expect(slots).toHaveProperty("faq");
     expect(slots).toHaveProperty("cta");
+    expect(slots).toHaveProperty("whaleBubbles");
+    expect(slots).toHaveProperty("footer");
   });
 
   test("LandingPage mounts wired fills including carousel, faq, and cta", () => {
@@ -324,6 +412,9 @@ describe("composeProductionLandingSlots", () => {
     expect(html).not.toContain('data-landing-placeholder="header"');
     expect(html).not.toContain('data-landing-placeholder="hero"');
     expect(html).not.toContain('data-landing-placeholder="footer"');
+    expect(html).not.toContain('data-landing-placeholder="capability"');
+    expect(html).not.toContain('data-landing-placeholder="youi"');
+    expect(html).not.toContain('data-landing-placeholder="whaleBubbles"');
 
     for (const slide of fixtureLandingPageData.carousel.slides) {
       expect(html).toContain(slide.title);
