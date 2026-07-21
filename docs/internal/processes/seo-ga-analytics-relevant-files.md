@@ -10,8 +10,18 @@ GTM, or JSON-LD).
 | --- | --- |
 | `src/lib/analytics/ga-measurement-id.ts` | `resolveGaMeasurementId` — env override + hardcoded fallback `G-80P18Q3LWQ` |
 | `src/lib/analytics/ga-measurement-id.test.ts` | Env-set, unset/fallback, whitespace fallback, explicit empty-omit proofs |
-| `src/app/root-layout.shared.tsx` | Shared `RootDocument` — mount `<GoogleAnalytics>` once here (story 003) |
+| `src/app/root-layout.shared.tsx` | Shared `RootDocument` — single `<GoogleAnalytics gaId={…} />` mount when ID is non-empty |
 | `.github/workflows/deploy-pages.yml` | Optional bake of `NEXT_PUBLIC_GA_MEASUREMENT_ID` on `make build` (story 004) |
+
+## RootDocument mount
+
+- Call `resolveGaMeasurementId()` once in `RootDocument`.
+- Render `<GoogleAnalytics gaId={gaId} />` from `@next/third-parties/google`
+  only when `gaId` is non-empty (sibling of `{children}` inside `<body>`).
+- Exact empty-omit (`""`) skips the component entirely.
+- Do not add raw `<script>` gtag HTML alongside the third-parties component.
+- Layouts that already wrap with `RootDocument` — `(site)`, `[locale]`,
+  `docs`, `(dev)` — inherit the tag without per-layout mounts.
 
 ## ID resolution contract
 
