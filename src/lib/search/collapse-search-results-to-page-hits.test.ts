@@ -148,7 +148,7 @@ describe("collapseSearchResultsToPageHits", () => {
   });
 
   test("collapses reference owning-page #heading-N spam to the bare page URL", () => {
-    const mcpPage = "/docs/references/mcp";
+    const mcpPage = "/docs/references/mcp-reference";
     const headingSpam = `${mcpPage}#heading-0`;
     const documentsByUrl = new Map<string, SearchDocument>([
       [

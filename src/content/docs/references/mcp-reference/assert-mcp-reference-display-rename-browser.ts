@@ -1,8 +1,9 @@
 /**
- * Browser verify for MCP reference display rename on `/docs/references/mcp`:
- * visible title reads MCP Reference, URL slug stays `/docs/references/mcp`,
- * and the legacy product title is not live H1/title chrome
- * (repair-mcp-reference-display-rename story 002).
+ * Browser verify for MCP reference route + display rename on
+ * `/docs/references/mcp-reference`: visible title reads MCP Reference, URL
+ * path is `/docs/references/mcp-reference`, inventory content loads, the legacy
+ * product title is not live H1/title chrome, and the old inventory path
+ * `/docs/references/mcp` is not silently serving this page.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  * Prefer `MCP_REFERENCE_RENAME_PROBE_BASE_URL` when a server is already warm.
@@ -12,7 +13,8 @@ import { type ChildProcess, spawn } from "node:child_process";
 import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
 
 const PORT = Number(process.env.MCP_REFERENCE_RENAME_PROBE_PORT ?? "3588");
-const PAGE_PATH = "/docs/references/mcp";
+const PAGE_PATH = "/docs/references/mcp-reference";
+const OLD_PAGE_PATH = "/docs/references/mcp";
 const DISPLAY_TITLE = "MCP Reference";
 const LEGACY_TITLE = "You Agent Factory MCP";
 const READY_TIMEOUT_MS = 180_000;
@@ -121,8 +123,8 @@ try {
         (anchor) => {
           const href = anchor.getAttribute("href") ?? "";
           return (
-            href === "/docs/references/mcp" ||
-            href.endsWith("/docs/references/mcp")
+            href === "/docs/references/mcp-reference" ||
+            href.endsWith("/docs/references/mcp-reference")
           );
         },
       );
@@ -178,18 +180,58 @@ try {
     );
   }
 
+  // Old inventory slug must not silently 200 as this page (no forever
+  // compatibility page / dual-slug under static export or next serve).
+  const oldResponse = await page.goto(`${base}${OLD_PAGE_PATH}`, {
+    waitUntil: "domcontentloaded",
+    timeout: 120_000,
+  });
+  const oldStatus = oldResponse?.status() ?? 0;
+  const oldFinalUrl = page.url();
+  const oldRedirectedToNew =
+    oldFinalUrl.includes(PAGE_PATH) ||
+    Boolean(oldResponse?.headers()?.location?.includes(PAGE_PATH));
+  const oldInventoryStillLive = await page.evaluate(() => {
+    const inventory = document.querySelector("[data-mcp-tool-inventory]");
+    return inventory?.getAttribute("data-inventory-state") === "success";
+  });
+  requireTrue(
+    oldStatus === 404 || (oldStatus >= 400 && !oldRedirectedToNew),
+    `old inventory slug not published/redirected (status=${oldStatus}, url=${oldFinalUrl})`,
+  );
+  requireTrue(
+    !oldRedirectedToNew,
+    "old /docs/references/mcp does not redirect to /docs/references/mcp-reference",
+  );
+  requireTrue(
+    !oldInventoryStillLive,
+    "old /docs/references/mcp is not serving the MCP inventory page",
+  );
+
   await browser.close();
 
   if (failures.length > 0) {
-    console.error("MCP reference display rename browser verify failed:");
+    console.error("MCP reference route rename browser verify failed:");
     for (const failure of failures) {
       console.error(`  - ${failure}`);
     }
-    console.error(JSON.stringify(probe, null, 2));
+    console.error(
+      JSON.stringify(
+        {
+          probe,
+          oldStatus,
+          oldFinalUrl,
+          oldRedirectedToNew,
+          oldInventoryStillLive,
+        },
+        null,
+        2,
+      ),
+    );
     process.exit(1);
   }
 
-  console.log("PASS: mcp reference display rename browser verify");
+  console.log("PASS: mcp reference route rename browser verify");
   console.log(
     JSON.stringify(
       {
@@ -198,6 +240,9 @@ try {
         documentTitle: probe.documentTitle,
         sidebarLabel: probe.sidebarLabel,
         inventoryState: probe.inventoryState,
+        oldStatus,
+        oldFinalUrl,
+        oldInventoryStillLive,
       },
       null,
       2,

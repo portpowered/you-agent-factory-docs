@@ -105,7 +105,7 @@ describe("factory search English identifiers in every locale (W16-007)", () => {
       },
       {
         query: "you.factory_session.get",
-        url: "/docs/references/mcp#you.factory_session.get",
+        url: "/docs/references/mcp-reference#you.factory_session.get",
       },
     ] as const;
 

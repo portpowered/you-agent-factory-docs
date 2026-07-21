@@ -1,11 +1,13 @@
 {
   "id": "reference.mcp",
-  "slug": "mcp",
+  "slug": "mcp-reference",
   "kind": "reference",
   "defaultTitleKey": "title",
   "defaultSummaryKey": "description",
   "aliases": [
+    "MCP",
     "MCP reference",
+    "You Agent Factory MCP",
     "Factory Session tools",
     "package MCP contract",
     "you-agent-factory MCP reference"

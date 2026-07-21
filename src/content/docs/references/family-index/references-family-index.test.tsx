@@ -180,7 +180,7 @@ describe("references family index", () => {
       "/docs/references/system-config-schema",
       "/docs/references/mock-workers-schema",
       "/docs/references/cli",
-      "/docs/references/mcp",
+      "/docs/references/mcp-reference",
       "/docs/references/javascript-runtime",
     ]);
     expect(
