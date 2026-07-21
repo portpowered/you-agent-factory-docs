@@ -77,6 +77,24 @@ Default en hrefs: `/docs/guides`, `/browse`, `/blog`.
 | `src/tests/content/home-page.test.tsx` | Asserts identity, CTAs, why/features, featured links, and non-en section structure |
 | `src/tests/layout/localized-route-metadata.test.ts` | Localized home metadata must use you-agent-factory identity (not Model Atlas) |
 
+## Shared code / terminal primitives (homepage-2 W-code)
+
+Homepage Wave B / integrate should import command presentation from
+`src/features/code/**`, not from docs `DocsCodeBlock` or
+`src/components/home/home-command-block.tsx`.
+
+| File | Role |
+| --- | --- |
+| `src/features/code/index.ts` | Public barrel: re-exports `CodeBlock`, `Terminal`, prop types, and copy-label constants |
+| `src/features/code/CodeBlock.tsx` | Content-first `{ code, title? }` block with `pre`/`code` + named copy (`Copy` / `Copied`) |
+| `src/features/code/CodeBlock.test.tsx` | Clipboard write + accessible-name unit coverage |
+| `src/features/code/Terminal.tsx` | Chromed `{ lines, chips?, variant?: "install" \| "dark" }` shell (yellow install vs dark pill) + named copy of joined lines |
+| `src/features/code/Terminal.test.tsx` | Joined-line clipboard write, accessible-name, chip chrome, and install/dark distinctness |
+| `src/app/(dev)/code-harness/page.tsx` | Gated fixture route: both Terminal variants + CodeBlock examples; `notFound()` in production unless `ENABLE_COMPONENT_EXAMPLES=1` |
+
+Do not couple this package to `src/features/landing-page/**` or production `/`
+while Wave A ships. Wave B / integrate should import from `@/features/code`.
+
 ## Patterns
 
 - Product identity on `/` is message-driven (`messages.home.*`), not `siteConfig.brand`.
