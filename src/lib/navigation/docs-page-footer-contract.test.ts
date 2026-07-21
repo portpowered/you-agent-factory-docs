@@ -2,15 +2,18 @@ import { describe, expect, test } from "bun:test";
 import {
   assertDocsFooterChromeCssConvergence,
   assertDocsFooterCompactSizingCssConvergence,
+  assertDocsFooterTitleUnderlineAbsenceCssConvergence,
   assertDocsFooterYellowDarkTextCssConvergence,
   assertFooterChromeContract,
   bundledCssHasFooterCompactSizingRule,
+  bundledCssHasFooterTitleUnderlineAbsenceRule,
   bundledCssHasFooterYellowDarkTextRule,
   extractFooterCardAnchorHtml,
   extractNdPageHtml,
   FOOTER_COMPACT_GAP,
   FOOTER_COMPACT_PADDING,
   FOOTER_DIRECTIONAL_SUBLABELS,
+  FOOTER_TITLE_TEXT_DECORATION,
   footerCardHasAccentHoverClasses,
   footerCardHasMutedDirectionalSublabel,
 } from "@/lib/navigation/docs-page-footer-contract";
@@ -89,34 +92,77 @@ describe("docs page footer contract", () => {
 
   test("bundledCssHasFooterCompactSizingRule matches compact padding/gap overrides", () => {
     const bundledCss = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
     `;
 
     expect(bundledCssHasFooterCompactSizingRule(bundledCss)).toBe(true);
     expect(assertDocsFooterCompactSizingCssConvergence(bundledCss)).toBeNull();
   });
 
-  test("assertDocsFooterChromeCssConvergence requires both yellow+dark-text and compact sizing", () => {
-    const bothRepairsCss = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
+  test("bundledCssHasFooterTitleUnderlineAbsenceRule matches underline strip + focus ring", () => {
+    const bundledCss = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{text-decoration:${FOOTER_TITLE_TEXT_DECORATION}!important;text-decoration-line:none!important;border-bottom-width:0!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:focus-visible,
+      #nd-page [data-testid="family-docs-footer-neighbors"] a:focus-visible{outline-style:solid!important;outline-width:2px!important;box-shadow:0 0 0 2px var(--ring)!important}
     `;
 
-    expect(assertDocsFooterChromeCssConvergence(bothRepairsCss)).toBeNull();
+    expect(bundledCssHasFooterTitleUnderlineAbsenceRule(bundledCss)).toBe(true);
+    expect(
+      assertDocsFooterTitleUnderlineAbsenceCssConvergence(bundledCss),
+    ).toBeNull();
+  });
+
+  test("assertDocsFooterChromeCssConvergence requires yellow+dark-text, compact sizing, and underline absence", () => {
+    const allRepairsCss = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important;text-decoration:${FOOTER_TITLE_TEXT_DECORATION}!important;text-decoration-line:none!important;border-bottom-width:0!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:focus-visible,
+      #nd-page [data-testid="family-docs-footer-neighbors"] a:focus-visible{outline-style:solid!important;outline-width:2px!important;box-shadow:0 0 0 2px var(--ring)!important}
+    `;
+
+    expect(assertDocsFooterChromeCssConvergence(allRepairsCss)).toBeNull();
 
     const missingCompact = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{text-decoration:${FOOTER_TITLE_TEXT_DECORATION}!important;border-bottom-width:0!important}
       #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:focus-visible,
+      #nd-page [data-testid="family-docs-footer-neighbors"] a:focus-visible{outline-style:solid!important;outline-width:2px!important;box-shadow:0 0 0 2px var(--ring)!important}
     `;
     expect(assertDocsFooterChromeCssConvergence(missingCompact)).toContain(
       "missing footer compact padding/gap",
     );
 
+    const missingFamilySurface = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important;text-decoration:${FOOTER_TITLE_TEXT_DECORATION}!important;border-bottom-width:0!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:focus-visible{outline-style:solid!important;outline-width:2px!important;box-shadow:0 0 0 2px var(--ring)!important}
+    `;
+    expect(
+      assertDocsFooterChromeCssConvergence(missingFamilySurface),
+    ).toContain("missing footer compact padding/gap");
+
     const missingYellowDark = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important;text-decoration:${FOOTER_TITLE_TEXT_DECORATION}!important;border-bottom-width:0!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:focus-visible,
+      #nd-page [data-testid="family-docs-footer-neighbors"] a:focus-visible{outline-style:solid!important;outline-width:2px!important;box-shadow:0 0 0 2px var(--ring)!important}
     `;
     expect(assertDocsFooterChromeCssConvergence(missingYellowDark)).toContain(
       "missing footer hover/focus yellow + dark-text",
     );
+
+    const missingUnderlineAbsence = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
+    `;
+    expect(
+      assertDocsFooterChromeCssConvergence(missingUnderlineAbsence),
+    ).toContain("missing footer title underline absence + focus-ring");
   });
 
   test("assertDocsFooterYellowDarkTextCssConvergence returns reason when yellow+dark-text rule is missing", () => {
@@ -151,6 +197,27 @@ describe("docs page footer contract", () => {
     expect(assertDocsFooterCompactSizingCssConvergence(tallCss)).toContain(
       "missing footer compact padding/gap",
     );
+  });
+
+  test("bundledCssHasFooterTitleUnderlineAbsenceRule rejects missing focus ring or underline strip", () => {
+    const missingFocusRing = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{text-decoration:none!important;border-bottom-width:0!important}
+    `;
+    expect(bundledCssHasFooterTitleUnderlineAbsenceRule(missingFocusRing)).toBe(
+      false,
+    );
+    expect(
+      assertDocsFooterTitleUnderlineAbsenceCssConvergence(missingFocusRing),
+    ).toContain("missing footer title underline absence + focus-ring");
+
+    const missingFamilySurface = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{text-decoration:none!important;border-bottom-width:0!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:focus-visible{outline-style:solid!important;outline-width:2px!important;box-shadow:0 0 0 2px var(--ring)!important}
+    `;
+    expect(
+      bundledCssHasFooterTitleUnderlineAbsenceRule(missingFamilySurface),
+    ).toBe(false);
   });
 
   test("assertFooterChromeContract passes on accent-hover footer cards with muted sublabels", () => {

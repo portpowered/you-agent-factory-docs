@@ -6,15 +6,19 @@ import {
   docsPageFooterCardSelector,
   docsPageFooterCompactGap,
   docsPageFooterCompactPadding,
+  docsPageFooterFamilyCardSelector,
   docsPageFooterHoverStateSelector,
   docsPageFooterMutedSublabelSelector,
+  docsPageFooterTitleTextDecoration,
 } from "@/features/docs/styles/docs-page-footer-chrome";
 import {
   assertDocsFooterChromeCssConvergence,
   assertDocsFooterCompactSizingCssConvergence,
+  assertDocsFooterTitleUnderlineAbsenceCssConvergence,
   assertDocsFooterYellowDarkTextCssConvergence,
   FOOTER_COMPACT_GAP,
   FOOTER_COMPACT_PADDING,
+  FOOTER_TITLE_TEXT_DECORATION,
 } from "@/lib/navigation/docs-page-footer-contract";
 
 const footerChromeCss = readFileSync(
@@ -34,6 +38,9 @@ describe("docs page footer chrome CSS contract", () => {
     expect(docsPageFooterCardSelector).toContain(
       "hover:text-fd-accent-foreground",
     );
+    expect(docsPageFooterFamilyCardSelector).toContain(
+      'data-testid="family-docs-footer-neighbors"',
+    );
     expect(docsPageFooterHoverStateSelector).toContain(":hover");
     expect(docsPageFooterHoverStateSelector).toContain(":focus-visible");
     expect(docsPageFooterMutedSublabelSelector).toContain(
@@ -45,15 +52,22 @@ describe("docs page footer chrome CSS contract", () => {
     expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverForeground).toBe(
       "var(--primary-foreground)",
     );
+    expect(docsPageFooterTitleTextDecoration).toBe(
+      FOOTER_TITLE_TEXT_DECORATION,
+    );
+    expect(docsPageFooterTitleTextDecoration).toBe("none");
   });
 
-  test("shared chrome stylesheet converges on yellow+dark-text and compact sizing together", () => {
+  test("shared chrome stylesheet converges on yellow+dark-text, compact sizing, and underline absence together", () => {
     expect(assertDocsFooterChromeCssConvergence(footerChromeCss)).toBeNull();
     expect(
       assertDocsFooterYellowDarkTextCssConvergence(footerChromeCss),
     ).toBeNull();
     expect(
       assertDocsFooterCompactSizingCssConvergence(footerChromeCss),
+    ).toBeNull();
+    expect(
+      assertDocsFooterTitleUnderlineAbsenceCssConvergence(footerChromeCss),
     ).toBeNull();
 
     expect(footerChromeCss).toContain(
@@ -68,11 +82,36 @@ describe("docs page footer chrome CSS contract", () => {
     );
   });
 
+  test("shared chrome stylesheet strips title underline and keeps focus-visible ring", () => {
+    expect(footerChromeCss).toContain(
+      `text-decoration: ${docsPageFooterTitleTextDecoration} !important`,
+    );
+    expect(footerChromeCss).toContain("text-decoration-line: none !important");
+    expect(footerChromeCss).toContain("border-bottom-width: 0 !important");
+    expect(footerChromeCss).toContain("outline-style: none");
+    // Focus ring retained on both accent-hover and live family footer cards.
+    expect(footerChromeCss).toContain("a:focus-visible");
+    expect(footerChromeCss).toContain("outline-style: solid !important");
+    expect(footerChromeCss).toContain("outline-width: 2px");
+    expect(footerChromeCss).toContain("box-shadow: 0 0 0 2px var(--ring)");
+    // Must not invent a second hover palette while polishing underlines.
+    expect(footerChromeCss).toContain(
+      "background-color: var(--docs-chrome-primary-yellow)",
+    );
+    expect(footerChromeCss).toContain("color: var(--primary-foreground)");
+    expect(
+      assertDocsFooterTitleUnderlineAbsenceCssConvergence(footerChromeCss),
+    ).toBeNull();
+  });
+
   test("selector exports stay wired into the shared chrome stylesheet", () => {
     const normalizedCss = normalizeSelectorContract(footerChromeCss);
 
     expect(normalizedCss).toContain(
       normalizeSelectorContract(docsPageFooterCardSelector),
+    );
+    expect(normalizedCss).toContain(
+      normalizeSelectorContract(docsPageFooterFamilyCardSelector),
     );
     expect(normalizedCss).toContain(
       normalizeSelectorContract(docsPageFooterHoverStateSelector),

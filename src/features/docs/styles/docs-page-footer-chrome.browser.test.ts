@@ -14,7 +14,9 @@ import {
   DOCS_PAGE_FOOTER_HOVER_TOKENS,
   docsPageFooterCompactGap,
   docsPageFooterCompactPadding,
+  docsPageFooterTitleTextDecoration,
 } from "@/features/docs/styles/docs-page-footer-chrome";
+import { FOOTER_TITLE_TEXT_DECORATION } from "@/lib/navigation/docs-page-footer-contract";
 import {
   closePlaywrightBrowserWithTimeout,
   launchPlaywrightBrowser,
@@ -42,10 +44,15 @@ const COMPACT_GAP_PX = 4; // 0.25rem
 const FOOTER_CARD_CLASS =
   "flex flex-col gap-2 rounded-lg border bg-fd-card p-4 text-sm transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground";
 
+/** Mirrors FamilyDocsFooterNeighbors card classes (live docs surface). */
+const FAMILY_FOOTER_CARD_CLASS =
+  "flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-muted/80";
+
 type FooterCardProbe = {
   color: string;
   backgroundColor: string;
   outlineWidth: string;
+  outlineStyle: string;
   boxShadow: string;
   paddingTop: string;
   paddingRight: string;
@@ -53,6 +60,9 @@ type FooterCardProbe = {
   paddingLeft: string;
   gap: string;
   sublabelColor: string;
+  textDecorationLine: string;
+  titleTextDecorationLine: string;
+  titleBorderBottomWidth: string;
 };
 
 function buildFooterChromeFixtureHtml(includeChromeCss: boolean): string {
@@ -99,7 +109,17 @@ function buildFooterChromeFixtureHtml(includeChromeCss: boolean): string {
         /* Fumadocs footer cards inherit page foreground at rest (not UA link blue). */
         #nd-page a[class*="hover:text-fd-accent-foreground"] {
           color: inherit;
-          text-decoration: none;
+        }
+        /*
+         * DocsBody/prose underlines anchors — reproduce so chrome must clear
+         * title underlines on both accent-hover and family footer surfaces.
+         */
+        #nd-page a {
+          text-decoration: underline;
+          text-decoration-line: underline;
+        }
+        #nd-page a p {
+          border-bottom: 1px solid currentColor;
         }
       }
       ${competingUtilities}
@@ -115,7 +135,7 @@ function buildFooterChromeFixtureHtml(includeChromeCss: boolean): string {
           data-footer-card="previous"
         >
           <p class="text-fd-muted-foreground truncate">Previous Page</p>
-          Previous Title
+          <p data-footer-title>Previous Title</p>
         </a>
         <a
           class="${FOOTER_CARD_CLASS}"
@@ -123,7 +143,35 @@ function buildFooterChromeFixtureHtml(includeChromeCss: boolean): string {
           data-footer-card="next"
         >
           <p class="text-fd-muted-foreground truncate">Next Page</p>
-          Next Title
+          <p data-footer-title>Next Title</p>
+        </a>
+      </nav>
+      <nav
+        aria-label="Page navigation"
+        data-testid="family-docs-footer-neighbors"
+        style="display:grid;gap:1rem;padding:1rem;grid-template-columns:1fr 1fr;"
+      >
+        <a
+          class="${FAMILY_FOOTER_CARD_CLASS}"
+          href="/docs/family-prev"
+          data-footer-card="family-previous"
+        >
+          <div class="inline-flex items-center gap-1.5 font-medium">
+            <span aria-hidden="true">←</span>
+            <p data-footer-title>Family Previous Title</p>
+          </div>
+          <p class="truncate text-muted-foreground">Previous page</p>
+        </a>
+        <a
+          class="${FAMILY_FOOTER_CARD_CLASS} text-end"
+          href="/docs/family-next"
+          data-footer-card="family-next"
+        >
+          <div class="inline-flex items-center gap-1.5 font-medium flex-row-reverse">
+            <span aria-hidden="true">→</span>
+            <p data-footer-title>Family Next Title</p>
+          </div>
+          <p class="truncate text-muted-foreground">Next page</p>
         </a>
       </nav>
     </article>
@@ -135,7 +183,7 @@ async function probeFooterCard(
   page: {
     evaluate: <T>(fn: (cardKey: string) => T, cardKey: string) => Promise<T>;
   },
-  cardKey: "previous" | "next",
+  cardKey: "previous" | "next" | "family-previous" | "family-next",
 ): Promise<FooterCardProbe> {
   return page.evaluate((key) => {
     const card = document.querySelector(
@@ -145,17 +193,25 @@ async function probeFooterCard(
       throw new Error(`fixture missing footer card ${key}`);
     }
     const sublabel = card.querySelector(
-      "p.text-fd-muted-foreground",
+      "p.text-fd-muted-foreground, p.text-muted-foreground, p.truncate",
     ) as HTMLElement | null;
     if (!sublabel) {
       throw new Error(`fixture missing muted sublabel on ${key}`);
     }
+    const title = card.querySelector(
+      "[data-footer-title]",
+    ) as HTMLElement | null;
+    if (!title) {
+      throw new Error(`fixture missing title on ${key}`);
+    }
     const style = getComputedStyle(card);
     const sublabelStyle = getComputedStyle(sublabel);
+    const titleStyle = getComputedStyle(title);
     return {
       color: style.color,
       backgroundColor: style.backgroundColor,
       outlineWidth: style.outlineWidth,
+      outlineStyle: style.outlineStyle,
       boxShadow: style.boxShadow,
       paddingTop: style.paddingTop,
       paddingRight: style.paddingRight,
@@ -163,8 +219,17 @@ async function probeFooterCard(
       paddingLeft: style.paddingLeft,
       gap: style.gap || style.rowGap,
       sublabelColor: sublabelStyle.color,
+      textDecorationLine: style.textDecorationLine,
+      titleTextDecorationLine: titleStyle.textDecorationLine,
+      titleBorderBottomWidth: titleStyle.borderBottomWidth,
     };
   }, cardKey);
+}
+
+function expectNoTitleUnderline(probe: FooterCardProbe): void {
+  expect(probe.textDecorationLine).toBe("none");
+  expect(probe.titleTextDecorationLine).toBe("none");
+  expect(parsePx(probe.titleBorderBottomWidth)).toBe(0);
 }
 
 function parsePx(value: string): number {
@@ -191,6 +256,10 @@ describe("docs page footer chrome behavioral (always-on)", () => {
   test("compact token exports stay aligned with rem→px fixture expectations", () => {
     expect(docsPageFooterCompactPadding).toBe("0.5rem 0.75rem");
     expect(docsPageFooterCompactGap).toBe("0.25rem");
+    expect(docsPageFooterTitleTextDecoration).toBe(
+      FOOTER_TITLE_TEXT_DECORATION,
+    );
+    expect(docsPageFooterTitleTextDecoration).toBe("none");
     expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverBackground).toBe(
       "var(--docs-chrome-primary-yellow)",
     );
@@ -199,7 +268,7 @@ describe("docs page footer chrome behavioral (always-on)", () => {
     );
   });
 
-  test("Playwright fixture: hover/focus show yellow highlight with dark text and compact sizing", async () => {
+  test("Playwright fixture: density, no title underline, focus ring, and yellow+dark hover hold together", async () => {
     const browser = await launchPlaywrightBrowser();
     try {
       const page = await browser.newPage({
@@ -217,7 +286,9 @@ describe("docs page footer chrome behavioral (always-on)", () => {
           const resting = await probeFooterCard(page, cardKey);
           expect(resting.color).toBe(FOREGROUND_RGB);
           expect(resting.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
+          expect(resting.outlineStyle).toBe("none");
           expectCompactSizing(resting);
+          expectNoTitleUnderline(resting);
 
           await card.hover();
           const hovered = await probeFooterCard(page, cardKey);
@@ -226,6 +297,7 @@ describe("docs page footer chrome behavioral (always-on)", () => {
           expect(hovered.color).not.toBe(ACCENT_FOREGROUND_RGB);
           expect(hovered.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
           expectCompactSizing(hovered);
+          expectNoTitleUnderline(hovered);
 
           await card.focus();
           const focused = await probeFooterCard(page, cardKey);
@@ -234,8 +306,33 @@ describe("docs page footer chrome behavioral (always-on)", () => {
           expect(focused.color).not.toBe(ACCENT_FOREGROUND_RGB);
           expect(focused.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
           expect(parsePx(focused.outlineWidth)).toBeGreaterThanOrEqual(2);
+          expect(focused.outlineStyle).toBe("solid");
           expect(focused.boxShadow).toContain(RING_RGB);
           expectCompactSizing(focused);
+          expectNoTitleUnderline(focused);
+        }
+
+        // Live docs pages use FamilyDocsFooterNeighbors — density + underline
+        // + focus ring must land there (yellow hover remains accent-hover only).
+        for (const cardKey of ["family-previous", "family-next"] as const) {
+          const card = page.locator(`[data-footer-card="${cardKey}"]`);
+          const resting = await probeFooterCard(page, cardKey);
+          expectCompactSizing(resting);
+          expectNoTitleUnderline(resting);
+          expect(resting.outlineStyle).toBe("none");
+
+          await card.hover();
+          const hovered = await probeFooterCard(page, cardKey);
+          expectCompactSizing(hovered);
+          expectNoTitleUnderline(hovered);
+
+          await card.focus();
+          const focused = await probeFooterCard(page, cardKey);
+          expectCompactSizing(focused);
+          expectNoTitleUnderline(focused);
+          expect(parsePx(focused.outlineWidth)).toBeGreaterThanOrEqual(2);
+          expect(focused.outlineStyle).toBe("solid");
+          expect(focused.boxShadow).toContain(RING_RGB);
         }
       } finally {
         await page.close();
@@ -259,11 +356,20 @@ describe("docs page footer chrome behavioral (always-on)", () => {
         const card = page.locator('[data-footer-card="next"]');
         const resting = await probeFooterCard(page, "next");
         expectTallSizing(resting);
+        expect(resting.textDecorationLine).toContain("underline");
+        expect(parsePx(resting.titleBorderBottomWidth)).toBeGreaterThan(0);
 
         await card.hover();
         const hovered = await probeFooterCard(page, "next");
         expect(hovered.color).toBe(ACCENT_FOREGROUND_RGB);
         expectTallSizing(hovered);
+
+        const familyResting = await probeFooterCard(page, "family-next");
+        expectTallSizing(familyResting);
+        expect(familyResting.textDecorationLine).toContain("underline");
+        expect(parsePx(familyResting.titleBorderBottomWidth)).toBeGreaterThan(
+          0,
+        );
       } finally {
         await page.close();
       }

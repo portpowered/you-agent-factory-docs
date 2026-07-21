@@ -6,6 +6,14 @@ export const docsPageFooterCardSelector =
   '#nd-page a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]';
 
 /**
+ * Live docs Previous/Next cards rendered by FamilyDocsFooterNeighbors
+ * (Fumadocs Footer is disabled). Compact density must target this surface.
+ * Keep in sync with docs-page-footer-chrome.css.
+ */
+export const docsPageFooterFamilyCardSelector =
+  '#nd-page [data-testid="family-docs-footer-neighbors"] a';
+
+/**
  * Hover/focus card state: primary yellow fill + dark accent-ink text.
  * Same interactive language as collection resource-card hover.
  */
@@ -35,3 +43,10 @@ export const docsPageFooterCompactPadding = "0.5rem 0.75rem";
  * Keep in sync with FOOTER_COMPACT_GAP in docs-page-footer-contract.
  */
 export const docsPageFooterCompactGap = "0.25rem";
+
+/**
+ * Title underline must stay off at rest and hover (prose/DocsBody underlines
+ * anchors). Keep in sync with FOOTER_TITLE_TEXT_DECORATION in
+ * docs-page-footer-contract and docs-page-footer-chrome.css.
+ */
+export const docsPageFooterTitleTextDecoration = "none";

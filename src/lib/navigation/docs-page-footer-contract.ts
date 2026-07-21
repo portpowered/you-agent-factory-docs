@@ -66,6 +66,12 @@ export const FOOTER_COMPACT_PADDING = "0.5rem 0.75rem";
 /** Compact gap expected from docs-page-footer-chrome (beats Fumadocs `gap-2`). */
 export const FOOTER_COMPACT_GAP = "0.25rem";
 
+/**
+ * Title underline must stay off at rest and hover (DocsBody/prose underlines
+ * anchors). Keep in sync with docsPageFooterTitleTextDecoration.
+ */
+export const FOOTER_TITLE_TEXT_DECORATION = "none";
+
 function bundledCssHasAccentHoverFooterSelector(normalized: string): boolean {
   const hasAccentHoverSelector =
     normalized.includes('a[class*="hover:bg-fd-accent"]') ||
@@ -80,6 +86,16 @@ function bundledCssHasAccentHoverFooterSelector(normalized: string): boolean {
     normalized.includes("#nd-page") &&
     hasAccentHoverSelector &&
     hasAccentForegroundSelector
+  );
+}
+
+/** Live family-scoped footer neighbor cards (Fumadocs Footer disabled). */
+function bundledCssHasFamilyFooterCardSelector(normalized: string): boolean {
+  return (
+    normalized.includes("#nd-page") &&
+    (normalized.includes('[data-testid="family-docs-footer-neighbors"]') ||
+      normalized.includes("[data-testid=family-docs-footer-neighbors]") ||
+      normalized.includes('[data-testid=\\"family-docs-footer-neighbors\\"]'))
   );
 }
 
@@ -120,8 +136,9 @@ export function bundledCssHasFooterYellowDarkTextRule(css: string): boolean {
 }
 
 /**
- * Bundled/app CSS must override Fumadocs tall `p-4` / `gap-2` with compact
- * padding and gap on the same accent-hover footer card selector.
+ * Bundled/app CSS must override tall `p-4` / `gap-2` with compact padding and
+ * gap on both the accent-hover footer fixture selector and the live
+ * family-docs-footer-neighbors surface (docs pages disable Fumadocs Footer).
  */
 export function bundledCssHasFooterCompactSizingRule(css: string): boolean {
   const normalized = normalizeBundledCss(css);
@@ -142,10 +159,55 @@ export function bundledCssHasFooterCompactSizingRule(css: string): boolean {
 
   return (
     bundledCssHasAccentHoverFooterSelector(normalized) &&
+    bundledCssHasFamilyFooterCardSelector(normalized) &&
     hasCompactPadding &&
     hasCompactGap &&
     !reintroducesTallPadding &&
     !reintroducesTallGap
+  );
+}
+
+/**
+ * Bundled/app CSS must strip title underline / border-under-title on both
+ * accent-hover and family-docs-footer-neighbors surfaces, while retaining an
+ * accessible focus-visible ring (outline + ring box-shadow) on both.
+ */
+export function bundledCssHasFooterTitleUnderlineAbsenceRule(
+  css: string,
+): boolean {
+  const normalized = normalizeBundledCss(css);
+  const hasTextDecorationNone =
+    normalized.includes("text-decoration:none!important") ||
+    normalized.includes("text-decoration:none;") ||
+    normalized.includes("text-decoration-line:none!important") ||
+    normalized.includes("text-decoration-line:none;");
+  const hasBorderUnderTitleCleared =
+    normalized.includes("border-bottom-width:0!important") ||
+    normalized.includes("border-bottom-width:0;") ||
+    normalized.includes("border-bottom-style:none!important") ||
+    normalized.includes("border-bottom-style:none;");
+  const hasFocusVisibleRing =
+    normalized.includes("a:focus-visible") &&
+    (normalized.includes("outline-style:solid!important") ||
+      normalized.includes("outline-style:solid;")) &&
+    (normalized.includes("outline-width:2px!important") ||
+      normalized.includes("outline-width:2px;")) &&
+    // normalizeBundledCss collapses spaces, so `0 0 0 2px` becomes `0002px`.
+    (normalized.includes("box-shadow:0002pxvar(--ring)!important") ||
+      normalized.includes("box-shadow:0002pxvar(--ring)") ||
+      normalized.includes("box-shadow:0 0 0 2px var(--ring)!important") ||
+      normalized.includes("box-shadow:0 0 0 2px var(--ring)"));
+  const reintroducesTitleUnderline =
+    normalized.includes("text-decoration:underline!important") ||
+    normalized.includes("text-decoration-line:underline!important");
+
+  return (
+    bundledCssHasAccentHoverFooterSelector(normalized) &&
+    bundledCssHasFamilyFooterCardSelector(normalized) &&
+    hasTextDecorationNone &&
+    hasBorderUnderTitleCleared &&
+    hasFocusVisibleRing &&
+    !reintroducesTitleUnderline
   );
 }
 
@@ -178,18 +240,33 @@ export function assertDocsFooterCompactSizingCssConvergence(
 }
 
 /**
- * Combined chrome convergence: yellow highlight + dark text on hover/focus
- * AND compact card padding/gap — the two repairs this lane locks together.
+ * Returns a failure reason when bundled app CSS lacks title underline absence
+ * (and retained focus-visible ring) on prev/next footer cards.
+ */
+export function assertDocsFooterTitleUnderlineAbsenceCssConvergence(
+  css: string,
+): string | null {
+  if (bundledCssHasFooterTitleUnderlineAbsenceRule(css)) {
+    return null;
+  }
+
+  return "bundled app CSS missing footer title underline absence + focus-ring rule pairing";
+}
+
+/**
+ * Combined chrome convergence: yellow highlight + dark text on hover/focus,
+ * compact card padding/gap, and title underline absence with focus-ring
+ * retained — the density + underline polish this lane locks together with #183.
  */
 export function assertDocsFooterChromeCssConvergence(
   css: string,
 ): string | null {
   return (
     assertDocsFooterYellowDarkTextCssConvergence(css) ??
-    assertDocsFooterCompactSizingCssConvergence(css)
+    assertDocsFooterCompactSizingCssConvergence(css) ??
+    assertDocsFooterTitleUnderlineAbsenceCssConvergence(css)
   );
 }
-
 /**
  * Returns a failure reason when built HTML footer cards inside #nd-page do not
  * match the accent-hover anchor and muted directional sublabel contract.
