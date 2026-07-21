@@ -78,7 +78,7 @@ describe("CLI page templates under docs/templates", () => {
     });
   }
 
-  test("CLI templates keep isolation-first section order before related", () => {
+  test("CLI templates keep isolation-first section order without RelatedDocs chrome", () => {
     const sectionOrderByKind: Record<
       (typeof cliTemplateKinds)[number],
       string[]
@@ -88,35 +88,40 @@ describe("CLI page templates under docs/templates", () => {
         "when-to-use",
         "steps-or-workflow",
         "common-pitfalls",
-        "related",
+        "tags",
+        "references",
       ],
       concept: [
         "what-it-is",
         "why-it-matters",
         "simple-example",
         "common-confusions",
-        "related",
+        "tags",
+        "references",
       ],
       technique: [
         "what-it-is",
         "why-it-matters",
         "how-it-works",
         "compared-to-nearby-techniques",
-        "related",
+        "tags",
+        "references",
       ],
       documentation: [
         "what-it-covers",
         "key-concepts",
         "how-to-use",
         "limits-and-assumptions",
-        "related",
+        "tags",
+        "references",
       ],
       reference: [
         "what-it-covers",
         "key-concepts",
         "how-to-use",
         "limits-and-assumptions",
-        "related",
+        "tags",
+        "references",
       ],
     };
 
@@ -126,7 +131,10 @@ describe("CLI page templates under docs/templates", () => {
         ...mdx.matchAll(/<Section\b[^>]*\bid="([^"]+)"/g),
       ].map((match) => match[1]);
       const expected = sectionOrderByKind[kind];
-      expect(sectionIds.slice(0, expected.length)).toEqual(expected);
+      expect(sectionIds).toEqual(expected);
+      expect(mdx).not.toContain("<RelatedDocs");
+      expect(mdx).not.toContain("<DerivedRelatedDocs");
+      expect(mdx).not.toContain('id="related"');
     }
   });
 });

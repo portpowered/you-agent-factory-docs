@@ -65,8 +65,8 @@ export const REFERENCE_PAYLOAD_BUDGET_MEASUREMENT_METHOD = {
    * Re-measure on this lane's `out/` before raising ceilings.
    */
   baselineSource: {
-    measuredAtUtc: "2026-07-19T13:30:00Z",
-    note: "Factory-schema HTML remeasured after recursive `$defs` catalog splay + authored full-config example on /docs/references/factory-schema (repair-factory-schema-click-splay-example). CI export observed ~1.98–2.00 MiB HTML; attributable JS unchanged (~2.14 MiB). API/events baselines unchanged from the prior Fumadocs APIPage measurement.",
+    measuredAtUtc: "2026-07-21T09:30:00Z",
+    note: "Events HTML remeasured after intentional linked OpenAPI component splay on /docs/references/events (repair-events-inline-schema-components-splay) — ~164 nested published component schemas inlined so InferenceOutcome-class deep links resolve on-page. Dev SSR HTML observed 4_527_337 bytes (assert-events-page-inline-schema-splay-browser.ts); attributable JS unchanged (~2.14 MiB). Factory-schema remains the prior `$defs` catalog splay baseline (~1.98–2.00 MiB). API baseline unchanged from the prior Fumadocs APIPage measurement.",
   } as const,
 } as const;
 
@@ -102,9 +102,12 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
     {
       routeId: "references-events",
       path: "/docs/references/events",
-      measuredHtmlBytes: 2_076_020,
+      // Linked component schema splay inlines transitive published `$ref`
+      // targets (InferenceOutcome-class) on the events page.
+      measuredHtmlBytes: 4_527_337,
       measuredJsPayloadBytes: 2_136_570,
-      maxHtmlBytes: 2_600_000,
+      // ~25% headroom above the post-splay SSR HTML measurement.
+      maxHtmlBytes: 5_700_000,
       maxJsPayloadBytes: 2_500_000,
     },
     {

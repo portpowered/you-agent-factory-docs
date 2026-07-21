@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
 import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
+import { isModeAProgramOverviewPendingExplorerMembership } from "@/lib/content/sidebar-grouping";
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 import { source } from "@/lib/source";
 
@@ -152,10 +153,12 @@ describe("docs navigation source", () => {
           if (section !== "documentation") {
             return true;
           }
-          // FAQ is top-level; W18 move stubs keep compatibility HTML only.
+          // FAQ is top-level; W18 move stubs and Mode A overviews pending
+          // PS-300 keep published routes without Program explorer membership.
           return (
             !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
-            !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)
+            !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug) &&
+            !isModeAProgramOverviewPendingExplorerMembership(page.docsSlug)
           );
         })
         .map((page) => page.url);

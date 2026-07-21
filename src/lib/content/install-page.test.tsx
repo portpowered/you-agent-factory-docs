@@ -1,7 +1,7 @@
 /**
- * Page-owned render proof for documentation/install.
- * Covers localized ja / zh-CN / vi prose beyond English stubs and keeps
- * install command literals copyable in the MDX body.
+ * Page-owned render proof for documentation/install (PS-200 stub).
+ * Asserts thin compatibility behavior: points at Getting Started and does not
+ * re-teach OS scripts + Claude init as the primary page job.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -20,36 +20,37 @@ describe("install documentation page", () => {
     cleanup();
   });
 
-  test("renders OS install commands, Claude init, Codex default, and next-step hrefs", async () => {
+  test("renders Getting Started stub without OS+Claude install teaching", async () => {
     const loadedPage = await loadLocalDocsPage({
       section: "documentation",
       slug: "install",
     });
 
     expect(loadedPage.messages.title).toBe("Install you-agent-factory");
-    expect(loadedPage.messages.description).toContain("you-agent-factory");
+    expect(loadedPage.messages.description).toMatch(/Getting Started/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-    expect(loadedPage.messages.openingSummary).toMatch(
-      /Install the you-agent-factory CLI/i,
-    );
+    expect(loadedPage.messages.openingSummary).toMatch(/Getting Started/i);
+    expect(Object.keys(loadedPage.messages.sections ?? {}).sort()).toEqual([
+      "installPath",
+    ]);
+    expect(Object.keys(loadedPage.messages.links ?? {}).sort()).toEqual([
+      "gettingStarted",
+    ]);
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(loadedPage.messages.links?.macosLinuxLabel).toBeUndefined();
+    expect(loadedPage.messages.links?.claudeInitLabel).toBeUndefined();
+    expect(loadedPage.messages.callouts).toBeUndefined();
 
-    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+    const installPath = String(
+      loadedPage.messages.sections?.installPath?.body ?? "",
     );
-    expect(howToUse).toMatch(
-      /Run the install command for your operating system/i,
-    );
-    expect(howToUse).toMatch(/--executor claude/i);
-    expect(limits).toMatch(/Install covers getting the CLI onto a machine/i);
-    expect(howToUse).not.toMatch(
-      /This page|on this page|Install is the reference for|reader.?shortcut/i,
-    );
-    expect(limits).not.toMatch(
-      /This page|on this page|web .+ reference|reader.?shortcut/i,
-    );
+    expect(installPath).toMatch(/Getting Started/i);
+    expect(installPath).toMatch(/install path/i);
+    expect(installPath).not.toMatch(/This page|on this page|reader.?shortcut/i);
+    expect(installPath).not.toMatch(/install\.sh|install\.ps1|--executor/i);
 
     render(
       <main>
@@ -66,66 +67,54 @@ describe("install documentation page", () => {
       screen.queryByRole("heading", { name: "What It Covers" }),
     ).toBeNull();
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
-    expect(document.getElementById("what-it-covers")).toBeNull();
-    expect(document.getElementById("key-concepts")).toBeNull();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
-      screen.getByRole("heading", { name: "Limits And Assumptions" }),
-    ).toBeTruthy();
-
-    expect(screen.getByText(INSTALL_SH)).toBeTruthy();
-    expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
-    expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
-    expect(
-      screen.getByText(
-        /Omitting --executor keeps the default Codex-backed starter scaffold/i,
-      ),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(document.getElementById("how-to-use")).toBeNull();
+    expect(document.getElementById("install-path")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Install path" })).toBeTruthy();
+    expect(screen.queryByText(INSTALL_SH)).toBeNull();
+    expect(screen.queryByText(INSTALL_PS1)).toBeNull();
+    expect(screen.queryByText(CLAUDE_INIT)).toBeNull();
 
     const gettingStarted = screen.getByRole("link", {
       name: "Getting started",
     });
-    const cliDocs = screen.getByRole("link", {
-      name: "CLI docs",
-    });
     expect(gettingStarted.getAttribute("href")).toBe(
       "/docs/guides/getting-started",
     );
-    expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
+    expect(screen.queryByRole("link", { name: "CLI docs" })).toBeNull();
   });
 
   test.each([
     {
       locale: "ja" as SiteLocale,
       title: "you-agent-factory のインストール",
-      howToUseHeading: "使い方",
-      proseNeedle: /お使いの OS 向けのインストールコマンド/,
+      installPathHeading: "インストールの経路",
+      proseNeedle: /はじめに/,
       gettingStartedLabel: "はじめに",
-      cliDocsLabel: "CLI ドキュメント",
     },
     {
       locale: "zh-CN" as SiteLocale,
       title: "安装 you-agent-factory",
-      howToUseHeading: "如何使用",
-      proseNeedle: /运行适用于你操作系统的安装命令/,
+      installPathHeading: "安装路径",
+      proseNeedle: /快速开始/,
       gettingStartedLabel: "快速开始",
-      cliDocsLabel: "CLI 文档",
     },
     {
       locale: "vi" as SiteLocale,
       title: "Cài đặt you-agent-factory",
-      howToUseHeading: "Cách dùng",
-      proseNeedle: /Chạy lệnh cài đặt cho hệ điều hành của bạn/,
+      installPathHeading: "Đường dẫn cài đặt",
+      proseNeedle: /Bắt đầu/,
       gettingStartedLabel: "Bắt đầu",
-      cliDocsLabel: "Tài liệu CLI",
     },
-  ])("renders $locale install with real target-language prose and copyable commands", async ({
+  ])("renders $locale install stub with target-language prose and Getting Started link", async ({
     locale,
     title,
-    howToUseHeading,
+    installPathHeading,
     proseNeedle,
     gettingStartedLabel,
-    cliDocsLabel,
   }) => {
     const en = await loadLocalDocsPage({
       section: "documentation",
@@ -140,15 +129,18 @@ describe("install documentation page", () => {
     expect(localized.messages.title).not.toBe(en.messages.title);
     expect(localized.messages.description).not.toBe(en.messages.description);
     expect(localized.messages.description).toContain("you-agent-factory");
-    expect(String(localized.messages.sections?.howToUse?.body ?? "")).toMatch(
-      proseNeedle,
-    );
-    expect(localized.messages.sections?.whatItCovers).toBeUndefined();
-    expect(localized.messages.sections?.keyConcepts).toBeUndefined();
-    expect(localized.messages.links?.macosLinuxLabel).toBe("macOS / Linux");
-    expect(localized.messages.links?.windowsLabel).toBe("Windows (PowerShell)");
+    expect(
+      String(localized.messages.sections?.installPath?.body ?? ""),
+    ).toMatch(proseNeedle);
+    expect(localized.messages.sections?.howToUse).toBeUndefined();
     expect(Object.keys(localized.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
+    );
+    expect(Object.keys(localized.messages.sections ?? {}).sort()).toEqual(
+      Object.keys(en.messages.sections ?? {}).sort(),
+    );
+    expect(Object.keys(localized.messages.links ?? {}).sort()).toEqual(
+      Object.keys(en.messages.links ?? {}).sort(),
     );
 
     render(
@@ -163,21 +155,19 @@ describe("install documentation page", () => {
       </main>,
     );
 
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
-      screen.queryByRole("heading", { name: "What It Covers" }),
-    ).toBeNull();
-    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
-    expect(screen.getByRole("heading", { name: howToUseHeading })).toBeTruthy();
-    expect(screen.getByText(INSTALL_SH)).toBeTruthy();
-    expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
-    expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
-    expect(
-      screen.getByRole("link", { name: gettingStartedLabel }),
+      screen.getByRole("heading", { name: installPathHeading }),
     ).toBeTruthy();
-    expect(screen.getByRole("link", { name: cliDocsLabel })).toBeTruthy();
-    expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-    expect(document.body.textContent ?? "").not.toContain(
-      "Install is the reference for getting you-agent-factory onto a machine",
+    expect(screen.queryByText(INSTALL_SH)).toBeNull();
+    expect(screen.queryByText(INSTALL_PS1)).toBeNull();
+    expect(screen.queryByText(CLAUDE_INIT)).toBeNull();
+    const gettingStarted = screen.getByRole("link", {
+      name: gettingStartedLabel,
+    });
+    expect(gettingStarted.getAttribute("href")).toBe(
+      "/docs/guides/getting-started",
     );
+    expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });

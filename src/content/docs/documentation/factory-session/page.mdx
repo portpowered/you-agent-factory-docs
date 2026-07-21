@@ -1,6 +1,6 @@
 ---
-title: "Factory Session"
-description: "This page moved to /docs/factories/sessions."
+title: "Factory Sessions"
+description: "A Factory Session is the live runtime unit on a running you-agent-factory host—what you discover, inspect, pause or resume, and address when submitting work."
 kind: "documentation"
 registryId: "documentation.factory-session"
 messageNamespace: "local"
@@ -8,11 +8,61 @@ assetNamespace: "local"
 status: "published"
 tags: []
 aliases:
+  - "Factory Sessions"
   - "Factory Session"
   - "factory sessions"
   - "session"
-updatedAt: "2026-07-18"
+updatedAt: "2026-07-21"
 ---
 
-{/* W18 static compatibility document: preserves the inbound URL and links to the family target. */}
-<DocumentationRouteCompatibilityDocument oldRoute="/docs/documentation/factory-session" />
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="how-it-fits" titleKey="sections.howItFits.title">
+  <T k="sections.howItFits.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/factories/sessions",
+        labelKey: "links.factorySessionsDepth",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWorkDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.factory-session" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.factory-session" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.factory-session" />
+</Section>

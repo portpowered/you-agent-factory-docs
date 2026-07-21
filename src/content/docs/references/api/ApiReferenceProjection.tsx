@@ -35,6 +35,7 @@ import {
   ApiSurface,
   loadApiOpenApiSinglePageProjection,
 } from "@/components/references/api";
+import "@/features/docs/styles/references-api-accents.css";
 import "@/features/docs/styles/references-api-print.css";
 import { cn } from "@/lib/utils";
 import { apiReferenceProductionLoaders } from "./api-reference-production-loaders";

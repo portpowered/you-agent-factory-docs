@@ -192,6 +192,33 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    `src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx`
    locks published presence, compatibility HTML + target link, family
    Metadata canonical, and sitemap exclusion after demotion.
+8. **Mode A overview restoration (PS-210 dual-page IA):** when a former §10
+   move stub is restored as a Program Mode A capability overview (for example
+   `/docs/documentation/factory-session`,
+   `/docs/documentation/dynamic-workflows`, or
+   `/docs/documentation/packaged-factories`), remove that row from
+   `DOCUMENTATION_ROUTE_MIGRATION_LEDGER`, drop its
+   `DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS` remap, shrink
+   `DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT`, and replace the
+   compatibility MDX with a Mode A overview that links to Mode B depth. The
+   restored route becomes its own canonical discovery destination again;
+   Mode B family pages stay published as Reference depth. Update ledger
+   expected-mapping tests, R02 demoted-stub inventories when the route was
+   listed there, and process notes in the same change. When adding the
+   optional reciprocal “what it is” pointer, put a LocalizedLinkList entry
+   on the Mode B Related list first (for example
+   `/docs/factories/sessions` → `/docs/documentation/factory-session`) and
+   assert the href in the Mode B page-owned test; do not change schema embeds
+   or Mode B depth body copy for that discovery link alone. Until PS-300 wires
+   explorer membership, keep restored Mode A slugs in
+   `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` and filter them
+   from Program documentation explorer construction (same path as FAQ / W18
+   stubs) so they do not reappear as ungrouped leftovers. Mode A
+   `limitsAndAssumptions` bodies must stay topic-first (for example
+   “Factory Sessions covers…”) — never “This overview/This page
+   explains/covers/is…”. Peer Pattern: Packaged documents / CLI. Page-owned
+   tests should reject `/This (overview|page) (explains|covers|is)/i` on
+   limits copy.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and

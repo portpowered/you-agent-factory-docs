@@ -1,0 +1,21 @@
+{
+  "id": "reference.mcp",
+  "slug": "mcp-reference",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "MCP",
+    "MCP reference",
+    "You Agent Factory MCP",
+    "Factory Session tools",
+    "package MCP contract",
+    "you-agent-factory MCP reference"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T00:00:00.000Z",
+  "updatedAt": "2026-07-18T00:00:00.000Z"
+}

@@ -1,31 +1,14 @@
 {
   "title": "Install you-agent-factory",
-  "description": "Install the you-agent-factory CLI on macOS, Linux, or Windows with the release install scripts, then scaffold a factory.",
-  "openingSummary": "Install the you-agent-factory CLI with the published release scripts for your operating system, then scaffold a factory.",
+  "description": "Install teaching for you-agent-factory lives in Getting Started. Continue there for OS install scripts, confirm-you guidance, and starter scaffold.",
+  "openingSummary": "Install the you-agent-factory CLI from Getting Started.",
   "sections": {
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Run the install command for your operating system. Both paths use the same GitHub Releases assets as the home install CTA. After the script finishes, confirm you is available in your shell. Then scaffold a factory. Omitting --executor keeps the default Codex-backed starter scaffold. Pass --executor claude when you want a Claude-backed default scaffold instead. After install, continue with getting started for the first run and submit loop, or open the CLI docs when you need the broader command matrix."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "Install covers getting the CLI onto a machine only. It is not the getting-started quickstart, not the full CLI command matrix, and it does not replace packaged you docs topics. For agent and factory orientation after install, run you docs agents. Deeper CLI and factory contracts stay in packaged you docs and sibling documentation pages."
-    },
-    "related": {
-      "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
+    "installPath": {
+      "title": "Install path",
+      "body": "Getting Started teaches the full you-agent-factory install path: OS release scripts, confirm you is available in your shell, and starter scaffold choice. Continue there to install and run."
     }
   },
   "links": {
-    "macosLinuxLabel": "macOS / Linux",
-    "windowsLabel": "Windows (PowerShell)",
-    "claudeInitLabel": "Claude-backed scaffold",
-    "gettingStarted": "Getting started",
-    "cliDocs": "CLI docs"
+    "gettingStarted": "Getting started"
   }
 }

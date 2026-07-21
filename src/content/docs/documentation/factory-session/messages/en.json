@@ -1,14 +1,37 @@
 {
-  "title": "Factory Session",
-  "description": "This documentation page moved to /docs/factories/sessions. Continue there for the current family content.",
-  "openingSummary": "This page moved. Open /docs/factories/sessions for the current documentation.",
+  "title": "Factory Sessions",
+  "description": "A Factory Session is the live runtime unit on a running you-agent-factory host—what you discover, inspect, pause or resume, and address when submitting work.",
+  "openingSummary": "A Factory Session is the canonical live runtime object on a running you-agent-factory host: the unit you discover, inspect, pause or resume, and address when submitting work.",
   "sections": {
-    "moved": {
-      "title": "Moved",
-      "body": "This documentation page moved to a new family route. The content now lives at /docs/factories/sessions. Use the link below to continue — no live factory host is required."
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A Factory Session is the live runtime unit on a running you-agent-factory host. Every live session loads one Factory and owns its own runtime state—loaded factory, work, and relative paths. Session identity is what you use to discover, inspect, pause or resume, and target when submitting work. Durable JavaScript runs are still Factory Sessions; a dynamic workflow is shorthand for a JavaScript orchestrator-backed session, not a separate runtime object."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use Factory Sessions when you need a live host to accept work, confirm a session is running before you submit, inspect identity and runtime state for one session id, or pause and resume processing without dropping buffered work. Reach for a session whenever the factory must stay up across long-running agent work rather than as a one-shot process."
+    },
+    "howItFits": {
+      "title": "How It Fits",
+      "body": "A running factory host exposes one or more Factory Sessions. Submitting work, CLI session commands, and related surfaces all address that same session id. Shared inspection nouns—Dispatch, FactoryArtifact, and FactoryEvent—belong to that session across CLI and related surfaces. Configuration and packaged factories define what loads into a session; the session itself is the live handle you operate against."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Factory Sessions covers the live runtime unit and when it matters. It is not a CLI flag dump, not schema or OpenAPI inventory, not dynamic-workflow authoring, and not submitting-work batch schema. Operator commands, lifecycle detail, and Factory relationship depth live on the Factory Sessions reference page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
     }
   },
   "links": {
-    "targetLabel": "Open the factory sessions page"
+    "factorySessionsDepth": "Factory Sessions reference",
+    "cliDocs": "CLI docs",
+    "submittingWorkDocs": "Submitting work"
   }
 }

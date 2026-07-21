@@ -215,6 +215,63 @@ describe("SchemaReference", () => {
     expect(within(primary).getByText("Examples")).toBeTruthy();
   });
 
+  test("forwards examplesPlacement before-body to the primary definition", () => {
+    const { root } = makeRootWithDefs();
+
+    render(
+      <SchemaReference
+        examplesPlacement="before-body"
+        pagePath={PAGE_PATH}
+        root={root}
+        showCatalog={false}
+        showFilter={false}
+      />,
+    );
+
+    const primary = screen.getByTestId("schema-reference-definition");
+    expect(primary.getAttribute("data-schema-examples-placement")).toBe(
+      "before-body",
+    );
+    const examples = within(primary).getByTestId("schema-definition-examples");
+    const fields = primary.querySelector("[data-schema-definition-fields]");
+    expect(fields).toBeTruthy();
+    expect(
+      Boolean(
+        fields &&
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+  });
+
+  test("default examplesPlacement keeps examples after fields on SchemaReference", () => {
+    const { root } = makeRootWithDefs();
+
+    render(
+      <SchemaReference
+        pagePath={PAGE_PATH}
+        root={root}
+        showCatalog={false}
+        showFilter={false}
+      />,
+    );
+
+    const primary = screen.getByTestId("schema-reference-definition");
+    expect(primary.getAttribute("data-schema-examples-placement")).toBe(
+      "after-fields",
+    );
+    const examples = within(primary).getByTestId("schema-definition-examples");
+    const fields = primary.querySelector("[data-schema-definition-fields]");
+    expect(fields).toBeTruthy();
+    expect(
+      Boolean(
+        fields &&
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_PRECEDING,
+      ),
+    ).toBe(true);
+  });
+
   test("switches to addressed definition when address prop is set", () => {
     const { root, worker } = makeRootWithDefs();
     const projection = projectSchemaDefinitionToDisplay(worker, {

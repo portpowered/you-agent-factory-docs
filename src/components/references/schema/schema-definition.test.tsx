@@ -282,4 +282,208 @@ describe("SchemaDefinition", () => {
         ?.querySelector("[data-schema-definition-description]"),
     ).toBeNull();
   });
+
+  test("default examplesPlacement keeps examples after fields", () => {
+    const definition = createSchemaDefinitionModel({
+      address: address("/$defs/AfterFieldsOrder"),
+      title: "AfterFieldsOrder",
+      type: "object",
+      examples: [{ mode: "after" }],
+      properties: {
+        name: createSchemaFieldModel({
+          path: "name",
+          typeSummary: "string",
+          required: true,
+        }),
+      },
+    });
+
+    render(<SchemaDefinition definition={definition} />);
+
+    const article = screen.getByTestId("schema-definition");
+    expect(article.getAttribute("data-schema-examples-placement")).toBe(
+      "after-fields",
+    );
+    const examples = screen.getByTestId("schema-definition-examples");
+    const fields = article.querySelector("[data-schema-definition-fields]");
+    expect(fields).toBeTruthy();
+    expect(
+      Boolean(
+        fields &&
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_PRECEDING,
+      ),
+    ).toBe(true);
+  });
+
+  test("examplesPlacement before-body renders examples before composition and fields", () => {
+    const definitions = buildCompositionDefinitions();
+    const contentPart = definitions.find(
+      (definition) => definition.title === "WorkContentPart",
+    );
+    expect(contentPart).toBeTruthy();
+    if (contentPart === undefined) {
+      return;
+    }
+
+    render(
+      <SchemaDefinition
+        definition={{
+          ...contentPart,
+          examples: [{ kind: "text" }],
+          properties: {
+            kind: createSchemaFieldModel({
+              path: "kind",
+              typeSummary: "string",
+              required: true,
+            }),
+          },
+        }}
+        examplesPlacement="before-body"
+      />,
+    );
+
+    const article = screen.getByTestId("schema-definition");
+    expect(article.getAttribute("data-schema-examples-placement")).toBe(
+      "before-body",
+    );
+
+    const examples = screen.getByTestId("schema-definition-examples");
+    const fields = article.querySelector("[data-schema-definition-fields]");
+    const composition = screen.getByRole("region", {
+      name: "Schema composition",
+    });
+    expect(fields).toBeTruthy();
+    expect(
+      Boolean(
+        fields &&
+          examples.compareDocumentPosition(fields) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+    expect(
+      Boolean(
+        examples.compareDocumentPosition(composition) &
+          Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    ).toBe(true);
+  });
+
+  test("default hides OpenAPI pointer path chrome on definition and field rows", () => {
+    const fieldPointer = "/components/schemas/FactoryEvent/properties/type";
+    const definition = createSchemaDefinitionModel({
+      address: address("/components/schemas/FactoryEvent"),
+      title: "FactoryEvent",
+      type: "object",
+      properties: {
+        type: createSchemaFieldModel({
+          path: "type",
+          address: address(fieldPointer),
+          typeSummary: "FactoryEventType",
+          required: true,
+          refTarget: address("/components/schemas/FactoryEventType"),
+        }),
+      },
+    });
+
+    render(<SchemaDefinition definition={definition} pagePath={PAGE_PATH} />);
+
+    const article = screen.getByTestId("schema-definition");
+    const definitionBreadcrumb = within(article).getByRole("navigation", {
+      name: "Deep link for FactoryEvent",
+    });
+    expect(definitionBreadcrumb.getAttribute("data-schema-path-segments")).toBe(
+      "false",
+    );
+    expect(
+      definitionBreadcrumb.querySelector(
+        '[data-schema-breadcrumb-segment="components"]',
+      ),
+    ).toBeNull();
+    expect(
+      within(definitionBreadcrumb).getByRole("button", {
+        name: "Copy deep link",
+      }),
+    ).toBeTruthy();
+
+    const row = within(article).getByTestId("schema-field-row");
+    expect(row.querySelector("[data-schema-field-name]")?.textContent).toBe(
+      "type",
+    );
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="components"]'),
+    ).toBeNull();
+    expect(
+      row
+        .querySelector('[data-testid="schema-breadcrumb"]')
+        ?.getAttribute("data-schema-path-segments"),
+    ).toBe("false");
+    expect(row.querySelector('[data-schema-breadcrumb="copy"]')).toBeTruthy();
+    expect(row.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "FactoryEventType",
+    );
+    expect(article.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
+  });
+
+  test("showPointerPathChrome true restores full pointer trails on definition and fields", () => {
+    const fieldPointer = "/components/schemas/FactoryEvent/properties/type";
+    const definition = createSchemaDefinitionModel({
+      address: address("/components/schemas/FactoryEvent"),
+      title: "FactoryEvent",
+      type: "object",
+      properties: {
+        type: createSchemaFieldModel({
+          path: "type",
+          address: address(fieldPointer),
+          typeSummary: "FactoryEventType",
+          required: true,
+          refTarget: address("/components/schemas/FactoryEventType"),
+        }),
+      },
+    });
+
+    render(
+      <SchemaDefinition
+        definition={definition}
+        pagePath={PAGE_PATH}
+        showPointerPathChrome
+      />,
+    );
+
+    const article = screen.getByTestId("schema-definition");
+    const definitionBreadcrumb = within(article).getByRole("navigation", {
+      name: "Deep link for FactoryEvent",
+    });
+    expect(definitionBreadcrumb.getAttribute("data-schema-path-segments")).toBe(
+      "true",
+    );
+    expect(
+      definitionBreadcrumb.querySelector(
+        '[data-schema-breadcrumb-segment="components"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      definitionBreadcrumb.querySelector(
+        '[data-schema-breadcrumb-segment="schemas"]',
+      ),
+    ).toBeTruthy();
+
+    const row = within(article).getByTestId("schema-field-row");
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="components"]'),
+    ).toBeTruthy();
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="properties"]'),
+    ).toBeTruthy();
+    expect(
+      row
+        .querySelector('[data-testid="schema-breadcrumb"]')
+        ?.getAttribute("data-schema-path-segments"),
+    ).toBe("true");
+    expect(row.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "/components/schemas/FactoryEventType",
+    );
+  });
 });

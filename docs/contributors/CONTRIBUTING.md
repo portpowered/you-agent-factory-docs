@@ -883,9 +883,13 @@ standard docs contribution loop:
 | Command | Status |
 | --- | --- |
 | `make validate-pdf` | Stub — skipped (not implemented) |
-| `make verify-phase-1-ux` | Maintainer convergence tool — requires `make build`, Playwright, and a running server |
-| `make verify-phase-1-*-convergence` | Batch convergence validators for factory/meta-planner review |
 | `make component-examples` | Dev-only component gallery at `/component-examples` |
+| `make a11y` | Critical-route axe / overflow / reduced-motion / layout snapshot (also part of `make ci`) |
+
+Atlas / Phase 1 route-verifier targets (`make verify-phase-1-*`, former
+`make build-export`) were retired. Prefer `make build` for static export and
+`make ci` for the full required path; see `docs/operations.md` and root
+`Makefile`.
 
 Do not manually inspect bundle internals, emitted route inventories, or export
 artifact file lists unless a maintainer explicitly asks for that evidence in a

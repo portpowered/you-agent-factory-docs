@@ -1,0 +1,20 @@
+{
+  "id": "documentation.api",
+  "slug": "api",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["local HTTP API", "Factory HTTP API", "API how-to"],
+  "tags": [],
+  "relatedIds": [
+    "reference.api",
+    "documentation.security-trust-boundaries",
+    "documentation.cli",
+    "documentation.mcp",
+    "documentation.factories-sessions"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-21T00:00:00.000Z",
+  "updatedAt": "2026-07-21T09:00:00.000Z"
+}

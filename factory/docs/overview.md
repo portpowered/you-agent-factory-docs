@@ -19,7 +19,7 @@ Before submitting work, read:
 Contributor-facing docs that shape list work:
 
 * `README.md`
-* `CONTRIBUTING.md` — ten curated README categories (Theories through Related Lists), entry format, and **Local checks** (`make check`, `make test`, `make all`, optional `make lint` / `make links`, GitHub Actions table)
+* `docs/contributors/CONTRIBUTING.md` — contributor workflow, routine canonical-page policies, and **Local checks** (`make check`, `make test`, `make linkcheck`, `make ci`; see root `Makefile` / `README.md` Quality Gates)
 * `docs/taxonomy.md` — category definitions aligned with README section headings and CONTRIBUTING
 * `docs/review-policy.md` — maintainer checklist and `resource:*` labels for the same ten categories
 
@@ -166,15 +166,21 @@ at the repository root during implementation batches.
 
 ## Quality Gates
 
-Before opening or merging reconciliation PRs, run from the repository root:
+Before opening or merging reconciliation PRs, run from the repository root.
+Agents and maintainers must use **real** root `Makefile` targets only — do
+**not** invent names such as `ui-build`, `all`, or `links`. Primary shared
+entrypoints: `setup`, `check`, `build`, `ci`, `dev`, `a11y` (also `test`,
+`linkcheck`, `validate-data`). The root `Makefile` `.PHONY` line is the source
+of truth for the full target list; see `README.md` **Quality Gates** and
+`AGENTS.md` **Local Make entrypoints**.
 
 ```sh
-make check   # or make all — same README validation
+make check      # typecheck + lint
 make test
-git diff --check
+make linkcheck  # internal docs link validation
+# or the full required path:
+make ci
 ```
 
-Optional pre-submit targets (`make lint`, `make links`) and GitHub workflow
-gates are documented in `CONTRIBUTING.md` **Local checks** and **GitHub Actions**.
-These commands mirror the Go README checks in `internal/checks`, `go test ./...`,
-and whitespace hygiene enforced in CI.
+Optional contributor notes and GitHub workflow alignment live in
+`docs/contributors/CONTRIBUTING.md`.

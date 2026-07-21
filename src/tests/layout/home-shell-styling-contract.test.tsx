@@ -148,6 +148,12 @@ describe("Phase 1 home shell styling contracts", () => {
     expect(
       DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.hoverActiveKind,
     ).toBe("background");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.selectedActiveRole,
+    ).toBe("secondaryBlue");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.selectedActiveProof,
+    ).toBe("#507f8c");
     expect(DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.toc.restProofs).toEqual([
       "#507f8c",
       "#8aaeb8",

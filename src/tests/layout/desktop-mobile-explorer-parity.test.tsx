@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, within } from "@testing-library/react";
 import { act } from "react";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
+import { MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS } from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { type SiteLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 import { localizePageTree } from "@/lib/i18n/localize-page-tree";
@@ -38,7 +39,6 @@ const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
   "poller-workers",
   "agent-workers",
   "inference-workers",
-  "packaged-factories",
 ] as const;
 
 async function localizedExplorerSignature(locale: SiteLocale): Promise<{
@@ -214,6 +214,14 @@ describe("desktop/mobile explorer tree parity", () => {
             page.url.includes(`/documentation/${slug}`),
           ),
           `${locale}: ${slug} must not appear in Program documentation folder`,
+        ).toBe(false);
+      }
+      for (const slug of MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
+        expect(
+          pageEntriesInFolder(documentation).some((page) =>
+            page.url.includes(`/documentation/${slug}`),
+          ),
+          `${locale}: Mode A overview ${slug} must not appear in Program documentation folder until PS-300`,
         ).toBe(false);
       }
 

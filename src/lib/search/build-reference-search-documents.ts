@@ -108,7 +108,7 @@ export function loadCliReferenceSearchShapes(): {
 
 /**
  * Load published MCP tool search shapes with registry anchors on
- * `/docs/references/mcp`.
+ * `/docs/references/mcp-reference`.
  */
 export function loadMcpReferenceSearchShapes(): {
   shapes: ReferenceSearchDocumentShape[];

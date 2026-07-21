@@ -158,7 +158,8 @@ describe("ApiMethodBadge theme tokens", () => {
     expect(badge.getAttribute(API_METHOD_BADGE_ATTR)).toBe("DELETE");
     expect(badge.textContent).toBe("DELETE");
     expect(badge.className).toContain("border-border");
-    expect(badge.className).toContain("text-foreground");
+    expect(badge.className).toContain("text-secondary");
+    expect(badge.className).not.toMatch(/\btext-primary\b/);
     for (const token of apiMethodBadgeToneClass("delete").split(/\s+/)) {
       expect(badge.className).toContain(token);
     }

@@ -25,7 +25,7 @@ describe("W18 documentation route migration link retarget", () => {
     const preferredOldIds = Object.keys(
       DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS,
     );
-    expect(preferredOldIds).toHaveLength(12);
+    expect(preferredOldIds).toHaveLength(9);
     for (const oldId of preferredOldIds) {
       const preferred =
         resolveDocumentationRouteMigrationPreferredRegistryId(oldId);

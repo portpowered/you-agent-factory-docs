@@ -211,7 +211,8 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   `showPointerPathChrome` defaults to false on the events adapter so visible
   `components/schemas/.../properties/...` breadcrumbs are suppressed while
   copyable deep links and compact `$ref` leaf labels remain. Shared schema
-  defaults for MCP/CLI/JS/API pages stay unchanged.
+  defaults also hide pointer-path chrome (`false`); the events adapter still
+  passes `false` explicitly (redundant, not a regression).
 - Build FactoryResponseEvent catalog via `buildFactoryResponseEventCatalog(doc)` —
   kind/phase enums + provenance object + payload `oneOf` shapes. Always set
   `cartesianCombinationsValid: false` and `ephemeral: true`; ResponseEventMatrix

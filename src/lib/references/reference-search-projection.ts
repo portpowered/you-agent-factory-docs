@@ -25,7 +25,7 @@ export const REFERENCE_FAMILY_PAGE_PATHS: Record<ReferenceFamily, string> = {
   api: "/docs/references/api",
   schema: "/docs/references/schema",
   cli: "/docs/references/cli",
-  mcp: "/docs/references/mcp",
+  mcp: "/docs/references/mcp-reference",
   javascript: "/docs/references/javascript-runtime",
   events: "/docs/references/events",
 };

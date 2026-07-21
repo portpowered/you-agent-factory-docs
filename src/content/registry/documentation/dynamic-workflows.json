@@ -5,14 +5,19 @@
   "defaultTitleKey": "title",
   "defaultSummaryKey": "description",
   "aliases": [
+    "Dynamic Workflows",
     "dynamic workflows",
     "JavaScript workflows",
     "Factory Session workflows"
   ],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.factories-dynamic-workflows",
+    "documentation.factory-session",
+    "guide.cursor-dynamic-workflows"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T07:01:57.000Z",
-  "updatedAt": "2026-07-10T08:15:00.000Z"
+  "updatedAt": "2026-07-21T09:30:00.000Z"
 }

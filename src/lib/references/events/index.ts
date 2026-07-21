@@ -153,6 +153,11 @@ export {
   type LockedEventStreamPlacement,
 } from "./hybrid-placement";
 export {
+  buildEventsLinkedComponentSchemas,
+  type EventsLinkedComponentSchema,
+  eventsAlreadyRenderedComponentSchemaNames,
+} from "./linked-component-schemas";
+export {
   EventsOpenApiLoadError,
   type LoadEventsOpenApiDependencies,
   type LoadedEventsOpenApi,

@@ -4,12 +4,15 @@ import {
   resolveHostSemanticThemeTokens,
 } from "@/lib/theme/host-semantic-theme-tokens";
 import {
+  API_ACCENT_CSS_VARS,
+  API_ACCENT_TOKEN_CLASSES,
   API_CODE_COPY_POLICY,
   API_METHOD_BADGE_TONE_CLASSES,
   API_SHIKI_OPTIONS,
   API_THEME_ROOT_ATTR,
   API_TOKEN_CLASSES,
   apiMethodBadgeToneClass,
+  avoidsPrimaryAccentClasses,
   usesSemanticTokenClasses,
 } from "./theme-tokens";
 
@@ -22,6 +25,9 @@ describe("W08 API theme tokens", () => {
     for (const className of Object.values(API_TOKEN_CLASSES)) {
       expect(usesSemanticTokenClasses(className)).toBe(true);
     }
+    for (const className of Object.values(API_ACCENT_TOKEN_CLASSES)) {
+      expect(usesSemanticTokenClasses(className)).toBe(true);
+    }
     for (const className of Object.values(API_METHOD_BADGE_TONE_CLASSES)) {
       expect(usesSemanticTokenClasses(className)).toBe(true);
     }
@@ -30,7 +36,30 @@ describe("W08 API theme tokens", () => {
     expect(usesSemanticTokenClasses("bg-[rgb(255,0,0)]")).toBe(false);
   });
 
-  test("method badge tones resolve by HTTP method with text-safe chrome", () => {
+  test("accent roles use secondary / muted-secondary, not primary yellow", () => {
+    expect(API_ACCENT_TOKEN_CLASSES.selected).toBe("text-secondary");
+    expect(API_ACCENT_TOKEN_CLASSES.selectedBorder).toBe("border-secondary");
+    expect(API_ACCENT_TOKEN_CLASSES.quiet).toBe("text-muted-foreground");
+    expect(API_ACCENT_TOKEN_CLASSES.quietBorder).toBe("border-border");
+
+    expect(API_ACCENT_CSS_VARS.selected).toBe("var(--secondary)");
+    expect(API_ACCENT_CSS_VARS.quiet).toBe("var(--muted-foreground)");
+
+    for (const className of Object.values(API_ACCENT_TOKEN_CLASSES)) {
+      expect(avoidsPrimaryAccentClasses(className)).toBe(true);
+      expect(className).not.toMatch(/\bprimary\b/);
+    }
+
+    // Host primary may remain as a non-accent alias, but must not be the
+    // documented accent role for tabs / badges / chips.
+    expect(API_TOKEN_CLASSES.primary).toBe("text-primary");
+    expect(API_TOKEN_CLASSES.secondary).toBe("text-secondary");
+    expect(API_ACCENT_TOKEN_CLASSES.selected).not.toBe(
+      API_TOKEN_CLASSES.primary,
+    );
+  });
+
+  test("method badge tones resolve by HTTP method with secondary accent chrome", () => {
     expect(apiMethodBadgeToneClass("get")).toBe(
       API_METHOD_BADGE_TONE_CLASSES.get,
     );
@@ -43,6 +72,18 @@ describe("W08 API theme tokens", () => {
     expect(apiMethodBadgeToneClass("options")).toBe(
       API_METHOD_BADGE_TONE_CLASSES.default,
     );
+
+    for (const [key, className] of Object.entries(
+      API_METHOD_BADGE_TONE_CLASSES,
+    )) {
+      expect(avoidsPrimaryAccentClasses(className)).toBe(true);
+      expect(className).not.toMatch(/\btext-primary\b/);
+      if (key === "default") {
+        expect(className).toContain(API_ACCENT_TOKEN_CLASSES.quiet);
+      } else {
+        expect(className).toContain(API_ACCENT_TOKEN_CLASSES.selected);
+      }
+    }
   });
 
   test("code-copy policy reuses CodePanel + useCopyButton (no second widget)", () => {

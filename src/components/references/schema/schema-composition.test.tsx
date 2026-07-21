@@ -316,9 +316,12 @@ describe("SchemaFieldTree $ref links", () => {
     render(<SchemaFieldTree nodes={nodes} pagePath={PAGE_PATH} />);
 
     const link = screen.getByRole("link", {
-      name: /schema reference: \/\$defs\/Worker/i,
+      name: /schema reference: Worker/i,
     });
     expect(link.getAttribute("href")).toContain(PAGE_PATH);
+    expect(link.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "Worker",
+    );
     expect(link.className).toContain("text-secondary");
     expect(link.className).not.toMatch(/\btext-primary\b/);
     expect(

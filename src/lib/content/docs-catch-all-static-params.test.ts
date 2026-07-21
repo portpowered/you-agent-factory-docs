@@ -199,7 +199,10 @@ describe("W05 route-family static params and not-found", () => {
       true,
     );
     expect(defaultPaths).toContain("references/cli");
-    expect(defaultPaths).toContain("references/mcp");
+    expect(defaultPaths).toContain("references/mcp-reference");
+    // Old inventory slug must not remain a catch-all static param (no silent
+    // dual-slug export of /docs/references/mcp as this inventory page).
+    expect(defaultPaths).not.toContain("references/mcp");
     expect(defaultPaths).toContain("references/javascript-runtime");
     expect(defaultPaths).toContain("references/factory-schema");
     expect(defaultPaths).toContain("references/system-config-schema");
@@ -270,7 +273,7 @@ describe("W05 route-family static params and not-found", () => {
     for (const slug of [
       "events",
       "cli",
-      "mcp",
+      "mcp-reference",
       "javascript-runtime",
       "factory-schema",
       "system-config-schema",

@@ -153,7 +153,7 @@ const successInventory: McpToolInventoryInput = {
 /**
  * Dev-only fixture mount for W10 MCP tool reference renderers.
  * Passes already-normalized projections — no W03 Node acquisition in the
- * browser bundle. Final `/docs/references/mcp` stays out of scope for W10.
+ * browser bundle. Final `/docs/references/mcp-reference` stays out of scope for W10.
  */
 export function ReferenceMcpHarness() {
   return (
