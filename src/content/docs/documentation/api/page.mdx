@@ -32,14 +32,57 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 http://localhost:7437
 ```
 
+  <T k="callouts.factoryMustBeRunning.body" />
+  <p>
+    <T k="links.factoryRunningLabel" />
+  </p>
+
+```bash
+you
+# or: you run --dir <factory>
+```
+
 </Section>
 
 <Section id="typical-session-flow" titleKey="sections.typicalSessionFlow.title">
   <T k="sections.typicalSessionFlow.body" />
+  <p>
+    <T k="links.sessionListLabel" />
+  </p>
+
+```bash
+you session list
+```
+
+  <T k="callouts.sessionListConfirm.body" />
+
+```bash
+you session show <session-id>
+```
+
+  <T k="callouts.sessionShowNote.body" />
+  <p>
+    <T k="links.statusReadLabel" />
+  </p>
+
+```bash
+curl -s "http://localhost:7437/factory-sessions/~default/status"
+```
+
+  <T k="callouts.statusReadNote.body" />
 </Section>
 
 <Section id="trust-boundaries" titleKey="sections.trustBoundaries.title">
   <T k="sections.trustBoundaries.body" />
+  <T k="callouts.operatorIngress.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/security-trust-boundaries",
+        labelKey: "links.securityTrustBoundariesDocs",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">

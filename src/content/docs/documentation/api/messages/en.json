@@ -5,7 +5,7 @@
   "sections": {
     "howToReach": {
       "title": "How To Reach",
-      "body": "The local factory service exposes an HTTP API on the operator machine. Session and API traffic use the default local base URL http://localhost:7437 unless the process that bound the listener overrides host or port. A factory service must already be running before clients can call the API—startup forms such as you or you run create or attach to that runtime; the API does not start the factory by itself. This documentation site is not the Agent Factory API. Point HTTP clients at a local Factory server you run yourself—not at this docs host."
+      "body": "The local factory service exposes an HTTP API on the operator machine. Session and API traffic use the default local base URL http://localhost:7437 unless the process that bound the listener overrides host or port. This documentation site is not the Agent Factory API. Point HTTP clients at a local Factory server you run yourself—not at this docs host."
     },
     "typicalSessionFlow": {
       "title": "Typical Session Flow",
@@ -35,10 +35,30 @@
   },
   "links": {
     "defaultBaseUrlLabel": "Default local base URL",
+    "factoryRunningLabel": "Start or attach a local factory before calling the API",
+    "sessionListLabel": "Confirm a live Factory Session before submit or status reads",
+    "statusReadLabel": "Example status read against the default local host",
     "apiReferenceCatalog": "API reference (operations catalog)",
     "securityTrustBoundariesDocs": "Security / Trust Boundaries",
     "factorySessionsDocs": "Factory Sessions",
     "cliDocs": "CLI docs",
     "mcpDocs": "MCP docs"
+  },
+  "callouts": {
+    "factoryMustBeRunning": {
+      "body": "A factory service must already be running before clients can call the API. Startup forms such as you or you run create or attach to that runtime; the API does not start the factory by itself. If the host is unreachable, start or attach a factory, then retry."
+    },
+    "sessionListConfirm": {
+      "body": "Session list is the primary liveness check on a running host. An empty list means the host responded but no live session is registered yet. A connection failure means nothing is listening on that host and port."
+    },
+    "sessionShowNote": {
+      "body": "Replace <session-id> with a SESSION ID from session list. On single-session local hosts the default compatibility session is often ~default. When more than one session exists, target the intended session id rather than assuming the default."
+    },
+    "statusReadNote": {
+      "body": "GET /factory-sessions/{session_id}/status is a published deeper runtime health read for one live Factory Session. Use the same host and port as the API base URL. Exact response fields and other operations stay on the Reference API catalog and Metrics documentation."
+    },
+    "operatorIngress": {
+      "body": "Autonomous agents must submit work only through the CLI. Dashboard submit and POST /factory-sessions/{session_id}/work remain operator paths—do not treat them as parallel agent control ingress. See Security / Trust Boundaries for the full local-bind and ingress policy."
+    }
   }
 }
