@@ -26,14 +26,14 @@ social assets, sitemap, robots).
 | `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths + locale homes (`/ja`, `/zh-CN`, `/vi`) + shipped localized docs (fail-closed; no unshipped locale×slug ghosts); absolute locs must end with `/` while app-relative stay non-slash; inclusion-proof set itself must contain locale homes + at least one shipped localized docs route |
 | `src/lib/content/factory-locale-base-path.ts` | `FACTORY_SHIPPED_LOCALES` + `buildLocalizedRoute` / `defaultLocale` — drive sitemap locale-home membership (no hard-coded one-offs disconnected from the shipped set) |
 | `src/lib/content/shipped-localized-docs.ts` | `getShippedLocalizedDocsSlugs` / `isShippedLocalizedDocsSlug` — fail-closed manifest for sitemap localized docs inclusion (never cartesian English×locale) |
-| `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml` |
-| `src/lib/seo/export-sitemap.test.ts` | Trailing-slash absolute loc proofs (collection indexes + docs/blog/home) + non-slash app-relative + temp-`out/` verification |
+| `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml`; contract requires locale-expanded inventory via `SITEMAP_INCLUSION_PROOF_ROUTES` |
+| `src/lib/seo/export-sitemap.test.ts` | Trailing-slash absolute loc proofs (collection indexes + docs/blog/home + locale homes `/ja`/`/zh-CN`/`/vi` + shipped localized docs) + fail-closed when locale locs are omitted + non-slash app-relative + temp-`out/` verification |
 | `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/export-robots.ts` | `buildPublicRobots` / `resolveProductionSitemapUrl` + `verifyExportRobots` for `out/robots.txt` |
 | `src/lib/seo/export-robots.test.ts` | Production sitemap reference proofs + no legacy Atlas advertising |
 | `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
-| `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract |
+| `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract; requires locale homes + shipped localized docs locs; fail-closed on Atlas / §10 migration-old; no `hreflang="x-default"` in this lane |
 | `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects); canonical slug/path remap helpers |
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
@@ -135,9 +135,11 @@ social assets, sitemap, robots).
     locale×docs-slug ghosts. Use
     `verifyExportSitemap` / `sitemapLocsMatchPublicFactoryContract`.
     Export SEO discovery (`verifyExportSeoDiscovery`) and `verifyExportSitemap`
-    reject non-slash absolute locs (compare against
-    `resolveProductionSitemapLocHref`, not `resolveProductionMetadataHref`) and
+    require locale homes + representative shipped localized docs locs (fail when
+    omitted), reject non-slash absolute locs (compare against
+    `resolveProductionSitemapLocHref`, not `resolveProductionMetadataHref`), and
     still fail closed on retired Atlas / §10 migration-old exclusion URLs.
+    Do not add `hreflang="x-default"` here — that is sibling `seo-hreflang`.
 11. **Robots + discovery gate** (story 007): `buildPublicRobots` /
     `src/app/robots.ts` emit `out/robots.txt` with a normal allow-all policy
     and `Sitemap:` pointing at the absolute production sitemap URL

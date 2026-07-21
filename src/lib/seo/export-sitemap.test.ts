@@ -25,9 +25,11 @@ import {
   listPublicSitemapAbsoluteUrls,
   listPublicSitemapRoutes,
   PUBLIC_SITEMAP_DOCS_SECTION_ROUTES,
+  PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
   PUBLIC_SITEMAP_SHELL_ROUTES,
   SITEMAP_EXCLUSION_PROOF_ROUTES,
   SITEMAP_INCLUSION_PROOF_ROUTES,
+  SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
 } from "@/lib/seo/public-sitemap-routes";
 
 const PROJECT_SITE_BASE_PATH = BUILT_APP_GITHUB_PAGES_BASE_PATH;
@@ -191,6 +193,31 @@ describe("export sitemap helpers", () => {
     );
   });
 
+  test("buildPublicSitemapEntries emits locale homes and shipped localized docs locs", () => {
+    const entries = buildPublicSitemapEntries(PROJECT_SITE_EXPORT_ENV);
+    const urls = entries.map((entry) => entry.url);
+
+    expect(PUBLIC_SITEMAP_LOCALE_HOME_ROUTES).toEqual(["/ja", "/zh-CN", "/vi"]);
+    for (const home of PUBLIC_SITEMAP_LOCALE_HOME_ROUTES) {
+      const absolute = resolveProductionSitemapLocHref(
+        home,
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      expect(absolute.endsWith("/")).toBe(true);
+      expect(urls).toContain(absolute);
+    }
+
+    const shippedDocsAbsolute = resolveProductionSitemapLocHref(
+      SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
+      PROJECT_SITE_EXPORT_ENV,
+    );
+    expect(SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE).toBe(
+      "/ja/docs/concepts/harness",
+    );
+    expect(shippedDocsAbsolute.endsWith("/")).toBe(true);
+    expect(urls).toContain(shippedDocsAbsolute);
+  });
+
   test("app/sitemap default export matches public factory entries", () => {
     expect(sitemapDynamic).toBe("force-static");
     const previousExport = process.env.NEXT_STATIC_EXPORT;
@@ -240,6 +267,40 @@ describe("export sitemap helpers", () => {
     expect(
       sitemapLocsMatchPublicFactoryContract(
         missingHome,
+        PROJECT_SITE_EXPORT_ENV,
+      ),
+    ).toBe(false);
+  });
+
+  test("sitemapLocsMatchPublicFactoryContract requires locale homes and shipped localized docs", () => {
+    const good = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+    expect(
+      sitemapLocsMatchPublicFactoryContract(good, PROJECT_SITE_EXPORT_ENV),
+    ).toBe(true);
+
+    for (const home of PUBLIC_SITEMAP_LOCALE_HOME_ROUTES) {
+      const absolute = resolveProductionSitemapLocHref(
+        home,
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      expect(absolute.endsWith("/")).toBe(true);
+      expect(good).toContain(absolute);
+      expect(
+        sitemapLocsMatchPublicFactoryContract(
+          good.filter((url) => url !== absolute),
+          PROJECT_SITE_EXPORT_ENV,
+        ),
+      ).toBe(false);
+    }
+
+    const shippedDocsAbsolute = resolveProductionSitemapLocHref(
+      SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
+      PROJECT_SITE_EXPORT_ENV,
+    );
+    expect(good).toContain(shippedDocsAbsolute);
+    expect(
+      sitemapLocsMatchPublicFactoryContract(
+        good.filter((url) => url !== shippedDocsAbsolute),
         PROJECT_SITE_EXPORT_ENV,
       ),
     ).toBe(false);
@@ -342,6 +403,50 @@ describe("export sitemap helpers", () => {
         outDir: tempRoot,
       });
       expect(relative.ok).toBe(false);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("verifyExportSitemap rejects sitemap missing locale home or shipped localized docs", () => {
+    const tempRoot = mkdtempSync(join(tmpdir(), "export-sitemap-locale-"));
+    try {
+      mkdirSync(tempRoot, { recursive: true });
+      const good = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+      const jaHome = resolveProductionSitemapLocHref(
+        "/ja",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      const shippedDocsAbsolute = resolveProductionSitemapLocHref(
+        SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
+        PROJECT_SITE_EXPORT_ENV,
+      );
+
+      writeFileSync(
+        join(tempRoot, EXPORT_SITEMAP_RELATIVE_PATH),
+        sitemapXml(good.filter((url) => url !== jaHome)),
+      );
+      const missingLocaleHome = verifyExportSitemap({
+        env: PROJECT_SITE_EXPORT_ENV,
+        outDir: tempRoot,
+      });
+      expect(missingLocaleHome.ok).toBe(false);
+      if (!missingLocaleHome.ok) {
+        expect(missingLocaleHome.reason).toContain(jaHome);
+      }
+
+      writeFileSync(
+        join(tempRoot, EXPORT_SITEMAP_RELATIVE_PATH),
+        sitemapXml(good.filter((url) => url !== shippedDocsAbsolute)),
+      );
+      const missingShippedDocs = verifyExportSitemap({
+        env: PROJECT_SITE_EXPORT_ENV,
+        outDir: tempRoot,
+      });
+      expect(missingShippedDocs.ok).toBe(false);
+      if (!missingShippedDocs.ok) {
+        expect(missingShippedDocs.reason).toContain(shippedDocsAbsolute);
+      }
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }
