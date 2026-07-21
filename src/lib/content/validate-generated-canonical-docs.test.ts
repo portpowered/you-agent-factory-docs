@@ -138,11 +138,23 @@ describe("validateGeneratedGraphPlacement", () => {
 });
 
 describe("validateGeneratedKindSpecificStructure", () => {
-  test("requires RelatedDocs inside the related section for concept pages", () => {
-    const conceptMdx = readTemplateMdx("concept").replace(
-      /<RelatedDocs registryId="concept\.example-concept" \/>\n?/,
-      "",
-    );
+  test("allows concept pages that omit RelatedDocs and the related section", () => {
+    const conceptMdx = readTemplateMdx("concept")
+      .replace(
+        /\n?<Section id="related" titleKey="sections\.related\.title">[\s\S]*?<\/Section>\n?/,
+        "\n",
+      )
+      .replace(
+        /\n?import \{ RelatedDocs \} from "@\/features\/docs\/components\/RelatedDocs";\n?/,
+        "\n",
+      )
+      .replace(
+        /\n?import \{ DerivedRelatedDocs \} from "@\/features\/docs\/components\/DerivedRelatedDocs";\n?/,
+        "\n",
+      );
+
+    expect(conceptMdx).not.toContain("<RelatedDocs");
+    expect(conceptMdx).not.toContain('id="related"');
 
     const errors = validateGeneratedKindSpecificStructure({
       pagePath: "/docs/concepts/example/page.mdx",
@@ -150,9 +162,10 @@ describe("validateGeneratedKindSpecificStructure", () => {
       mdxSource: conceptMdx,
     });
 
+    expect(errors).toEqual([]);
     expect(
       errors.some((error) => error.code === "missing-related-docs-component"),
-    ).toBe(true);
+    ).toBe(false);
   });
 });
 

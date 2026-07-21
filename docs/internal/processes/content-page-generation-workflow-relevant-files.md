@@ -28,6 +28,17 @@ references family-index plain `<p>` purpose lead in
 `ReferencesFamilyIndex.tsx`). Workers/workstations intentional `#how-to-use`
 sections stay page-local and are unrelated to that retired shell chrome.
 
+## Canonical generation: RelatedDocs presence optional (PF-L-contracts)
+
+`validateGeneratedKindSpecificStructure` in
+`src/lib/content/validate-generated-canonical-docs.ts` no longer emits
+`missing-related-docs-component` when concept/canonical MDX omits
+`<RelatedDocs />` or a related-section. Strip-ready generated/template pages
+without that chrome must validate for RelatedDocs presence rules. Do not
+reintroduce a fail-closed RelatedDocs presence gate in generation validation.
+Site-wide published MDX RelatedDocs strip remains a separate PF-L-strip lane;
+FAQ-only strip remains PF-D2.
+
 ## Derived page directory contract
 
 Routine canonical pages live under `src/content/docs/<section>/<slug>`. Resolve
