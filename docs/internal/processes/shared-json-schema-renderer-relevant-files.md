@@ -98,7 +98,10 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   / `underline-offset-2` / `hover:underline` / focus-visible ring classes —
   do not restyle them to `text-primary` yellow, and do not invent
   `decoration-*` chrome when the link string has none. Unresolved
-  missing/malformed markup stays `text-destructive`. Consumers
+  missing/malformed markup stays `text-destructive`. Lock the navigable
+  accent in `schema-composition.test.tsx` (`SchemaRefLink` /
+  composition / field-tree cases assert `text-secondary` and reject
+  `text-primary`; unresolved status asserts `text-destructive`). Consumers
   (composition/definition rows, events discriminator payload links) inherit
   the accent via `SchemaRefLink`; leave API navigators and events-only
   probe/matrix classNames to sibling repair lanes.
