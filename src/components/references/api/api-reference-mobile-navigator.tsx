@@ -90,7 +90,7 @@ export function ApiReferenceMobileNavigator({
                 {group.items.map((item) => (
                   <li key={`${group.tag}:${item.id}`} className="min-w-0">
                     <a
-                      className="block min-w-0 break-words text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="block min-w-0 break-words text-secondary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       href={`#${item.anchor}`}
                       {...{ [API_OPERATION_NAV_LINK_ATTR]: item.anchor }}
                       data-api-operation-nav-method={item.method}
