@@ -17,3 +17,20 @@ export type ComparativeBarChartProps = {
   state?: ComparativeChartState;
   className?: string;
 };
+
+export type ComparativeLineSeries = {
+  id: string;
+  label: string;
+};
+
+export type ComparativeLineChartProps = {
+  title: string;
+  points: Array<Record<string, string | number>>;
+  xKey: string;
+  series: ComparativeLineSeries[];
+  xLabel?: string;
+  yLabel?: string;
+  focusSeriesId?: string;
+  state?: ComparativeChartState;
+  className?: string;
+};
