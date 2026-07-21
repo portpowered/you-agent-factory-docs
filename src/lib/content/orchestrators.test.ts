@@ -1,9 +1,48 @@
 import { describe, expect, test } from "bun:test";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { getRegistryRoot } from "./content-paths";
 import {
+  type AttributeDef,
   attributeDefSchema,
   attributeDefsFileSchema,
+  type OrchestratorAttributeValue,
   orchestratorRecordSchema,
 } from "./orchestrators";
+
+const orchestratorsRegistryDir = join(getRegistryRoot(), "orchestrators");
+
+function readJsonFile(path: string): unknown {
+  return JSON.parse(readFileSync(path, "utf8")) as unknown;
+}
+
+function valueMatchesAttributeDef(
+  def: AttributeDef,
+  value: OrchestratorAttributeValue,
+): boolean {
+  switch (def.type) {
+    case "boolean":
+      return typeof value === "boolean";
+    case "string":
+      return typeof value === "string";
+    case "single-tag":
+      return (
+        typeof value === "string" && (def.tagEnum?.includes(value) ?? false)
+      );
+    case "multi-tag":
+      return (
+        Array.isArray(value) &&
+        value.every(
+          (tag) =>
+            typeof tag === "string" && (def.tagEnum?.includes(tag) ?? false),
+        )
+      );
+    default: {
+      const _exhaustive: never = def.type;
+      return _exhaustive;
+    }
+  }
+}
 
 const minimalAttributeDefsFile = {
   attributes: [
@@ -139,5 +178,73 @@ describe("orchestrator registry schemas", () => {
       order: 1,
     });
     expect(result.success).toBe(false);
+  });
+});
+
+describe("committed orchestrator registry seed JSON", () => {
+  test("attribute-defs.json covers all four locked types with attr.* ids", () => {
+    const parsed = attributeDefsFileSchema.safeParse(
+      readJsonFile(join(orchestratorsRegistryDir, "attribute-defs.json")),
+    );
+    expect(parsed.success).toBe(true);
+    if (!parsed.success) {
+      return;
+    }
+
+    const types = new Set(parsed.data.attributes.map((def) => def.type));
+    expect(types).toEqual(
+      new Set(["boolean", "string", "single-tag", "multi-tag"]),
+    );
+    for (const def of parsed.data.attributes) {
+      expect(def.id.startsWith("attr.")).toBe(true);
+      expect(typeof def.labelKey).toBe("string");
+      expect(typeof def.filterable).toBe("boolean");
+      expect(typeof def.sortable).toBe("boolean");
+      expect(typeof def.order).toBe("number");
+      if (def.type === "single-tag" || def.type === "multi-tag") {
+        expect(def.tagEnum?.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  test("orchestrator.*.json seeds parse and agree with attribute defs", () => {
+    const defsParsed = attributeDefsFileSchema.safeParse(
+      readJsonFile(join(orchestratorsRegistryDir, "attribute-defs.json")),
+    );
+    expect(defsParsed.success).toBe(true);
+    if (!defsParsed.success) {
+      return;
+    }
+
+    const defsById = new Map(
+      defsParsed.data.attributes.map((def) => [def.id, def]),
+    );
+    const recordFiles = readdirSync(orchestratorsRegistryDir).filter(
+      (name) => name.startsWith("orchestrator.") && name.endsWith(".json"),
+    );
+    expect(recordFiles.length).toBeGreaterThanOrEqual(2);
+
+    for (const fileName of recordFiles) {
+      const recordParsed = orchestratorRecordSchema.safeParse(
+        readJsonFile(join(orchestratorsRegistryDir, fileName)),
+      );
+      expect(recordParsed.success).toBe(true);
+      if (!recordParsed.success) {
+        continue;
+      }
+
+      const record = recordParsed.data;
+      expect(record.id.startsWith("orchestrator.")).toBe(true);
+      expect(record.kind).toBe("orchestrator");
+
+      for (const [attributeId, value] of Object.entries(record.attributes)) {
+        const def = defsById.get(attributeId);
+        expect(def).toBeDefined();
+        if (!def) {
+          continue;
+        }
+        expect(valueMatchesAttributeDef(def, value)).toBe(true);
+      }
+    }
   });
 });
