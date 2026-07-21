@@ -66,9 +66,12 @@ For published non-FAQ documentation under
   / References headings or `#related` curated links must assert absence (or
   drop those asserts) in the same lane as the MDX strip so CI stays green;
   keep teaching-body link asserts.
-- Locale footer title keys (`sections.related` / `sections.references`) and
-  Related-only message link labels are follow-on strip stories; MDX strip alone
-  removes the chrome.
+- After MDX strip, clean owned non-FAQ `messages/*.json`: remove
+  `sections.related` / `sections.references` footer titles; drop link / label
+  keys used only by stripped Related-footer lists; keep teaching-body link
+  keys and `sections.tags`. Leave `documentation/faq/**/messages` unchanged.
+  Align every owned locale (en and present ja / zh-CN / vi) for the stripped
+  keys.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no

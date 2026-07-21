@@ -15,14 +15,8 @@
       "title": "Limits And Assumptions",
       "body": "Submitting work covers batches and relationships only. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install scripts, first-run walkthroughs, and the broader command matrix belong on sibling documentation and guide pages."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

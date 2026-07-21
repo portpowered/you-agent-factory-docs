@@ -7,14 +7,8 @@
       "title": "Giới hạn và giả định",
       "body": "Khung sản phẩm dừng ở tổng quan. Nó không phải tham chiếu kiến trúc đầy đủ, danh mục thành phần, hay hướng dẫn nội bộ runtime. you-agent-factory không phải Model Atlas, bảng tham chiếu attention, bảng xếp hạng benchmark, hay gương tải paper. Độc giả cần bước cài đặt nên dùng Bắt đầu; độc giả cần cấu trúc hệ thống nên dùng kiến trúc hệ thống khi tài liệu đó sẵn có."
     },
-    "related": {
-      "title": "Liên quan"
-    },
     "tags": {
       "title": "Thẻ"
-    },
-    "references": {
-      "title": "Tài liệu tham khảo"
     }
   },
   "links": {

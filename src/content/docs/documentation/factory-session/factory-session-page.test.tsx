@@ -88,10 +88,6 @@ describe("factory-session documentation Mode A overview", () => {
         /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
       );
 
-      expect(loadedPage.messages.links?.factorySessionsDepth).toMatch(
-        /Factory Sessions reference/i,
-      );
-
       render(
         <main>
           <DocsPageProviders

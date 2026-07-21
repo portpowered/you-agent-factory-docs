@@ -94,10 +94,6 @@ describe("dynamic-workflows documentation Mode A overview", () => {
         /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
       );
 
-      expect(loadedPage.messages.links?.dynamicWorkflowsDepth).toMatch(
-        /Dynamic Workflows reference/i,
-      );
-
       render(
         <main>
           <DocsPageProviders

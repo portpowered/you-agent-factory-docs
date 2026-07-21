@@ -15,22 +15,8 @@
       "title": "Limits And Assumptions",
       "body": "Harness Support is a matrix reference for harness feature coverage. It is not a full runner or provider field dump, not a sync of packaged CLI docs, not the harness concept glossary, and not an agent-factory comparison blog. Claims stay conservative when product evidence is incomplete: partial cells mark uncertain or incomplete coverage rather than inventing full support."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "harnessConcept": "Harness concept",
-    "worktreeConcept": "Worktree concept",
-    "loopConcept": "Loop concept",
-    "thinkingConcept": "Thinking concept",
-    "cliDocs": "CLI docs",
-    "configurationDocs": "Configuration"
   }
 }

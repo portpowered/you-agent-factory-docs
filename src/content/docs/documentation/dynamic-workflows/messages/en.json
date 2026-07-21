@@ -19,19 +19,8 @@
       "title": "Limits And Assumptions",
       "body": "Dynamic Workflows covers JavaScript orchestrator-backed factories and when they matter. It is not a schema embed, not an OpenAPI or operation catalog, not the Cursor first-loop guide, and not Petri factory.json topology. Orchestrator fragments, invocation signatures, CLI knobs, and API relationship depth live on the Dynamic Workflows reference page."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "dynamicWorkflowsDepth": "Dynamic Workflows reference",
-    "factorySessionsOverview": "Factory Sessions overview",
-    "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows"
   }
 }

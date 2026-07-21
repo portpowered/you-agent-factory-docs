@@ -95,10 +95,6 @@ describe("packaged-factories documentation Mode A overview", () => {
         /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
       );
 
-      expect(loadedPage.messages.links?.packagedFactoriesDepth).toMatch(
-        /Packaged Factories reference/i,
-      );
-
       render(
         <main>
           <DocsPageProviders
