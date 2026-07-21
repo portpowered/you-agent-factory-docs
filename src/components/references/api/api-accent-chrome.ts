@@ -46,3 +46,17 @@ export const API_ACCENT_CHROME_SELECTED_COLOR = API_ACCENT_CSS_VARS.selected;
 
 /** Quieter / unselected CSS value (muted secondary via muted-foreground). */
 export const API_ACCENT_CHROME_QUIET_COLOR = API_ACCENT_CSS_VARS.quiet;
+
+/**
+ * Factory-dark computed-style proofs for accent chrome (theme fixture + live
+ * `/docs/references/api` checks). Derived from host foundation hex — not a
+ * page-only palette.
+ */
+export const API_ACCENT_CHROME_FACTORY_DARK_RGB = {
+  /** `FACTORY_DARK_FOUNDATION.secondaryAccent` (#507f8c) */
+  selected: "rgb(80, 127, 140)",
+  /** `FACTORY_DARK_FOUNDATION.secondaryAccentInk` (#8aaeb8) */
+  quiet: "rgb(138, 174, 184)",
+  /** `FACTORY_DARK_FOUNDATION.accent` (#f5c76f) — must NOT appear on accents */
+  primaryYellow: "rgb(245, 199, 111)",
+} as const;

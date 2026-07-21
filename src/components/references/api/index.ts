@@ -35,6 +35,7 @@ export {
   probeApiPrintReadableFacts,
 } from "./a11y-verification";
 export {
+  API_ACCENT_CHROME_FACTORY_DARK_RGB,
   API_ACCENT_CHROME_QUIET_COLOR,
   API_ACCENT_CHROME_ROOT_ATTR,
   API_ACCENT_CHROME_SELECTED_COLOR,

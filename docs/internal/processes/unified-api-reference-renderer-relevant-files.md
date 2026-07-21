@@ -91,8 +91,9 @@ hooks, and SSR cost.
 | `src/components/references/api/api-sse-operation-summary.tsx` | SSE summary panel UI (static-only; no live EventSource) |
 | `src/components/references/api/assert-sse-summaries-browser.ts` | Playwright harness probe: three SSE summaries, roles, events links, no full catalog |
 | `src/components/references/api/theme-tokens.ts` | Production semantic theme token classes, secondary/muted-secondary accent roles for tabs/badges/chips, method-badge tones, CodePanel code-copy policy, dual Shiki options |
-| `src/components/references/api/api-accent-chrome.ts` | Accent chrome selectors + stylesheet path for theme-root tab/badge/chip remaps |
+| `src/components/references/api/api-accent-chrome.ts` | Accent chrome selectors + stylesheet path + factory-dark RGB proofs for theme-root tab/badge/chip remaps |
 | `src/components/references/api/api-accent-chrome.test.ts` | Playwright fixture proofs: selected/quiet tabs + MethodLabel → secondary / muted-secondary (not primary yellow) |
+| `src/components/references/api/api-accent-regression-fence.test.tsx` | Lane fence: method badges + batch-011 navigator `text-secondary` + batch-010 browse/factories CTAs stay secondary |
 | `src/components/references/api/theme-tokens.test.ts` | Token-class / accent-role / code-copy policy / host contrast proofs |
 | `src/components/references/api/api-theme-code-copy.test.tsx` | CodePanel + copy affordance, method badge tones, theme-root harness wiring |
 | `src/components/references/api/assert-theme-code-copy-browser.ts` | Playwright harness probe: theme root, method badges, CodePanel copy, no playground |
@@ -318,7 +319,11 @@ hooks, and SSR cost.
   chrome + copy without relying on W01 spike CSS.
 - Browser probe: `bun src/components/references/api/assert-theme-code-copy-browser.ts`
   (unique port default 3539, `localhost`, Playwright via `launchPlaywrightBrowser`).
+  Asserts method-badge computed color is factory-dark secondary blue
+  (`API_ACCENT_CHROME_FACTORY_DARK_RGB.selected`), never primary yellow.
   Accent fixture proofs: `bun test src/components/references/api/api-accent-chrome.test.ts`.
+  Lane regression fence (batch-011 navigator + batch-010 browse/factories CTAs):
+  `bun test src/components/references/api/api-accent-regression-fence.test.tsx`.
 
 ## Responsive, keyboard, reduced-motion, and print
 

@@ -18,8 +18,10 @@ import {
   launchPlaywrightBrowser,
 } from "@/lib/verify/launch-playwright-browser";
 import {
+  API_ACCENT_CHROME_FACTORY_DARK_RGB,
   API_ACCENT_CHROME_QUIET_COLOR,
   API_ACCENT_CHROME_SELECTED_COLOR,
+  API_ACCENT_METHOD_LABEL_COLOR_CLASSES,
   API_ACCENT_TAB_QUIET_SELECTOR,
   API_ACCENT_TAB_SELECTED_SELECTOR,
 } from "./api-accent-chrome";
@@ -31,9 +33,9 @@ const ACCENT_CSS = readFileSync(
   "utf8",
 );
 
-const SECONDARY_BLUE_RGB = "rgb(80, 127, 140)"; // #507f8c
-const MUTED_SECONDARY_RGB = "rgb(138, 174, 184)"; // #8aaeb8
-const PRIMARY_YELLOW_RGB = "rgb(245, 199, 111)"; // #f5c76f
+const SECONDARY_BLUE_RGB = API_ACCENT_CHROME_FACTORY_DARK_RGB.selected;
+const MUTED_SECONDARY_RGB = API_ACCENT_CHROME_FACTORY_DARK_RGB.quiet;
+const PRIMARY_YELLOW_RGB = API_ACCENT_CHROME_FACTORY_DARK_RGB.primaryYellow;
 
 function buildAccentFixtureHtml(): string {
   return `<!doctype html>
@@ -111,6 +113,11 @@ describe("API accent chrome computed styles", () => {
     expect(API_ACCENT_CHROME_QUIET_COLOR).toBe("var(--muted-foreground)");
     expect(FACTORY_DARK_FOUNDATION.secondaryAccent).toBe("#507f8c");
     expect(FACTORY_DARK_FOUNDATION.accent).toBe("#f5c76f");
+    expect(API_ACCENT_CHROME_FACTORY_DARK_RGB.selected).not.toBe(
+      API_ACCENT_CHROME_FACTORY_DARK_RGB.primaryYellow,
+    );
+    expect(API_ACCENT_METHOD_LABEL_COLOR_CLASSES).toContain("text-yellow-600");
+    expect(API_ACCENT_METHOD_LABEL_COLOR_CLASSES).toContain("text-green-600");
   });
 
   test("fixture tabs, status chips, and method labels resolve secondary — not primary yellow", async () => {
