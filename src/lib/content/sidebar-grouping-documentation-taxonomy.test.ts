@@ -68,7 +68,6 @@ const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
   "configuration",
   "global-configuration-factories",
   "packaged-factories",
-  "dynamic-workflows",
   "workers",
   "agent-workers",
   "inference-workers",
@@ -84,6 +83,7 @@ const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
  */
 const MODE_A_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS = [
   "factory-session",
+  "dynamic-workflows",
 ] as const;
 
 describe("Program documentation three-level taxonomy", () => {

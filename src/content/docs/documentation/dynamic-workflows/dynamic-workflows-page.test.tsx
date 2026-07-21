@@ -1,5 +1,8 @@
 /**
- * Compatibility render proof for /docs/documentation/dynamic-workflows → /docs/factories/dynamic-workflows (W18).
+ * Page-owned render proof for documentation/dynamic-workflows Mode A overview.
+ * Covers title/summary identity, Mode A purpose sections, and the Mode B
+ * depth link to /docs/factories/dynamic-workflows — without schema embeds or
+ * W18 move-stub compatibility chrome.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -9,13 +12,13 @@ import { source } from "@/lib/source";
 
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
 
-describe("dynamic-workflows documentation compatibility page", () => {
+describe("dynamic-workflows documentation Mode A overview", () => {
   afterEach(() => {
     cleanup();
   });
 
   test(
-    "serves static compatibility HTML linking to /docs/factories/dynamic-workflows",
+    "publishes /docs/documentation/dynamic-workflows as a Mode A capability overview",
     async () => {
       const fumadocsPage = source.getPage([
         "documentation",
@@ -30,11 +33,64 @@ describe("dynamic-workflows documentation compatibility page", () => {
       });
 
       expect(loadedPage.messages.title).toBe("Dynamic Workflows");
-      expect(loadedPage.messages.description).toContain(
-        "/docs/factories/dynamic-workflows",
+      expect(loadedPage.messages.description).toMatch(/JavaScript/i);
+      expect(loadedPage.messages.description).toMatch(/Factory Session/i);
+      expect(loadedPage.messages.description).not.toMatch(
+        /This page moved|Model Atlas/i,
       );
-      expect(String(loadedPage.messages.sections?.moved?.body ?? "")).toMatch(
-        /moved to a new family route/i,
+
+      expect(loadedPage.messages.sections?.moved).toBeUndefined();
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+
+      const openingSummary = String(loadedPage.messages.openingSummary ?? "");
+      const whatItIs = String(
+        loadedPage.messages.sections?.whatItIs?.body ?? "",
+      );
+      const whenToUse = String(
+        loadedPage.messages.sections?.whenToUse?.body ?? "",
+      );
+      const howItFits = String(
+        loadedPage.messages.sections?.howItFits?.body ?? "",
+      );
+      const limits = String(
+        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+      );
+
+      expect(openingSummary).toMatch(/dynamic workflow/i);
+      expect(openingSummary).toMatch(/JavaScript/i);
+      expect(openingSummary).toMatch(/Factory Session/i);
+      expect(openingSummary).not.toMatch(/\n\n/);
+      expect(openingSummary).not.toMatch(
+        /This page|on this page|Model Atlas|reader.?shortcut|moved/i,
+      );
+
+      expect(whatItIs).toMatch(/JavaScript/i);
+      expect(whatItIs).toMatch(/orchestrator/i);
+      expect(whatItIs).toMatch(/Factory Session/i);
+      expect(whatItIs).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(whatItIs).not.toMatch(/schema embed|OpenAPI/i);
+
+      expect(whenToUse).toMatch(/validate|start|inspect|JavaScript/i);
+      expect(whenToUse).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+
+      expect(howItFits).toMatch(/Factory Session/i);
+      expect(howItFits).toMatch(/CLI|MCP|Model Context Protocol/i);
+      expect(howItFits).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+
+      expect(limits).toMatch(/not a schema embed/i);
+      expect(limits).toMatch(/not an OpenAPI/i);
+      expect(limits).toMatch(/Dynamic Workflows reference/i);
+      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+
+      expect(loadedPage.messages.links?.dynamicWorkflowsDepth).toMatch(
+        /Dynamic Workflows reference/i,
       );
 
       render(
@@ -50,24 +106,33 @@ describe("dynamic-workflows documentation compatibility page", () => {
         </main>,
       );
 
-      const root = document.querySelector(
-        "[data-documentation-route-compatibility]",
-      );
-      expect(root).toBeTruthy();
-      expect(root?.getAttribute("data-compatibility-old-route")).toBe(
-        "/docs/documentation/dynamic-workflows",
-      );
-      expect(root?.getAttribute("data-compatibility-target-route")).toBe(
-        "/docs/factories/dynamic-workflows",
-      );
+      expect(
+        document.querySelector("[data-documentation-route-compatibility]"),
+      ).toBeNull();
+      expect(document.querySelector("[data-schema-embed]")).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Moved" })).toBeNull();
+      expect(
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
 
-      const link = screen.getByRole("link", {
-        name: "Open the dynamic workflows page",
+      expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
+      expect(screen.getByRole("heading", { name: "When To Use" })).toBeTruthy();
+      expect(screen.getByRole("heading", { name: "How It Fits" })).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Limits And Assumptions" }),
+      ).toBeTruthy();
+      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+
+      const whatItIsSection = document.getElementById("what-it-is");
+      expect(whatItIsSection?.textContent).toMatch(/JavaScript/i);
+      expect(whatItIsSection?.textContent).toMatch(/Factory Session/i);
+
+      const depthLink = screen.getByRole("link", {
+        name: "Dynamic Workflows reference",
       });
-      expect(link.getAttribute("href")).toBe(
+      expect(depthLink.getAttribute("href")).toBe(
         "/docs/factories/dynamic-workflows",
       );
-      expect(link.getAttribute("data-compatibility-target-link")).toBe("");
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

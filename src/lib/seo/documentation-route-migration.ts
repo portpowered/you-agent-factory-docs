@@ -97,11 +97,6 @@ export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMi
       status: "closed",
     },
     {
-      oldRoute: "/docs/documentation/dynamic-workflows",
-      targetRoute: "/docs/factories/dynamic-workflows",
-      status: "closed",
-    },
-    {
       oldRoute: "/docs/documentation/workers",
       targetRoute: "/docs/workers",
       status: "closed",
@@ -204,9 +199,9 @@ export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER_SIZE =
 
 /**
  * Active §10 move-stub inventory size (W00 baseline minus routes restored as
- * Mode A Program overviews — currently factory-session via PS-210).
+ * Mode A Program overviews — factory-session and dynamic-workflows via PS-210).
  */
-export const DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT = 13;
+export const DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT = 12;
 
 export function listDocumentationRouteMigrationRows(): readonly DocumentationRouteMigrationRow[] {
   return DOCUMENTATION_ROUTE_MIGRATION_LEDGER;
@@ -388,8 +383,6 @@ export const DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS = {
   "documentation.global-configuration-factories":
     "documentation.factories-global-configuration",
   "documentation.packaged-factories": "documentation.factories-packaged",
-  "documentation.dynamic-workflows":
-    "documentation.factories-dynamic-workflows",
   "documentation.agent-workers": "documentation.workers-agent",
   "documentation.inference-workers": "documentation.workers-inference",
   "documentation.script-workers": "documentation.workers-script",
