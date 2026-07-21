@@ -1,5 +1,5 @@
 /**
- * Page-local MDX components for references/mcp.
+ * Page-local MDX components for references/mcp-reference.
  * Merged by route-family-local-docs-page-load when this file is present.
  * Do not register these in the shared module MDX map.
  */

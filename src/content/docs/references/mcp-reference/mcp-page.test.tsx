@@ -1,9 +1,9 @@
 /**
- * Page-owned render proof for references/mcp.
+ * Page-owned render proof for references/mcp-reference.
  * Covers install-first lead, polished title/subtitle, package-backed
  * inventory mount, and representative trimmed tool-card chrome. Colocated
  * under the page bundle. Also locks explorer/nav/search chrome for the
- * MCP Reference display rename (route slug unchanged).
+ * MCP Reference display title on the renamed route.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -17,7 +17,8 @@ import { buildSearchDocuments } from "@/lib/search/build-documents";
 import { source } from "@/lib/source";
 
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
-const MCP_PAGE_URL = "/docs/references/mcp";
+const MCP_PAGE_URL = "/docs/references/mcp-reference";
+const MCP_PAGE_SLUG = "mcp-reference";
 const MCP_DISPLAY_TITLE = "MCP Reference";
 const MCP_LEGACY_TITLE = "You Agent Factory MCP";
 
@@ -48,9 +49,9 @@ describe("mcp reference page", () => {
   });
 
   test(
-    "publishes /docs/references/mcp as a package-backed MCP inventory page",
+    "publishes /docs/references/mcp-reference as a package-backed MCP inventory page",
     async () => {
-      const fumadocsPage = source.getPage(["references", "mcp"]);
+      const fumadocsPage = source.getPage(["references", MCP_PAGE_SLUG]);
       expect(fumadocsPage).toBeDefined();
       expect(fumadocsPage?.url).toBe(MCP_PAGE_URL);
 
@@ -67,7 +68,7 @@ describe("mcp reference page", () => {
 
       const loadedPage = await loadLocalDocsPage({
         section: "references",
-        slug: "mcp",
+        slug: MCP_PAGE_SLUG,
       });
 
       expect(loadedPage.frontmatter.kind).toBe("reference");

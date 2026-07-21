@@ -18,7 +18,7 @@ describe("prefer page titles over reference heading spam", () => {
       (result) => result.url === "/docs/documentation/mcp",
     );
     const referencesIndex = results.findIndex(
-      (result) => result.url === "/docs/references/mcp",
+      (result) => result.url === "/docs/references/mcp-reference",
     );
     expect(documentationIndex).toBeGreaterThanOrEqual(0);
     expect(referencesIndex).toBeGreaterThanOrEqual(0);

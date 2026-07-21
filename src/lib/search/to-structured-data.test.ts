@@ -17,7 +17,7 @@ import { toStructuredData } from "./to-structured-data";
 import type { SearchDocument } from "./types";
 import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
 
-const MCP_REFERENCE_URL = "/docs/references/mcp";
+const MCP_REFERENCE_URL = "/docs/references/mcp-reference";
 const HARNESS_URL = "/docs/concepts/harness";
 
 function buildSyntheticDocument(input: {

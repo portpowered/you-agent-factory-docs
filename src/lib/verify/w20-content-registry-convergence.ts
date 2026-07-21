@@ -86,7 +86,7 @@ export const W20_REQUIRED_PUBLISHED_ROUTE_URLS = [
   "/docs/references/system-config-schema",
   "/docs/references/mock-workers-schema",
   "/docs/references/cli",
-  "/docs/references/mcp",
+  "/docs/references/mcp-reference",
   "/docs/references/javascript-runtime",
   // factories
   "/docs/factories/configuration",

@@ -123,10 +123,10 @@ export const W20_PLAN_SECTION_9_PAGE_OWNERSHIP = [
       "src/content/docs/references/mock-workers-schema/mock-workers-schema-page.test.tsx",
   },
   {
-    route: "/docs/references/mcp",
+    route: "/docs/references/mcp-reference",
     planSection: "9.1",
     owner: "W11",
-    testSurface: "src/content/docs/references/mcp/mcp-page.test.tsx",
+    testSurface: "src/content/docs/references/mcp-reference/mcp-page.test.tsx",
   },
   {
     route: "/docs/references/cli",

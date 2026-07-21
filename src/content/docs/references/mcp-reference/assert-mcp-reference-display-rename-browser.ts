@@ -1,8 +1,8 @@
 /**
- * Browser verify for MCP reference display rename on `/docs/references/mcp`:
- * visible title reads MCP Reference, URL slug stays `/docs/references/mcp`,
- * and the legacy product title is not live H1/title chrome
- * (repair-mcp-reference-display-rename story 002).
+ * Browser verify for MCP reference display rename on
+ * `/docs/references/mcp-reference`: visible title reads MCP Reference, URL
+ * path is `/docs/references/mcp-reference`, and the legacy product title is
+ * not live H1/title chrome.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  * Prefer `MCP_REFERENCE_RENAME_PROBE_BASE_URL` when a server is already warm.
@@ -12,7 +12,7 @@ import { type ChildProcess, spawn } from "node:child_process";
 import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
 
 const PORT = Number(process.env.MCP_REFERENCE_RENAME_PROBE_PORT ?? "3588");
-const PAGE_PATH = "/docs/references/mcp";
+const PAGE_PATH = "/docs/references/mcp-reference";
 const DISPLAY_TITLE = "MCP Reference";
 const LEGACY_TITLE = "You Agent Factory MCP";
 const READY_TIMEOUT_MS = 180_000;
@@ -121,8 +121,8 @@ try {
         (anchor) => {
           const href = anchor.getAttribute("href") ?? "";
           return (
-            href === "/docs/references/mcp" ||
-            href.endsWith("/docs/references/mcp")
+            href === "/docs/references/mcp-reference" ||
+            href.endsWith("/docs/references/mcp-reference")
           );
         },
       );

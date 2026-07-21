@@ -115,9 +115,9 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
-      case "mcp": {
+      case "mcp-reference": {
         const mod = await import(
-          "@/content/docs/references/mcp/page-mdx-components"
+          "@/content/docs/references/mcp-reference/page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }

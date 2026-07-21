@@ -20,8 +20,8 @@ const PUBLISHED_ROUTES = [
     countAttr: "data-cli-command-count",
   },
   {
-    slug: "mcp",
-    htmlRelativePath: "out/docs/references/mcp.html",
+    slug: "mcp-reference",
+    htmlRelativePath: "out/docs/references/mcp-reference.html",
     inventoryAttr: "data-mcp-tool-inventory",
     countAttr: "data-mcp-tool-count",
   },

@@ -41,7 +41,7 @@ describe("reference heading de-spam search contract", () => {
     );
     const referencesIndex = firstIndexMatching(
       results,
-      (result) => result.url === "/docs/references/mcp",
+      (result) => result.url === "/docs/references/mcp-reference",
     );
     expect(documentationIndex).toBeGreaterThanOrEqual(0);
     expect(referencesIndex).toBeGreaterThanOrEqual(0);
