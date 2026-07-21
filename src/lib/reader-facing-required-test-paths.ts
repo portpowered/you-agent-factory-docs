@@ -28,8 +28,8 @@ export const READER_FACING_REQUIRED_TEST_PATHS = [
   "src/features/docs/search/search-result-title-content.test.ts",
 
   // Layout shell (home/docs header, locale, coverage contracts, live sidebar)
-  "src/components/layout/docs-header.test.tsx",
-  "src/components/layout/primary-nav.test.ts",
+  "src/features/layout/docs-header.test.tsx",
+  "src/features/layout/primary-nav.test.ts",
   "src/tests/layout/home-shell-coverage-contract.test.ts",
   "src/tests/layout/home-shell-styling-contract.test.tsx",
   "src/tests/layout/root-layout-locale.test.tsx",

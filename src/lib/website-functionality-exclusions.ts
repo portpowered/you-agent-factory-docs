@@ -195,7 +195,7 @@ export const WEBSITE_FUNCTIONALITY_FILE_EXCLUSIONS: readonly WebsiteFileExclusio
       note: "Docs slug renderer still asserts Atlas-era locale/module fixtures; keep out of plain make test until rewritten for factory pages.",
     },
     {
-      path: "src/components/layout/docs-header.test.tsx",
+      path: "src/features/layout/docs-header.test.tsx",
       classification: "replaced",
       ownedBy: "make test-reader-facing / bun run test:reader-facing",
       note: "Docs header shell contract runs in the reader-facing required suite.",

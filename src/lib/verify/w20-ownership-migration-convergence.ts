@@ -839,8 +839,8 @@ export const W20_PLAN_SECTION_11_COMPONENT_OWNERSHIP = [
     name: "docs-shell-and-breadcrumbs",
     planSection: "11.8",
     owner: "reuse",
-    implementation: "src/components/layout/docs-header.tsx",
-    testSurface: "src/components/layout/docs-header.test.tsx",
+    implementation: "src/features/layout/docs-header.tsx",
+    testSurface: "src/features/layout/docs-header.test.tsx",
   },
   {
     name: "localized-Section-and-T",
