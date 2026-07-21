@@ -6,6 +6,14 @@ export const docsPageFooterCardSelector =
   '#nd-page a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]';
 
 /**
+ * Live docs Previous/Next cards rendered by FamilyDocsFooterNeighbors
+ * (Fumadocs Footer is disabled). Compact density must target this surface.
+ * Keep in sync with docs-page-footer-chrome.css.
+ */
+export const docsPageFooterFamilyCardSelector =
+  '#nd-page [data-testid="family-docs-footer-neighbors"] a';
+
+/**
  * Hover/focus card state: primary yellow fill + dark accent-ink text.
  * Same interactive language as collection resource-card hover.
  */

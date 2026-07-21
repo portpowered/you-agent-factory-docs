@@ -89,7 +89,8 @@ describe("docs page footer contract", () => {
 
   test("bundledCssHasFooterCompactSizingRule matches compact padding/gap overrides", () => {
     const bundledCss = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
     `;
 
     expect(bundledCssHasFooterCompactSizingRule(bundledCss)).toBe(true);
@@ -98,7 +99,8 @@ describe("docs page footer contract", () => {
 
   test("assertDocsFooterChromeCssConvergence requires both yellow+dark-text and compact sizing", () => {
     const bothRepairsCss = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
       #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
     `;
 
@@ -111,8 +113,17 @@ describe("docs page footer contract", () => {
       "missing footer compact padding/gap",
     );
 
-    const missingYellowDark = `
+    const missingFamilySurface = `
       #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
+    `;
+    expect(
+      assertDocsFooterChromeCssConvergence(missingFamilySurface),
+    ).toContain("missing footer compact padding/gap");
+
+    const missingYellowDark = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground],
+      #nd-page [data-testid="family-docs-footer-neighbors"] a{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
     `;
     expect(assertDocsFooterChromeCssConvergence(missingYellowDark)).toContain(
       "missing footer hover/focus yellow + dark-text",

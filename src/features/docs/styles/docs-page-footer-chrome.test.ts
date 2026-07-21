@@ -6,6 +6,7 @@ import {
   docsPageFooterCardSelector,
   docsPageFooterCompactGap,
   docsPageFooterCompactPadding,
+  docsPageFooterFamilyCardSelector,
   docsPageFooterHoverStateSelector,
   docsPageFooterMutedSublabelSelector,
 } from "@/features/docs/styles/docs-page-footer-chrome";
@@ -33,6 +34,9 @@ describe("docs page footer chrome CSS contract", () => {
     expect(docsPageFooterCardSelector).toContain("hover:bg-fd-accent");
     expect(docsPageFooterCardSelector).toContain(
       "hover:text-fd-accent-foreground",
+    );
+    expect(docsPageFooterFamilyCardSelector).toContain(
+      'data-testid="family-docs-footer-neighbors"',
     );
     expect(docsPageFooterHoverStateSelector).toContain(":hover");
     expect(docsPageFooterHoverStateSelector).toContain(":focus-visible");
@@ -73,6 +77,9 @@ describe("docs page footer chrome CSS contract", () => {
 
     expect(normalizedCss).toContain(
       normalizeSelectorContract(docsPageFooterCardSelector),
+    );
+    expect(normalizedCss).toContain(
+      normalizeSelectorContract(docsPageFooterFamilyCardSelector),
     );
     expect(normalizedCss).toContain(
       normalizeSelectorContract(docsPageFooterHoverStateSelector),

@@ -83,6 +83,16 @@ function bundledCssHasAccentHoverFooterSelector(normalized: string): boolean {
   );
 }
 
+/** Live family-scoped footer neighbor cards (Fumadocs Footer disabled). */
+function bundledCssHasFamilyFooterCardSelector(normalized: string): boolean {
+  return (
+    normalized.includes("#nd-page") &&
+    (normalized.includes('[data-testid="family-docs-footer-neighbors"]') ||
+      normalized.includes("[data-testid=family-docs-footer-neighbors]") ||
+      normalized.includes('[data-testid=\\"family-docs-footer-neighbors\\"]'))
+  );
+}
+
 /**
  * App CSS footer hover/focus on the Fumadocs accent-hover card selector chain.
  *
@@ -120,8 +130,9 @@ export function bundledCssHasFooterYellowDarkTextRule(css: string): boolean {
 }
 
 /**
- * Bundled/app CSS must override Fumadocs tall `p-4` / `gap-2` with compact
- * padding and gap on the same accent-hover footer card selector.
+ * Bundled/app CSS must override tall `p-4` / `gap-2` with compact padding and
+ * gap on both the accent-hover footer fixture selector and the live
+ * family-docs-footer-neighbors surface (docs pages disable Fumadocs Footer).
  */
 export function bundledCssHasFooterCompactSizingRule(css: string): boolean {
   const normalized = normalizeBundledCss(css);
@@ -142,6 +153,7 @@ export function bundledCssHasFooterCompactSizingRule(css: string): boolean {
 
   return (
     bundledCssHasAccentHoverFooterSelector(normalized) &&
+    bundledCssHasFamilyFooterCardSelector(normalized) &&
     hasCompactPadding &&
     hasCompactGap &&
     !reintroducesTallPadding &&

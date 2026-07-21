@@ -4,17 +4,21 @@
  * highlight + dark accent-ink text so neighbor nav matches collection-card
  * hover (supersedes the post-#155 stable-inherit / no-text-recolor rule).
  *
- * Also override Fumadocs tall `p-4` / `gap-2` spacing so cards read as
- * compact neighbor controls rather than bulky blocks.
+ * Also override tall `p-4` / `gap-2` spacing so cards read as compact neighbor
+ * controls rather than bulky blocks. Live docs pages render family-scoped
+ * Previous/Next via `[data-testid="family-docs-footer-neighbors"]` (not the
+ * Fumadocs Footer), so compact padding/gap must cover that surface too —
+ * otherwise density overrides only match unused accent-hover fixtures.
  *
  * Color + spacing overrides live in @layer utilities with !important so they
  * win over the Tailwind hover:bg-fd-accent / hover:text-fd-accent-foreground /
  * p-4 / gap-2 utilities at runtime.
  */
 @layer utilities {
-  /* Compact card chrome: shorter than Fumadocs p-4 (1rem) / gap-2 (0.5rem). */
+  /* Compact card chrome: shorter than tall p-4 (1rem) / gap-2 (0.5rem). */
   #nd-page
-    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"] {
+    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"],
+  #nd-page [data-testid="family-docs-footer-neighbors"] a {
     padding: 0.5rem 0.75rem !important;
     gap: 0.25rem !important;
   }

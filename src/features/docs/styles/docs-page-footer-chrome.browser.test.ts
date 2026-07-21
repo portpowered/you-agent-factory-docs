@@ -42,6 +42,10 @@ const COMPACT_GAP_PX = 4; // 0.25rem
 const FOOTER_CARD_CLASS =
   "flex flex-col gap-2 rounded-lg border bg-fd-card p-4 text-sm transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground";
 
+/** Mirrors FamilyDocsFooterNeighbors card classes (live docs surface). */
+const FAMILY_FOOTER_CARD_CLASS =
+  "flex flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-muted/80";
+
 type FooterCardProbe = {
   color: string;
   backgroundColor: string;
@@ -126,6 +130,34 @@ function buildFooterChromeFixtureHtml(includeChromeCss: boolean): string {
           Next Title
         </a>
       </nav>
+      <nav
+        aria-label="Page navigation"
+        data-testid="family-docs-footer-neighbors"
+        style="display:grid;gap:1rem;padding:1rem;grid-template-columns:1fr 1fr;"
+      >
+        <a
+          class="${FAMILY_FOOTER_CARD_CLASS}"
+          href="/docs/family-prev"
+          data-footer-card="family-previous"
+        >
+          <div class="inline-flex items-center gap-1.5 font-medium">
+            <span aria-hidden="true">←</span>
+            <p>Family Previous Title</p>
+          </div>
+          <p class="truncate text-muted-foreground">Previous page</p>
+        </a>
+        <a
+          class="${FAMILY_FOOTER_CARD_CLASS} text-end"
+          href="/docs/family-next"
+          data-footer-card="family-next"
+        >
+          <div class="inline-flex items-center gap-1.5 font-medium flex-row-reverse">
+            <span aria-hidden="true">→</span>
+            <p>Family Next Title</p>
+          </div>
+          <p class="truncate text-muted-foreground">Next page</p>
+        </a>
+      </nav>
     </article>
   </body>
 </html>`;
@@ -135,7 +167,7 @@ async function probeFooterCard(
   page: {
     evaluate: <T>(fn: (cardKey: string) => T, cardKey: string) => Promise<T>;
   },
-  cardKey: "previous" | "next",
+  cardKey: "previous" | "next" | "family-previous" | "family-next",
 ): Promise<FooterCardProbe> {
   return page.evaluate((key) => {
     const card = document.querySelector(
@@ -145,7 +177,7 @@ async function probeFooterCard(
       throw new Error(`fixture missing footer card ${key}`);
     }
     const sublabel = card.querySelector(
-      "p.text-fd-muted-foreground",
+      "p.text-fd-muted-foreground, p.text-muted-foreground, p.truncate",
     ) as HTMLElement | null;
     if (!sublabel) {
       throw new Error(`fixture missing muted sublabel on ${key}`);
@@ -237,6 +269,12 @@ describe("docs page footer chrome behavioral (always-on)", () => {
           expect(focused.boxShadow).toContain(RING_RGB);
           expectCompactSizing(focused);
         }
+
+        // Live docs pages use FamilyDocsFooterNeighbors — density must land there.
+        for (const cardKey of ["family-previous", "family-next"] as const) {
+          const resting = await probeFooterCard(page, cardKey);
+          expectCompactSizing(resting);
+        }
       } finally {
         await page.close();
       }
@@ -264,6 +302,9 @@ describe("docs page footer chrome behavioral (always-on)", () => {
         const hovered = await probeFooterCard(page, "next");
         expect(hovered.color).toBe(ACCENT_FOREGROUND_RGB);
         expectTallSizing(hovered);
+
+        const familyResting = await probeFooterCard(page, "family-next");
+        expectTallSizing(familyResting);
       } finally {
         await page.close();
       }
