@@ -129,26 +129,6 @@ describe("tool-calling concept page", () => {
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const thinkingLink = screen.getByRole("link", { name: "Thinking" });
-    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
-    const tokensLink = screen.getByRole("link", { name: "Tokens" });
-    expect(tokensLink.getAttribute("href")).toBe("/docs/concepts/tokens");
-    const toolLink = screen.getByRole("link", { name: "Tool" });
-    expect(toolLink.getAttribute("href")).toBe("/docs/concepts/tool");
-    const mcpLink = screen.getByRole("link", { name: "MCP" });
-    expect(mcpLink.getAttribute("href")).toBe("/docs/concepts/mcp");
-    const workersLink = screen.getByRole("link", { name: "Workers" });
-    expect(workersLink.getAttribute("href")).toBe("/docs/workers");
-    const harnessSupportLink = screen.getByRole("link", {
-      name: "Harness support",
-    });
-    expect(harnessSupportLink.getAttribute("href")).toBe(
-      "/docs/documentation/harness-support",
-    );
-    const mcpDocsLink = screen.getByRole("link", {
-      name: "MCP documentation",
-    });
-    expect(mcpDocsLink.getAttribute("href")).toBe("/docs/documentation/mcp");
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {

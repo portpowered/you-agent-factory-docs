@@ -87,24 +87,6 @@ describe("loop concept page", () => {
     expect(screen.getByText(/not a write-review loop/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const loopsGuideLink = screen.getByRole("link", {
-      name: "Using you-agent-factory for loops",
-    });
-    expect(loopsGuideLink.getAttribute("href")).toBe(
-      "/docs/guides/using-you-agent-factory-for-loops",
-    );
-    const writeReviewLink = screen.getByRole("link", {
-      name: "Write-review loops",
-    });
-    expect(writeReviewLink.getAttribute("href")).toBe(
-      "/docs/guides/write-review-loops",
-    );
-    const gettingStartedLink = screen.getByRole("link", {
-      name: "Getting started",
-    });
-    expect(gettingStartedLink.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {

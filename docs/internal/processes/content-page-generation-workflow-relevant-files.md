@@ -47,6 +47,27 @@ fails when chrome is absent. Existing published MDX may still mount RelatedDocs
 until PF-L-strip removes it by collection; that remaining chrome is not a
 contracts-lane failure. FAQ-only strip remains PF-D2.
 
+### Concepts collection strip (PF-L-strip / repair-docs-strip-related-concepts)
+
+Published concepts pages under `src/content/docs/concepts/**/page.mdx` stop
+mounting trailing Related / References footer chrome:
+
+- Remove `Section id="related"` / `id="references"` and their
+  `RelatedDocs` / `DerivedRelatedDocs` / Related-only `LocalizedLinkList` /
+  References `CitationList` mounts.
+- Keep Tags (`TagPillList`) and teaching-section links (for example
+  `LocalizedLinkList` inside `where-it-appears` on
+  `statistical-process-control-graphs`).
+- Prefer stop-mounting over rewriting shared `RelatedDocs` behavior.
+- Colocated concepts page tests that required Related To / References headings
+  or curated Related-footer links must assert absence (or drop those asserts);
+  do not reintroduce a related surface to keep old link asserts green.
+- `src/lib/navigation/local-docs-toc.test.ts` uses the loop concept page — after
+  the strip, assert Tags presence and Related To / References TOC absence.
+- Locale message cleanup for `sections.related` / `sections.references` (and
+  Related-only link keys) is a follow-on story; MDX strip alone is enough for
+  chrome to disappear.
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a

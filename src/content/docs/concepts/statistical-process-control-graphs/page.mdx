@@ -14,10 +14,7 @@ aliases:
 updatedAt: "2026-07-09"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -59,24 +56,7 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.commonConfusions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <DerivedRelatedDocs
-    registryId="concept.statistical-process-control-graphs"
-    groups={[
-      "same-concept-type",
-      "shared-tags",
-      "used-by-models",
-      "curated-related"
-    ]}
-  />
-
-  <RelatedDocs registryId="concept.statistical-process-control-graphs" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="concept.statistical-process-control-graphs" showDescriptions />
 </Section>
 
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="concept.statistical-process-control-graphs" />
-</Section>

@@ -14,10 +14,6 @@ aliases:
 updatedAt: "2026-07-11"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -38,57 +34,7 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.commonConfusions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/concepts/harness",
-        labelKey: "links.harnessConcept",
-      },
-      {
-        href: "/docs/concepts/tool",
-        labelKey: "links.toolConcept",
-      },
-      {
-        href: "/docs/concepts/mcp",
-        labelKey: "links.mcpConcept",
-      },
-      {
-        href: "/docs/concepts/tool-calling",
-        labelKey: "links.toolCallingConcept",
-      },
-      {
-        href: "/docs/documentation/mcp",
-        labelKey: "links.mcpDocs",
-      },
-      {
-        href: "/docs/documentation/harness-support",
-        labelKey: "links.harnessSupportDocs",
-      },
-      {
-        href: "/docs/guides/cursor-dynamic-workflows",
-        labelKey: "links.cursorDynamicWorkflows",
-      },
-    ]}
-  />
-
-  <DerivedRelatedDocs
-    registryId="concept.skills"
-    groups={[
-      "same-concept-type",
-      "shared-tags",
-      "used-by-models",
-      "curated-related"
-    ]}
-  />
-
-  <RelatedDocs registryId="concept.skills" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="concept.skills" showDescriptions />
 </Section>
 
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="concept.skills" />
-</Section>

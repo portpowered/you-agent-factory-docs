@@ -106,20 +106,6 @@ describe("compaction concept page", () => {
     expect(commonConfusionsSection?.textContent ?? "").toMatch(/not tokens/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const tokensLink = screen.getByRole("link", { name: "Tokens concept" });
-    expect(tokensLink.getAttribute("href")).toBe("/docs/concepts/tokens");
-    const thinkingLink = screen.getByRole("link", { name: "Thinking concept" });
-    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
-    const harnessLink = screen.getByRole("link", { name: "Harness concept" });
-    expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
-    const loopLink = screen.getByRole("link", { name: "Loop concept" });
-    expect(loopLink.getAttribute("href")).toBe("/docs/concepts/loop");
-    const configurationLink = screen.getByRole("link", {
-      name: "Configuration documentation",
-    });
-    expect(configurationLink.getAttribute("href")).toBe(
-      "/docs/factories/configuration",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {

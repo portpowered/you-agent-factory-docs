@@ -100,10 +100,6 @@ describe("checklist concept page", () => {
     expect(commonConfusionsSection?.textContent).toMatch(/not a task queue/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const taskQueueLink = screen.getByRole("link", { name: "Task queue" });
-    expect(taskQueueLink.getAttribute("href")).toBe(
-      "/docs/concepts/task-queue",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {

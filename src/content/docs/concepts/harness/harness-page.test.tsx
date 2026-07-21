@@ -114,20 +114,6 @@ describe("harness concept page", () => {
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const whatIsLink = screen.getByRole("link", {
-      name: "What is you-agent-factory",
-    });
-    expect(whatIsLink.getAttribute("href")).toBe(
-      "/docs/documentation/what-is-you-agent-factory",
-    );
-    const loopLink = screen.getByRole("link", { name: "Loop concept" });
-    expect(loopLink.getAttribute("href")).toBe("/docs/concepts/loop");
-    const harnessSupportLink = screen.getByRole("link", {
-      name: "Harness support",
-    });
-    expect(harnessSupportLink.getAttribute("href")).toBe(
-      "/docs/documentation/harness-support",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {

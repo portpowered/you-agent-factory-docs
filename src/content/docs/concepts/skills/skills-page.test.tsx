@@ -129,35 +129,6 @@ describe("skills concept page", () => {
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const harnessLink = screen.getByRole("link", { name: "Harness" });
-    expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
-    const toolLink = screen.getByRole("link", { name: "Tool" });
-    expect(toolLink.getAttribute("href")).toBe("/docs/concepts/tool");
-    expect(
-      screen
-        .getAllByRole("link", { name: "MCP" })
-        .some((link) => link.getAttribute("href") === "/docs/concepts/mcp"),
-    ).toBe(true);
-    const toolCallingLink = screen.getByRole("link", { name: "Tool calling" });
-    expect(toolCallingLink.getAttribute("href")).toBe(
-      "/docs/concepts/tool-calling",
-    );
-    const mcpDocsLink = screen.getByRole("link", {
-      name: "MCP documentation",
-    });
-    expect(mcpDocsLink.getAttribute("href")).toBe("/docs/documentation/mcp");
-    const harnessSupportLink = screen.getByRole("link", {
-      name: "Harness support",
-    });
-    expect(harnessSupportLink.getAttribute("href")).toBe(
-      "/docs/documentation/harness-support",
-    );
-    const cursorGuideLink = screen.getByRole("link", {
-      name: "Cursor dynamic workflows",
-    });
-    expect(cursorGuideLink.getAttribute("href")).toBe(
-      "/docs/guides/cursor-dynamic-workflows",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {

@@ -125,24 +125,6 @@ describe("tokens concept page", () => {
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const thinkingLink = screen.getByRole("link", { name: "Thinking" });
-    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
-    const petriLink = screen.getByRole("link", { name: "Petri / CPN" });
-    expect(petriLink.getAttribute("href")).toBe("/docs/documentation/petri");
-    const configurationLink = screen.getByRole("link", {
-      name: "Configuration",
-    });
-    expect(configurationLink.getAttribute("href")).toBe(
-      "/docs/factories/configuration",
-    );
-    const workstationsLink = screen.getByRole("link", { name: "Workstations" });
-    expect(workstationsLink.getAttribute("href")).toBe("/docs/workstations");
-    const submittingWorkLink = screen.getByRole("link", {
-      name: "Submitting work",
-    });
-    expect(submittingWorkLink.getAttribute("href")).toBe(
-      "/docs/documentation/submitting-work",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {

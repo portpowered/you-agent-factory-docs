@@ -115,31 +115,6 @@ describe("tool concept page", () => {
       /Tool calling is the model-inference behavior/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    expect(
-      screen.getByRole("link", { name: "Tool calling" }).getAttribute("href"),
-    ).toBe("/docs/concepts/tool-calling");
-    expect(
-      screen
-        .getAllByRole("link", { name: "MCP" })
-        .some((link) => link.getAttribute("href") === "/docs/concepts/mcp"),
-    ).toBe(true);
-    expect(
-      screen.getByRole("link", { name: "Skills" }).getAttribute("href"),
-    ).toBe("/docs/concepts/skills");
-    expect(
-      screen.getByRole("link", { name: "Harness" }).getAttribute("href"),
-    ).toBe("/docs/concepts/harness");
-    expect(
-      screen
-        .getByRole("link", { name: "MCP documentation" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/mcp");
-    expect(
-      screen
-        .getByRole("link", { name: "Cursor dynamic workflows" })
-        .getAttribute("href"),
-    ).toBe("/docs/guides/cursor-dynamic-workflows");
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {
