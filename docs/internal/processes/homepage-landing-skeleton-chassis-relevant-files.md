@@ -27,6 +27,13 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 | `public/home/` | Reserved homepage asset root (`/home/...` URLs) |
 | `scripts/stage-homepage-assets.ts` | Copy/optimize planner or sibling `images/` sources into `public/home/` (no-op leave-empty when sources absent) |
 
+## Production home (do not flip)
+
+| File | Role |
+| --- | --- |
+| `src/app/(site)/page.tsx` / `site-renderers.tsx` `renderHomePage` | Live `/` still serves DocsPage + HomeArticle; W-integrate owns LandingPage swap |
+| `src/app/(site)/production-home-landing-untouched.test.tsx` | Regression: `renderHomePage` must not emit `data-landing-page` / placeholders |
+
 ## Patterns
 
 - Whale theme knob names come from `docs/temp/homepage-2/motion-whale.md` (`initialScale`, `initialY`, `durationMs`, `ease`, `blurPx`, `viewAmount`, `bubbleDelayMs`, `parallaxFactor`).
@@ -35,7 +42,7 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 - Feature lanes must not import unfinished sibling packages; chassis stubs stay self-contained.
 - Match other `(dev)` harnesses: gate with `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"` → `notFound()`.
 - Worktree browser verify: when `node_modules` lives only in the main checkout, Turbopack may fail (`next` not resolvable / symlink out of root). Prefer `bun ./scripts/run-next.ts dev --webpack -p <unique-port>` for local harness checks; do not leave the server running.
-- Keep production `/` on the current docs home until W-integrate swaps slots.
+- Keep production `/` on the current docs home until W-integrate swaps slots. Quality gate for W-skeleton: typecheck + lint + landing-page/harness tests + browser proof that `/` has no `data-landing-page`.
 - Homepage image sources: prefer `docs/temp/images/`, else walk up from the
   checkout looking for a sibling `images/` directory (worktrees need several
   `..` hops). Stage with `bun ./scripts/stage-homepage-assets.ts`; consumers use
