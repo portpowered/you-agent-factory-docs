@@ -264,7 +264,7 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | partially implemented |
 | **Summary** | Layout and docs chrome use Tailwind responsive utilities; React Flow graph viewers support pan/zoom interactions tested in build and module convergence suites. There is no dedicated viewport regression matrix across mobile/tablet/desktop breakpoints. |
-| **Repository evidence** | `src/app/globals.css`, `src/features/models/components/RegistryGraphFlow.tsx`, `src/components/layout/canonical-docs-layout.tsx`, `src/tests/layout/docs-shell-contract.test.tsx`, `src/lib/verify/phase-1-ux-verifier.ts` |
+| **Repository evidence** | `src/app/globals.css`, `src/features/models/components/RegistryGraphFlow.tsx`, `src/features/layout/canonical-docs-layout.tsx`, `src/tests/layout/docs-shell-contract.test.tsx`, `src/lib/verify/phase-1-ux-verifier.ts` |
 | **Verification commands** | `bun test src/tests/layout`, `bun run verify:export-search-ux` |
 | **Gaps** | No systematic small-screen navigation/table/graph usability gate; touch and hover-alternative coverage is implicit only. |
 | **Follow-up or operator requirement** | Add viewport-focused Playwright or CSS contract checks for primary docs routes. |
@@ -297,7 +297,7 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | partially implemented |
 | **Summary** | axe-core accessibility tests cover primary navigation, docs sidebar, search dialog, glossary token rendering, and representative docs components. Semantic HTML and focusable controls appear in layout and search components. WCAG contrast and CI enforcement are not automated in `make ci`. |
-| **Repository evidence** | `src/tests/a11y/`, `axe-core` in `package.json`, `src/components/layout/primary-nav.ts`, `src/features/docs/search/SearchDialog.tsx`, `src/features/docs/search/SearchTrigger.tsx` |
+| **Repository evidence** | `src/tests/a11y/`, `axe-core` in `package.json`, `src/features/layout/primary-nav.ts`, `src/features/docs/search/SearchDialog.tsx`, `src/features/docs/search/SearchTrigger.tsx` |
 | **Verification commands** | `bun test src/tests/a11y` |
 | **Gaps** | Accessibility suite is not part of `make ci`; no automated color-contrast gate; graph textual summaries exist on some pages but are not uniformly enforced. |
 | **Follow-up or operator requirement** | Wire `src/tests/a11y` into CI or a dedicated `make a11y` target referenced from `make ci`. |

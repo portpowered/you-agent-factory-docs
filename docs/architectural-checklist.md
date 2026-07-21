@@ -337,7 +337,7 @@ make clean     # remove generated artifacts
 * `src/lib/search` owns index generation, query normalization, ranking, and facet filtering.
 * `src/lib/seo` owns metadata helpers, canonical URLs, Open Graph data, sitemap data, and structured data where useful.
 * `src/components/ui` contains shadcn primitives only or thin project wrappers around those primitives.
-* `src/components/layout` contains reusable layout chrome that is not specific to one feature.
+* `src/features/layout` contains reusable layout chrome that is not specific to one feature.
 * Tests live near the code they verify when local context helps, with shared test helpers under `src/tests`.
 
 ## Routing Contract

@@ -5,8 +5,8 @@ import {
   DOCS_PAGE_CONTENT_COLUMN_SURFACE,
   renderDocsSlugPage,
 } from "@/app/docs/docs-slug-renderer";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS } from "@/components/layout/docs-header";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
+import { DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS } from "@/features/layout/docs-header";
 import {
   CONTENT_COLUMN_CONSUMER_SURFACES,
   CONTENT_COLUMN_INSET,

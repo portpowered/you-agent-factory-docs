@@ -200,7 +200,7 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 ## CLI docs header / primary-nav regression
 
-* `src/components/layout/docs-header.tsx`
+* `src/features/layout/docs-header.tsx`
   Product-neutral docs shell header (`DocsHeader`); brand via
   `data-docs-header-brand`, CLI primary nav, and header `SearchTrigger`.
   Shell grid is `DOCS_HEADER_SHELL_CLASS` (`gap-4 md:gap-0` — desktop must
@@ -209,7 +209,7 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `DOCS_HEADER_ACTIONS_COLUMN_CLASS` (`CONTENT_COLUMN_INSET_FROM_MD_CLASS` +
   full max-width). Mobile shell keeps outer `px-4 md:px-0` — no
   negative-margin compensation.
-* `src/components/layout/docs-header.test.tsx`
+* `src/features/layout/docs-header.test.tsx`
   Unit regression locking you-agent-factory brand, Home/Guides/Docs/Glossary/Blog
   primary destinations (no Topology/Timeline), Search chrome without Model
   Atlas copy — including the consolidated "locks CLI shell header brand,
@@ -217,10 +217,38 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   alignment for desktop nav/actions and `md:gap-0` shell contract.
 * `src/tests/a11y/primary-navigation.a11y.test.tsx`
   A11y smoke for brand + Primary landmark + Search on the canonical docs layout.
-* `src/components/layout/primary-nav.ts` / `primary-nav.test.ts`
+* `src/features/layout/primary-nav.ts` / `primary-nav.test.ts`
   Site-config-driven CLI primary nav item resolution. Link hrefs stay unprefixed
   (Next `basePath` prefixes at render); absolute/export resolution uses
   `resolveSiteNavigationHrefs` from `site-navigation-href.ts`.
+* Layout path inventories (retarget together on ownership moves):
+  `src/lib/reader-facing-required-test-paths.ts`,
+  `src/lib/docs/component-manifest.ts`,
+  `src/lib/website-functionality-exclusions.ts`,
+  `src/tests/layout/home-shell-coverage-contract.test.ts`,
+  `src/lib/verify/w20-ownership-migration-convergence.ts`.
+* Layout ownership-move browser prove-out: after relocating
+  `src/features/layout`, verify representative docs + site shells still
+  SSR/DOM-expose `data-docs-header-shell`, `data-docs-header-brand`,
+  `nav[aria-label="Primary"]`, language switcher
+  (`button[aria-label="Switch language"]`), desktop `#nd-sidebar`, and
+  mobile `button[aria-label="Open menu"]` (drawer mounts only when open —
+  prove open/close via `docs-header.test.tsx` / primary-nav a11y suites,
+  not webpack-hmr click alone). Use a unique port + `next dev --webpack`
+  and kill the server on exit; worktree webpack-hmr may fail to hydrate
+  click handlers even when chrome SSR is healthy — do not treat that alone
+  as a layout-move regression. Coverage gate allowlist must include
+  `LAYOUT_MANIFEST_PREFIX` (`src/features/layout/`) in
+  `component-coverage-gate.ts` when layout entries live in the reusable
+  coverage manifest.
+* Layout + providers/i18n ownership-lane merge conflicts: when `main` has
+  already moved `@/features/providers/*` and `@/features/i18n/*` while this
+  lane moved `@/features/layout/*`, resolve the three shell layouts
+  (`src/app/(site)/layout.tsx`, `src/app/[locale]/layout.tsx`,
+  `src/app/docs/layout.tsx`) to the combined import end-state and preserve
+  any non-layout `main` deltas in conflicted consumer tests (for example
+  `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` in
+  `desktop-mobile-explorer-parity.test.tsx`).
 * `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
   Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
   routes via shared `withBasePath`.

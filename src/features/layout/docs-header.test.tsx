@@ -17,14 +17,14 @@ import {
   DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,
   DOCS_HEADER_SHELL_CLASS,
   DocsHeader,
-} from "@/components/layout/docs-header";
+} from "@/features/layout/docs-header";
 import {
   getPrimaryNavItems,
   PRIMARY_NAV_DESKTOP_CLASS,
   PRIMARY_NAV_LINK_CLASS,
   PRIMARY_NAV_MOBILE_LINK_CLASS,
   PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
-} from "@/components/layout/primary-nav";
+} from "@/features/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   CONTENT_COLUMN_CLASS,

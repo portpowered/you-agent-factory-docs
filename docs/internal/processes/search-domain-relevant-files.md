@@ -395,7 +395,7 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
   `factory-search-edge-cases.ts`; lock with message assertions plus the
   required `factory-search-edge-cases.test.tsx` suite (and optional
   `search-page-panel` empty-state coverage).
-* `src/components/layout/docs-header.tsx`
+* `src/features/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).
 * `src/features/docs/search/SearchTrigger.test.tsx` and

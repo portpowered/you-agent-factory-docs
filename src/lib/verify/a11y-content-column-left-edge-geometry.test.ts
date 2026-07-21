@@ -8,7 +8,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { DOCS_HEADER_SHELL_CLASS } from "@/components/layout/docs-header";
+import { DOCS_HEADER_SHELL_CLASS } from "@/features/layout/docs-header";
 import {
   closePlaywrightBrowserWithTimeout,
   launchPlaywrightBrowser,

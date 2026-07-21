@@ -13,10 +13,6 @@ import {
   waitFor,
 } from "@testing-library/react";
 import {
-  DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,
-  DOCS_HEADER_SHELL_CLASS,
-} from "@/components/layout/docs-header";
-import {
   DOCS_CODE_BLOCK_INSET_INLINE,
   DocsPre,
 } from "@/features/docs/components/DocsCodeBlock";
@@ -29,6 +25,10 @@ import {
   DOCS_CODE_COPY_LABEL,
   DOCS_CODE_COPY_STATUS_ATTR,
 } from "@/features/docs/styles/docs-code-copy-chrome";
+import {
+  DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,
+  DOCS_HEADER_SHELL_CLASS,
+} from "@/features/layout/docs-header";
 import { DOCS_PAGE_TREE_ROOT_NAME } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {

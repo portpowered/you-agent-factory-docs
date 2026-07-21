@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, within } from "@testing-library/react";
 import { act } from "react";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import { MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS } from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { type SiteLocale, supportedLocales } from "@/lib/i18n/locale-routing";

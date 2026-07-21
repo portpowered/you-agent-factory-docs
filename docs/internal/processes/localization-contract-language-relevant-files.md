@@ -111,7 +111,7 @@ _(none — W17 stories 001–006 complete)_
 | `src/lib/i18n/route-locale.ts` → `localizedShippedDocsPageAlternates` | Shared fail-closed hreflang filter for docs/reference routes |
 | `src/app/docs/docs-slug-renderer.tsx` | Docs child pages use shipped alternates helper |
 | `src/app/(site)/docs/references/page.tsx` + `[locale]` twin | Family index metadata uses shipped alternates (not all-locale advertising) |
-| `src/components/layout/language-switcher.tsx` | Unavailable for unshipped `references/*` child locales via generated manifest |
+| `src/features/layout/language-switcher.tsx` | Unavailable for unshipped `references/*` child locales via generated manifest |
 
 Regenerate with `bun run generate:shipped-localized-docs` after changing family-index or reference page locale messages.
 

@@ -3,7 +3,7 @@ import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, screen } from "@testing-library/react";
 import { act } from "react";
 import { HomeArticle } from "@/components/home/home-article";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 import {
   MOBILE_DRAWER_MOTION_CHROME,

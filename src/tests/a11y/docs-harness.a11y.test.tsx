@@ -3,10 +3,10 @@ import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { act } from "react";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
-import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { HarnessSupportMatrix } from "@/content/docs/documentation/harness-support/HarnessSupportMatrix";
 import { DocsPre } from "@/features/docs/components/DocsCodeBlock";
+import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
+import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import {
   expectCriticalPageStructure,
   listKeyboardFocusableControls,

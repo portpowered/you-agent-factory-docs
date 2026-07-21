@@ -6,7 +6,7 @@ import {
   PRIMARY_NAV_MOBILE_LINK_CLASS,
   PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
   PRIMARY_NAV_MOBILE_PANEL_CLASS,
-} from "@/components/layout/primary-nav";
+} from "@/features/layout/primary-nav";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { resolveSiteNavigationHrefs } from "@/lib/navigation/site-navigation-href";
