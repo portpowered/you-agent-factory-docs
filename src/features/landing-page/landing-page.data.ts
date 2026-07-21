@@ -5,7 +5,10 @@
  * enough for placeholders and later slot fill. No CMS or schema system.
  */
 
+import type { FactorySlideData } from "@/features/landing-page/components/FactorySlide";
 import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
+
+export type { FactorySlideData };
 
 export type LandingNavItem = {
   id: string;
@@ -16,15 +19,6 @@ export type LandingNavItem = {
 export type LandingCapabilityItem = {
   id: string;
   label: string;
-};
-
-/** Slide object for FactoryCarousel (contracts / workstreams). */
-export type FactorySlideData = {
-  id: string;
-  title: string;
-  blurb: string;
-  command: string;
-  art?: string;
 };
 
 export type LandingFaqItem = {
