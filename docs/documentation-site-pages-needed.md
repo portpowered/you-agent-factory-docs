@@ -122,7 +122,9 @@ Inventory only when the route already exists on the base branch (`main`). Do
 techniques (beside `planner-executor`)
 - `planner-executor-in-action` (`/docs/techniques/planner-executor-in-action/`) —
   **soft-skipped** (2026-07-21 UTC): not present on `main` / this integrate
-  HEAD; sibling worktrees may land it later — re-check before cross-linking
+  HEAD; sibling worktrees may land it later — re-check before cross-linking.
+  Cross-link soft-wire (`planner-executor` ↔ in-action) also **soft-skipped**
+  for the same reason (no technique MDX edits until the destination lands).
 
 blog (beside comparing agent factories)
 - `comparing-orchestrators` (`/blog/comparing-orchestrators/`) — **soft-skipped**
