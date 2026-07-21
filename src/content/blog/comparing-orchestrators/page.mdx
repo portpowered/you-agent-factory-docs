@@ -1,0 +1,71 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-21"
+updatedAt: "2026-07-21"
+authors:
+  - site-team
+tags: []
+relatedDocIds:
+  - documentation.what-is-you-agent-factory
+  - concept.harness
+  - technique.planner-executor
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+
+<T k="contextSentence" />
+
+## What an orchestrator is
+
+An orchestrator coordinates agent or workflow work across steps, sessions, and
+recovery points. In factory terms it is the system that keeps loops, harness
+attachments, and checked-in workflow files moving when a single shell session
+is not enough.
+
+This comparison is about **feature attributes** of orchestrators in a shared
+registry—open source status, license, hosting model, and capability tags—not a
+ranking of benchmark scores. It is also distinct from the broader
+[agent-factory and orchestration systems comparison](/blog/comparing-agent-factories),
+which weighs product shape and durability tradeoffs in prose.
+
+For the product shape that motivates a lightweight factory orchestrator, see
+[What is you-agent-factory](/docs/documentation/what-is-you-agent-factory).
+For the runtime attachment the factory drives, see
+[Harness](/docs/concepts/harness).
+
+## How to read the feature matrix
+
+Read the matrix as a levels.fyi-style exploration table:
+
+- **Columns** are orchestrators you choose to keep visible.
+- **Rows** are attribute definitions from the committed registry (for example
+  open source, license, hosting, and capabilities).
+- **Filters** on multi-tag attributes keep only orchestrators whose value
+  includes *every* selected tag (AND, not OR).
+- **Sort** reorders columns or rows by a sortable attribute when you need a
+  clearer scan order.
+- **Focus** accents one column or row and mutes the rest so a single tradeoff
+  stays readable.
+
+If filters or hidden columns leave nothing to compare, the matrix says so
+clearly—clear a filter or restore a column to keep scanning.
+
+## Feature matrix
+
+<ComparingOrchestratorsMatrix />
+
+Attribute meanings stay in the registry. Capability tags such as loops,
+worktrees, Model Context Protocol (MCP), and persistence describe what an
+orchestrator claims to cover in practice for agent-oriented work—not a
+guarantee that every technique page maps one-to-one onto every product.
+
+## Reading notes
+
+<ComparingOrchestratorsNotesList />
+
+For the stable docs definition of plan-then-execute loops, see
+[planner–executor](/docs/techniques/planner-executor). More orchestrators can
+land in the same registry without changing how readers scan columns against
+rows.
