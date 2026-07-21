@@ -41,3 +41,16 @@ own ModelCostPlayground UI, technique/blog pages, or live provider price APIs.
 * Invalid fixtures live under test temp dirs, never as committed broken production JSON.
 * `generate-registry-runtime` ignores `registry/models/**` — load via `model-pricing.ts` only.
 * No live price fetches; freshness is the committed `asOf` date.
+
+## Wave A closeout (this lane)
+
+Wave A ships only the pricing-owned surface above. Out of scope for this branch:
+
+* `ModelCostPlayground` / any browser cost widget
+* Technique or blog pages that consume pricing
+* Teaching-ui recipes or orchestrator-registry content
+* Live provider price clients, fetchers, or scheduled freshness jobs
+
+Quality gate for this lane: `bun run typecheck`, `bun run lint`, focused tests
+(`model-pricing` / `model-cost` / `validate-model-pricing`), and
+`bun ./scripts/validate-registry.ts`.
