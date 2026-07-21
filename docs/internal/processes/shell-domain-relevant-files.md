@@ -221,6 +221,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Site-config-driven CLI primary nav item resolution. Link hrefs stay unprefixed
   (Next `basePath` prefixes at render); absolute/export resolution uses
   `resolveSiteNavigationHrefs` from `site-navigation-href.ts`.
+* Layout path inventories (retarget together on ownership moves):
+  `src/lib/reader-facing-required-test-paths.ts`,
+  `src/lib/docs/component-manifest.ts`,
+  `src/lib/website-functionality-exclusions.ts`,
+  `src/tests/layout/home-shell-coverage-contract.test.ts`,
+  `src/lib/verify/w20-ownership-migration-convergence.ts`.
 * `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
   Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
   routes via shared `withBasePath`.
