@@ -36,6 +36,7 @@ Do **not**:
 | `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
 | `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount + catalog polish proof |
 | `src/content/docs/references/events/events-schema-ref-link-resolution.test.tsx` | Same-page SchemaRefLink → inlined component-schema anchor proof |
+| `src/content/docs/references/events/events-inlined-component-schema-anchors.test.tsx` | Story 003: success-corpus InferenceOutcome anchor + navigable SchemaRefLink regression |
 | `src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts` | Playwright probe: short Event catalog label, envelope components, suppressed pointer chrome, envelope/payload JSON examples on `/docs/references/events` |
 | `src/content/registry/references/events.json` | `reference.events` registry record |
 
@@ -119,6 +120,14 @@ other W11 reference page lanes):
   links alone is not enough for envelope `$ref` clicks. Prove same-page
   InferenceOutcome-class hrefs + hash focus + no dangling navigable refs with
   `events-schema-ref-link-resolution.test.tsx`.
+- Story 003 regression (anchors + navigable SchemaRefLinks): bind to live
+  packaged OpenAPI via `resolveEventCorpus()` — when `InferenceOutcome` is
+  published, assert `#components-schemas-InferenceOutcome` and at least one
+  `a[data-schema-ref-kind="resolved"|"cycle"]` href
+  `/docs/references/events#components-schemas-InferenceOutcome` in both
+  `events-inlined-component-schema-anchors.test.tsx` (corpus mount) and the
+  published-route success render in `events-page.test.tsx`. Do not invent
+  schemas; soft-skip only when the package drops the name.
 - Intro-strip browser close-out (story 003): the same probe also asserts
   absence of What It Covers / Key Concepts headings and ids, absence of folded
   Opening summary (`[data-testid="folded-summary"]` /
