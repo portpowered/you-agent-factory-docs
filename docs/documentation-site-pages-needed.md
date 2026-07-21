@@ -87,3 +87,29 @@ blog list page
 - useful list of relevant links (page)
 - bottlenecks (page)
 Search (page)
+
+## Wave A teaching maintainer / dev surfaces (not public customer pages)
+
+These are production-gated `(dev)` harnesses and commit-only registries from
+Graph-pages Wave A. They are maintainer teaching/dev surfaces — do **not** treat
+them as published customer routes in the glossary, guides, documentation, or
+blog inventory above. Wave B customer pages (for example
+`planner-executor-in-action`, `comparing-orchestrators`) are inventoried only
+when those routes already exist on the base branch; this section does not invent
+them.
+
+teaching-ui harnesses (gated; `ENABLE_COMPONENT_EXAMPLES=1` in production)
+- `/teaching-ui-harness` — recipes chassis + tables fixture slot
+  (`src/app/(dev)/teaching-ui-harness/`)
+- `/teaching-ui-charts-harness` — comparative bar/line chart fixtures
+  (`src/app/(dev)/teaching-ui-charts-harness/`)
+- `/teaching-ui-lists-harness` — plain + tagged TeachingList fixtures
+  (`src/app/(dev)/teaching-ui-lists-harness/`)
+
+commit-only teaching registries (validated via `make validate-data` / registry CI)
+- model pricing — `src/content/registry/models/**` (`kind: model-pricing`),
+  loaders in `src/lib/content/model-pricing.ts` (+ `model-cost.ts`,
+  `validate-model-pricing.ts`); not part of the page compile graph
+- orchestrator feature registry — `src/content/registry/orchestrators/**`
+  (`attribute-defs.json` + `orchestrator.*.json`), loaders / agreement
+  validation in `src/lib/content/orchestrators.ts`
