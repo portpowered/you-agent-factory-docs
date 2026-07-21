@@ -15,9 +15,7 @@ aliases:
 updatedAt: "2026-07-18"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -76,42 +74,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <InferenceRunTypeExamples />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/workstations",
-        labelKey: "links.workstationsFamilyIndex",
-      },
-      {
-        href: "/docs/workstations/agent-run",
-        labelKey: "links.siblingAgentRun",
-      },
-      {
-        href: "/docs/workstations/script-run",
-        labelKey: "links.siblingScriptRun",
-      },
-      {
-        href: "/docs/workstations/classifier",
-        labelKey: "links.siblingClassifier",
-      },
-      {
-        href: "/docs/factories/configuration",
-        labelKey: "links.siblingConfiguration",
-      },
-      {
-        href: "/docs/documentation/resources",
-        labelKey: "links.siblingResources",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.workstations-inference-run" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.workstations-inference-run" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.workstations-inference-run" />
 </Section>

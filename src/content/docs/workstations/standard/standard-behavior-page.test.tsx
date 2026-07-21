@@ -181,11 +181,6 @@ describe("workstations standard behavior page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-    expect(
-      screen
-        .getByRole("link", { name: "Workstations family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations");
 
     expect(
       screen.getByText("Minimal valid STANDARD workstation:"),

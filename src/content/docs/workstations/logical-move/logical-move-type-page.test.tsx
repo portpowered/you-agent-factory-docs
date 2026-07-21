@@ -216,21 +216,6 @@ describe("workstations logical-move type page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-    expect(
-      screen
-        .getByRole("link", { name: "Workstations family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations");
-    expect(
-      screen
-        .getByRole("link", { name: "Classifier workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/classifier");
-    expect(
-      screen
-        .getByRole("link", { name: "Inference-run workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/inference-run");
 
     expect(
       screen.getByText("Minimal valid LOGICAL_MOVE workstation:"),

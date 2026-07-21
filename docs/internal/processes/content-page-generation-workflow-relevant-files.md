@@ -47,6 +47,20 @@ fails when chrome is absent. Existing published MDX may still mount RelatedDocs
 until PF-L-strip removes it by collection; that remaining chrome is not a
 contracts-lane failure. FAQ-only strip remains PF-D2.
 
+### PF-L-strip: workstations collection (stop-mount)
+
+For `src/content/docs/workstations/**`, strip by **stop-mounting** trailing
+`Section id="related"` / `id="references"` chrome (including `<RelatedDocs />`,
+Related-only `LocalizedLinkList`, and References `CitationList`) from variant
+`page.mdx` and `WorkstationsFamilyIndexContent`. Keep How To Use / companion /
+schema teaching `LocalizedLinkList` mounts and Tags. Do not rewrite shared
+`RelatedDocs` behavior or invent a replacement related surface. When stripping
+MDX, drop colocated page-test assertions that only proved Related-footer
+curated links (for example `Workstations family index` sibling rows); leave
+How To Use teaching link proofs. Clean orphan `sections.related` /
+`sections.references` and Related-only link keys in a follow-on messages story;
+add absence locks (`Related To` / `References` / `#related`) in the tests story.
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a

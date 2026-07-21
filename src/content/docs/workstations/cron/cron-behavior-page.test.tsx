@@ -182,21 +182,6 @@ describe("workstations cron behavior page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-    expect(
-      screen
-        .getByRole("link", { name: "Workstations family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations");
-    expect(
-      screen
-        .getByRole("link", { name: "Standard workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/standard");
-    expect(
-      screen
-        .getByRole("link", { name: "Repeater workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/repeater");
 
     expect(screen.getByText("Minimal valid CRON workstation:")).toBeTruthy();
     expect(

@@ -200,26 +200,6 @@ describe("workstations poller behavior page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-    expect(
-      screen
-        .getByRole("link", { name: "Workstations family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations");
-    expect(
-      screen
-        .getByRole("link", { name: "Poller-run workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/poller-run");
-    expect(
-      screen
-        .getByRole("link", { name: "Standard workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/standard");
-    expect(
-      screen
-        .getByRole("link", { name: "Cron workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/cron");
 
     expect(screen.getByText("Minimal valid POLLER workstation:")).toBeTruthy();
     expect(

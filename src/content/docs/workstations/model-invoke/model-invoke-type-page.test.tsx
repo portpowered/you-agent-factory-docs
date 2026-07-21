@@ -222,21 +222,6 @@ describe("workstations model-invoke type page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-    expect(
-      screen
-        .getByRole("link", { name: "Workstations family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations");
-    expect(
-      screen
-        .getByRole("link", { name: "Model workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/model-workstation");
-    expect(
-      screen
-        .getByRole("link", { name: "Inference-run workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/inference-run");
 
     expect(
       screen.getByText("Minimal valid MODEL_INVOKE workstation:"),

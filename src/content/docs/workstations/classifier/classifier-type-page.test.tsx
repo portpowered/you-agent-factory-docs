@@ -226,21 +226,6 @@ describe("workstations classifier type page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
-    expect(
-      screen
-        .getByRole("link", { name: "Workstations family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations");
-    expect(
-      screen
-        .getByRole("link", { name: "Logical move workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/logical-move");
-    expect(
-      screen
-        .getByRole("link", { name: "Inference-run workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/inference-run");
 
     expect(
       screen.getByText("Minimal valid CLASSIFIER_WORKSTATION workstation:"),
