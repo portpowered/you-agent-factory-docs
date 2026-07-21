@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { RootDocument, siteMetadata } from "@/app/root-layout.shared";
-import { RouteLocaleEffect } from "@/components/i18n/RouteLocaleEffect";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
+import { RouteLocaleEffect } from "@/features/i18n/RouteLocaleEffect";
 import { AppProviders } from "@/features/providers/app-providers";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale } from "@/lib/i18n/locale-routing";
