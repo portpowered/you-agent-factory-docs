@@ -42,13 +42,13 @@ Representative call sites:
 
 | Surface | Path |
 | --- | --- |
-| API operation summary/description/params/body/responses | `src/components/references/api/api-operation-section.tsx` |
-| API local-server OpenAPI server description | `src/components/references/api/api-local-server-base-url.tsx` |
-| CLI short/long description | `src/components/references/cli/CliCommandReference.tsx` |
-| MCP tool description | `src/components/references/mcp/McpToolReference.tsx` |
-| JS symbol / shared-schema description | `src/components/references/javascript/JavaScript*Reference.tsx` |
-| Schema definition + field description | `src/components/references/schema/schema-definition.tsx`, `schema-field-row.tsx`, `shared/SchemaDefinitionEmbed.tsx` |
-| Events reconnect / handshake / JSON probe contract fields | `src/components/references/events/event-*.tsx` |
+| API operation summary/description/params/body/responses | `src/features/references/api/api-operation-section.tsx` |
+| API local-server OpenAPI server description | `src/features/references/api/api-local-server-base-url.tsx` |
+| CLI short/long description | `src/features/references/cli/CliCommandReference.tsx` |
+| MCP tool description | `src/features/references/mcp/McpToolReference.tsx` |
+| JS symbol / shared-schema description | `src/features/references/javascript/JavaScript*Reference.tsx` |
+| Schema definition + field description | `src/features/references/schema/schema-definition.tsx`, `schema-field-row.tsx`, `shared/SchemaDefinitionEmbed.tsx` |
+| Events reconnect / handshake / JSON probe contract fields | `src/features/references/events/event-*.tsx` |
 
 Do **not** wrap schema variant overlay hints (`data-schema-variant-hint`) — those
 are display-only and are not contract description prose.
@@ -63,7 +63,7 @@ are display-only and are not contract description prose.
 | `src/lib/i18n/reference-chrome-labels.test.ts` | Locale resolution, untranslated family tokens, fail-closed missing keys |
 | `src/lib/i18n/reference-chrome-context.tsx` | Client provider for inventory/badge surfaces |
 | `src/app/docs/docs-slug-renderer.tsx` | Passes resolved chrome into `DocsPageProviders` for local docs pages |
-| `src/components/references/{cli,mcp,javascript}/*Inventory.tsx` | Resolve inventory empty/error/filter chrome from provider |
+| `src/features/references/{cli,mcp,javascript}/*Inventory.tsx` | Resolve inventory empty/error/filter chrome from provider |
 
 ## Call-site rule (keep chrome and contract prose separated)
 
@@ -87,9 +87,9 @@ are display-only and are not contract description prose.
 | `src/lib/i18n/route-locale.ts` | `localizedRouteAlternates` (all locales) + `localizedShippedDocsPageAlternates` (fail-closed shipped filter) |
 | `src/lib/content/shipped-localized-docs.server.ts` | Derive shipped-locale manifest; includes `references` family-index slug when published + locale messages exist |
 | `src/lib/content/generated/shipped-localized-docs.generated.ts` | Client-safe generated artifact for language switcher / gating |
-| `src/components/references/shared/*` | Shared chrome surfaces that resolve catalogs via prop or provider |
-| `src/components/references/schema/schema-example-display.ts` | Example origin labels ("Generated example") — chrome-localizable; payloads stay English |
-| `src/components/references/schema/schema-example-panel.tsx` | Optional `chrome` prop localizes origin/index labels; payload `code` stays locale-neutral |
+| `src/features/references/shared/*` | Shared chrome surfaces that resolve catalogs via prop or provider |
+| `src/features/references/schema/schema-example-display.ts` | Example origin labels ("Generated example") — chrome-localizable; payloads stay English |
+| `src/features/references/schema/schema-example-panel.tsx` | Optional `chrome` prop localizes origin/index labels; payload `code` stays locale-neutral |
 
 ## Locale parity + untranslated identifiers (story 006)
 

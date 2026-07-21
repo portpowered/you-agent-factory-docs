@@ -6,7 +6,7 @@
  * distinguish topology-owned runner from operator model defaults in you-config.
  */
 
-import { SchemaReference } from "@/components/references/schema";
+import { SchemaReference } from "@/features/references/schema";
 import { loadSchemaVerificationPackageModel } from "@/lib/references/load-schema-verification-models";
 import { createReferenceCrossLinkResolver } from "@/lib/references/reference-cross-link-resolver";
 import type { SchemaAddress } from "@/lib/references/schema-model";

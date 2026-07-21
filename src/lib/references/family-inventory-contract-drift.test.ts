@@ -10,12 +10,12 @@
  * paths, and does not assert W11 route/nav/search registration inventories.
  */
 import { describe, expect, test } from "bun:test";
-import { cliCommandInventoryIdentities } from "@/components/references/cli";
+import { cliCommandInventoryIdentities } from "@/features/references/cli";
 import {
   javascriptSharedSchemaInventoryIdentities,
   javascriptSymbolInventoryIdentities,
-} from "@/components/references/javascript";
-import { mcpToolInventoryIdentities } from "@/components/references/mcp";
+} from "@/features/references/javascript";
+import { mcpToolInventoryIdentities } from "@/features/references/mcp";
 import { resolveApiPackageArtifact } from "./api-package-artifact-resolver";
 import {
   assignCliCommandRegistryAnchors,

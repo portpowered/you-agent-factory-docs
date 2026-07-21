@@ -6,7 +6,7 @@
  * overlays without rewriting shared validator or schema-renderer cores.
  */
 
-import type { SchemaVariantOverlayPresentation } from "@/components/references/schema";
+import type { SchemaVariantOverlayPresentation } from "@/features/references/schema";
 import type { FactoryVariantOverlaySchema } from "@/lib/references/overlays/factory-variant-overlay-schema";
 
 /**

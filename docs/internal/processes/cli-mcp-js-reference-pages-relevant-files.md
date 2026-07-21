@@ -15,7 +15,7 @@ W11 owns only:
 
 Do **not**:
 
-- edit renderer internals under `src/components/references/{cli,mcp,javascript}/`,
+- edit renderer internals under `src/features/references/{cli,mcp,javascript}/`,
   `schema/`, `api/`, or `events/`
 - create sibling `/docs/references` index, `/docs/references/api`,
   `/docs/references/events`, or schema pages
@@ -88,9 +88,9 @@ Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/cli/` | Public W10 CLI inventory surfaces |
-| `src/components/references/mcp/` | Public W10 MCP inventory surfaces |
-| `src/components/references/javascript/` | Public W10 JavaScript runtime inventory surfaces |
+| `src/features/references/cli/` | Public W10 CLI inventory surfaces |
+| `src/features/references/mcp/` | Public W10 MCP inventory surfaces |
+| `src/features/references/javascript/` | Public W10 JavaScript runtime inventory surfaces |
 | `src/lib/references/normalize-family-artifacts.ts` | `normalizeCliCommandsFromArtifact`, `normalizeMcpToolsFromArtifact`, `normalizeJavascriptSymbolsFromArtifact`, `normalizeJavascriptSharedSchemasFromArtifact` |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 acquisition |
 | `src/lib/references/reference-search-projection.ts` | `REFERENCE_FAMILY_PAGE_PATHS.{cli,mcp,javascript}` |

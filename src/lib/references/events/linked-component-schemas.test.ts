@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { schemaPointerAnchor } from "@/components/references/schema";
+import { schemaPointerAnchor } from "@/features/references/schema";
 import {
   buildEventsLinkedComponentSchemas,
   buildFactoryEventCatalog,

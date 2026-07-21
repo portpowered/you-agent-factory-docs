@@ -9,7 +9,7 @@
 
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
-import { API_PROXY_POLICY } from "@/components/references/api/playground-suppression";
+import { API_PROXY_POLICY } from "@/features/references/api/playground-suppression";
 import {
   DEFAULT_EXPORT_OUT_DIR,
   exportHtmlRelativePath,
@@ -76,7 +76,7 @@ export const W20_STATIC_EXPORT_COMMAND_GATES = [
  */
 export const W20_STATIC_EXPORT_SUITE_ENTRIES = [
   {
-    path: "src/components/references/api/playground-suppression.test.ts",
+    path: "src/features/references/api/playground-suppression.test.ts",
     families: [
       "playground-suppression",
       "no-live-factory-host",
@@ -107,7 +107,7 @@ export const W20_STATIC_EXPORT_SUITE_ENTRIES = [
  * Suites the W20 runner executes after `make build`.
  */
 export const W20_STATIC_EXPORT_POST_COMMAND_SUITE_PATHS = [
-  "src/components/references/api/playground-suppression.test.ts",
+  "src/features/references/api/playground-suppression.test.ts",
   "src/lib/references/events/events-lib.test.ts",
   "src/content/docs/references/published-route-states.test.tsx",
   "src/lib/verify/w20-static-export-out-verify.test.ts",

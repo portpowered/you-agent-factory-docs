@@ -14,7 +14,7 @@ W11 events owns only:
 
 Do **not**:
 
-- edit renderer internals under `src/components/references/events/` or `api/`
+- edit renderer internals under `src/features/references/events/` or `api/`
 - create sibling `/docs/references` index, `/docs/references/api`, schema,
   CLI, MCP, or JavaScript-runtime pages
 - edit shared nav / sidebar / search / sitemap / compat inventories (W15–W18)
@@ -31,8 +31,8 @@ Do **not**:
 | `src/content/docs/references/events/assets.json` | Empty baseline assets |
 | `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount (includes linked component schema splay) |
 | `src/lib/references/events/linked-component-schemas.ts` | Pure builder: nested component schemas cited from catalog roots |
-| `src/components/references/events/event-linked-component-schemas.tsx` | On-page linked component schema definitions section |
-| `src/components/references/events/response-event-matrix.tsx` | Response dimensions; mounts payload-union SchemaDefinition so envelope SchemaRefLinks resolve |
+| `src/features/references/events/event-linked-component-schemas.tsx` | On-page linked component schema definitions section |
+| `src/features/references/events/response-event-matrix.tsx` | Response dimensions; mounts payload-union SchemaDefinition so envelope SchemaRefLinks resolve |
 | `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
 | `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount + catalog polish proof |
 | `src/content/docs/references/events/events-schema-ref-link-resolution.test.tsx` | Same-page SchemaRefLink → inlined component-schema anchor proof |
@@ -61,7 +61,7 @@ other W11 reference page lanes):
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/events/` | Public W09 events corpus surfaces (`EventsSurface`, catalogs, reconnect, SSE examples) |
+| `src/features/references/events/` | Public W09 events corpus surfaces (`EventsSurface`, catalogs, reconnect, SSE examples) |
 | `src/lib/references/events/` | Corpus resolution, hybrid placement, OpenAPI load helpers |
 | `src/app/(dev)/events-renderer-harness/page.tsx` | Production composition reference for mount stories |
 

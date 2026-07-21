@@ -5,8 +5,8 @@ that consume W03-resolved / W04-normalized CLI, MCP, and JavaScript projections.
 
 ## Ownership fence
 
-W10 owns family renderer surfaces under `src/components/references/{cli,mcp,javascript}/`
-plus allowed shared chrome helpers under `src/components/references/shared/`
+W10 owns family renderer surfaces under `src/features/references/{cli,mcp,javascript}/`
+plus allowed shared chrome helpers under `src/features/references/shared/`
 (and focused harness mounts). Do **not**:
 
 - build W06 overlay validators or W07 shared schema-tree primitive modules
@@ -21,28 +21,28 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/shared/types.ts` | Projection-oriented chrome prop contracts + `ReferenceVisibility` |
-| `src/components/references/shared/reference-status-labels.ts` | Pure family/lifecycle/visibility/source label helpers (no React) |
-| `src/components/references/shared/ReferenceLifecycleVisibility.tsx` | Text+icon lifecycle/visibility chrome (not color-only) |
-| `src/components/references/shared/ContractSourceBadge.tsx` | Family, lifecycle, package version, source artifact badge |
-| `src/components/references/shared/ReferenceEmptyState.tsx` | Accessible empty inventory state via package `AlertPanel` |
-| `src/components/references/shared/ReferenceErrorState.tsx` | Accessible malformed-inventory error state via package `AlertPanel` |
-| `src/components/references/shared/index.ts` | Public shared chrome barrel |
-| `src/components/references/harness/ReferenceChromeHarness.tsx` | Dev fixture mount for shared chrome browser verification |
+| `src/features/references/shared/types.ts` | Projection-oriented chrome prop contracts + `ReferenceVisibility` |
+| `src/features/references/shared/reference-status-labels.ts` | Pure family/lifecycle/visibility/source label helpers (no React) |
+| `src/features/references/shared/ReferenceLifecycleVisibility.tsx` | Text+icon lifecycle/visibility chrome (not color-only) |
+| `src/features/references/shared/ContractSourceBadge.tsx` | Family, lifecycle, package version, source artifact badge |
+| `src/features/references/shared/ReferenceEmptyState.tsx` | Accessible empty inventory state via package `AlertPanel` |
+| `src/features/references/shared/ReferenceErrorState.tsx` | Accessible malformed-inventory error state via package `AlertPanel` |
+| `src/features/references/shared/index.ts` | Public shared chrome barrel |
+| `src/features/references/harness/ReferenceChromeHarness.tsx` | Dev fixture mount for shared chrome browser verification |
 | `src/app/(dev)/reference-chrome-harness/page.tsx` | Dev-only harness route (gated like component-examples) |
 
 ## Key host files (CLI family — story 002 / 003)
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/cli/CliCommandReference.tsx` | One command from a W04-normalized CLI projection; trimmed keep-list only (see below); shows `CliCapabilityNotice` when structured flags/arguments are absent |
-| `src/components/references/cli/CliCommandInventory.tsx` | Inventory list with empty/error chrome |
-| `src/components/references/cli/CliCapabilityNotice.tsx` | Under-construction treatment when published CLI contract lacks machine-readable flags/arguments |
-| `src/components/references/cli/cli-capability.ts` | Pure helpers + under-construction copy for structured-options availability |
-| `src/components/references/cli/cli-visibility.ts` | Map published CLI visibility → shared chrome when unambiguous (filter helpers; not card-body chrome) |
-| `src/components/references/cli/types.ts` | CLI renderer prop contracts / inventory input union |
-| `src/components/references/cli/index.ts` | Public CLI renderer barrel |
-| `src/components/references/harness/ReferenceCliHarness.tsx` | Dev fixture mount for CLI inventory browser verification |
+| `src/features/references/cli/CliCommandReference.tsx` | One command from a W04-normalized CLI projection; trimmed keep-list only (see below); shows `CliCapabilityNotice` when structured flags/arguments are absent |
+| `src/features/references/cli/CliCommandInventory.tsx` | Inventory list with empty/error chrome |
+| `src/features/references/cli/CliCapabilityNotice.tsx` | Under-construction treatment when published CLI contract lacks machine-readable flags/arguments |
+| `src/features/references/cli/cli-capability.ts` | Pure helpers + under-construction copy for structured-options availability |
+| `src/features/references/cli/cli-visibility.ts` | Map published CLI visibility → shared chrome when unambiguous (filter helpers; not card-body chrome) |
+| `src/features/references/cli/types.ts` | CLI renderer prop contracts / inventory input union |
+| `src/features/references/cli/index.ts` | Public CLI renderer barrel |
+| `src/features/references/harness/ReferenceCliHarness.tsx` | Dev fixture mount for CLI inventory browser verification |
 
 ### CLI command card keep-list (repair-cli-reference-verbosity)
 
@@ -70,7 +70,7 @@ filter chrome.
 
 CLI tests that lock this repair:
 
-- `src/components/references/cli/cli-command-reference.test.tsx` — asserts the
+- `src/features/references/cli/cli-command-reference.test.tsx` — asserts the
   kept surface, absence of ContractSourceBadge / identity / visibility /
   runnable / handler chrome, under-construction Flags/arguments treatment, and
   no invented option rows.
@@ -96,35 +96,35 @@ Browser spot-check for this repair (production build):
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/mcp/McpToolReference.tsx` | One tool card: title + stable anchor, description, input schema, example — no ContractSourceBadge / Tool name / Tool id / Handler registered / Required inputs chrome |
-| `src/components/references/mcp/McpInputSchemaEmbed.tsx` | MCP-owned wrapper over shared SchemaDefinitionEmbed that omits Object policy chrome |
-| `src/components/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; heading + payload only (no generated AlertPanel notice) |
-| `src/components/references/mcp/mcp-example.ts` | Example section heading constants (`Example` / `Example (generated)`) |
-| `src/components/references/mcp/McpToolInventory.tsx` | Inventory list with empty/error chrome |
-| `src/components/references/mcp/types.ts` | MCP renderer prop contracts / inventory input union |
-| `src/components/references/mcp/index.ts` | Public MCP renderer barrel |
-| `src/components/references/shared/SchemaDefinitionEmbed.tsx` | Thin local adapter over W04 `SchemaDefinitionModel` (no W07 fork) |
+| `src/features/references/mcp/McpToolReference.tsx` | One tool card: title + stable anchor, description, input schema, example — no ContractSourceBadge / Tool name / Tool id / Handler registered / Required inputs chrome |
+| `src/features/references/mcp/McpInputSchemaEmbed.tsx` | MCP-owned wrapper over shared SchemaDefinitionEmbed that omits Object policy chrome |
+| `src/features/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; heading + payload only (no generated AlertPanel notice) |
+| `src/features/references/mcp/mcp-example.ts` | Example section heading constants (`Example` / `Example (generated)`) |
+| `src/features/references/mcp/McpToolInventory.tsx` | Inventory list with empty/error chrome |
+| `src/features/references/mcp/types.ts` | MCP renderer prop contracts / inventory input union |
+| `src/features/references/mcp/index.ts` | Public MCP renderer barrel |
+| `src/features/references/shared/SchemaDefinitionEmbed.tsx` | Thin local adapter over W04 `SchemaDefinitionModel` (no W07 fork) |
 | `src/lib/references/mcp-input-schema-projection.ts` | Pure MCP JSON Schema → `SchemaDefinitionModel` projection (includes authored `examples` / property `const`) |
 | `src/lib/references/mcp-example-generation.ts` | Pure resolve/generate/conform helpers for MCP input examples |
-| `src/components/references/harness/ReferenceMcpHarness.tsx` | Dev fixture mount for MCP inventory browser verification |
+| `src/features/references/harness/ReferenceMcpHarness.tsx` | Dev fixture mount for MCP inventory browser verification |
 
 ## Key host files (JavaScript family — story 006)
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection; polished cards use `ReferenceLifecycleVisibility` + `JavaScriptSymbolMetadataPills` (no `ContractSourceBadge` family/package/source chrome, no duplicated Visibility metadata row) |
-| `src/components/references/javascript/JavaScriptSymbolMetadataPills.tsx` | Glossary-backed kind / mutability / nullability / binding-lifecycle pills linking to on-page glossary anchors |
-| `src/components/references/javascript/javascript-symbol-metadata.ts` | Pure published-value → display-label helpers + glossary anchor ids |
-| `src/components/references/javascript/javascript-symbol-metadata-glossary.ts` | On-page glossary term/definition copy for published metadata facets |
-| `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed; polished cards use `ReferenceLifecycleVisibility` only (no `ContractSourceBadge`, no schema-id/name/title/type/object-policy chrome) |
-| `src/components/references/javascript/javascript-shared-schema-presentation.ts` | Pure JS-owned helpers: trim shared-schema embed chrome fields; filter Symbols-list duplicates of shared schemas |
-| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome; Symbols list omits shared-schema duplicates; composable provider/chrome/lists so page MDX `<Section id="symbols">` / `<Section id="shared-schemas">` can own On this page TOC anchors |
-| `src/components/references/javascript/javascript-runtime-section-anchors.ts` | Stable `symbols` / `shared-schemas` section anchor ids shared by standalone headings and page MDX Sections |
-| `src/components/references/javascript/javascript-runtime-overall-example.ts` | Composed overall-example script + walkthrough steps (published call patterns only) |
-| `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
-| `src/components/references/javascript/types.ts` | JS renderer prop contracts / inventory input union |
-| `src/components/references/javascript/index.ts` | Public JavaScript renderer barrel |
-| `src/components/references/harness/ReferenceJavascriptHarness.tsx` | Dev fixture mount for JS inventory browser verification |
+| `src/features/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection; polished cards use `ReferenceLifecycleVisibility` + `JavaScriptSymbolMetadataPills` (no `ContractSourceBadge` family/package/source chrome, no duplicated Visibility metadata row) |
+| `src/features/references/javascript/JavaScriptSymbolMetadataPills.tsx` | Glossary-backed kind / mutability / nullability / binding-lifecycle pills linking to on-page glossary anchors |
+| `src/features/references/javascript/javascript-symbol-metadata.ts` | Pure published-value → display-label helpers + glossary anchor ids |
+| `src/features/references/javascript/javascript-symbol-metadata-glossary.ts` | On-page glossary term/definition copy for published metadata facets |
+| `src/features/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed; polished cards use `ReferenceLifecycleVisibility` only (no `ContractSourceBadge`, no schema-id/name/title/type/object-policy chrome) |
+| `src/features/references/javascript/javascript-shared-schema-presentation.ts` | Pure JS-owned helpers: trim shared-schema embed chrome fields; filter Symbols-list duplicates of shared schemas |
+| `src/features/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome; Symbols list omits shared-schema duplicates; composable provider/chrome/lists so page MDX `<Section id="symbols">` / `<Section id="shared-schemas">` can own On this page TOC anchors |
+| `src/features/references/javascript/javascript-runtime-section-anchors.ts` | Stable `symbols` / `shared-schemas` section anchor ids shared by standalone headings and page MDX Sections |
+| `src/features/references/javascript/javascript-runtime-overall-example.ts` | Composed overall-example script + walkthrough steps (published call patterns only) |
+| `src/features/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
+| `src/features/references/javascript/types.ts` | JS renderer prop contracts / inventory input union |
+| `src/features/references/javascript/index.ts` | Public JavaScript renderer barrel |
+| `src/features/references/harness/ReferenceJavascriptHarness.tsx` | Dev fixture mount for JS inventory browser verification |
 | `src/lib/references/normalize-family-artifacts.ts` | Also normalizes `sharedSchemas` + enriched symbol metadata |
 | `src/content/docs/references/javascript-runtime/JavascriptSymbolMetadataGlossary.tsx` | Page-local glossary definition list mounted from MDX |
 | `src/content/docs/references/javascript-runtime/JavascriptRuntimeOverallExample.tsx` | Page-local overall how-the-runtime-works example mounted from MDX |
@@ -135,9 +135,9 @@ Browser spot-check for this repair (production build):
 | Path | Role |
 | --- | --- |
 | `src/lib/references/assign-family-reference-anchors.ts` | Pure helpers that register CLI/MCP/JS items with `ReferenceAnchorRegistry` and return shallow copies with deterministic anchors (no mutation) |
-| `src/components/references/shared/CopyableReferenceAnchor.tsx` | Copyable `#fragment` chrome; clipboard URL via W04 `referenceAnchorUrl` / family page paths |
-| `src/components/references/shared/reference-inventory-filter.ts` | Pure filter state + match helpers (query / lifecycle / visibility); never invents missing facets |
-| `src/components/references/shared/ReferenceInventoryFilter.tsx` | Keyboard-accessible filter controls (search + selects); ephemeral presentation only |
+| `src/features/references/shared/CopyableReferenceAnchor.tsx` | Copyable `#fragment` chrome; clipboard URL via W04 `referenceAnchorUrl` / family page paths |
+| `src/features/references/shared/reference-inventory-filter.ts` | Pure filter state + match helpers (query / lifecycle / visibility); never invents missing facets |
+| `src/features/references/shared/ReferenceInventoryFilter.tsx` | Keyboard-accessible filter controls (search + selects); ephemeral presentation only |
 | Family inventories (`CliCommandInventory`, `McpToolInventory`, `JavaScriptRuntimeInventory`) | Assign registry anchors on success, host filter state, render filtered lists |
 
 ## Key host files (contract-count drift — story 008)
@@ -176,7 +176,7 @@ Browser spot-check for this repair (production build):
 - When optional contract fields are absent (`packageVersion`, lifecycle,
   visibility, example, runnable, handlerPresent), leave them out or disclose
   absence — never invent values, flags, or arguments.
-- Keep shared chrome under `src/components/references/shared/`; family
+- Keep shared chrome under `src/features/references/shared/`; family
   renderers live in `cli/`, `mcp/`, and `javascript/`.
 - CLI package visibility is often `visible`; map to shared `public` only via
   `mapCliVisibilityToReferenceVisibility` when shared badge chrome needs it.

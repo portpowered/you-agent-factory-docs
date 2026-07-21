@@ -3,14 +3,14 @@
  *
  * Resolves the W03 `schemas/mock-workers` public subpath into a W04 model and
  * mounts the public W07 SchemaReference surface. Ownership stays page-local —
- * do not edit renderer internals under `src/components/references/schema/`.
+ * do not edit renderer internals under `src/features/references/schema/`.
  *
  * Recursive splay is page-local: expanded `fieldNodes` plus on-page `$defs`
  * catalog (`showCatalog`) so nested mockWorkers / unmatchedDispatchPolicy
  * detail and dependent defs are readable without opaque off-page `$ref` bounce.
  */
 
-import { SchemaReference } from "@/components/references/schema";
+import { SchemaReference } from "@/features/references/schema";
 import {
   loadSchemaVerificationPackageModel,
   type SchemaVerificationPackageModel,

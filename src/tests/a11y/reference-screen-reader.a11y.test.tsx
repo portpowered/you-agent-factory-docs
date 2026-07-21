@@ -6,18 +6,18 @@
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
-import type { ApiOperationDetail } from "@/components/references/api/operation-detail";
-import type { ApiOperationNavModel } from "@/components/references/api/operation-navigation";
+import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+import { ApiNavigationVerificationHarness } from "@/features/references/api/api-navigation-verification-harness";
+import type { ApiOperationDetail } from "@/features/references/api/operation-detail";
+import type { ApiOperationNavModel } from "@/features/references/api/operation-navigation";
 import {
   type EventStreamOperationSummaryModel,
   EventStreamOperationsList,
   eventCanonicalityPresentationForRole,
-} from "@/components/references/events";
-import { SchemaRequiredBadge } from "@/components/references/schema";
-import { CopyableReferenceAnchor } from "@/components/references/shared/CopyableReferenceAnchor";
-import { ReferenceLifecycleVisibility } from "@/components/references/shared/ReferenceLifecycleVisibility";
-import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+} from "@/features/references/events";
+import { SchemaRequiredBadge } from "@/features/references/schema";
+import { CopyableReferenceAnchor } from "@/features/references/shared/CopyableReferenceAnchor";
+import { ReferenceLifecycleVisibility } from "@/features/references/shared/ReferenceLifecycleVisibility";
 import {
   expectCoherentReferenceHeadingHierarchy,
   expectReferenceNonColorStatus,

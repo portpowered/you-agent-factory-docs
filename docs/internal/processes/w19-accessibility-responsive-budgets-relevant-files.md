@@ -51,7 +51,7 @@ gates stay documented in
 * `src/lib/verify/a11y-axe.ts` / `a11y-playwright-axe.ts` — serious/critical axe
 * `src/lib/verify/a11y-reduced-motion.ts` — motion duration probes
 * `src/lib/verify/a11y-page-structure.ts` — landmarks / headings / keyboard
-* `src/components/references/api/a11y-verification.ts` — W08 API-local chrome
+* `src/features/references/api/a11y-verification.ts` — W08 API-local chrome
   (print/keyboard/viewports); keep production W19 gates on the shared verify
   contract, not a second matrix of hard-coded paths
 
@@ -243,7 +243,7 @@ gates stay documented in
   obscuring probe, and API `<details>` mobile navigator open/close/focus-return.
   Hash focus must not rewrite contract HTML; required targets need
   `scroll-mt-*` / scroll-margin clearance.
-* Shared client chrome: `src/components/references/shared/ReferenceHashNavigation.tsx`
+* Shared client chrome: `src/features/references/shared/ReferenceHashNavigation.tsx`
   (events wraps it as `EventHashNavigation`). Mounted on production
   `/docs/references/events` and `/docs/references/factory-schema` page mounts;
   API already uses `ApiReferenceHashController`.

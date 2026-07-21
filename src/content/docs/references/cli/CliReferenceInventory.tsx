@@ -9,7 +9,7 @@
 import {
   CliCommandInventory,
   type CliCommandInventoryInput,
-} from "@/components/references/cli";
+} from "@/features/references/cli";
 import { loadCliReferenceInventory } from "@/lib/references/load-cli-reference-inventory";
 
 export type CliReferenceInventoryProps = {

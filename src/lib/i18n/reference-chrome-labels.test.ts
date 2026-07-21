@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { schemaExampleOriginLabel } from "@/components/references/schema/schema-example-display";
+import { schemaExampleOriginLabel } from "@/features/references/schema/schema-example-display";
 import {
   referenceInventoryLifecycleFilterOptions,
   referenceInventoryVisibilityFilterOptions,
-} from "@/components/references/shared/reference-inventory-filter";
+} from "@/features/references/shared/reference-inventory-filter";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { supportedLocales } from "@/lib/i18n/locale-routing";
 import {

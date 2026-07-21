@@ -1,4 +1,4 @@
-import { SchemaReference } from "@/components/references/schema";
+import { SchemaReference } from "@/features/references/schema";
 import {
   loadMockWorkersSchemaEmbedModel,
   MOCK_WORKER_DEFINITION_POINTER,

@@ -11,19 +11,19 @@
  * loaders or scanning renderer trees.
  */
 
-import { EventLinkedComponentSchemas } from "@/components/references/events/event-linked-component-schemas";
-import { EventReconnectLifecycleSection } from "@/components/references/events/event-reconnect-lifecycle-section";
+import { EventLinkedComponentSchemas } from "@/features/references/events/event-linked-component-schemas";
+import { EventReconnectLifecycleSection } from "@/features/references/events/event-reconnect-lifecycle-section";
 import {
   type EventStreamOperationSummaryModel,
   eventStreamOperationSummaryModelsFromCorpus,
-} from "@/components/references/events/event-stream-display";
-import { EventStreamOperationsList } from "@/components/references/events/event-stream-operations-list";
-import { EventsSurface } from "@/components/references/events/events-surface";
-import { FactoryEventCatalogSection } from "@/components/references/events/factory-event-catalog-section";
-import { FactoryResponseEventCatalogSection } from "@/components/references/events/factory-response-event-catalog-section";
-import { SseStaticExamplesSection } from "@/components/references/events/sse-static-examples-section";
-import type { EventsUiStatus } from "@/components/references/events/types";
-import { ReferenceHashNavigation } from "@/components/references/shared";
+} from "@/features/references/events/event-stream-display";
+import { EventStreamOperationsList } from "@/features/references/events/event-stream-operations-list";
+import { EventsSurface } from "@/features/references/events/events-surface";
+import { FactoryEventCatalogSection } from "@/features/references/events/factory-event-catalog-section";
+import { FactoryResponseEventCatalogSection } from "@/features/references/events/factory-response-event-catalog-section";
+import { SseStaticExamplesSection } from "@/features/references/events/sse-static-examples-section";
+import type { EventsUiStatus } from "@/features/references/events/types";
+import { ReferenceHashNavigation } from "@/features/references/shared";
 import {
   buildEventReconnectLifecycleCorpus,
   buildEventsLinkedComponentSchemas,

@@ -7,7 +7,7 @@
  * resolution via `resolveApiPackageArtifact`.
  */
 
-import type { CliCommandInventoryInput } from "@/components/references/cli";
+import type { CliCommandInventoryInput } from "@/features/references/cli";
 import {
   ApiPackageArtifactResolutionError,
   type ApiPackageArtifactResolverDependencies,

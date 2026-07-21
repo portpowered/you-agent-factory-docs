@@ -11,7 +11,7 @@ import { type ChildProcess, spawn } from "node:child_process";
 import {
   API_SCHEMA_COMPONENT_PROBE,
   API_SCHEMA_SLOT_ATTR,
-} from "@/components/references/api";
+} from "@/features/references/api";
 import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
 
 const PORT = Number(

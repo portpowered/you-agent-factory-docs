@@ -6,19 +6,19 @@
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render } from "@testing-library/react";
-import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
-import type { ApiOperationDetail } from "@/components/references/api/operation-detail";
-import type { ApiOperationNavModel } from "@/components/references/api/operation-navigation";
+import { FactoryMetadataSourceSchemaEmbed } from "@/content/docs/factories/packaged/FactoryMetadataSourceSchemaEmbed";
+import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+import { ApiNavigationVerificationHarness } from "@/features/references/api/api-navigation-verification-harness";
+import type { ApiOperationDetail } from "@/features/references/api/operation-detail";
+import type { ApiOperationNavModel } from "@/features/references/api/operation-navigation";
 import {
   EventPayloadVariant,
   type EventStreamOperationSummaryModel,
   EventStreamOperationsList,
   eventCanonicalityPresentationForRole,
-} from "@/components/references/events";
-import { EventEnvelopeReference } from "@/components/references/events/event-envelope-reference";
-import { SchemaDefinitionEmbed } from "@/components/references/shared/SchemaDefinitionEmbed";
-import { FactoryMetadataSourceSchemaEmbed } from "@/content/docs/factories/packaged/FactoryMetadataSourceSchemaEmbed";
-import { FactorySchemaReference } from "@/content/docs/references/factory-schema/FactorySchemaReference";
+} from "@/features/references/events";
+import { EventEnvelopeReference } from "@/features/references/events/event-envelope-reference";
+import { SchemaDefinitionEmbed } from "@/features/references/shared/SchemaDefinitionEmbed";
 import {
   buildFactoryEventCatalog,
   resolveEventCorpus,

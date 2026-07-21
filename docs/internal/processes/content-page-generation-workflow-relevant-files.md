@@ -386,7 +386,7 @@ workers / workstations) needs a page-owned mount such as the W11 events corpus
 `EventsCorpusMount` (stream roles, catalogs, reconnect/lifecycle, static SSE):
 
 1. Keep the page-local renderer and `page-mdx-components.tsx` under the page
-   bundle. Import public surfaces from `@/components/references/...` and helpers
+   bundle. Import public surfaces from `@/features/references/...` and helpers
    from `@/lib/references/...` — do not edit renderer internals on a page-wiring
    lane.
 2. Add a static section+slug switch in
@@ -1611,7 +1611,7 @@ W05 already provides nested discovery, family indexes, and
    localized family indexes (shipped-locale manifest derives from
    `messages/<locale>.json` presence). English-first copies are fine.
 7. When the page needs a required page-local MDX component (for example
-   mounting `@/components/references/api` on `/docs/references/api`),
+   mounting `@/features/references/api` on `/docs/references/api`),
    colocate `page-mdx-components.tsx` next to `page.mdx` and add a static
    `import("@/content/docs/references/<slug>/page-mdx-components")` switch
    in `route-family-local-docs-page-load.ts`. Relative MDX imports do not
@@ -1643,7 +1643,7 @@ W05 already provides nested discovery, family indexes, and
    `data-api-status="ready"` plus accessible empty/invalid `role="status"`
    messaging in `ApiReferenceProjection.test.tsx` / `api-page.test.tsx`; do
    not scan renderer trees or shared inventories. Ownership stays page
-   wiring: no edits under `src/components/references/api/` (or
+   wiring: no edits under `src/features/references/api/` (or
    schema/events/CLI/MCP/JS), no sibling W11 pages, no W15–W18 inventories,
    no factories/workers/workstations content, no `node_modules` patches.
 
@@ -1674,7 +1674,7 @@ MDX component merge for schema mounts:
 4. Keep schema acquisition on the W03 helper
    `loadSchemaVerificationPackageModel("schemas/<name>")` and mount public
    W07 `SchemaReference` with `pagePath="/docs/references/<slug>"`. Do not
-   edit renderer internals under `src/components/references/schema/`.
+   edit renderer internals under `src/features/references/schema/`.
    Production browser proofs must assert `data-schema-status="ready"` (page
    intro copy can mention the schema title even when acquisition fails).
    If production `bun run start` shows `invalid` with

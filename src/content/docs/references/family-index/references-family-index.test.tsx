@@ -293,7 +293,7 @@ describe("references family index", () => {
       8,
     );
     expect(REFERENCES_FAMILY_INDEX_FORBIDDEN_RENDERER_ROOTS).toContain(
-      "src/components/references/api",
+      "src/features/references/api",
     );
     expect(REFERENCES_FAMILY_INDEX_FORBIDDEN_ROUTE_FAMILY_ROOTS).toContain(
       "src/content/docs/factories",
@@ -306,7 +306,7 @@ describe("references family index", () => {
     ).toBe(true);
     expect(
       isForbiddenReferencesFamilyRendererPath(
-        "src/components/references/schema/schema-surface.tsx",
+        "src/features/references/schema/schema-surface.tsx",
       ),
     ).toBe(true);
     expect(

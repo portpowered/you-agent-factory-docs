@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
-import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
-import { buildApiLocalServerBaseUrlFromArtifact } from "@/components/references/api/load-local-server-base-url";
-import { buildApiOperationDetailsFromArtifact } from "@/components/references/api/load-operation-details";
-import { buildApiOperationNavigationFromArtifact } from "@/components/references/api/load-operation-navigation";
+import { ApiNavigationVerificationHarness } from "@/features/references/api/api-navigation-verification-harness";
+import { buildApiLocalServerBaseUrlFromArtifact } from "@/features/references/api/load-local-server-base-url";
+import { buildApiOperationDetailsFromArtifact } from "@/features/references/api/load-operation-details";
+import { buildApiOperationNavigationFromArtifact } from "@/features/references/api/load-operation-navigation";
 import "@/features/docs/styles/references-api-accents.css";
 import "@/features/docs/styles/references-api-print.css";
 

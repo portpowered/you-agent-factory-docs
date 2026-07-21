@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { SchemaVerificationHarness } from "@/components/references/schema/schema-verification-harness";
+import { SchemaVerificationHarness } from "@/features/references/schema/schema-verification-harness";
 import { loadAllSchemaVerificationPackageModels } from "@/lib/references/load-schema-verification-models";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 

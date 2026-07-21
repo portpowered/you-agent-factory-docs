@@ -5,8 +5,8 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { filterJavascriptSymbolsExcludingSharedSchemaDuplicates } from "@/components/references/javascript/javascript-shared-schema-presentation";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { filterJavascriptSymbolsExcludingSharedSchemaDuplicates } from "@/features/references/javascript/javascript-shared-schema-presentation";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadJavascriptRuntimeReferenceInventory } from "@/lib/references/load-javascript-runtime-reference-inventory";
 import { source } from "@/lib/source";

@@ -114,7 +114,7 @@ export const W20_PROJECTION_SUITE_ENTRIES = [
     families: ["projection-mcp-tools", "projection-schema-fields"],
   },
   {
-    path: "src/components/references/api/single-page-projection.test.ts",
+    path: "src/features/references/api/single-page-projection.test.ts",
     families: ["projection-openapi-operations"],
   },
   {

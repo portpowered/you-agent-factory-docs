@@ -7,7 +7,7 @@
  * defaults stay untouched — this helper is ownership-fenced to this page.
  */
 
-import type { SchemaFieldTreeNode } from "@/components/references/schema/types";
+import type { SchemaFieldTreeNode } from "@/features/references/schema/types";
 import type {
   SchemaAddress,
   SchemaDefinitionModel,

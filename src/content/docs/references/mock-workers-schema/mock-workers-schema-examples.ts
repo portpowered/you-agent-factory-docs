@@ -10,7 +10,7 @@
  * only.
  */
 
-import type { SchemaExampleInput } from "@/components/references/schema";
+import type { SchemaExampleInput } from "@/features/references/schema";
 
 /**
  * Minimal valid mock-workers config: one accept entry that matches a named

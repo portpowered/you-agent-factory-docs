@@ -1,4 +1,4 @@
-import { SchemaVariantReference } from "@/components/references/schema";
+import { SchemaVariantReference } from "@/features/references/schema";
 import { createProductionWorkstationTypeOverlay } from "@/lib/references/overlays/production-workstation-overlays";
 import { factoryVariantOverlayToSchemaVariantPresentation } from "../factory-variant-overlay-presentation";
 import { loadWorkstationBaseSchemaEmbedModel } from "../load-workstation-base-schema";

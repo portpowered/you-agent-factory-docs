@@ -7,21 +7,21 @@
 
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { ApiOperationSection } from "@/components/references/api/api-operation-section";
-import type { ApiOperationDetail } from "@/components/references/api/operation-detail";
-import { CliCommandReference } from "@/components/references/cli/CliCommandReference";
-import { JavaScriptSymbolReference } from "@/components/references/javascript/JavaScriptSymbolReference";
-import { McpToolReference } from "@/components/references/mcp/McpToolReference";
+import { PageMessagesProvider } from "@/features/docs/components/page-messages-context";
+import { ApiOperationSection } from "@/features/references/api/api-operation-section";
+import type { ApiOperationDetail } from "@/features/references/api/operation-detail";
+import { CliCommandReference } from "@/features/references/cli/CliCommandReference";
+import { JavaScriptSymbolReference } from "@/features/references/javascript/JavaScriptSymbolReference";
+import { McpToolReference } from "@/features/references/mcp/McpToolReference";
 import {
   projectSchemaExamplesFromInputs,
   SchemaComposition,
   SchemaConstraintList,
   SchemaExamplePanel,
   schemaExampleOriginLabel,
-} from "@/components/references/schema";
-import type { SchemaCompositionDisplay } from "@/components/references/schema/schema-ref-display";
-import { ContractSourceBadge } from "@/components/references/shared/ContractSourceBadge";
-import { PageMessagesProvider } from "@/features/docs/components/page-messages-context";
+} from "@/features/references/schema";
+import type { SchemaCompositionDisplay } from "@/features/references/schema/schema-ref-display";
+import { ContractSourceBadge } from "@/features/references/shared/ContractSourceBadge";
 import type { PageMessages } from "@/lib/content/schemas";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";

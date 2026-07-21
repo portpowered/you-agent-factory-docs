@@ -32,7 +32,7 @@ import {
   buildApiLocalServerBaseUrlFromArtifact,
   buildApiOperationNavigationFromArtifact,
   isApiPlaygroundSuppressed,
-} from "@/components/references/api";
+} from "@/features/references/api";
 import {
   type ApiReferenceProjectionLoaders,
   ApiReferenceProjectionView,
