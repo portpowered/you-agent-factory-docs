@@ -27,7 +27,6 @@ const SECTION_10_EXPECTED_MAPPINGS = [
     "/docs/documentation/global-configuration-factories",
     "/docs/factories/global-configuration",
   ],
-  ["/docs/documentation/packaged-factories", "/docs/factories/packaged"],
   ["/docs/documentation/workers", "/docs/workers"],
   ["/docs/documentation/agent-workers", "/docs/workers/agent"],
   ["/docs/documentation/inference-workers", "/docs/workers/inference"],

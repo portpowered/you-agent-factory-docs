@@ -194,15 +194,17 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    Metadata canonical, and sitemap exclusion after demotion.
 8. **Mode A overview restoration (PS-210 dual-page IA):** when a former §10
    move stub is restored as a Program Mode A capability overview (for example
-   `/docs/documentation/factory-session` or
-   `/docs/documentation/dynamic-workflows`), remove that row from
+   `/docs/documentation/factory-session`,
+   `/docs/documentation/dynamic-workflows`, or
+   `/docs/documentation/packaged-factories`), remove that row from
    `DOCUMENTATION_ROUTE_MIGRATION_LEDGER`, drop its
    `DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS` remap, shrink
    `DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT`, and replace the
    compatibility MDX with a Mode A overview that links to Mode B depth. The
    restored route becomes its own canonical discovery destination again;
    Mode B family pages stay published as Reference depth. Update ledger
-   expected-mapping tests and process notes in the same change.
+   expected-mapping tests, R02 demoted-stub inventories when the route was
+   listed there, and process notes in the same change.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and

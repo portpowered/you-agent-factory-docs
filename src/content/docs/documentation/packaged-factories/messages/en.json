@@ -1,14 +1,37 @@
 {
-  "title": "Packaged factories",
-  "description": "This documentation page moved to /docs/factories/packaged. Continue there for the current family content.",
-  "openingSummary": "This page moved. Open /docs/factories/packaged for the current documentation.",
+  "title": "Packaged Factories",
+  "description": "Packaged factories are catalog-backed @you/* built-ins you discover and run by canonical name with you run --named—not the same as Packaged documents (you docs topics).",
+  "openingSummary": "Packaged factories are catalog-backed @you/* built-ins such as @you/goal, @you/fusion, and @you/tts that you invoke with you run --named. They are not Packaged documents—those are you docs markdown topics printed from the installed CLI.",
   "sections": {
-    "moved": {
-      "title": "Moved",
-      "body": "This documentation page moved to a new family route. The content now lives at /docs/factories/packaged. Use the link below to continue — no live factory host is required."
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Packaged factories are first-party @you/* factories shipped in the built-in catalog. Canonical names such as @you/goal, @you/fusion, and @you/tts identify them. On first use they materialize as editable factories under the resolved root (for example ~/.you-agent-factory/factories), and later runs load that on-disk copy. Packaged Factories are runnable factory definitions—not Packaged documents, which are markdown reference topics printed with you docs."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use Packaged Factories when you want a catalog-backed named invocation with you run --named <canonical-name>, when you need a first-party built-in such as goal, fusion, or text-to-speech, or when you want materialization under the shared factories root without authoring a project-local factory from scratch. Prefer a project-local or saved named factory when you own the definition under a chosen root."
+    },
+    "howItFits": {
+      "title": "How It Fits",
+      "body": "Packaged factories sit beside project-local factories and JavaScript dynamic workflows as factory shapes that load into a Factory Session when run. Resolution checks project-local ./factory (or --dir), then the global factories root, then catalog materialization on first use. Packaged documents remain a separate surface: you docs topics for CLI-printed reference markdown, not named factory runs."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This overview explains what Packaged Factories are and when they matter. It is not a schema embed, not a sync of packaged CLI markdown, not Packaged documents (you docs topics), and not per-factory invocation-signature depth. Discovery, materialization, Factory name identity, and operator commands live on the Packaged Factories reference page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
     }
   },
   "links": {
-    "targetLabel": "Open the packaged factories page"
+    "packagedFactoriesDepth": "Packaged Factories reference",
+    "packagedDocumentsOverview": "Packaged documents",
+    "cliDocs": "CLI docs"
   }
 }
