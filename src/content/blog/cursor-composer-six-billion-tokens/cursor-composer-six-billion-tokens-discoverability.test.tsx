@@ -140,21 +140,30 @@ describe("cursor-composer-six-billion-tokens blog discoverability (004)", () => 
     expect(localizedParams).toEqual([]);
   });
 
-  test("default-locale post still renders narrative and related docs", async () => {
+  test("default-locale post renders single chrome, prose docs links, and next-post control", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
 
     expect(html).toContain(BLOG_TITLE);
+    expect(html.match(/<h1\b/g)?.length).toBe(1);
+    expect(html).toContain(BLOG_DESCRIPTION);
+    expect(html).not.toContain(">Summary</");
     expect(html).toContain("Why this examination exists");
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain(
-      'data-testid="blog-related-docs-partial-unavailable"',
-    );
+    expect(html).toContain("Foundations");
+    expect(html).toContain('aria-label="Tags"');
+    expect(html).not.toContain('data-testid="tag-pill-list"');
+    expect(html).not.toContain(">Tags</h2>");
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("/docs/concepts/bottlenecks");
     expect(html).toContain("/docs/concepts/compaction");
-    // In-prose harness-support link only — do not put documentation.* ids in
-    // BlogRelatedDocs (getRegistryRecordById returns missing for that kind).
+    // In-prose harness-support link remains in the article body.
     expect(html).toContain("/docs/documentation/harness-support");
+    // Newest-first neighbor: next published post after this slug is changelog.
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('aria-label="Next blog post"');
+    expect(html).toContain('href="/blog/changelog"');
+    expect(html).toContain("you-agent-factory releases and changelog");
   });
 });

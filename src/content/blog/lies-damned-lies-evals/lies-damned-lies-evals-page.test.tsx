@@ -34,17 +34,20 @@ describe("lies-damned-lies-evals blog post shell (001)", () => {
     expect(post?.messages.description).toContain("operational evidence");
   });
 
-  test("renders post shell with title, context, takeaway, and related docs", async () => {
+  test("renders post shell with title, context, DocsDescription, and no Summary chrome", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
 
     expect(html).toContain(BLOG_TITLE);
     expect(html).toContain("A high model benchmark score does not tell you");
-    expect(html).toContain(
+    expect(html).toContain("judge workflow health from operational evidence");
+    expect(html).not.toContain(">Summary</");
+    expect(html).not.toContain(
       "Evaluate agent-factory workflows with live operational signals",
     );
     expect(html).toContain("The wrong scoreboard");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/documentation/metrics"');
     expect(html).toContain(
       'href="/docs/concepts/statistical-process-control-graphs"',
@@ -86,15 +89,12 @@ describe("lies-damned-lies-evals related factory docs (003)", () => {
     ]);
   });
 
-  test("renders metrics prose link and BlogRelatedDocs concept routes", async () => {
+  test("renders metrics and concept routes as in-prose links without related-docs chrome", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
 
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain('data-testid="blog-related-docs-unavailable"');
-    expect(html).not.toContain(
-      'data-testid="blog-related-docs-partial-unavailable"',
-    );
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/documentation/metrics"');
     expect(html).toContain(
       'href="/docs/concepts/statistical-process-control-graphs"',
@@ -102,5 +102,7 @@ describe("lies-damned-lies-evals related factory docs (003)", () => {
     expect(html).toContain('href="/docs/concepts/bottlenecks"');
     expect(html).toContain("metrics documentation");
     expect(html).toContain("bottlenecks");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/useful-factory-links"');
   });
 });

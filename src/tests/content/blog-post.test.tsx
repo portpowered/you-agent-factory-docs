@@ -85,10 +85,11 @@ describe("blog post page render", () => {
   it("renders the production bottlenecks post with metadata and MDX body content", async () => {
     const page = await renderBlogPostPage("bottlenecks");
     const html = renderToStaticMarkup(page);
+    const title =
+      "Factory bottlenecks: where long-running agent work actually stalls";
 
-    expect(html).toContain(
-      "Factory bottlenecks: where long-running agent work actually stalls",
-    );
+    expect(html).toContain(title);
+    expect(html.match(/<h1\b/g)?.length).toBe(1);
     expect(html).toContain(
       "A listicle comparison of common you-agent-factory limiting stages",
     );
@@ -97,13 +98,47 @@ describe("blog post page render", () => {
     expect(html).toContain('class="sr-only">Authors: </span>');
     expect(html).toContain("Site Team");
     expect(html).toContain("Foundations");
+    expect(html).toContain('aria-label="Tags"');
+    expect(html).not.toContain('data-testid="tag-pill-list"');
+    expect(html).not.toContain(">Tags</h2>");
     expect(html).toContain('data-blog-slug="bottlenecks"');
     expect(html).toContain("Saturated task queue");
     expect(html).toContain("Where one stage caps the run");
     expect(html).toContain("bottlenecks-stage-throughput-chart");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/concepts/bottlenecks"');
-    expect(html).toContain("Related reference pages");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('aria-label="Next blog post"');
+    expect(html).toContain('href="/blog/comparing-agent-factories"');
+  });
+
+  it("renders next-post control for a mid-list fixture and omits it for the last post", async () => {
+    await writeFixturePost({
+      slug: "newer-neighbor",
+      status: "published",
+      publishedAt: "2026-06-15",
+      title: "Newer Neighbor",
+    });
+    await writeFixturePost({
+      slug: "older-neighbor",
+      status: "published",
+      publishedAt: "2026-06-01",
+      title: "Older Neighbor",
+    });
+
+    const newerHtml = renderToStaticMarkup(
+      await renderBlogPostPage("newer-neighbor", "en", { blogRoot: tempRoot }),
+    );
+    const olderHtml = renderToStaticMarkup(
+      await renderBlogPostPage("older-neighbor", "en", { blogRoot: tempRoot }),
+    );
+
+    expect(newerHtml).toContain('data-testid="blog-next-post"');
+    expect(newerHtml).toContain('href="/blog/older-neighbor"');
+    expect(newerHtml).toContain("Older Neighbor");
+    expect(olderHtml).not.toContain('data-testid="blog-next-post"');
+    expect(olderHtml).not.toContain('href="/blog/newer-neighbor"');
   });
 
   it("returns missing-page behavior for unpublished legacy Atlas blog slugs", async () => {

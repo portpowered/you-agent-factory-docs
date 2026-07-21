@@ -74,7 +74,8 @@ describe("factories-building-factory-docs blog validation (004)", () => {
     expect(html).toContain(BLOG_TITLE);
     expect(html).toContain("Why this docs site is a factory workload");
     expect(html).toContain("Writer-reviewer before merge");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("/docs/concepts/worktree");
     expect(html).toContain("/docs/concepts/checklist");

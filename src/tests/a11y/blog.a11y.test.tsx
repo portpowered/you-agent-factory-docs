@@ -111,10 +111,25 @@ describe("blog accessibility", () => {
       expectedH1: REPRESENTATIVE_BLOG_POST_TITLE,
     });
     expect(structure.headingLevels[0]).toBe(1);
+    expect(structure.headingLevels.filter((level) => level === 1)).toEqual([1]);
     expect(structure.headingLevels).toContain(2);
     expect(
-      screen.getByRole("heading", { level: 2, name: "Summary" }),
+      screen.queryByRole("heading", { level: 2, name: "Summary" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: "Tags" }),
+    ).toBeNull();
+    expect(screen.queryByTestId("tag-pill-list")).toBeNull();
+    expect(
+      screen.getByText(
+        /A practical comparison of you-agent-factory with custom scripts/,
+      ),
     ).toBeTruthy();
+    expect(
+      screen.queryByText(
+        /Use you-agent-factory when you want a lightweight, file-first orchestrator/,
+      ),
+    ).toBeNull();
     expect(
       screen.getByRole("heading", {
         level: 2,
@@ -146,17 +161,59 @@ describe("blog accessibility", () => {
     });
     expect(comparisonTable).toBeTruthy();
 
-    const relatedDocs = screen.getByTestId("blog-related-docs");
-    expect(relatedDocs).toBeTruthy();
-    const relatedLinks = within(relatedDocs).getAllByRole("link");
-    expect(relatedLinks.length).toBeGreaterThan(0);
-    for (const link of relatedLinks) {
-      link.focus();
-      expect(document.activeElement).toBe(link);
-    }
+    expect(screen.queryByTestId("blog-related-docs")).toBeNull();
+    expect(
+      screen.queryByRole("heading", {
+        level: 2,
+        name: "Related reference pages",
+      }),
+    ).toBeNull();
+    // Last published post in newest-first order — no next-post control.
+    expect(screen.queryByTestId("blog-next-post")).toBeNull();
+    expect(
+      screen.queryByRole("navigation", { name: "Next blog post" }),
+    ).toBeNull();
+
+    const bodyDocsLink = screen.getByRole("link", {
+      name: "What is you-agent-factory",
+    });
+    bodyDocsLink.focus();
+    expect(document.activeElement).toBe(bodyDocsLink);
 
     const controls = listKeyboardFocusableControls(document);
     expect(controls.every((control) => control.name.length > 0)).toBe(true);
+
+    await expectNoSeriousAxeViolations(document.body);
+  });
+
+  test("mid-list blog post exposes a keyboard-focusable next-post control", async () => {
+    await installDocsSearchFetchMock();
+    const context = await loadAppTestContext();
+    const page = await renderBlogPostPage("bottlenecks");
+
+    await act(async () => {
+      await renderWithAppProviders(
+        <CanonicalDocsLayout messages={context.messages}>
+          {page}
+        </CanonicalDocsLayout>,
+        { context },
+      );
+    });
+
+    expect(screen.queryByTestId("blog-related-docs")).toBeNull();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: "Summary" }),
+    ).toBeNull();
+
+    const nextNav = screen.getByRole("navigation", { name: "Next blog post" });
+    expect(nextNav).toBeTruthy();
+    const nextLink = screen.getByTestId("blog-next-post-link");
+    expect(nextLink.getAttribute("href")).toBe(
+      "/blog/comparing-agent-factories",
+    );
+    nextLink.focus();
+    expect(document.activeElement).toBe(nextLink);
+    expect(nextLink.className).toContain("focus-visible:ring");
 
     await expectNoSeriousAxeViolations(document.body);
   });

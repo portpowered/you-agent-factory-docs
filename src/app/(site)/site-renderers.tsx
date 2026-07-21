@@ -14,6 +14,7 @@ import {
   BLOG_INDEX_CONTENT_COLUMN_SURFACE,
   BlogIndexPostList,
 } from "@/features/blog/components/BlogIndexPostList";
+import { BlogNextPostControl } from "@/features/blog/components/BlogNextPostControl";
 import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
 import {
   BROWSE_INDEX_CONTENT_COLUMN_SURFACE,
@@ -33,6 +34,7 @@ import { TagLandingEmptyState } from "@/features/docs/tags/TagLandingEmptyState"
 import { TagSearchHandoff } from "@/features/docs/tags/TagSearchHandoff";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
 import { loadPublishedArchitectureEntries } from "@/lib/content/architecture";
+import { resolveNextPublishedBlogPost } from "@/lib/content/blog-next-post";
 import {
   blogPostHref,
   loadBlogPostFromDisk,
@@ -115,6 +117,16 @@ export async function renderBlogPostPage(
     blogRoot: options.blogRoot,
   });
 
+  const publishedPosts = await listPublishedBlogPosts({
+    blogRoot: options.blogRoot,
+    locale,
+  });
+  const nextPost = await resolveNextPublishedBlogPost(post.slug, {
+    blogRoot: options.blogRoot,
+    locale,
+    posts: publishedPosts,
+  });
+
   const postHref = blogPostHref(post.slug, locale);
 
   return (
@@ -141,6 +153,7 @@ export async function renderBlogPostPage(
         />
         <DocsBody>
           <article data-blog-slug={post.slug}>{post.content}</article>
+          {nextPost ? <BlogNextPostControl next={nextPost} /> : null}
         </DocsBody>
       </DocsPageProviders>
     </DocsPage>

@@ -20,18 +20,8 @@ status: "published"
 ---
 
 import { T } from "@/features/docs/components/T";
-import { TagPillList } from "@/features/docs/components/TagPillList";
-import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
-
-# <T k="title" />
 
 <T k="contextSentence" />
-
-<TagPillList tags={["foundations"]} />
-
-## Summary
-
-<T k="takeaway" />
 
 ## Why this docs site is a factory workload
 
@@ -82,23 +72,3 @@ tracked which pages were done, active, ready next, or intentionally held—so pl
 ## What to take away
 
 If you are building a large docs surface with agents, borrow the same discipline this site used: dispatch small pages through a planner/executor queue, keep harness loops and worktree isolation explicit, separate write from review, and point readers at published concepts and techniques rather than redefining them in blog prose.
-
-## Related reference pages
-
-Start with the product overview at
-[What is you-agent-factory](/docs/documentation/what-is-you-agent-factory),
-the
-[planner-executor](/docs/techniques/planner-executor)
-technique, and
-[writer-reviewer](/docs/techniques/writer-reviewer).
-The concept links below cover harness, worktree, loop, checklist, and task-queue definitions used in the patterns above.
-
-<BlogRelatedDocs
-  relatedDocIds={[
-    "concept.harness",
-    "concept.worktree",
-    "concept.loop",
-    "concept.checklist",
-    "concept.task-queue",
-  ]}
-/>

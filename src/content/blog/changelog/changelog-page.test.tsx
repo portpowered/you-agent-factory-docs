@@ -21,6 +21,10 @@ describe("changelog blog hub (001)", () => {
       "When you need to see what changed in you-agent-factory",
     );
     expect(html).toContain(
+      "A docs-site hub for recent you-agent-factory product releases",
+    );
+    expect(html).not.toContain(">Summary</");
+    expect(html).not.toContain(
       "Scan recent you-agent-factory release changes on this hub",
     );
 
@@ -47,9 +51,8 @@ describe("changelog blog hub (001)", () => {
     expect(html).toContain("Install documentation");
     expect(html).toContain("CLI documentation");
     expect(html).toContain("CLI command index");
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain("blog-related-docs-unavailable");
-    expect(html).not.toContain("blog-related-docs-partial-unavailable");
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain('href="/docs/concepts/harness"');
     expect(html).toContain('href="/docs/concepts/worktree"');
     expect(html).toContain("Freshness ownership");
@@ -62,5 +65,7 @@ describe("changelog blog hub (001)", () => {
     expect(html).toContain("not automated governance CI");
     expect(html).not.toContain("Give the compact version first");
     expect(html).not.toContain("Created from the blog-post MDX template");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/factories-building-factory-docs"');
   });
 });

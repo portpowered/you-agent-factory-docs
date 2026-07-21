@@ -74,15 +74,20 @@ describe("bottlenecks blog discoverability (004)", () => {
     ).toBe(true);
   });
 
-  test("post still renders narrative, related concept link, and factory-ui chart", async () => {
+  test("post renders narrative, prose concept link, chart, and next-post control", async () => {
     const page = await renderBlogPostPage(BLOG_SLUG);
     const html = renderToStaticMarkup(page);
 
     expect(html).toContain(BLOG_TITLE);
+    expect(html.match(/<h1\b/g)?.length).toBe(1);
+    expect(html).not.toContain(">Summary</");
     expect(html).toContain("Saturated task queue");
     expect(html).toContain("Where one stage caps the run");
     expect(html).toContain("bottlenecks-stage-throughput-chart");
     expect(html).toContain("/docs/concepts/bottlenecks");
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/comparing-agent-factories"');
   });
 });

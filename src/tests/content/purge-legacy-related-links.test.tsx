@@ -62,7 +62,8 @@ describe("purge legacy related links and registries (005)", () => {
     ] as const) {
       const html = renderToStaticMarkup(await renderBlogPostPage(slug));
       assertNoDeletedBlogOrTagHrefs(html);
-      expect(html).toContain('data-testid="blog-related-docs"');
+      expect(html).not.toContain('data-testid="blog-related-docs"');
+      expect(html).not.toContain("Related reference pages");
     }
   });
 

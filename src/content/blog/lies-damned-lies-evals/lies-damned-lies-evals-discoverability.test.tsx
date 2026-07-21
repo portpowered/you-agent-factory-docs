@@ -128,7 +128,8 @@ describe("lies-damned-lies-evals blog discoverability (004)", () => {
     expect(html).toContain("The wrong scoreboard");
     expect(html).toContain("Useful evaluation of agent-factory workflows");
     expect(html).toContain('href="/docs/documentation/metrics"');
-    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
     expect(html).toContain(
       'href="/docs/concepts/statistical-process-control-graphs"',
     );

@@ -28,10 +28,9 @@ describe("factories-building-factory-docs blog post examination", () => {
     expect(html).toContain("/docs/techniques/planner-executor");
     expect(html).toContain("/docs/techniques/writer-reviewer");
     expect(html).toContain("/docs/concepts/task-queue");
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain(
-      'data-testid="blog-related-docs-partial-unavailable"',
-    );
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
+    expect(html).not.toContain(">Summary</");
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("/docs/concepts/worktree");
     expect(html).toContain("/docs/concepts/loop");
@@ -39,5 +38,7 @@ describe("factories-building-factory-docs blog post examination", () => {
     expect(html).toContain("/docs/concepts/task-queue");
     expect(html).not.toContain("Model Atlas");
     expect(html).not.toContain("rewrite-board");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/lies-damned-lies-evals"');
   });
 });

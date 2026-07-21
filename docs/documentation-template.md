@@ -173,8 +173,14 @@ Blog posts should include:
 * colocated `assets.json` when the post uses page-specific images, graphs, or
   media
 * links back to canonical factory docs pages (guides, concepts, techniques,
-  documentation, glossary)
-* related docs through `BlogRelatedDocs`
+  documentation, glossary) as in-prose MDX links
+* optional frontmatter `relatedDocIds` for metadata (do not render
+  `BlogRelatedDocs` / Related reference pages chrome on published posts)
+* do not render `## Summary` / `<T k="takeaway" />` chrome that duplicates
+  renderer `DocsDescription`; keep optional `takeaway` in messages for search
+* do not render MDX `# <T k="title" />` — renderer `DocsTitle` is the only title
+* do not render `TagPillList` or bottom `## Tags` sections — renderer
+  `BlogPostMeta` is the only tags presentation
 
 Blog posts may use `blog-post.content.md` as an outline, but unlike canonical
 docs pages they may keep narrative prose in the MDX file when localization is
@@ -185,12 +191,15 @@ not required.
 Use MDX components for structured information that comes from the registry or
 dedicated factory teaching surfaces:
 
-* related docs and derived related docs
 * tag lists
 * citations
 * optional page assets (graphs, charts, tables, images)
 * dedicated reference components such as `HarnessSupportMatrix` when a
   documentation page needs a fixed teaching matrix
+
+Do not add blog `BlogRelatedDocs` / Related reference pages chrome on published
+posts; point readers at canonical docs with in-prose links instead. Do not add
+a body Summary/takeaway block that duplicates `DocsDescription`.
 
 Use message components for localized user-facing text. Use asset components or
 resolved asset props for page-specific media. Do not hard-code localized body

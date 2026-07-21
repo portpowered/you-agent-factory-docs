@@ -18,7 +18,9 @@ describe("useful-factory-links blog post (001–002)", () => {
     expect(html).toContain(
       "When you already run (or are evaluating) you-agent-factory",
     );
-    expect(html).toContain(
+    expect(html).toContain("A curated list of factory-focused destinations");
+    expect(html).not.toContain(">Summary</");
+    expect(html).not.toContain(
       "Use this shortlist to reach the CLI, supported-runtime, technique, MCP, and ecosystem pages",
     );
 
@@ -63,10 +65,13 @@ describe("useful-factory-links blog post (001–002)", () => {
     expect(html).toContain('href="https://docs.dbos.dev/"');
     expect(html).toContain('href="https://docs.dagster.io/"');
 
-    // Related-docs affordance (concept.harness resolves; docs also in MDX)
-    expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).not.toContain("blog-related-docs-unavailable");
+    // Related-docs chrome removed; concept/docs remain as in-prose links.
+    expect(html).not.toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain("Related reference pages");
+    expect(html).toContain('href="/docs/concepts/harness"');
     expect(html).not.toContain("Give the compact version first");
     expect(html).not.toContain("Created from the blog-post MDX template");
+    expect(html).toContain('data-testid="blog-next-post"');
+    expect(html).toContain('href="/blog/bottlenecks"');
   });
 });
