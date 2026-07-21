@@ -49,7 +49,7 @@ export function SchemaRefLink({
       <a
         aria-label={`${kindLabel}: ${display.label}`}
         className={cn(
-          "inline-flex max-w-full flex-wrap items-baseline gap-1 font-mono text-primary text-xs underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "inline-flex max-w-full flex-wrap items-baseline gap-1 font-mono text-secondary text-xs underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           className,
         )}
         data-schema-ref-kind={display.kind}
