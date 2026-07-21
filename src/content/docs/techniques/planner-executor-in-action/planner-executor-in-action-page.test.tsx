@@ -144,6 +144,24 @@ describe("planner-executor-in-action technique page", () => {
       /Larger planner \/ smaller executor/i,
     );
 
+    expect(
+      screen.getByRole("heading", { name: "What We Recommend" }),
+    ).toBeTruthy();
+    expect(document.getElementById("recommendation")).toBeTruthy();
+    expect(loadedPage.messages.sections?.recommendation?.title).toBe(
+      "What We Recommend",
+    );
+    expect(document.body.textContent ?? "").toMatch(
+      /We think you should assign a larger planner model and a smaller executor model/i,
+    );
+    expect(loadedPage.messages.links?.plannerExecutor).toBe("Planner-Executor");
+    const plannerExecutorLink = screen.getByRole("link", {
+      name: "Planner-Executor",
+    });
+    expect(plannerExecutorLink.getAttribute("href")).toBe(
+      "/docs/techniques/planner-executor",
+    );
+
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
     expect(document.getElementById("related")).toBeNull();

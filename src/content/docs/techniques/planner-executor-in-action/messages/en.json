@@ -17,6 +17,10 @@
     "compareChart": {
       "title": "Compare Single-Model And Split Cost",
       "body": "Compare one shared model priced for all planner and executor tokens against a split where a larger planner model handles planning tokens and a smaller executor model handles execution tokens. Focus follows the split series so you can see when the multi-model mapping lowers total USD for the same work shape."
+    },
+    "recommendation": {
+      "title": "What We Recommend",
+      "body": "We think you should assign a larger planner model and a smaller executor model when planning needs heavier judgment than routine execution and the cost or quality gains outweigh the extra model wiring. Keep one shared model when the work shape is uniform or the split does not pay for itself. Read the planner-executor technique for the pattern itself—roles, slices, and parallel lanes—before you change model mappings."
     }
   },
   "links": {
@@ -31,6 +35,7 @@
     "compareChartCategoryTotal": "Total USD",
     "compareChartSingleModelLabel": "Single shared model",
     "compareChartSplitLabel": "Larger planner / smaller executor",
-    "compareChartYLabel": "USD"
+    "compareChartYLabel": "USD",
+    "plannerExecutor": "Planner-Executor"
   }
 }
