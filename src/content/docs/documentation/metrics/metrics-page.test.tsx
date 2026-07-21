@@ -137,9 +137,11 @@ describe("metrics documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const statusReadSection = document.getElementById("status-read");
     expect(statusReadSection?.textContent).toMatch(
@@ -188,40 +190,6 @@ describe("metrics documentation page", () => {
     expect(limitsSection?.textContent).toMatch(/not Model Atlas/i);
     expect(limitsSection?.textContent).toMatch(/not bottleneck diagnosis/i);
     expect(limitsSection?.textContent).toMatch(/not SPC control-chart/i);
-
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection?.textContent).toMatch(/factory-session/i);
-    expect(relatedSection?.textContent).toMatch(/SPC graphs|control-limit/i);
-    expect(relatedSection?.textContent).toMatch(/bottlenecks/i);
-    expect(relatedSection?.textContent).toMatch(/Petri/i);
-    expect(
-      relatedSection?.querySelector('a[href="/docs/concepts/tokens"]'),
-    ).toBeNull();
-    expect(relatedSection?.textContent).toMatch(/Logs|API doc/i);
-    const relatedQueries = within(relatedSection as HTMLElement);
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Factory session" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/sessions");
-    expect(
-      relatedQueries
-        .getByRole("link", {
-          name: "Statistical process control graphs",
-        })
-        .getAttribute("href"),
-    ).toBe("/docs/concepts/statistical-process-control-graphs");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Bottlenecks" })
-        .getAttribute("href"),
-    ).toBe("/docs/concepts/bottlenecks");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Petri / Colored Petri Net (CPN)" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/petri");
-    expect(relatedQueries.queryByRole("link", { name: "Tokens" })).toBeNull();
 
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
   });

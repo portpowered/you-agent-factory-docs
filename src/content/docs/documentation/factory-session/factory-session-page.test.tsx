@@ -120,16 +120,15 @@ describe("factory-session documentation Mode A overview", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
 
       const whatItIsSection = document.getElementById("what-it-is");
       expect(whatItIsSection?.textContent).toMatch(/Factory Session/i);
       expect(whatItIsSection?.textContent).toMatch(/live runtime/i);
 
-      const depthLink = screen.getByRole("link", {
-        name: "Factory Sessions reference",
-      });
-      expect(depthLink.getAttribute("href")).toBe("/docs/factories/sessions");
+      const limitsSection = document.getElementById("limits-and-assumptions");
+      expect(limitsSection?.textContent).toMatch(/Factory Sessions reference/i);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

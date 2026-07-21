@@ -9,7 +9,7 @@
  * within the ordinary page-owned + locale-shipping surface for this lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -181,9 +181,11 @@ describe("troubleshooting documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     expect(document.body.textContent).toMatch(/you: command not found/i);
     expect(document.body.textContent).toMatch(/you init --executor claude/i);
@@ -257,27 +259,6 @@ describe("troubleshooting documentation page", () => {
     expect(cursorGuideLinks[0]?.getAttribute("href")).toBe(
       "/docs/guides/cursor-dynamic-workflows",
     );
-
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection).toBeTruthy();
-    const relatedQueries = within(relatedSection as HTMLElement);
-    expect(
-      relatedQueries
-        .getAllByRole("link", { name: "FAQ" })
-        .some(
-          (link) => link.getAttribute("href") === "/docs/documentation/faq",
-        ),
-    ).toBe(true);
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Install" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/install");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Getting Started" })
-        .getAttribute("href"),
-    ).toBe("/docs/guides/getting-started");
   });
 
   test("loads ja locale messages with the same section structure", async () => {

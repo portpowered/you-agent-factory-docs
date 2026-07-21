@@ -15,13 +15,9 @@ aliases:
 updatedAt: "2026-07-11"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
@@ -119,31 +115,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <T k="links.siblingDiscoveryIntro" />
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/workers",
-        labelKey: "links.workersDocs",
-      },
-      {
-        href: "/docs/documentation/resources",
-        labelKey: "links.resourcesDocs",
-      },
-      {
-        href: "/docs/documentation/troubleshooting",
-        labelKey: "links.troubleshootingDocs",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.throttling-and-limits" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.throttling-and-limits" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.throttling-and-limits" />
 </Section>

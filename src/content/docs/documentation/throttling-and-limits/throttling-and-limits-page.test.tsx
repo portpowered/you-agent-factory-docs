@@ -8,7 +8,7 @@
  * page-owned + locale-shipping surface for this lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -135,7 +135,8 @@ describe("throttling-and-limits documentation page", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
 
       expect(document.body.textContent).toMatch(/Configured resource capacity/);
       expect(document.body.textContent).toMatch(/Provider limits/);
@@ -152,25 +153,6 @@ describe("throttling-and-limits documentation page", () => {
         /does not invent an exponential backoff/i,
       );
       expect(document.body.textContent).toMatch(/not one global throttle/i);
-
-      const relatedSection = document.getElementById("related");
-      expect(relatedSection).toBeTruthy();
-      const relatedQueries = within(relatedSection as HTMLElement);
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "Workers" })
-          .getAttribute("href"),
-      ).toBe("/docs/workers");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "Resources" })
-          .getAttribute("href"),
-      ).toBe("/docs/documentation/resources");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "Troubleshooting" })
-          .getAttribute("href"),
-      ).toBe("/docs/documentation/troubleshooting");
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

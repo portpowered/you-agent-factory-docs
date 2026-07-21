@@ -126,17 +126,16 @@ describe("dynamic-workflows documentation Mode A overview", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
 
       const whatItIsSection = document.getElementById("what-it-is");
       expect(whatItIsSection?.textContent).toMatch(/JavaScript/i);
       expect(whatItIsSection?.textContent).toMatch(/Factory Session/i);
 
-      const depthLink = screen.getByRole("link", {
-        name: "Dynamic Workflows reference",
-      });
-      expect(depthLink.getAttribute("href")).toBe(
-        "/docs/factories/dynamic-workflows",
+      const limitsSection = document.getElementById("limits-and-assumptions");
+      expect(limitsSection?.textContent).toMatch(
+        /Dynamic Workflows reference/i,
       );
     },
     PAGE_RENDER_TIMEOUT_MS,

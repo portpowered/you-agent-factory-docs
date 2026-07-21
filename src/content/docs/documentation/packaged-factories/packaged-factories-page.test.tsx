@@ -127,22 +127,16 @@ describe("packaged-factories documentation Mode A overview", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
 
       const whatItIsSection = document.getElementById("what-it-is");
       expect(whatItIsSection?.textContent).toMatch(/@you\/*/i);
       expect(whatItIsSection?.textContent).toMatch(/Packaged documents/i);
 
-      const depthLink = screen.getByRole("link", {
-        name: "Packaged Factories reference",
-      });
-      expect(depthLink.getAttribute("href")).toBe("/docs/factories/packaged");
-
-      const packagedDocumentsLink = screen.getByRole("link", {
-        name: "Packaged documents",
-      });
-      expect(packagedDocumentsLink.getAttribute("href")).toBe(
-        "/docs/documentation/packaged-documents",
+      const limitsSection = document.getElementById("limits-and-assumptions");
+      expect(limitsSection?.textContent).toMatch(
+        /Packaged Factories reference/i,
       );
     },
     PAGE_RENDER_TIMEOUT_MS,

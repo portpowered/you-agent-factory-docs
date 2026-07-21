@@ -8,7 +8,7 @@
  * within the ordinary page-owned + locale-shipping surface for this lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -99,9 +99,11 @@ describe("logs documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     expect(document.body.textContent).toMatch(/~\/\.you-agent-factory\/logs/);
 
@@ -167,25 +169,6 @@ describe("logs documentation page", () => {
     expect(limitsSection?.textContent).toMatch(
       /not the OpenAPI or API reference/i,
     );
-
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection).toBeTruthy();
-    const relatedQueries = within(relatedSection as HTMLElement);
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "CLI docs" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/cli");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Factory Session" })
-        .getAttribute("href"),
-    ).toBe("/docs/factories/sessions");
-    expect(
-      relatedQueries
-        .getByRole("link", { name: "Replays / Records" })
-        .getAttribute("href"),
-    ).toBe("/docs/documentation/replays-records");
   });
 
   test("loads ja locale messages with the same section structure", async () => {

@@ -14,13 +14,9 @@ aliases:
 updatedAt: "2026-07-21"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-
 
 <Section id="what-it-is" titleKey="sections.whatItIs.title">
   <T k="sections.whatItIs.body" />
@@ -38,30 +34,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/factories/dynamic-workflows",
-        labelKey: "links.dynamicWorkflowsDepth",
-      },
-      {
-        href: "/docs/documentation/factory-session",
-        labelKey: "links.factorySessionsOverview",
-      },
-      {
-        href: "/docs/guides/cursor-dynamic-workflows",
-        labelKey: "links.cursorDynamicWorkflowsGuide",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.dynamic-workflows" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.dynamic-workflows" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.dynamic-workflows" />
 </Section>

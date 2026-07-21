@@ -47,6 +47,29 @@ fails when chrome is absent. Existing published MDX may still mount RelatedDocs
 until PF-L-strip removes it by collection; that remaining chrome is not a
 contracts-lane failure. FAQ-only strip remains PF-D2.
 
+### Documentation collection PF-L-strip (published MDX, minus FAQ)
+
+For published non-FAQ documentation under
+`src/content/docs/documentation/**/page.mdx` (except `documentation/faq/**`):
+
+- Strip trailing `Section id="related"` / `id="references"` footer chrome and
+  drop unused `RelatedDocs` / References `CitationList` / Related-only
+  `LocalizedLinkList` imports.
+- Keep Tags (`TagPillList`) and teaching-section `LocalizedLinkList` mounts
+  (for example limits-and-assumptions links on what-is-you-agent-factory, or
+  per-scenario lists on troubleshooting).
+- Leave `documentation/faq/**` unchanged — FAQ Related chrome stays for
+  `#190` / PF-D2.
+- Prefer stop-mounting over rewriting shared `RelatedDocs` behavior; do not
+  invent a replacement related surface.
+- Colocated documentation page / discoverability tests that required Related To
+  / References headings or `#related` curated links must assert absence (or
+  drop those asserts) in the same lane as the MDX strip so CI stays green;
+  keep teaching-body link asserts.
+- Locale footer title keys (`sections.related` / `sections.references`) and
+  Related-only message link labels are follow-on strip stories; MDX strip alone
+  removes the chrome.
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a

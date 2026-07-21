@@ -74,9 +74,11 @@ describe("mcp documentation page", () => {
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
       expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
@@ -186,7 +188,7 @@ describe("mcp documentation page", () => {
   );
 
   test(
-    "shows limits and sibling discovery links without intro chrome",
+    "shows limits without intro chrome",
     async () => {
       const loadedPage = await loadLocalDocsPage({
         section: "documentation",
@@ -229,7 +231,6 @@ describe("mcp documentation page", () => {
       expect(document.getElementById("key-concepts")).toBeNull();
 
       const limitsSection = document.getElementById("limits-and-assumptions");
-      const relatedSection = document.getElementById("related");
       const integrateSection = document.getElementById("how-to-integrate");
 
       expect(integrateSection?.textContent).toMatch(
@@ -239,18 +240,8 @@ describe("mcp documentation page", () => {
       expect(limitsSection?.textContent).toMatch(/HTTP|SSE/i);
       expect(limitsSection?.textContent).toMatch(/Cursor/i);
       expect(limitsSection?.textContent).toMatch(/dynamic-workflows/i);
-
-      expect(relatedSection).toBeTruthy();
-      const relatedLinks = Array.from(
-        relatedSection?.querySelectorAll("a[href]") ?? [],
-      );
-      const hrefs = relatedLinks.map((node) => node.getAttribute("href") ?? "");
-      expect(hrefs).toContain("/docs/guides/cursor-dynamic-workflows");
-      expect(hrefs).toContain("/docs/documentation/cli");
-      expect(hrefs).toContain("/docs/concepts/tool");
-      expect(relatedSection?.textContent).toMatch(/Cursor dynamic workflows/i);
-      expect(relatedSection?.textContent).toMatch(/CLI docs/i);
-      expect(relatedSection?.textContent).toMatch(/Tool concept/i);
+      expect(document.getElementById("related")).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

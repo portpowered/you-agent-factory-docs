@@ -15,13 +15,10 @@ aliases:
 updatedAt: "2026-07-11"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-
 
 <Section id="command-not-found" titleKey="sections.commandNotFound.title">
   <T k="sections.commandNotFound.body" />
@@ -165,38 +162,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/documentation/faq",
-        labelKey: "links.faq",
-      },
-      {
-        href: "/docs/documentation/install",
-        labelKey: "links.installDocs",
-      },
-      {
-        href: "/docs/guides/getting-started",
-        labelKey: "links.gettingStarted",
-      },
-      {
-        href: "/docs/factories/configuration",
-        labelKey: "links.configurationDocs",
-      },
-      {
-        href: "/docs/documentation/mcp",
-        labelKey: "links.mcpDocs",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.troubleshooting" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.troubleshooting" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.troubleshooting" />
 </Section>

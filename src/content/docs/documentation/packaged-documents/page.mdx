@@ -14,13 +14,9 @@ aliases:
 updatedAt: "2026-07-11"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
@@ -45,34 +41,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/factories/configuration",
-        labelKey: "links.configurationDocs",
-      },
-      {
-        href: "/docs/factories/dynamic-workflows",
-        labelKey: "links.dynamicWorkflowsDocs",
-      },
-      {
-        href: "/docs/documentation/cli",
-        labelKey: "links.cliDocs",
-      },
-      {
-        href: "/docs/factories/packaged",
-        labelKey: "links.packagedFactoriesDocs",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.packaged-documents" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.packaged-documents" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.packaged-documents" />
 </Section>
