@@ -18,23 +18,8 @@
       "title": "Common Confusions",
       "body": "This concept page is not the MCP program-documentation page. The documentation page covers host JSON, serve modes, and Factory Session tool names in detail; this page defines the protocol idea. MCP is also not a tool and not tool calling: a tool is a named callable capability, and tool calling is the model selecting and invoking tools during a turn—MCP is how a host exposes those tools from a server. MCP is not the factory runtime itself; you mcp serve is a stdio bridge into Factory Session tools, not a replacement for the factory."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "harnessConcept": "Harness",
-    "toolConcept": "Tool",
-    "skillsConcept": "Skills",
-    "toolCallingConcept": "Tool calling",
-    "mcpDocs": "MCP documentation",
-    "harnessSupportDocs": "Harness support",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows"
   }
 }

@@ -96,6 +96,11 @@ describe("mcp concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     // Prose auto-linking wraps glossary terms in anchors, so prefer section
     // textContent fragments over contiguous getByText sentence matches.
@@ -121,33 +126,6 @@ describe("mcp concept page", () => {
       /not a tool and not tool calling/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const harnessLink = screen.getByRole("link", { name: "Harness" });
-    expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
-    const toolLink = screen.getByRole("link", { name: "Tool" });
-    expect(toolLink.getAttribute("href")).toBe("/docs/concepts/tool");
-    const skillsLink = screen.getByRole("link", { name: "Skills" });
-    expect(skillsLink.getAttribute("href")).toBe("/docs/concepts/skills");
-    const toolCallingLink = screen.getByRole("link", { name: "Tool calling" });
-    expect(toolCallingLink.getAttribute("href")).toBe(
-      "/docs/concepts/tool-calling",
-    );
-    const mcpDocsLink = screen.getByRole("link", {
-      name: "MCP documentation",
-    });
-    expect(mcpDocsLink.getAttribute("href")).toBe("/docs/documentation/mcp");
-    const harnessSupportLink = screen.getByRole("link", {
-      name: "Harness support",
-    });
-    expect(harnessSupportLink.getAttribute("href")).toBe(
-      "/docs/documentation/harness-support",
-    );
-    const cursorGuideLink = screen.getByRole("link", {
-      name: "Cursor dynamic workflows",
-    });
-    expect(cursorGuideLink.getAttribute("href")).toBe(
-      "/docs/guides/cursor-dynamic-workflows",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -189,9 +167,9 @@ describe("mcp concept page", () => {
     expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
       "Common Confusions",
     );
-    expect(ja.messages.links?.harnessConcept).toBe("Harness");
-    expect(zhCN.messages.links?.toolConcept).toBe("Tool");
-    expect(vi.messages.links?.mcpDocs).toBe("MCP documentation");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

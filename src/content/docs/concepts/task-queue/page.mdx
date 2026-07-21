@@ -14,10 +14,6 @@ aliases:
 updatedAt: "2026-07-09"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -42,44 +38,7 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.commonConfusions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <DerivedRelatedDocs
-    registryId="concept.task-queue"
-    groups={[
-      "same-concept-type",
-      "shared-tags",
-      "used-by-models",
-      "curated-related"
-    ]}
-  />
-
-  <RelatedDocs registryId="concept.task-queue" />
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/documentation/submitting-work",
-        labelKey: "links.submittingWork",
-      },
-      {
-        href: "/docs/concepts/checklist",
-        labelKey: "links.checklist",
-      },
-      {
-        href: "/docs/concepts/tokens",
-        labelKey: "links.tokens",
-      },
-      {
-        href: "/docs/techniques/workqueue-executor",
-        labelKey: "links.workqueueExecutor",
-      },
-    ]}
-  />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="concept.task-queue" showDescriptions />
 </Section>
 
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="concept.task-queue" />
-</Section>

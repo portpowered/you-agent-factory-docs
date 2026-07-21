@@ -14,10 +14,6 @@ aliases:
 updatedAt: "2026-07-10"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -42,44 +38,7 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.commonConfusions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <DerivedRelatedDocs
-    registryId="concept.bottlenecks"
-    groups={[
-      "same-concept-type",
-      "shared-tags",
-      "used-by-models",
-      "curated-related"
-    ]}
-  />
-
-  <RelatedDocs registryId="concept.bottlenecks" />
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/blog/bottlenecks",
-        labelKey: "links.blogBottlenecks",
-      },
-      {
-        href: "/docs/concepts/task-queue",
-        labelKey: "links.taskQueueConcept",
-      },
-      {
-        href: "/docs/concepts/statistical-process-control-graphs",
-        labelKey: "links.spcGraphsConcept",
-      },
-      {
-        href: "/docs/concepts/harness",
-        labelKey: "links.harnessConcept",
-      },
-    ]}
-  />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="concept.bottlenecks" showDescriptions />
 </Section>
 
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="concept.bottlenecks" />
-</Section>

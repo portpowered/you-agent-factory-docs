@@ -13,10 +13,6 @@ aliases:
 updatedAt: "2026-07-11"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -37,53 +33,7 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.commonConfusions.body" />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/concepts/tool-calling",
-        labelKey: "links.toolCallingConcept",
-      },
-      {
-        href: "/docs/concepts/mcp",
-        labelKey: "links.mcpConcept",
-      },
-      {
-        href: "/docs/concepts/skills",
-        labelKey: "links.skillsConcept",
-      },
-      {
-        href: "/docs/concepts/harness",
-        labelKey: "links.harnessConcept",
-      },
-      {
-        href: "/docs/documentation/mcp",
-        labelKey: "links.mcpDocs",
-      },
-      {
-        href: "/docs/guides/cursor-dynamic-workflows",
-        labelKey: "links.cursorDynamicWorkflows",
-      },
-    ]}
-  />
-
-  <DerivedRelatedDocs
-    registryId="concept.tool"
-    groups={[
-      "same-concept-type",
-      "shared-tags",
-      "used-by-models",
-      "curated-related"
-    ]}
-  />
-
-  <RelatedDocs registryId="concept.tool" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="concept.tool" showDescriptions />
 </Section>
 
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="concept.tool" />
-</Section>

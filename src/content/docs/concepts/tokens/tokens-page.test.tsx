@@ -95,6 +95,11 @@ describe("tokens concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     // Prose auto-linking wraps glossary terms in anchors, so prefer section
     // textContent fragments over contiguous getByText sentence matches.
@@ -124,25 +129,6 @@ describe("tokens concept page", () => {
       /Design-system or UI tokens/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const thinkingLink = screen.getByRole("link", { name: "Thinking" });
-    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
-    const petriLink = screen.getByRole("link", { name: "Petri / CPN" });
-    expect(petriLink.getAttribute("href")).toBe("/docs/documentation/petri");
-    const configurationLink = screen.getByRole("link", {
-      name: "Configuration",
-    });
-    expect(configurationLink.getAttribute("href")).toBe(
-      "/docs/factories/configuration",
-    );
-    const workstationsLink = screen.getByRole("link", { name: "Workstations" });
-    expect(workstationsLink.getAttribute("href")).toBe("/docs/workstations");
-    const submittingWorkLink = screen.getByRole("link", {
-      name: "Submitting work",
-    });
-    expect(submittingWorkLink.getAttribute("href")).toBe(
-      "/docs/documentation/submitting-work",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -184,9 +170,9 @@ describe("tokens concept page", () => {
     expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
       "Common Confusions",
     );
-    expect(ja.messages.links?.thinkingConcept).toBe("Thinking");
-    expect(zhCN.messages.links?.petriDocs).toBe("Petri / CPN");
-    expect(vi.messages.links?.configurationDocs).toBe("Configuration");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

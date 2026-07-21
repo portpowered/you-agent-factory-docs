@@ -80,6 +80,11 @@ describe("harness concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     // Prose auto-linking wraps glossary terms in anchors, so prefer section
     // textContent fragments over contiguous getByText sentence matches.
@@ -113,21 +118,6 @@ describe("harness concept page", () => {
       /runner or model provider/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const whatIsLink = screen.getByRole("link", {
-      name: "What is you-agent-factory",
-    });
-    expect(whatIsLink.getAttribute("href")).toBe(
-      "/docs/documentation/what-is-you-agent-factory",
-    );
-    const loopLink = screen.getByRole("link", { name: "Loop concept" });
-    expect(loopLink.getAttribute("href")).toBe("/docs/concepts/loop");
-    const harnessSupportLink = screen.getByRole("link", {
-      name: "Harness support",
-    });
-    expect(harnessSupportLink.getAttribute("href")).toBe(
-      "/docs/documentation/harness-support",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -166,11 +156,15 @@ describe("harness concept page", () => {
     expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
       "Simple Example",
     );
-    expect(ja.messages.links?.whatIsYouAgentFactory).toBe(
-      "What is you-agent-factory",
-    );
-    expect(zhCN.messages.links?.loopConcept).toBe("Loop concept");
-    expect(vi.messages.links?.harnessSupport).toBe("Harness support");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
+    expect(
+      (ja.messages.sections as Record<string, unknown> | undefined)?.related,
+    ).toBeUndefined();
+    expect(
+      (ja.messages.sections as Record<string, unknown> | undefined)?.references,
+    ).toBeUndefined();
 
     render(
       <main>

@@ -105,6 +105,11 @@ describe("tool-calling concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     // Prose auto-linking wraps glossary terms in anchors, so prefer section
     // textContent fragments over contiguous getByText sentence matches.
@@ -128,27 +133,6 @@ describe("tool-calling concept page", () => {
       /Thinking is deliberative reasoning/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const thinkingLink = screen.getByRole("link", { name: "Thinking" });
-    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
-    const tokensLink = screen.getByRole("link", { name: "Tokens" });
-    expect(tokensLink.getAttribute("href")).toBe("/docs/concepts/tokens");
-    const toolLink = screen.getByRole("link", { name: "Tool" });
-    expect(toolLink.getAttribute("href")).toBe("/docs/concepts/tool");
-    const mcpLink = screen.getByRole("link", { name: "MCP" });
-    expect(mcpLink.getAttribute("href")).toBe("/docs/concepts/mcp");
-    const workersLink = screen.getByRole("link", { name: "Workers" });
-    expect(workersLink.getAttribute("href")).toBe("/docs/workers");
-    const harnessSupportLink = screen.getByRole("link", {
-      name: "Harness support",
-    });
-    expect(harnessSupportLink.getAttribute("href")).toBe(
-      "/docs/documentation/harness-support",
-    );
-    const mcpDocsLink = screen.getByRole("link", {
-      name: "MCP documentation",
-    });
-    expect(mcpDocsLink.getAttribute("href")).toBe("/docs/documentation/mcp");
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -190,9 +174,9 @@ describe("tool-calling concept page", () => {
     expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
       "Common Confusions",
     );
-    expect(ja.messages.links?.thinkingConcept).toBe("Thinking");
-    expect(zhCN.messages.links?.toolConcept).toBe("Tool");
-    expect(vi.messages.links?.workersDocs).toBe("Workers");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

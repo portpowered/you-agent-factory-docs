@@ -79,6 +79,11 @@ describe("loop concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
     expect(screen.getAllByText(/factory loop/i).length).toBeGreaterThanOrEqual(
       1,
     );
@@ -86,25 +91,6 @@ describe("loop concept page", () => {
     expect(screen.getByText(/named run under you-agent-factory/i)).toBeTruthy();
     expect(screen.getByText(/not a write-review loop/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const loopsGuideLink = screen.getByRole("link", {
-      name: "Using you-agent-factory for loops",
-    });
-    expect(loopsGuideLink.getAttribute("href")).toBe(
-      "/docs/guides/using-you-agent-factory-for-loops",
-    );
-    const writeReviewLink = screen.getByRole("link", {
-      name: "Write-review loops",
-    });
-    expect(writeReviewLink.getAttribute("href")).toBe(
-      "/docs/guides/write-review-loops",
-    );
-    const gettingStartedLink = screen.getByRole("link", {
-      name: "Getting started",
-    });
-    expect(gettingStartedLink.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {
@@ -134,15 +120,9 @@ describe("loop concept page", () => {
     expect(Object.keys(vi.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
-    expect(ja.messages.links?.loopsGuide).toBe(
-      "Using you-agent-factory for loops",
-    );
-    expect(zhCN.messages.links?.loopsGuide).toBe(
-      "Using you-agent-factory for loops",
-    );
-    expect(vi.messages.links?.loopsGuide).toBe(
-      "Using you-agent-factory for loops",
-    );
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
     expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
       "What It Is",
     );

@@ -19,19 +19,8 @@
       "title": "Common Confusions",
       "body": "A factory loop is not a one-shot chat reply that ends when a single answer returns. It is also not a write-review loop, where draft or execute work must pass an explicit review gate before the goal can complete. A programming for or while loop only repeats code in a process; it does not keep a factory session living across agent passes. Cursor-driven dynamic workflows are editor-session automation that may call the factory, not the plain factory-loop format itself."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "loopsGuide": "Using you-agent-factory for loops",
-    "writeReviewLoopsGuide": "Write-review loops",
-    "gettingStarted": "Getting started"
   }
 }

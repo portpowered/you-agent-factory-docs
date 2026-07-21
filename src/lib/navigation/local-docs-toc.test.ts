@@ -18,7 +18,9 @@ describe("local docs page TOC", () => {
       depth: 2,
     });
     expect(page.toc.some((item) => item.url === "#why-it-matters")).toBe(true);
-    expect(page.toc.some((item) => item.title === "References")).toBe(true);
+    expect(page.toc.some((item) => item.title === "Tags")).toBe(true);
+    expect(page.toc.some((item) => item.title === "Related To")).toBe(false);
+    expect(page.toc.some((item) => item.title === "References")).toBe(false);
   });
 
   test("retired Atlas sections are not loadable via local-docs dispatch", () => {

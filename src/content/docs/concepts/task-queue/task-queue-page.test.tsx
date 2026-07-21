@@ -53,26 +53,22 @@ describe("task-queue concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", {
-        name: "Related To",
-      }),
-    ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
 
     const whatItIs = document.getElementById("what-it-is");
     const whyItMatters = document.getElementById("why-it-matters");
     const simpleExample = document.getElementById("simple-example");
     const whereItAppears = document.getElementById("where-it-appears");
     const commonConfusions = document.getElementById("common-confusions");
-    const related = document.getElementById("related");
     expect(whatItIs).toBeTruthy();
     expect(whyItMatters).toBeTruthy();
     expect(simpleExample).toBeTruthy();
     expect(whereItAppears).toBeTruthy();
     expect(commonConfusions).toBeTruthy();
-    expect(related).toBeTruthy();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     expect(whatItIs?.textContent).toMatch(/task queue/i);
     expect(whatItIs?.textContent).toMatch(/backlog of submitted work/i);
@@ -100,19 +96,6 @@ describe("task-queue concept page", () => {
     expect(commonConfusions?.textContent).toMatch(/submitting work/i);
     expect(commonConfusions?.textContent).toMatch(/token/i);
     expect(commonConfusions?.textContent).toMatch(/workqueue-executor/i);
-
-    expect(
-      related?.querySelector('a[href="/docs/documentation/submitting-work"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/concepts/checklist"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/concepts/tokens"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/techniques/workqueue-executor"]'),
-    ).toBeTruthy();
 
     // Teaching copy must be in the document tree (not hover-only).
     expect(whatItIs?.textContent?.trim().length).toBeGreaterThan(40);

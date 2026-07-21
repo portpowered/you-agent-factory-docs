@@ -19,23 +19,8 @@
       "title": "Common Confusions",
       "body": "Compaction is not thinking: thinking is deliberative reasoning inside a harness or model turn, while compaction shrinks retained context so later turns still fit. Compaction is also not tokens—neither LLM cost or context units nor factory work tokens that move submitted work through places. It is not deleting or closing a session; the run continues with a smaller retained window. And it is not a one-off summarize-this-chat tip: compaction is the runtime shrink that keeps long-running factory agent work inside limits."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "tokensConcept": "Tokens concept",
-    "thinkingConcept": "Thinking concept",
-    "harnessConcept": "Harness concept",
-    "loopConcept": "Loop concept",
-    "configurationDocs": "Configuration documentation",
-    "worktreeConcept": "Worktree concept",
-    "harnessSupportDocs": "Harness-support documentation"
   }
 }

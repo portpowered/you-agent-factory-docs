@@ -117,6 +117,47 @@ End-to-end browser proof for the strip lives at
 3571; kill server on exit). Run with
 `bun src/content/docs/guides/assert-guides-related-references-strip-browser.ts`.
 
+### Concepts collection strip (PF-L-strip / repair-docs-strip-related-concepts)
+
+Published concepts pages under `src/content/docs/concepts/**/page.mdx` stop
+mounting trailing Related / References footer chrome:
+
+- Remove `Section id="related"` / `id="references"` and their
+  `RelatedDocs` / `DerivedRelatedDocs` / Related-only `LocalizedLinkList` /
+  References `CitationList` mounts.
+- Keep Tags (`TagPillList`) and teaching-section links (for example
+  `LocalizedLinkList` inside `where-it-appears` on
+  `statistical-process-control-graphs`).
+- Prefer stop-mounting over rewriting shared `RelatedDocs` behavior.
+- Colocated concepts page tests that required Related To / References headings
+  or curated Related-footer links must assert absence (or drop those asserts);
+  do not reintroduce a related surface to keep old link asserts green.
+- Formalize absence on every concepts `*-page.test.tsx` English render proof:
+  `queryByRole("heading", { name: "Related To"|"References" })` null,
+  `#related` / `#references` DOM null, and Tags heading still present.
+  Keep teaching-section link asserts (SPC `where-it-appears`) separate from
+  footer chrome.
+- Tightly coupled a11y smokes under `src/tests/a11y/` that still require
+  Related-footer curated link names (for example `glossary-token.a11y.test.tsx`
+  Configuration / Workstations) must flip to Related/References absence plus
+  teaching-body link proofs, or `make test-reader-facing` / component-coverage
+  fail after the MDX strip.
+- `src/lib/navigation/local-docs-toc.test.ts` uses the loop concept page — after
+  the strip, assert Tags presence and Related To / References TOC absence.
+- After MDX strip, clean owned concepts `messages/*.json`: drop
+  `sections.related` / `sections.references`, remove Related-only `links.*`
+  keys, keep teaching-section `links.*` (SPC `where-it-appears`), and flip
+  colocated locale stub asserts that previously required Related-footer link
+  labels.
+- Browser-verify representative concepts routes with
+  `bun src/content/docs/concepts/assert-concepts-related-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3591 default,
+  Playwright; kill server on exit). Assert Related To / References headings
+  and `#related` / `#references` absent; Tags and teaching section ids still
+  present; on `statistical-process-control-graphs`, teaching-section links
+  (Metrics documentation / Bottlenecks / Tokens) still visible. Prefer
+  `CONCEPTS_RELATED_STRIP_PROBE_BASE_URL` when a server is already warm.
+
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no
 longer mandatorily emit `<RelatedDocs />`, `<DerivedRelatedDocs />`, or a

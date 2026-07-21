@@ -81,6 +81,11 @@ describe("worktree concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const whatItIsSection = document.getElementById("what-it-is");
     expect(whatItIsSection?.textContent ?? "").toMatch(
@@ -119,27 +124,6 @@ describe("worktree concept page", () => {
       /not the factory/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const workstationsLink = screen.getByRole("link", {
-      name: "Workstations",
-    });
-    expect(workstationsLink.getAttribute("href")).toBe("/docs/workstations");
-    const whatIsLink = screen.getByRole("link", {
-      name: "What is you-agent-factory",
-    });
-    expect(whatIsLink.getAttribute("href")).toBe(
-      "/docs/documentation/what-is-you-agent-factory",
-    );
-    const harnessLink = screen.getByRole("link", { name: "Harness concept" });
-    expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
-    const loopLink = screen.getByRole("link", { name: "Loop concept" });
-    expect(loopLink.getAttribute("href")).toBe("/docs/concepts/loop");
-    const harnessSupportLink = screen.getByRole("link", {
-      name: "Harness support",
-    });
-    expect(harnessSupportLink.getAttribute("href")).toBe(
-      "/docs/documentation/harness-support",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -178,9 +162,9 @@ describe("worktree concept page", () => {
     expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
       "Simple Example",
     );
-    expect(ja.messages.links?.workstations).toBe("Workstations");
-    expect(zhCN.messages.links?.harnessConcept).toBe("Harness concept");
-    expect(vi.messages.links?.harnessSupport).toBe("Harness support");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

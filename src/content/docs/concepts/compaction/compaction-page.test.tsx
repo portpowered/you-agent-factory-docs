@@ -81,6 +81,11 @@ describe("compaction concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     // Prose auto-linking wraps glossary terms in anchors, so prefer section
     // textContent fragments over contiguous getByText sentence matches.
@@ -105,21 +110,6 @@ describe("compaction concept page", () => {
     expect(commonConfusionsSection?.textContent ?? "").toMatch(/not thinking/i);
     expect(commonConfusionsSection?.textContent ?? "").toMatch(/not tokens/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const tokensLink = screen.getByRole("link", { name: "Tokens concept" });
-    expect(tokensLink.getAttribute("href")).toBe("/docs/concepts/tokens");
-    const thinkingLink = screen.getByRole("link", { name: "Thinking concept" });
-    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
-    const harnessLink = screen.getByRole("link", { name: "Harness concept" });
-    expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
-    const loopLink = screen.getByRole("link", { name: "Loop concept" });
-    expect(loopLink.getAttribute("href")).toBe("/docs/concepts/loop");
-    const configurationLink = screen.getByRole("link", {
-      name: "Configuration documentation",
-    });
-    expect(configurationLink.getAttribute("href")).toBe(
-      "/docs/factories/configuration",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -158,11 +148,9 @@ describe("compaction concept page", () => {
     expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
       "Simple Example",
     );
-    expect(ja.messages.links?.tokensConcept).toBe("Tokens concept");
-    expect(zhCN.messages.links?.thinkingConcept).toBe("Thinking concept");
-    expect(vi.messages.links?.configurationDocs).toBe(
-      "Configuration documentation",
-    );
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

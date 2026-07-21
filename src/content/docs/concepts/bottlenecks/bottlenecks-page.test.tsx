@@ -57,26 +57,22 @@ describe("bottlenecks concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", {
-        name: "Related To",
-      }),
-    ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
 
     const whatItIs = document.getElementById("what-it-is");
     const whyItMatters = document.getElementById("why-it-matters");
     const simpleExample = document.getElementById("simple-example");
     const whereItAppears = document.getElementById("where-it-appears");
     const commonConfusions = document.getElementById("common-confusions");
-    const related = document.getElementById("related");
     expect(whatItIs).toBeTruthy();
     expect(whyItMatters).toBeTruthy();
     expect(simpleExample).toBeTruthy();
     expect(whereItAppears).toBeTruthy();
     expect(commonConfusions).toBeTruthy();
-    expect(related).toBeTruthy();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     expect(whatItIs?.textContent).toMatch(/factory bottleneck/i);
     expect(whatItIs?.textContent).toMatch(/throughput/i);
@@ -120,24 +116,6 @@ describe("bottlenecks concept page", () => {
     );
     expect(commonConfusions?.textContent).not.toMatch(/on this page/i);
     expect(commonConfusions?.textContent).not.toMatch(/Model Atlas/i);
-
-    const blogLink = screen.getByRole("link", {
-      name: "Bottlenecks blog",
-    });
-    expect(blogLink.getAttribute("href")).toBe("/blog/bottlenecks");
-    expect(
-      screen.getByRole("link", { name: "Task queue" }).getAttribute("href"),
-    ).toBe("/docs/concepts/task-queue");
-    expect(
-      screen
-        .getByRole("link", {
-          name: "Statistical process control graphs",
-        })
-        .getAttribute("href"),
-    ).toBe("/docs/concepts/statistical-process-control-graphs");
-    expect(
-      screen.getByRole("link", { name: "Harness" }).getAttribute("href"),
-    ).toBe("/docs/concepts/harness");
   });
 
   test("loads ja locale with concept section structure", async () => {

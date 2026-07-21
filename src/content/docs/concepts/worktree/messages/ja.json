@@ -18,21 +18,8 @@
       "title": "Common Confusions",
       "body": "A worktree is not a git branch. A branch is a pointer along history; a worktree is a separate checkout of files where work actually happens. A worktree is also not a working-directory config field alone—that field may name a path, but the worktree is the isolated tree itself. It is not a workstation (a step or prompt unit in factory config) and not the factory (the workflow system that coordinates runs)."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "workstations": "Workstations",
-    "whatIsYouAgentFactory": "What is you-agent-factory",
-    "harnessConcept": "Harness concept",
-    "loopConcept": "Loop concept",
-    "harnessSupport": "Harness support"
   }
 }

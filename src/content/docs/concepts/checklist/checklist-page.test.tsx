@@ -88,6 +88,11 @@ describe("checklist concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
     expect(
       screen.getAllByText(/live outcomes and workstream board/i).length,
     ).toBeGreaterThanOrEqual(1);
@@ -99,11 +104,6 @@ describe("checklist concept page", () => {
       document.getElementById("common-confusions");
     expect(commonConfusionsSection?.textContent).toMatch(/not a task queue/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
-    const taskQueueLink = screen.getByRole("link", { name: "Task queue" });
-    expect(taskQueueLink.getAttribute("href")).toBe(
-      "/docs/concepts/task-queue",
-    );
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {
@@ -133,9 +133,9 @@ describe("checklist concept page", () => {
     expect(Object.keys(vi.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
-    expect(ja.messages.links?.taskQueue).toBe("Task queue");
-    expect(zhCN.messages.links?.taskQueue).toBe("Task queue");
-    expect(vi.messages.links?.taskQueue).toBe("Task queue");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
     expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
       "What It Is",
     );
