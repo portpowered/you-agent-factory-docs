@@ -64,7 +64,8 @@ export const API_ACCENT_TOKEN_CLASSES = {
 /**
  * Host CSS custom properties the accent roles resolve through.
  * Prefer these when remapping Fumadocs `fd-primary` utilities under the API
- * theme root — never page-only hex/rgb/hsl/oklch.
+ * theme root — never page-only hex/rgb/hsl/oklch. Published remaps live in
+ * `references-api-accents.css` (see `api-accent-chrome.ts`).
  */
 export const API_ACCENT_CSS_VARS = {
   selected: "var(--secondary)",
@@ -154,10 +155,22 @@ export function usesSemanticTokenClasses(className: string): boolean {
 /**
  * True when a class string does not use primary yellow as an accent utility.
  * Used to fence tabs / badges / chips against `text-primary` / `border-primary`
- * regressions (Fumadocs `fd-primary` remaps land in a later story).
+ * regressions. Fumadocs `fd-primary` remaps are owned by
+ * `references-api-accents.css` under {@link API_THEME_ROOT_ATTR}.
  */
 export function avoidsPrimaryAccentClasses(className: string): boolean {
   return !/\b(?:text|border|bg|ring|decoration|outline|fill|stroke)-primary(?:\/|\b)/.test(
     className,
   );
 }
+
+/**
+ * Host CSS custom-property values used when remapping Fumadocs tab/chip/badge
+ * chrome under {@link API_THEME_ROOT_ATTR}. See `api-accent-chrome.ts` and
+ * `references-api-accents.css` for the published remap surface.
+ */
+export const API_ACCENT_CHROME_REMAP = {
+  selectedColor: API_ACCENT_CSS_VARS.selected,
+  quietColor: API_ACCENT_CSS_VARS.quiet,
+  stylesheet: "@/features/docs/styles/references-api-accents.css",
+} as const;

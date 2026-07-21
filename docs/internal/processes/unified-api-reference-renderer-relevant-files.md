@@ -91,12 +91,15 @@ hooks, and SSR cost.
 | `src/components/references/api/api-sse-operation-summary.tsx` | SSE summary panel UI (static-only; no live EventSource) |
 | `src/components/references/api/assert-sse-summaries-browser.ts` | Playwright harness probe: three SSE summaries, roles, events links, no full catalog |
 | `src/components/references/api/theme-tokens.ts` | Production semantic theme token classes, secondary/muted-secondary accent roles for tabs/badges/chips, method-badge tones, CodePanel code-copy policy, dual Shiki options |
+| `src/components/references/api/api-accent-chrome.ts` | Accent chrome selectors + stylesheet path for theme-root tab/badge/chip remaps |
+| `src/components/references/api/api-accent-chrome.test.ts` | Playwright fixture proofs: selected/quiet tabs + MethodLabel → secondary / muted-secondary (not primary yellow) |
 | `src/components/references/api/theme-tokens.test.ts` | Token-class / accent-role / code-copy policy / host contrast proofs |
 | `src/components/references/api/api-theme-code-copy.test.tsx` | CodePanel + copy affordance, method badge tones, theme-root harness wiring |
 | `src/components/references/api/assert-theme-code-copy-browser.ts` | Playwright harness probe: theme root, method badges, CodePanel copy, no playground |
 | `src/components/references/api/a11y-verification.ts` | Phone/tablet/desktop viewports, keyboard focus contract, print policy, reduced-motion scroll helper |
 | `src/components/references/api/api-a11y-print.test.tsx` | Keyboard, overflow, reduced-motion hash focus, and print-readable fact proofs |
 | `src/components/references/api/assert-a11y-print-browser.ts` | Playwright harness probe: overflow × 3 viewports, keyboard, reduced-motion, print, SSE + non-SSE |
+| `src/features/docs/styles/references-api-accents.css` | Theme-root remaps: language tabs / status chips / MethodLabel → secondary + muted-secondary (never primary yellow) |
 | `src/features/docs/styles/references-api-print.css` | Print stylesheet: hide filter/nav/copy chrome; keep method/path/summary + request/response |
 | `src/components/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
 | `src/components/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
@@ -295,6 +298,15 @@ hooks, and SSR cost.
   tone classes, `API_CODE_COPY_POLICY` (site `CodePanel` + fumadocs
   `useCopyButton`, no second widget), and dual Shiki options for later
   `createAPIPage` wiring.
+- Published accent application: `api-accent-chrome.ts` +
+  `src/features/docs/styles/references-api-accents.css` remaps Fumadocs
+  language tabs, response status chips (`[role="tab"]`), and MethodLabel
+  Tailwind greens/blues/yellows under `[data-api-reference-theme]` to
+  `var(--secondary)` / `var(--muted-foreground)`. Same `@layer utilities` +
+  `!important` cascade pattern as TOC chrome. Import from
+  `ApiReferenceProjection` (and the harness) — not `globals.css`. Do **not**
+  blanket-remap every `text-fd-primary` under the theme (schema field names
+  stay). Do **not** patch `node_modules`.
 - Do **not** introduce page-only hex/oklch color systems under
   `src/components/references/api/`. Method meaning stays in badge text;
   tones are semantic chrome only. Keep `API_TOKEN_CLASSES.primary` as a
@@ -306,6 +318,7 @@ hooks, and SSR cost.
   chrome + copy without relying on W01 spike CSS.
 - Browser probe: `bun src/components/references/api/assert-theme-code-copy-browser.ts`
   (unique port default 3539, `localhost`, Playwright via `launchPlaywrightBrowser`).
+  Accent fixture proofs: `bun test src/components/references/api/api-accent-chrome.test.ts`.
 
 ## Responsive, keyboard, reduced-motion, and print
 
