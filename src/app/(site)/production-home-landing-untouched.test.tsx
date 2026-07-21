@@ -54,35 +54,33 @@ function findElementOfType(
 }
 
 /**
- * W-integrate Wave A fill wires LandingPage slots on landing-harness only.
- * Production `/` stays on DocsPage + HomeArticle until Header is also real.
+ * Wave C production route flip: `/` mounts LandingPage via renderHomePage.
+ * HomeArticle remains available for other surfaces but is not the production
+ * home composition.
  */
-describe("production home remains docs home (W-integrate Wave A)", () => {
-  test("renderHomePage still composes HomeArticle and does not mount LandingPage", async () => {
+describe("production home mounts LandingPage (Wave C route flip)", () => {
+  test("renderHomePage mounts LandingPage and does not mount HomeArticle", async () => {
     const tree = (await renderHomePage()) as ReactElement;
     const types = new Set<unknown>();
     collectElementTypes(tree, types);
 
-    expect(types.has(HomeArticle)).toBe(true);
-    expect(types.has(LandingPage)).toBe(false);
+    expect(types.has(LandingPage)).toBe(true);
+    expect(types.has(HomeArticle)).toBe(false);
   });
 
-  test("docs-home HomeArticle markers are present without Wave A landing fills", async () => {
+  test("production home exposes landing markers and omits HomeArticle surface", async () => {
     const tree = (await renderHomePage()) as ReactElement;
-    const homeArticle = findElementOfType(tree, HomeArticle);
-    expect(homeArticle).not.toBeNull();
+    const landingPage = findElementOfType(tree, LandingPage);
+    expect(landingPage).not.toBeNull();
 
-    // HomeArticle renders without DocsLayout; full DocsPage SSR needs layout context.
-    const html = renderToStaticMarkup(homeArticle as ReactElement);
+    const html = renderToStaticMarkup(landingPage as ReactElement);
 
-    expect(html).toContain(
+    expect(html).toContain('data-landing-page=""');
+    expect(html).toContain('data-landing-header=""');
+    expect(html).toContain('data-hero-section=""');
+    expect(html).toContain('data-testid="site-footer"');
+    expect(html).not.toContain(
       `data-content-column-surface="${HOME_ARTICLE_CONTENT_COLUMN_SURFACE}"`,
     );
-    expect(html).not.toContain('data-landing-page=""');
-    expect(html).not.toContain("data-landing-placeholder=");
-    expect(html).not.toContain('data-testid="site-footer"');
-    expect(html).not.toContain('data-whale-bubbles-section=""');
-    expect(html).not.toContain('data-particle-sphere=""');
-    expect(html).not.toContain('data-landing-harness-hero=""');
   });
 });
