@@ -2,10 +2,11 @@
  * Page-owned render proof for documentation/faq.
  * Covers documentation shell, FAQ identity, short-answer Q&A entries with
  * canonical-doc links, Troubleshooting cross-link, non-en locale stub
- * structure, quieter footer chrome (no Limits / Related To / hardcoded Related
- * LocalizedLinkList; curated RelatedDocs + Tags + References retained), and
- * absence of Model Atlas / reader-shortcut / page-meta copy — not route
- * inventories or shared helper contracts.
+ * structure, list-only chrome (no Limits / Related / Tags / References footer
+ * sections or RelatedDocs / TagPillList / CitationList mounts; discovery stays
+ * via in-answer LocalizedLinkList only), and absence of Model Atlas /
+ * reader-shortcut / page-meta copy — not route inventories or shared helper
+ * contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within the ordinary page-owned + locale-shipping surface for this lane.
  */
@@ -139,12 +140,19 @@ describe("faq documentation page", () => {
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
     expect(document.getElementById("limits-and-assumptions")).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
     expect(loadedPage.messages.sections?.related).toBeUndefined();
-    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
-    expect(document.getElementById("tags")).toBeTruthy();
-    expect(document.getElementById("references")).toBeTruthy();
+    expect(loadedPage.messages.sections?.tags).toBeUndefined();
+    expect(loadedPage.messages.sections?.references).toBeUndefined();
+    expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("tags")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
+    expect(
+      document.querySelector('[data-testid="curated-related-docs"]'),
+    ).toBeNull();
 
     expect(document.body.textContent).toMatch(/keeps long-running agent work/i);
     expect(document.body.textContent).toMatch(/OS-specific script/i);
@@ -237,32 +245,6 @@ describe("faq documentation page", () => {
         .getByRole("link", { name: "Troubleshooting" })
         .getAttribute("href"),
     ).toBe("/docs/documentation/troubleshooting");
-
-    const relatedSection = document.getElementById("related");
-    expect(relatedSection).toBeTruthy();
-    const relatedQueries = within(relatedSection as HTMLElement);
-    // Related footer is curated-only (RelatedDocs): unlabeled, no Related To,
-    // and no hardcoded LocalizedLinkList sibling stack under #related.
-    expect(
-      relatedSection?.querySelector('[data-testid="curated-related-docs"]'),
-    ).toBeTruthy();
-    expect(
-      relatedQueries.queryByRole("heading", { name: "Related To" }),
-    ).toBeNull();
-    expect(relatedSection?.querySelector("ul.mt-3.list-disc")).toBeNull();
-    expect(
-      relatedQueries.queryByRole("link", { name: "Troubleshooting" }),
-    ).toBeNull();
-    expect(
-      relatedQueries.queryByRole("link", {
-        name: "What is you-agent-factory",
-      }),
-    ).toBeNull();
-    expect(
-      relatedQueries.queryByRole("link", { name: "Getting Started" }),
-    ).toBeNull();
-    expect(relatedQueries.queryByRole("link", { name: "Install" })).toBeNull();
-    expect(relatedQueries.queryByRole("link", { name: "MCP" })).toBeNull();
   });
 
   test("loads ja locale messages with the same section structure", async () => {
@@ -310,14 +292,16 @@ describe("faq documentation page", () => {
     expect(
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
-    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("tags")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
     expect(
-      document
-        .getElementById("related")
-        ?.querySelector('[data-testid="curated-related-docs"]'),
-    ).toBeTruthy();
+      document.querySelector('[data-testid="curated-related-docs"]'),
+    ).toBeNull();
     expect(document.body.textContent).not.toMatch(/Model Atlas/i);
   });
 });
