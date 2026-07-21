@@ -958,10 +958,17 @@ as the primary display title. Routes/slugs stay unchanged; only display
 titles and owned link labels change. `MODEL_WORKSTATION` displays as
 `Model workstation` (avoid `Model-workstation workstation`).
 
-On `/docs/workers/agent`, `#related` uses `<RelatedDocs />` alone (no
-duplicate hand-built `LocalizedLinkList` of the same destinations beside it).
-JSON examples render through shared `CodePanel` (not bare unstyled
-`<pre><code>`). Do not restore `#tags` / `#references`
+Authored `/docs/workers/**` pages (variant `page.mdx` files and
+`WorkersFamilyIndexContent`) no longer mount trailing Related / References
+footer chrome (`Section id="related"` / `id="references"`, `<RelatedDocs />`,
+Related-only `LocalizedLinkList`, or References `CitationList`). Keep How To
+Use / purpose teaching chrome and teaching-section links (companion /
+schema-reference `LocalizedLinkList`s). Tags footer chrome stays where already
+present (agent has none). Do not restore Related / References footers on
+workers pages; do not rewrite shared `RelatedDocs` to force omission.
+
+On `/docs/workers/agent`, JSON examples render through shared `CodePanel` (not
+bare unstyled `<pre><code>`). Do not restore `#tags` / `#references`
 (`TagPillList` / `CitationList`) footer chrome on that page.
 
 Page-local worker/workstation tests must prove that polished shape
@@ -980,9 +987,8 @@ behaviorally (rendered headings/copy, not file inventories):
   `:scope > header [data-testid="schema-breadcrumb"]` (field-row breadcrumbs
   still use that test id).
 - Assert concrete workstation `messages.title` forms (`… workstation`) and
-  Agent worker RelatedDocs-only related
-  (`section#related [data-testid="curated-related-docs"]`) with no Tags /
-  References headings.
+  workers Related / References footer absence (`Related To` / `References`
+  headings, `section#related`, `curated-related-docs`) after PF-L-strip.
 - Do not edit Factory schema / you-config / mock-workers *reference* page
   tests for this chrome trim unless proving shared opt-in defaults stay
   unchanged.
@@ -999,8 +1005,9 @@ Concepts / Operational Cautions / Limits And Assumptions, no
 `[data-testid="schema-breadcrumb"]` (do **not** treat field-row `$ref →
 /$defs/…` links or `data-schema-definition-pointer` attributes as chrome
 noise), concrete `… workstation` title on the workstation page, and on
-agent: RelatedDocs (`curated-related-docs`),
-`data-agent-worker-example-code`, and absent `#tags` / `#references`.
+agent: no Related / References footer chrome (`Related To` / `References` /
+`curated-related-docs` absent), `data-agent-worker-example-code`, and absent
+`#tags` / `#references`.
 
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`
@@ -1026,12 +1033,11 @@ how-to-use / schema reference / examples when still needed for authoring.
 Keep the page isolation-first: sibling links aid discovery but must not be
 required to define what a worker is.
 
-When B04 siblings (`configuration`, `workstations`, `resources`) are not yet
-published in this worktree, wire reviewer-visible discovery with page-local
-`<LocalizedLinkList>` and planned hrefs under `#how-to-use` (same pattern as
-install / what-is). Leave registry `relatedIds` empty until those sibling
-registry records and published pages exist; keep `<RelatedDocs />` in
-`#related` for when curated ids can resolve cleanly.
+Workers pages no longer mount trailing `#related` / `#references` footer
+chrome (PF-L-strip). Prefer teaching-section links (companion / schema-
+reference `LocalizedLinkList` inside How To Use or schema sections) over
+restoring Related footers. Leave registry `relatedIds` alone in the strip
+lane; do not invent a replacement related surface.
 
 ### Documentation Program core intro strip (page-local)
 

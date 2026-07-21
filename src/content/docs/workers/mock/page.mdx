@@ -17,9 +17,7 @@ aliases:
 updatedAt: "2026-07-18"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -59,38 +57,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <MockWorkerExamples />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/workers",
-        labelKey: "links.workersFamilyIndex",
-      },
-      {
-        href: "/docs/workers/mock",
-        labelKey: "links.siblingDocumentationMockWorkers",
-      },
-      {
-        href: "/docs/workers/agent",
-        labelKey: "links.siblingAgentWorker",
-      },
-      {
-        href: "/docs/workstations",
-        labelKey: "links.siblingWorkstations",
-      },
-      {
-        href: "/docs/documentation/resources",
-        labelKey: "links.siblingResources",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.workers-mock" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.workers-mock" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.workers-mock" />
 </Section>

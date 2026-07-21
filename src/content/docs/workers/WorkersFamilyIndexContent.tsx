@@ -47,8 +47,8 @@ const FACTORY_WORKER_SELECTION_ROWS = [
 
 /**
  * Authored `/docs/workers` family index body: purpose lead (opening summary),
- * how-to-use, selection table, shared-field summary, live Worker schema embed,
- * and discovery links.
+ * how-to-use, selection table, shared-field summary, and live Worker schema
+ * embed. Trailing Related footer chrome is intentionally omitted (PF-L-strip).
  */
 export function WorkersFamilyIndexContent() {
   return (
@@ -175,25 +175,6 @@ export function WorkersFamilyIndexContent() {
             {
               href: "/docs/references/factory-schema",
               labelKey: "links.fullFactorySchema",
-            },
-          ]}
-        />
-      </Section>
-
-      <Section id="related" titleKey="sections.related.title">
-        <LocalizedLinkList
-          items={[
-            {
-              href: "/docs/workstations",
-              labelKey: "links.siblingWorkstations",
-            },
-            {
-              href: "/docs/factories/configuration",
-              labelKey: "links.siblingConfiguration",
-            },
-            {
-              href: "/docs/documentation/resources",
-              labelKey: "links.siblingResources",
             },
           ]}
         />

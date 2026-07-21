@@ -17,9 +17,7 @@ aliases:
 updatedAt: "2026-07-18"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -62,38 +60,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <InferenceWorkerExamples />
 </Section>
 
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/workers",
-        labelKey: "links.workersFamilyIndex",
-      },
-      {
-        href: "/docs/workers/agent",
-        labelKey: "links.siblingAgentWorker",
-      },
-      {
-        href: "/docs/workstations",
-        labelKey: "links.siblingWorkstations",
-      },
-      {
-        href: "/docs/documentation/resources",
-        labelKey: "links.siblingResources",
-      },
-      {
-        href: "/docs/concepts/tokens",
-        labelKey: "links.siblingTokens",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.workers-inference" />
-</Section>
-
 <Section id="tags" titleKey="sections.tags.title">
   <TagPillList registryId="documentation.workers-inference" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.workers-inference" />
 </Section>
