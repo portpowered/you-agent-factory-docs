@@ -33,8 +33,8 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 
 | File | Role |
 | --- | --- |
-| `src/app/(site)/page.tsx` / `site-renderers.tsx` `renderHomePage` | Live `/` still serves DocsPage + HomeArticle; W-integrate owns LandingPage swap |
-| `src/app/(site)/production-home-landing-untouched.test.tsx` | Regression: `renderHomePage` must not emit `data-landing-page` / placeholders |
+| `src/app/(site)/page.tsx` / `site-renderers.tsx` `renderHomePage` | Live `/` still serves DocsPage + HomeArticle; do not DocsPage-bypass `/` in Wave A fill while Header remains a placeholder |
+| `src/app/(site)/production-home-landing-untouched.test.tsx` | Regression: `renderHomePage` composes `HomeArticle`, does not mount `LandingPage`, and HTML has docs-home markers without Wave A landing fills (`data-landing-page`, SiteFooter, whale/sphere/hero harness markers) |
 
 ## Patterns
 
@@ -44,8 +44,8 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 - Feature lanes must not import unfinished sibling packages; chassis stubs stay self-contained.
 - Match other `(dev)` harnesses: gate with `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"` → `notFound()`.
 - Worktree browser verify: when `node_modules` lives only in the main checkout, Turbopack may fail (`next` not resolvable / symlink out of root). Prefer `bun ./scripts/run-next.ts dev --webpack -p <unique-port>` for local harness checks; do not leave the server running.
-- Keep production `/` on the current docs home until W-integrate swaps slots. Quality gate for W-skeleton: typecheck + lint + landing-page/harness tests + browser proof that `/` has no `data-landing-page`.
-- W-integrate Wave A fill: compose only public exports (`SiteFooter`, `WhaleBubblesSection`, `ParticleSphere` from components path, optional `Terminal` from `@/features/code`) into LandingPage slots on landing-harness via `composeWaveALandingHarnessSlots()` (returns only `WIRED_WAVE_A_SLOTS`). Map fixture fields at compose time; omit fixture-only extras (`meta.tagline`); map whale `bubbles` → `items` (fallback `WHALE_BUBBLES_FIXTURE_*`); map `cta.installCommand` + distinct carousel `command` strings → Terminal `lines` (omit Terminal when empty). Do not invent footer/content schemas, mount Wave B fixture trees for unwired slots, or flip production `/` while Header remains a placeholder.
+- Keep production `/` on the current docs home until Header+Hero+Footer are all non-placeholder (Header is Wave B). Quality gate for W-integrate Wave A fill: typecheck + lint + landing-harness + production-home regression tests + browser proof that `/` stays docs home and `/landing-harness` shows wired Wave A fills.
+- W-integrate Wave A fill: compose only public exports (`SiteFooter`, `WhaleBubblesSection`, `ParticleSphere` from components path, optional `Terminal` from `@/features/code`) into LandingPage slots on landing-harness via `composeWaveALandingHarnessSlots()` (returns only `WIRED_WAVE_A_SLOTS`). Map fixture fields at compose time; omit fixture-only extras (`meta.tagline`); map whale `bubbles` → `items` (fallback `WHALE_BUBBLES_FIXTURE_*`); map `cta.installCommand` + distinct carousel `command` strings → Terminal `lines` (omit Terminal when empty). Do not invent footer/content schemas, mount Wave B fixture trees for unwired slots, relocate `src/components/home`, rewrite Wave B internals, mix page-formatting/SEO/graph-pages chrome, or flip production `/` while Header remains a placeholder. Reduced-motion remains inside ParticleSphere / WhalePlate — harness wiring must not force animated-only paths.
 - Homepage image sources: prefer `docs/temp/images/`, else walk up from the
   checkout looking for a sibling `images/` directory (worktrees need several
   `..` hops). Stage with `bun ./scripts/stage-homepage-assets.ts`; consumers use
