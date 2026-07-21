@@ -133,3 +133,13 @@ blog (beside comparing agent factories)
   Cross-link soft-wire (`comparing-orchestrators` ↔ `comparing-agent-factories`)
   also **soft-skipped** for the same reason (no blog MDX edits until the
   destination lands; nearest peer remains `comparing-agent-factories`).
+
+### Live-route / a11y smoke + registry verify (W-integrate)
+
+Maintainer verify trail for this stream (detail in
+`docs/internal/processes/teaching-integrate-inventory-crosslinks-relevant-files.md`):
+
+- Wave B teaching customer routes above — live-route / a11y smoke **soft-skipped**
+  (2026-07-21 11:16 UTC): destinations still absent on base branch.
+- Model pricing + orchestrator registries — `make validate-data` **passed**
+  (2026-07-21 11:16 UTC); same registry validation hook runs under `make ci`.

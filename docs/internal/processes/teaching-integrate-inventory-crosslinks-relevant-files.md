@@ -48,6 +48,21 @@ MDX or done inventory rows from in-flight sibling worktrees.
 | `003` planner-executor ↔ in-action | Soft-skipped — destination absent on `origin/main`; no technique MDX edits | 2026-07-21 11:12 UTC |
 | `004` comparing-orchestrators ↔ comparing-agent-factories | Soft-skipped — destination absent on `origin/main`; no blog MDX edits | 2026-07-21 11:11 UTC |
 
+### Live-route / a11y smoke + registry CI pass log
+
+Record observable maintainer outcomes only (route loads; keyboard-reachable
+critical regions; `make validate-data` / CI green). Soft-skip missing Wave B
+customer routes — do not invent browser smoke fiction for unlanded pages.
+
+| Surface | Outcome | UTC check |
+| --- | --- | --- |
+| `/docs/techniques/planner-executor-in-action/` live-route + a11y smoke | Soft-skipped — route absent on `origin/main` / integrate HEAD; no browser verify | 2026-07-21 11:16 UTC |
+| `/blog/comparing-orchestrators/` live-route + a11y smoke | Soft-skipped — route absent on `origin/main` / integrate HEAD; no browser verify | 2026-07-21 11:16 UTC |
+| Model pricing + orchestrator registries (`make validate-data`) | **Passed** — `bun ./scripts/validate-registry.ts` → “Registry validation passed.” (same hook as `make ci`) | 2026-07-21 11:16 UTC |
+
+When a soft-skipped customer route later lands on the base branch, re-run a short
+live-route load + keyboard smoke for that page and append a new row here.
+
 ## Patterns
 
 * Inventory unfinished Wave B siblings as **skipped**, never as invented done rows.
@@ -58,5 +73,8 @@ MDX or done inventory rows from in-flight sibling worktrees.
 * Registry validation stays on existing hooks (`make validate-data` /
   `scripts/validate-registry.ts`); do not invent schemas or rewrite loaders from
   this lane.
+* Live-route / a11y smoke notes belong in this process pass log (and a short
+  inventory pointer): soft-skip missing Wave B customer routes; never invent
+  browser smoke fiction for unlanded pages.
 * Teaching stays site-internal under `src/features/teaching-ui/` + page-local
   composers — no `@you-agent-factory/components` API expansion.
