@@ -87,10 +87,13 @@ describe("packaged-factories documentation Mode A overview", () => {
         /on this page|Model Atlas|reader.?shortcut/i,
       );
 
+      expect(limits).toMatch(/Packaged Factories covers/i);
       expect(limits).toMatch(/not a schema embed/i);
       expect(limits).toMatch(/not Packaged documents/i);
       expect(limits).toMatch(/Packaged Factories reference/i);
-      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      expect(limits).not.toMatch(
+        /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
+      );
 
       expect(loadedPage.messages.links?.packagedFactoriesDepth).toMatch(
         /Packaged Factories reference/i,

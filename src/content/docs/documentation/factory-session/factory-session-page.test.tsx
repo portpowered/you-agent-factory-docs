@@ -80,10 +80,13 @@ describe("factory-session documentation Mode A overview", () => {
         /on this page|Model Atlas|reader.?shortcut/i,
       );
 
+      expect(limits).toMatch(/Factory Sessions covers/i);
       expect(limits).toMatch(/not a CLI flag dump/i);
       expect(limits).toMatch(/not schema or OpenAPI/i);
       expect(limits).toMatch(/Factory Sessions reference/i);
-      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      expect(limits).not.toMatch(
+        /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
+      );
 
       expect(loadedPage.messages.links?.factorySessionsDepth).toMatch(
         /Factory Sessions reference/i,

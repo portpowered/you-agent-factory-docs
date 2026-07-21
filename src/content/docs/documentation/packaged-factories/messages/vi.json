@@ -17,7 +17,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This overview explains what Packaged Factories are and when they matter. It is not a schema embed, not a sync of packaged CLI markdown, not Packaged documents (you docs topics), and not per-factory invocation-signature depth. Discovery, materialization, Factory name identity, and operator commands live on the Packaged Factories reference page."
+      "body": "Packaged Factories covers catalog-backed @you/* built-ins and when they matter. It is not a schema embed, not a sync of packaged CLI markdown, not Packaged documents (you docs topics), and not per-factory invocation-signature depth. Discovery, materialization, Factory name identity, and operator commands live on the Packaged Factories reference page."
     },
     "related": {
       "title": "Related To"

@@ -5,7 +5,7 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory. Instead of Petri graph fields, the factory carries JavaScript orchestrator configuration—source identity, metadata, argsSchema, and related knobs. The live run is still a Factory Session: the same durable runtime object used for every live orchestration. Dynamic workflow is shorthand for that JavaScript-backed session shape, not a separate DynamicWorkflowRun type."
+      "body": "A dynamic workflow is a JavaScript orchestrator-backed (`JAVASCRIPT`) factory. Instead of Petri graph fields, the factory carries JavaScript orchestrator configuration—source identity, metadata, argsSchema, and related knobs. The live run is still a Factory Session: the same durable runtime object used for every live orchestration. Dynamic workflow is shorthand for that JavaScript-backed session shape, not a separate DynamicWorkflowRun type."
     },
     "whenToUse": {
       "title": "When To Use",
@@ -17,7 +17,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This overview explains what Dynamic Workflows are and when they matter. It is not a schema embed, not an OpenAPI or operation catalog, not the Cursor first-loop guide, and not Petri factory.json topology. Orchestrator fragments, invocation signatures, CLI knobs, and API relationship depth live on the Dynamic Workflows reference page."
+      "body": "Dynamic Workflows covers JavaScript orchestrator-backed factories and when they matter. It is not a schema embed, not an OpenAPI or operation catalog, not the Cursor first-loop guide, and not Petri factory.json topology. Orchestrator fragments, invocation signatures, CLI knobs, and API relationship depth live on the Dynamic Workflows reference page."
     },
     "related": {
       "title": "Related To"

@@ -67,7 +67,9 @@ describe("dynamic-workflows documentation Mode A overview", () => {
 
       expect(whatItIs).toMatch(/JavaScript/i);
       expect(whatItIs).toMatch(/orchestrator/i);
+      expect(whatItIs).toMatch(/`JAVASCRIPT`|JAVASCRIPT/i);
       expect(whatItIs).toMatch(/Factory Session/i);
+      expect(whatItIs).not.toMatch(/JavaScript \(JAVASCRIPT\)/i);
       expect(whatItIs).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
@@ -84,10 +86,13 @@ describe("dynamic-workflows documentation Mode A overview", () => {
         /on this page|Model Atlas|reader.?shortcut/i,
       );
 
+      expect(limits).toMatch(/Dynamic Workflows covers/i);
       expect(limits).toMatch(/not a schema embed/i);
       expect(limits).toMatch(/not an OpenAPI/i);
       expect(limits).toMatch(/Dynamic Workflows reference/i);
-      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      expect(limits).not.toMatch(
+        /This (overview|page) (explains|covers|is)|on this page|Model Atlas|reader.?shortcut/i,
+      );
 
       expect(loadedPage.messages.links?.dynamicWorkflowsDepth).toMatch(
         /Dynamic Workflows reference/i,
