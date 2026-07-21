@@ -23,7 +23,8 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 
 | File | Role |
 | --- | --- |
-| `src/app/(dev)/landing-harness/page.tsx` | Production-gated harness (`ENABLE_COMPONENT_EXAMPLES` / `notFound`) rendering default `LandingPage` |
+| `src/app/(dev)/landing-harness/page.tsx` | Production-gated harness (`ENABLE_COMPONENT_EXAMPLES` / `notFound`); Wave A integrate fills wired slots (footer → `SiteFooter`) while unwired slots stay placeholders |
+| `src/app/(dev)/landing-harness/compose-wave-a-slots.tsx` | Thin compose helpers: map `fixtureLandingPageData` onto public Wave A prop contracts (no new schemas); `artSrc` → optional `<img>` ReactNode for SiteFooter |
 | `public/home/` | Reserved homepage asset root (`/home/...` URLs) |
 | `scripts/stage-homepage-assets.ts` | Copy/optimize planner or sibling `images/` sources into `public/home/` (no-op leave-empty when sources absent) |
 
@@ -43,6 +44,7 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 - Match other `(dev)` harnesses: gate with `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"` → `notFound()`.
 - Worktree browser verify: when `node_modules` lives only in the main checkout, Turbopack may fail (`next` not resolvable / symlink out of root). Prefer `bun ./scripts/run-next.ts dev --webpack -p <unique-port>` for local harness checks; do not leave the server running.
 - Keep production `/` on the current docs home until W-integrate swaps slots. Quality gate for W-skeleton: typecheck + lint + landing-page/harness tests + browser proof that `/` has no `data-landing-page`.
+- W-integrate Wave A fill: compose only public exports (`SiteFooter`, later whale/sphere) into LandingPage slots on landing-harness. Map fixture fields at compose time; omit fixture-only extras (`meta.tagline`). Do not invent footer/content schemas or flip production `/` while Header remains a placeholder.
 - Homepage image sources: prefer `docs/temp/images/`, else walk up from the
   checkout looking for a sibling `images/` directory (worktrees need several
   `..` hops). Stage with `bun ./scripts/stage-homepage-assets.ts`; consumers use

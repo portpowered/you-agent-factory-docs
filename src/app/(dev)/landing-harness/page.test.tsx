@@ -33,8 +33,10 @@ afterEach(() => {
   }
 });
 
+const WIRED_WAVE_A_SLOTS = new Set<string>(["footer"]);
+
 describe("LandingHarnessPage", () => {
-  test("renders LandingPage placeholders and theme CSS vars when enabled", async () => {
+  test("renders Wave A footer fill, remaining placeholders, and theme CSS vars", async () => {
     setNodeEnv("development");
     delete process.env.ENABLE_COMPONENT_EXAMPLES;
 
@@ -42,7 +44,18 @@ describe("LandingHarnessPage", () => {
     const html = renderToStaticMarkup(LandingHarnessPage() as ReactElement);
 
     expect(html).toContain('data-landing-page=""');
+    expect(html).toContain('data-testid="site-footer"');
+    expect(html).toContain('data-testid="site-footer-columns"');
+    expect(html).toContain('data-testid="site-footer-meta"');
+    expect(html).toContain("Product");
+    expect(html).toContain("Community");
+    expect(html).toContain("© you-agent-factory");
+    expect(html).not.toContain('data-landing-placeholder="footer"');
+
     for (const slot of LANDING_SLOT_ORDER) {
+      if (WIRED_WAVE_A_SLOTS.has(slot)) {
+        continue;
+      }
       expect(html).toContain(`data-landing-placeholder="${slot}"`);
     }
 

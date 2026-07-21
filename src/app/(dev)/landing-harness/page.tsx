@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 import { LandingPage } from "@/features/landing-page/LandingPage";
+import { composeWaveAFooterSlot } from "./compose-wave-a-slots";
 
 /**
  * Non-production Homepage-2 landing chassis harness.
  *
- * Renders default LandingPage placeholders so reviewers can scroll the full
- * vertical rhythm and confirm theme CSS variables on the root wrapper.
- * Hidden in production unless ENABLE_COMPONENT_EXAMPLES=1.
- * Does not flip production `/` (W-integrate).
+ * Wave A fill (incremental): real SiteFooter in the footer slot; remaining
+ * slots stay labeled placeholders until later integrate stories. Hidden in
+ * production unless ENABLE_COMPONENT_EXAMPLES=1. Does not flip production `/`.
  */
 export default function LandingHarnessPage() {
   if (
@@ -17,5 +17,5 @@ export default function LandingHarnessPage() {
     notFound();
   }
 
-  return <LandingPage />;
+  return <LandingPage footer={composeWaveAFooterSlot()} />;
 }
