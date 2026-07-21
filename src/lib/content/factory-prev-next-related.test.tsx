@@ -46,7 +46,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
   },
   {
     href: "/docs/techniques/ralph",
-    previous: "/docs/techniques/planner-executor",
+    previous: "/docs/techniques/planner-executor-in-action",
     next: "/docs/techniques/worker-adviser",
   },
   {
