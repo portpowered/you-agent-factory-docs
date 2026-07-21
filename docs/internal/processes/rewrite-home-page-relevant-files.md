@@ -85,14 +85,15 @@ Homepage Wave B / integrate should import command presentation from
 
 | File | Role |
 | --- | --- |
+| `src/features/code/index.ts` | Public barrel: re-exports `CodeBlock`, `Terminal`, prop types, and copy-label constants |
 | `src/features/code/CodeBlock.tsx` | Content-first `{ code, title? }` block with `pre`/`code` + named copy (`Copy` / `Copied`) |
 | `src/features/code/CodeBlock.test.tsx` | Clipboard write + accessible-name unit coverage |
 | `src/features/code/Terminal.tsx` | Chromed `{ lines, chips?, variant?: "install" \| "dark" }` shell (yellow install vs dark pill) + named copy of joined lines |
 | `src/features/code/Terminal.test.tsx` | Joined-line clipboard write, accessible-name, chip chrome, and install/dark distinctness |
+| `src/app/(dev)/code-harness/page.tsx` | Gated fixture route: both Terminal variants + CodeBlock examples; `notFound()` in production unless `ENABLE_COMPONENT_EXAMPLES=1` |
 
 Do not couple this package to `src/features/landing-page/**` or production `/`
-while Wave A ships. Public `index.ts` + gated `(dev)/code-harness` land in the
-remaining W-code story.
+while Wave A ships. Wave B / integrate should import from `@/features/code`.
 
 ## Patterns
 
