@@ -16,7 +16,8 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 | `src/features/landing-page/components/LandingHeader.test.tsx` | Fixture labels/hrefs, empty items, optional search presence |
 | `src/features/landing-page/components/FaqPanel.tsx` | Bespoke parchment FAQ list + heading-wrapped disclosure buttons — not docs FAQ chrome |
 | `src/features/landing-page/components/FaqPanel.test.tsx` | Fixture Q/A render, heading/button a11y names, empty items, expand/collapse |
-| `src/features/landing-page/components/CtaBand.tsx` | (story 003) Fogged install CTA band |
+| `src/features/landing-page/components/CtaBand.tsx` | Fogged install CTA band (`headline` / optional `supporting` + `installCommand` / `ctaLabel` + optional `ctaHref`) |
+| `src/features/landing-page/components/CtaBand.test.tsx` | Fixture CTA label/href, fog markers, optional-field omission |
 | `src/features/landing-page/components/LandingFooterArt.tsx` | (story 004) Decorative art node for `SiteFooter` `art` slot |
 | `src/app/(dev)/faq-cta-harness/page.tsx` | (story 005) Gated harness: header → faq → cta → footer art |
 
@@ -43,6 +44,11 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
   chrome package.
 - Question pattern: `<h3><button aria-expanded aria-controls>` with
   `focus-visible:ring-2`; answer lives in a sibling `<section hidden>`.
+- CtaBand fog: default `fogSrc` is `landingHomeAssets.ctaFog` (`/home/cta-fog.png`)
+  plus local mist/haze overlays; primary CTA is `<a>` when `ctaHref` is set,
+  otherwise `<button>`; optional `supporting` / `installCommand` omit cleanly.
+- Fog drift uses `motion-safe:animate-pulse` + `motion-reduce:animate-none` so
+  reduced-motion keeps a static readable band.
 - Harness gating matches other `(dev)` routes: `notFound()` when
   `NODE_ENV === "production"` unless `ENABLE_COMPONENT_EXAMPLES === "1"`.
 - Do not implement carousel, hero portrait/capability/youi, whale/sphere, or
