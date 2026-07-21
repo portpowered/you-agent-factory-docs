@@ -75,7 +75,7 @@ shared map — not per-control hex hacks.
 | --- | --- | --- | --- |
 | surrounding chrome background | `--background` | `#050b10` | search / globe / GitHub rest |
 | primary yellow | `--primary` | `#f5c76f` | hover/active overlay (all); sidebar hover **background** |
-| secondary blue | `--secondary` | `#507f8c` | TOC current rest |
+| secondary blue | `--secondary` | `#507f8c` | TOC current rest; sidebar active wash (`color-mix` 18%) |
 | white | `--foreground` | `#f7f2e8` | sidebar / header text+icons rest |
 | muted white | `--muted-foreground` | `#8aaeb8` | TOC non-current / breadcrumb rest |
 
@@ -106,14 +106,15 @@ shared map — not per-control hex hacks.
   and retargets the TOC thumb `.bg-fd-primary` to secondary blue. Keep
   focus-visible as outline-only so focus does not recolor rest roles.
   Prove with `docs-chrome-toc.test.ts`.
-- Sidebar row surface (story 004): consume
+- Sidebar row surface (story 004 / PF-K repair): consume
   `src/features/docs/styles/docs-chrome-sidebar.ts` + `docs-chrome-sidebar.css`
   (imported from `globals.css`). Rest text = `--docs-chrome-white`; hover =
   wide `--docs-chrome-primary-yellow` **background** (with `px-2` so the fill
-  covers outline/padding — not text-only recolor). Active rows keep a soft
-  primary-yellow wash so current stays distinguishable at rest. Marker class
-  `docs-chrome-sidebar-row` is shared by desktop `#nd-sidebar` tree
-  (`docs-sidebar-tree.tsx`) and mobile drawer (`data-mobile-docs-drawer`).
+  covers outline/padding — not text-only recolor). Active rows use a muted
+  secondary-blue wash (`color-mix` of `--docs-chrome-secondary-blue` at 18%
+  into transparent) so selection stays quiet and distinct from yellow hover.
+  Marker class `docs-chrome-sidebar-row` is shared by desktop `#nd-sidebar`
+  tree (`docs-sidebar-tree.tsx`) and mobile drawer (`data-mobile-docs-drawer`).
   Do not leave `text-fd-muted-foreground` rest or `hover:bg-fd-accent/50` /
   `hover:bg-sidebar-accent` owning these rows. Prove with
   `docs-chrome-sidebar.test.ts`.

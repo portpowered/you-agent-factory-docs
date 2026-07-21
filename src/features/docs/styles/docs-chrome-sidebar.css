@@ -4,7 +4,7 @@
  * Overrides muted-foreground rest text and accent/surface hover fills:
  * - resting text → white (`--docs-chrome-white`)
  * - hover → wide primary yellow background (`--docs-chrome-primary-yellow`)
- * - active → soft primary-yellow wash (distinguishable from rest, not full hover)
+ * - active → muted secondary-blue wash (`--docs-chrome-secondary-blue`)
  *
  * Keep selectors aligned with docs-chrome-sidebar.ts.
  * Live in @layer utilities with !important so they beat Tailwind color /
@@ -21,7 +21,7 @@
   [data-mobile-docs-drawer] .docs-chrome-sidebar-row[data-active="true"] {
     background-color: color-mix(
       in oklch,
-      var(--docs-chrome-primary-yellow) 18%,
+      var(--docs-chrome-secondary-blue) 18%,
       transparent
     ) !important;
     color: var(--docs-chrome-white) !important;

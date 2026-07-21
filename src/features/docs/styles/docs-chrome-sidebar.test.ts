@@ -53,6 +53,9 @@ describe("docs chrome sidebar highlighting", () => {
       "var(--primary-foreground)",
     );
     expect(DOCS_CHROME_SIDEBAR_TOKENS.activeBackground).toContain(
+      "--docs-chrome-secondary-blue",
+    );
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.activeBackground).not.toContain(
       "--docs-chrome-primary-yellow",
     );
     expect(DOCS_CHROME_SIDEBAR_TOKENS.focusRing).toBe("var(--ring)");
@@ -86,12 +89,15 @@ describe("docs chrome sidebar highlighting", () => {
     );
   });
 
-  test("factory-dark proofs match locked chrome white and primary yellow", () => {
+  test("factory-dark proofs match locked chrome white, primary yellow, and secondary blue", () => {
     expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.restText).toBe(
       DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.white,
     );
     expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverBackground).toBe(
       DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.primaryYellow,
+    );
+    expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.activeBackground).toBe(
+      DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.secondaryBlue,
     );
 
     expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.restText.toLowerCase()).toBe(
@@ -103,6 +109,9 @@ describe("docs chrome sidebar highlighting", () => {
     expect(DOCS_CHROME_SIDEBAR_FACTORY_DARK.hoverForeground.toLowerCase()).toBe(
       "#1a2228",
     );
+    expect(
+      DOCS_CHROME_SIDEBAR_FACTORY_DARK.activeBackground.toLowerCase(),
+    ).toBe("#507f8c");
   });
 
   test("rest text, hover background, and active wash paint observable factory-dark colors on DOM", () => {
@@ -124,13 +133,17 @@ describe("docs chrome sidebar highlighting", () => {
     active.href = "/docs/concepts/harness";
     active.setAttribute("data-active", "true");
     active.style.color = tokens.restText;
-    // Soft yellow wash at rest (distinguishable from transparent non-current).
+    // Soft secondary-blue wash at rest (distinguishable from transparent non-current).
     // happy-dom may not retain color-mix(); assert the contract token instead.
     expect(DOCS_CHROME_SIDEBAR_TOKENS.activeBackground).toContain(
-      "--docs-chrome-primary-yellow",
+      "--docs-chrome-secondary-blue",
     );
     expect(DOCS_CHROME_SIDEBAR_TOKENS.activeBackground).toContain("18%");
-    active.style.backgroundColor = "rgba(245, 199, 111, 0.18)";
+    expect(DOCS_CHROME_SIDEBAR_TOKENS.activeBackground).not.toContain(
+      "--docs-chrome-primary-yellow",
+    );
+    // #507f8c at 18% opacity — muted secondary-blue selection tint.
+    active.style.backgroundColor = "rgba(80, 127, 140, 0.18)";
 
     sidebar.append(resting, active);
     document.body.append(sidebar);
@@ -138,7 +151,9 @@ describe("docs chrome sidebar highlighting", () => {
     expect(normalizeHex(resting.style.color)).toBe("#f7f2e8");
     expect(resting.style.backgroundColor).toBe("transparent");
     expect(normalizeHex(active.style.color)).toBe("#f7f2e8");
-    expect(active.style.backgroundColor).toContain("245");
+    expect(active.style.backgroundColor).toContain("80");
+    expect(active.style.backgroundColor).toContain("127");
+    expect(active.style.backgroundColor).toContain("140");
     expect(active.getAttribute("data-active")).toBe("true");
     expect(resting.getAttribute("data-active")).toBeNull();
 

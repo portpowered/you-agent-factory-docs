@@ -1,10 +1,10 @@
 /**
  * Shared docs sidebar row chrome highlighting contract.
  *
- * Locked map (story repair-chrome-highlighting-token-map-004):
+ * Locked map (story repair-sidebar-active-muted-secondary-001):
  * - resting text = white
  * - hover = primary yellow **background** wide enough to cover outline/padding
- * - active/current remains distinguishable from resting non-current rows
+ * - active/current = muted secondary-blue wash (not primary-yellow)
  *
  * Consume `--docs-chrome-*` roles from `docs-chrome-highlighting-tokens.ts`
  * via `docs-chrome-sidebar.css`. Do not leave muted-foreground rest text or
@@ -55,9 +55,9 @@ export const DOCS_CHROME_SIDEBAR_TOKENS = {
   hoverForeground: "var(--primary-foreground)",
   /**
    * Active wash keeps current rows visible at rest without matching full
-   * hover yellow. Mix against surrounding chrome so it stays a tint.
+   * hover yellow. Soft secondary-blue tint against transparent chrome.
    */
-  activeBackground: `color-mix(in oklch, var(${DOCS_CHROME_HIGHLIGHTING_CSS_VARS.primaryYellow}) 18%, transparent)`,
+  activeBackground: `color-mix(in oklch, var(${DOCS_CHROME_HIGHLIGHTING_CSS_VARS.secondaryBlue}) 18%, transparent)`,
   focusRing: "var(--ring)",
 } as const;
 
@@ -66,6 +66,8 @@ export const DOCS_CHROME_SIDEBAR_FACTORY_DARK = {
   restText: DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.white,
   hoverBackground: DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.primaryYellow,
   hoverForeground: FACTORY_DARK_FOUNDATION.accentInk,
+  /** Solid secondary-blue proof; active CSS mixes this at 18% into transparent. */
+  activeBackground: DOCS_CHROME_HIGHLIGHTING_FACTORY_DARK.secondaryBlue,
 } as const;
 
 /** Surface role map entry this chrome surface must follow. */
