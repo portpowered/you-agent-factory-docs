@@ -34,6 +34,7 @@ describe("blog content loader lane isolation", () => {
         "bottlenecks",
         "changelog",
         "comparing-agent-factories",
+        "comparing-orchestrators",
         "cursor-composer-six-billion-tokens",
         "factories-building-factory-docs",
         "lies-damned-lies-evals",
@@ -49,6 +50,9 @@ describe("blog content loader lane isolation", () => {
     await expect(
       getPublishedBlogPostBySlug("comparing-agent-factories"),
     ).resolves.toMatchObject({ slug: "comparing-agent-factories" });
+    await expect(
+      getPublishedBlogPostBySlug("comparing-orchestrators"),
+    ).resolves.toMatchObject({ slug: "comparing-orchestrators" });
     await expect(
       getPublishedBlogPostBySlug("cursor-composer-six-billion-tokens"),
     ).resolves.toMatchObject({ slug: "cursor-composer-six-billion-tokens" });
