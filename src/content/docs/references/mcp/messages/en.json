@@ -1,6 +1,6 @@
 {
-  "title": "You Agent Factory MCP",
-  "description": "Install You Agent Factory MCP and look up published tool input schemas and examples from the package MCP contract without a live Factory host.",
+  "title": "MCP Reference",
+  "description": "Install MCP and look up published tool input schemas and examples from the package MCP contract without a live Factory host.",
   "openingSummary": "Point your MCP host at you mcp serve, then scan the published Factory Session tools from the package contract without a live Factory host.",
   "sections": {
     "howToInstall": {

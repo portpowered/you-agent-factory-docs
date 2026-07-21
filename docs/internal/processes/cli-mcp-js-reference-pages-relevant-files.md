@@ -46,12 +46,13 @@ Do **not**:
 | Path | Role |
 | --- | --- |
 | `src/content/docs/references/mcp/page.mdx` | Published reference page structure (install-first lead, then tool inventory) |
-| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy (`You Agent Factory MCP` title; no What It Covers / Key Concepts) |
+| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy (`MCP Reference` title; no What It Covers / Key Concepts) |
 | `src/content/docs/references/mcp/assets.json` | Empty baseline assets |
 | `src/content/docs/references/mcp/McpInstallDocsLink.tsx` | Page-local Next `Link` to `/docs/documentation/mcp` without using `messages.links` (keeps W11 projection-first `links` undefined) |
 | `src/content/docs/references/mcp/McpReferenceInventory.tsx` | Server mount: load inventory → `McpToolInventory` |
 | `src/content/docs/references/mcp/page-mdx-components.tsx` | Page-local MDX component map |
-| `src/content/docs/references/mcp/mcp-page.test.tsx` | Colocated route/render proof |
+| `src/content/docs/references/mcp/mcp-page.test.tsx` | Colocated route/render proof (title + explorer/nav/search chrome for `MCP Reference`) |
+| `src/content/docs/references/mcp/assert-mcp-reference-display-rename-browser.ts` | Playwright probe: visible `MCP Reference` title, URL `/docs/references/mcp`, legacy product title not live H1/title chrome |
 | `src/content/registry/references/mcp.json` | `reference.mcp` registry record |
 | `src/lib/references/load-mcp-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
 | `src/lib/references/mcp-reference-turbopack.ts` | Webpack-safe MCP export resolution via ancestor `node_modules` + manifest join |
@@ -169,7 +170,7 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   unchanged. Kill the server before exit; prefer a Bun fetch script over shell
   functions when PATH is unreliable in nested functions.
 - MCP polish browser-verify on `/docs/references/mcp` (SSR HTML is enough —
-  inventory mounts server-side): assert `You Agent Factory MCP`,
+  inventory mounts server-side): assert `MCP Reference`,
   `#how-to-install` / `you mcp serve` / `/docs/documentation/mcp`,
   `data-inventory-state="success"`, `data-reference-inventory-filter`,
   `data-mcp-tool-reference` + `data-mcp-input-schema` + `data-mcp-tool-example`;
@@ -177,6 +178,16 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   `data-contract-source-badge` / `Handler registered` / `Object policy` /
   `data-mcp-example-generated-notice`. Smoke sibling CLI + javascript-runtime
   routes still return HTTP 200.
+- MCP display-rename browser-verify (title chrome only):
+  `bun src/content/docs/references/mcp/assert-mcp-reference-display-rename-browser.ts`
+  (webpack `bun run dev`, unique port 3588 default, Playwright; kill server on
+  exit). Assert visible H1/document title `MCP Reference`, path
+  `/docs/references/mcp`, inventory success, and that
+  `You Agent Factory MCP` is not the live H1/document title (alias-only is
+  fine). Prefer `MCP_REFERENCE_RENAME_PROBE_BASE_URL` when a server is warm.
+  Page-owned `mcp-page.test.tsx` also locks explorer page-tree name + search
+  document title to `MCP Reference` while keeping the legacy string as a
+  frontmatter alias.
 - CLI intro-strip browser-verify on `/docs/references/cli`:
   `bun src/content/docs/references/cli/assert-cli-page-intro-strip-browser.ts`
   (webpack `next dev`, unique port 3578 default, Playwright; kill server on
