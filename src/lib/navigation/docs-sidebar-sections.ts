@@ -230,8 +230,8 @@ export function buildDocsSidebarSectionNodes({
     if (isModeAProgramOverviewPendingExplorerMembership(page.docsSlug)) {
       continue;
     }
-    // Deferred-membership pages (for example Program API how-to) stay
-    // published without explorer placement until their IA lane wires them.
+    // Deferred-membership pages stay published without explorer placement
+    // until their IA lane wires them (list empty after PS-300 Interfaces).
     const documentationSlug = page.docsSlug.startsWith("documentation/")
       ? page.docsSlug.slice("documentation/".length)
       : page.docsSlug;

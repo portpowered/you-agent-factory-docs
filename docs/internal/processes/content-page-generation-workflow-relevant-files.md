@@ -820,9 +820,10 @@ those paths only accept collection section refs.
   Mode A capability overviews (`factory-session`, `dynamic-workflows`,
   `packaged-factories`) are Program → Capabilities members; keep
   `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` empty unless a
-  future overview is published before membership. Deferred membership slugs in
-  `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS` stay omitted until their
-  IA lane wires them (PS-300 Interfaces for `api`).
+  future overview is published before membership. Program Interfaces includes
+  `cli`, `mcp`, and `api` (API how-to); keep
+  `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS` empty unless a future page
+  is published before membership.
   `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view.
   `buildDocumentationGroupedNodes` uses membership allowlisting so demotions,
   Mode A pending, and deferred pages do not appear as Program leftovers.
@@ -865,21 +866,23 @@ those paths only accept collection section refs.
   taxonomy names.
 - Packaged CLI reference surfaces: place `packaged-documents` under Program
   Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
-  Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;
-  retired move stubs (`cli-command-index`, `api-doc`, etc.) stay out of the
-  explorer. Wire documentation→documentation discovery with page-local
+  Factories in later IA stories). Place `cli` / `mcp` / `api` under Program
+  Interfaces; retired move stubs (`cli-command-index`, `api-doc`, etc.) stay out
+  of the explorer. Wire documentation→documentation discovery with page-local
   `<LocalizedLinkList>` plus aligned registry `relatedIds`; `<RelatedDocs />`
   alone will not render documentation-kind siblings.
-- Deferred Program documentation explorer membership (page-only lanes such as
-  PS-220 `/docs/documentation/api`): publish the page bundle + registry with
+- Deferred Program documentation explorer membership (page-only lanes that
+  publish before IA membership): publish the page bundle + registry with
   status `published`, add the slug to
   `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS` in
   `src/lib/content/sidebar-grouping.ts`, and keep
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` unchanged until the IA lane
-  (PS-300) wires Interfaces membership. The sidebar adapter omits deferred
+  wires membership. PS-300 wired `/docs/documentation/api` under Program →
+  Interfaces and cleared that deferred list — do not re-add `api` unless
+  membership is intentionally rolled back. The sidebar adapter omits deferred
   slugs from the explorer tree the same way it omits FAQ, W18 move stubs, Mode A
   pending overviews, and PS-100 demotions (membership allowlist). Direct URL,
-  documentation section index, and search still include the page.
+  documentation section index, and search still include deferred pages.
 - Dual-page API how-to proof (`documentation/api` vs `references/api`): colocate
   page-local tests under `src/content/docs/documentation/api/api-page.test.tsx`.
   Assert Mode A how-to identity, default base URL / factory-running / session-flow

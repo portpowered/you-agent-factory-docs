@@ -301,7 +301,7 @@ describe("docs sidebar grouping adapter", () => {
         "dynamic-workflows",
         "packaged-factories",
       ],
-      Interfaces: ["cli", "mcp"],
+      Interfaces: ["cli", "mcp", "api"],
       Operations: [
         "logs",
         "metrics",
@@ -390,6 +390,13 @@ describe("docs sidebar grouping adapter", () => {
         `${overviewSlug} Mode A overview must appear under Capabilities`,
       ).toBe(true);
     }
+
+    expect(
+      byGroup.Interfaces?.some((url) =>
+        url.endsWith("/docs/documentation/api"),
+      ),
+      "api how-to must appear under Interfaces",
+    ).toBe(true);
 
     expect(countPageNodes(nodes)).toBe(
       pages.length + factoriesConfiguringPages.length,

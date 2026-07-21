@@ -149,15 +149,12 @@ export function isModeAProgramOverviewPendingExplorerMembership(
 
 /**
  * Published Program documentation slugs that intentionally omit explorer
- * membership until a dedicated IA lane wires them (PS-300 Interfaces for
- * `api`). Keep these out of {@link FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG}
- * and out of the Program documentation explorer tree so page-only lanes can
- * publish without Lane A map edits. Direct URL, section index, and search
- * still work for these pages.
+ * membership until a dedicated IA lane wires them. PS-300 wired `api` into
+ * Program → Interfaces; keep this list empty unless a future page is published
+ * before membership lands (otherwise it becomes an ungrouped leftover). Direct
+ * URL, section index, and search still work for deferred pages.
  */
-export const DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS = [
-  "api",
-] as const;
+export const DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS = [] as const;
 
 export type DeferredDocumentationExplorerMembershipSlug =
   (typeof DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS)[number];
@@ -209,6 +206,7 @@ export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
   "packaged-factories": { group: "capabilities" },
   cli: { group: "interfaces" },
   mcp: { group: "interfaces" },
+  api: { group: "interfaces" },
   logs: { group: "operations" },
   metrics: { group: "operations" },
   "dashboard-ui-overview": { group: "operations" },

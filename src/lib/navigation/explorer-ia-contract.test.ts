@@ -91,7 +91,7 @@ const STORY_003_DIRECT_TOP_GROUP_PAGES = {
     "dynamic-workflows",
     "packaged-factories",
   ],
-  interfaces: ["cli", "mcp"],
+  interfaces: ["cli", "mcp", "api"],
   operations: ["logs", "metrics", "dashboard-ui-overview"],
 } as const;
 

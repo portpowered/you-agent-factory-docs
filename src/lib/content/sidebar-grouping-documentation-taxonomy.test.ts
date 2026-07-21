@@ -48,6 +48,7 @@ const EXPECTED_MEMBERSHIP = {
   "packaged-factories": { group: "capabilities" },
   cli: { group: "interfaces" },
   mcp: { group: "interfaces" },
+  api: { group: "interfaces" },
   logs: { group: "operations" },
   metrics: { group: "operations" },
   "dashboard-ui-overview": { group: "operations" },
@@ -228,6 +229,17 @@ describe("Program documentation three-level taxonomy", () => {
         MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
       ).not.toContain(overviewSlug);
     }
+
+    expect(membershipSlugs).toContain("api");
+    expect(getDocumentationSidebarMembership("api")).toEqual({
+      group: "interfaces",
+    });
+    expect(publishedSlugs).toContain("api");
+    expect(moveStubSlugSet.has("api")).toBe(false);
+    expect(DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS).not.toContain(
+      "api",
+    );
+    expect(isDeferredDocumentationExplorerMembershipSlug("api")).toBe(false);
 
     for (const deferredSlug of DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS) {
       expect(membershipSlugs).not.toContain(deferredSlug);

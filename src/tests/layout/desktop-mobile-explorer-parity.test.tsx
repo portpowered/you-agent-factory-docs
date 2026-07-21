@@ -35,6 +35,9 @@ const MODE_A_CAPABILITY_OVERVIEW_MEMBERSHIP_SLUGS = [
   "packaged-factories",
 ] as const;
 
+/** Program Interfaces how-to wired into Program → Interfaces (PS-300). */
+const PROGRAM_INTERFACES_API_HOWTO_MEMBERSHIP_SLUG = "api" as const;
+
 /** W18 move stubs that must stay out of Program documentation explorer. */
 const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
   "mock-workers",
@@ -250,6 +253,17 @@ describe("desktop/mobile explorer tree parity", () => {
             `${locale}: Mode A overview ${slug} must appear under Capabilities`,
           ).toBe(true);
         }
+        expect(
+          pageEntriesUnderSeparator(
+            documentation,
+            messages.explorer.documentationGroups.interfaces,
+          ).some((page) =>
+            page.url.includes(
+              `/documentation/${PROGRAM_INTERFACES_API_HOWTO_MEMBERSHIP_SLUG}`,
+            ),
+          ),
+          `${locale}: API how-to must appear under Interfaces`,
+        ).toBe(true);
       }
 
       expect(
