@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import claudeSonnetSeed from "@/content/registry/models/model.anthropic.claude-sonnet.json";
+import gpt4oSeed from "@/content/registry/models/model.openai.gpt-4o.json";
 import {
   type ModelPricingRecord,
   modelPricingRecordSchema,
@@ -89,5 +91,31 @@ describe("modelPricingRecordSchema", () => {
     const { displayName: _displayName, ...withoutDisplayName } = validRecord;
     const result = modelPricingRecordSchema.safeParse(withoutDisplayName);
     expect(result.success).toBe(false);
+  });
+});
+
+describe("committed model pricing seed JSON", () => {
+  test("parses model.openai.gpt-4o seed", () => {
+    const result = modelPricingRecordSchema.safeParse(gpt4oSeed);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.id).toBe("model.openai.gpt-4o");
+      expect(result.data.kind).toBe("model-pricing");
+      expect(result.data.currency).toBe("USD");
+      expect(result.data.inputPricePerMTok).toBeGreaterThanOrEqual(0);
+      expect(result.data.outputPricePerMTok).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  test("parses model.anthropic.claude-sonnet seed", () => {
+    const result = modelPricingRecordSchema.safeParse(claudeSonnetSeed);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.id).toBe("model.anthropic.claude-sonnet");
+      expect(result.data.kind).toBe("model-pricing");
+      expect(result.data.currency).toBe("USD");
+      expect(result.data.inputPricePerMTok).toBeGreaterThanOrEqual(0);
+      expect(result.data.outputPricePerMTok).toBeGreaterThanOrEqual(0);
+    }
   });
 });

@@ -1,0 +1,12 @@
+{
+  "id": "model.openai.gpt-4o",
+  "kind": "model-pricing",
+  "providerId": "provider.openai",
+  "displayName": "GPT-4o",
+  "inputPricePerMTok": 2.5,
+  "outputPricePerMTok": 10,
+  "currency": "USD",
+  "asOf": "2026-07-01",
+  "defaultSummaryKey": "description",
+  "tags": ["openai", "chat"]
+}
