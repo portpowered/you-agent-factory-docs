@@ -54,7 +54,7 @@ const R01_PROGRAM_DOCUMENTATION_PAGES = [
   },
   {
     slug: "throttling-and-limits",
-    group: "operations",
+    group: "limits",
     registryId: "documentation.throttling-and-limits",
     explorerMember: false,
   },
@@ -187,9 +187,27 @@ describe("plan-issues R02 tip reconciliation", () => {
     ]);
     expect(topLevelFolderNames(signature)).not.toContain("Glossary");
     expect(topLevelFolderNames(signature)).not.toContain("Factories");
+    expect(topLevelFolderNames(signature)).not.toContain("Workers");
+    expect(topLevelFolderNames(signature)).not.toContain("Workstations");
     expect(topLevelPageEntries(signature).map((page) => page.url)).toContain(
       DOCS_EXPLORER_TOP_LEVEL_FAQ_URL,
     );
+
+    const reference = folderSignatureByName(signature, "Reference");
+    expect(reference).toBeTruthy();
+    if (!reference) {
+      throw new Error("expected Reference folder");
+    }
+    expect(
+      reference.children
+        .filter((node) => node.type === "folder")
+        .map((node) => node.name),
+    ).toEqual(["Factories", "Workers", "Workstations"]);
+    expect(
+      pageEntriesInFolder(reference).some((page) =>
+        page.url.endsWith("/docs/documentation/throttling-and-limits"),
+      ),
+    ).toBe(true);
 
     const concepts = folderSignatureByName(signature, "Concepts");
     expect(concepts).toBeTruthy();

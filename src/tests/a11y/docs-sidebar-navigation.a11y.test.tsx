@@ -345,8 +345,10 @@ describe("docs sidebar navigation accessibility", () => {
       "Operational",
       "Additional reference",
       "System feature set",
+      "Packaged factories",
       "Factory Configuration",
       "System Operations",
+      "Additional references",
     ] as const) {
       expect(within(sidebar).queryByText(former)).toBeNull();
     }

@@ -6,9 +6,12 @@
  * R02 story 002 also locks eight Program documentation page membership under
  * declared subgroups and Concepts Skills / MCP / Tool calling / Tokens groups.
  *
- * Story 006 locks the three-level Program documentation contract end-to-end:
- * FAQ stays top-level outside Program documentation, and the former ten-group
- * Basics/Feature support/Functions/… separator order is no longer required.
+ * Story 006 locks the full PS-100 explorer IA end-to-end: locked top-level
+ * order, Program Orientation/Capabilities/Interfaces/Operations with
+ * Configuring secondary, Reference nesting (Contracts/Schemas/Limits +
+ * Factories/Workers/Workstations), Internal architecture / Miscellanea
+ * membership, FAQ last outside Program, and rejection of former Program
+ * separator names (flat ten-group and intermediate System-feature-set era).
  */
 import { describe, expect, test } from "bun:test";
 import {
@@ -133,12 +136,13 @@ const PROGRAM_DOCUMENTATION_DEMOTED_EXPLORER_SLUGS = [
 ] as const;
 
 /**
- * Former flat Program documentation separators (Basics → … → Additional
- * reference). Story 006 proves these are no longer the explorer contract.
+ * Former Program documentation separators rejected by story 006.
+ * Includes the flat Basics→…→Additional-reference era and the intermediate
+ * System-feature-set / Factory-Configuration taxonomy so neither can regress.
  * Keep exact historical spellings (including "Internal architecture" and
- * singular "Additional reference") so regressions to the old IA fail CI.
+ * singular "Additional reference").
  */
-const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
+const FORMER_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Basics",
   "Feature support",
   "Functions",
@@ -149,6 +153,11 @@ const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Operational",
   "Internal architecture",
   "Additional reference",
+  "System feature set",
+  "Packaged factories",
+  "Factory Configuration",
+  "System Operations",
+  "Additional references",
 ] as const;
 
 /** R00 Concepts pages required under declared explorer subgroups. */
@@ -581,10 +590,23 @@ describe("explorer IA exact-order contract", () => {
     }
   });
 
-  test("story 006 locks three-level Program documentation IA with FAQ outside and former ten-group order rejected", async () => {
+  test("story 006 locks Program / Reference / virtual-folder IA with FAQ last and former separators rejected", async () => {
     const messages = await loadUiMessages("en");
     const signature = buildExplorerTreeSignature(
       localizePageTree(source.pageTree, "en", { messages }),
+    );
+
+    expect(topLevelFolderNames(signature)).toEqual([
+      ...DECLARED_TOP_LEVEL_FOLDER_ORDER,
+    ]);
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+    );
+    expect(topLevelFolderNames(signature)).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
     );
 
     const faq = topLevelPageEntries(signature);
@@ -609,12 +631,67 @@ describe("explorer IA exact-order contract", () => {
     expect(separatorNamesInFolder(documentation)).toEqual([
       ...DECLARED_DOCUMENTATION_GROUP_ORDER,
     ]);
-    for (const former of FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS) {
+    for (const former of FORMER_PROGRAM_DOCUMENTATION_SEPARATORS) {
       expect(
         separatorNamesInFolder(documentation),
-        `former ten-group separator "${former}" must not be the Program documentation contract`,
+        `former Program separator "${former}" must not be the Program documentation contract`,
       ).not.toContain(former);
     }
+
+    const reference = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    );
+    expect(reference).toBeTruthy();
+    if (!reference) {
+      throw new Error("expected Reference folder");
+    }
+    expect(separatorNamesInFolder(reference)).toEqual([
+      ...Object.values(SIDEBAR_GROUP_LABELS.references),
+    ]);
+    expect(
+      pageEntriesUnderSeparator(
+        reference,
+        SIDEBAR_GROUP_LABELS.references.limits,
+      ).some((page) =>
+        page.url.endsWith("/docs/documentation/throttling-and-limits"),
+      ),
+    ).toBe(true);
+    expect(
+      reference.children
+        .filter((node) => node.type === "folder")
+        .map((node) => node.name),
+    ).toEqual([
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
+    ]);
+
+    const internalArchitecture = folderSignatureByName(
+      signature,
+      "Internal architecture",
+    );
+    expect(internalArchitecture).toBeTruthy();
+    if (!internalArchitecture) {
+      throw new Error("expected Internal architecture folder");
+    }
+    expect(
+      pageEntriesInFolder(internalArchitecture).map((page) => page.url),
+    ).toEqual([
+      "/docs/documentation/architecture-of-system",
+      "/docs/documentation/petri",
+    ]);
+
+    const miscellanea = folderSignatureByName(signature, "Miscellanea");
+    expect(miscellanea).toBeTruthy();
+    if (!miscellanea) {
+      throw new Error("expected Miscellanea folder");
+    }
+    expect(pageEntriesInFolder(miscellanea).map((page) => page.url)).toEqual([
+      "/docs/documentation/troubleshooting",
+      "/docs/documentation/security-trust-boundaries",
+      "/docs/documentation/contributing-to-these-docs",
+    ]);
 
     expect(
       pageEntriesInFolder(documentation).some((page) =>

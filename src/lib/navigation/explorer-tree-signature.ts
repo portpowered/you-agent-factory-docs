@@ -120,8 +120,8 @@ export function pageEntriesInFolder(
 /**
  * Pages listed under a named subgroup separator until the next separator,
  * including pages nested inside secondary folders under that separator.
- * Used to prove declared explorer membership (e.g. mock-workers under
- * Factory Configuration → Workers).
+ * Used to prove declared explorer membership (e.g. resources under
+ * Operations → Configuring).
  */
 export function pageEntriesUnderSeparator(
   folder: Extract<ExplorerNodeSignature, { type: "folder" }>,

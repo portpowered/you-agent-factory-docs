@@ -17,8 +17,8 @@ const REQUIRED_SUBGROUP_LABELS = {
   ],
 } as const;
 
-/** Former flat Program documentation separators rejected by story 006. */
-const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
+/** Former Program documentation separators rejected by story 006. */
+const FORMER_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Basics",
   "Feature support",
   "Functions",
@@ -29,6 +29,11 @@ const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
   "Operational",
   "Internal architecture",
   "Additional reference",
+  "System feature set",
+  "Packaged factories",
+  "Factory Configuration",
+  "System Operations",
+  "Additional references",
 ] as const;
 
 const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
@@ -196,7 +201,7 @@ describe("generated docs page tree", () => {
     expect(separators).toEqual([
       ...REQUIRED_SUBGROUP_LABELS["Program documentation"],
     ]);
-    for (const former of FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS) {
+    for (const former of FORMER_PROGRAM_DOCUMENTATION_SEPARATORS) {
       expect(separators).not.toContain(former);
     }
     expect(

@@ -239,6 +239,11 @@ describe("collection-driven docs sidebar verification", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
+      "System feature set",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Additional references",
     ] as const) {
       expect(getSeparatorLabels(children)).not.toContain(former);
     }

@@ -213,6 +213,11 @@ describe("docs sidebar adapter extraction parity", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
+      "System feature set",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Additional references",
     ] as const) {
       expect(getSeparatorLabels(children)).not.toContain(former);
     }

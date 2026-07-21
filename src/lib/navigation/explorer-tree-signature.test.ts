@@ -42,7 +42,7 @@ describe("explorer-tree-signature", () => {
           page("Tokens", "/docs/concepts/tokens"),
         ]),
         folder("Program documentation", [
-          separator("Basics"),
+          separator("Orientation"),
           page(
             "What is you-agent-factory",
             "/docs/documentation/what-is-you-agent-factory",
@@ -88,21 +88,26 @@ describe("explorer-tree-signature", () => {
       name: "You Agent Factory",
       children: [
         folder("Program documentation", [
-          separator("System feature set"),
-          page("Dynamic workflows", "/docs/documentation/dynamic-workflows"),
-          separator("Factory Configuration"),
-          folder("Workers", [
-            page("Workers", "/docs/documentation/workers"),
-            page("Mock workers", "/docs/documentation/mock-workers"),
-          ]),
-          folder("Resources", [
+          separator("Orientation"),
+          page(
+            "What is you-agent-factory",
+            "/docs/documentation/what-is-you-agent-factory",
+          ),
+          separator("Capabilities"),
+          page("Harness support", "/docs/documentation/harness-support"),
+          separator("Interfaces"),
+          page("CLI", "/docs/documentation/cli"),
+          separator("Operations"),
+          folder("Configuring you-agent-factory", [
             page("Resources", "/docs/documentation/resources"),
+            page("Configuration", "/docs/factories/configuration"),
+            page(
+              "Global Configuration",
+              "/docs/factories/global-configuration",
+            ),
           ]),
-          separator("System Operations"),
-          folder("Observability", [
-            page("Logs", "/docs/documentation/logs"),
-            page("Metrics", "/docs/documentation/metrics"),
-          ]),
+          page("Logs", "/docs/documentation/logs"),
+          page("Metrics", "/docs/documentation/metrics"),
         ]),
       ],
     });
@@ -117,64 +122,64 @@ describe("explorer-tree-signature", () => {
     }
 
     expect(separatorNamesInFolder(documentation)).toEqual([
-      "System feature set",
-      "Factory Configuration",
-      "System Operations",
+      "Orientation",
+      "Capabilities",
+      "Interfaces",
+      "Operations",
     ]);
     expect(
-      secondaryFolderNamesUnderSeparator(
-        documentation,
-        "Factory Configuration",
-      ),
-    ).toEqual(["Workers", "Resources"]);
+      secondaryFolderNamesUnderSeparator(documentation, "Operations"),
+    ).toEqual(["Configuring you-agent-factory"]);
     expect(
-      secondaryFolderNamesUnderSeparator(documentation, "System Operations"),
-    ).toEqual(["Observability"]);
-    expect(
-      secondaryFolderNamesUnderSeparator(documentation, "System feature set"),
+      secondaryFolderNamesUnderSeparator(documentation, "Orientation"),
     ).toEqual([]);
     expect(
-      pageEntriesUnderSeparator(documentation, "Factory Configuration"),
-    ).toEqual([
-      { name: "Workers", url: "/docs/documentation/workers" },
-      { name: "Mock workers", url: "/docs/documentation/mock-workers" },
+      secondaryFolderNamesUnderSeparator(documentation, "Capabilities"),
+    ).toEqual([]);
+    expect(pageEntriesUnderSeparator(documentation, "Operations")).toEqual([
       { name: "Resources", url: "/docs/documentation/resources" },
-    ]);
-    expect(
-      pageEntriesInSecondaryFolderUnderSeparator(
-        documentation,
-        "Factory Configuration",
-        "Workers",
-      ),
-    ).toEqual([
-      { name: "Workers", url: "/docs/documentation/workers" },
-      { name: "Mock workers", url: "/docs/documentation/mock-workers" },
-    ]);
-    expect(
-      pageEntriesInSecondaryFolderUnderSeparator(
-        documentation,
-        "System Operations",
-        "Observability",
-      ),
-    ).toEqual([
+      { name: "Configuration", url: "/docs/factories/configuration" },
+      {
+        name: "Global Configuration",
+        url: "/docs/factories/global-configuration",
+      },
       { name: "Logs", url: "/docs/documentation/logs" },
       { name: "Metrics", url: "/docs/documentation/metrics" },
     ]);
     expect(
       pageEntriesInSecondaryFolderUnderSeparator(
         documentation,
-        "Factory Configuration",
+        "Operations",
+        "Configuring you-agent-factory",
+      ),
+    ).toEqual([
+      { name: "Resources", url: "/docs/documentation/resources" },
+      { name: "Configuration", url: "/docs/factories/configuration" },
+      {
+        name: "Global Configuration",
+        url: "/docs/factories/global-configuration",
+      },
+    ]);
+    expect(
+      pageEntriesInSecondaryFolderUnderSeparator(
+        documentation,
+        "Operations",
         "Missing",
       ),
     ).toEqual([]);
     expect(pageEntriesInFolder(documentation)).toEqual([
       {
-        name: "Dynamic workflows",
-        url: "/docs/documentation/dynamic-workflows",
+        name: "What is you-agent-factory",
+        url: "/docs/documentation/what-is-you-agent-factory",
       },
-      { name: "Workers", url: "/docs/documentation/workers" },
-      { name: "Mock workers", url: "/docs/documentation/mock-workers" },
+      { name: "Harness support", url: "/docs/documentation/harness-support" },
+      { name: "CLI", url: "/docs/documentation/cli" },
       { name: "Resources", url: "/docs/documentation/resources" },
+      { name: "Configuration", url: "/docs/factories/configuration" },
+      {
+        name: "Global Configuration",
+        url: "/docs/factories/global-configuration",
+      },
       { name: "Logs", url: "/docs/documentation/logs" },
       { name: "Metrics", url: "/docs/documentation/metrics" },
     ]);

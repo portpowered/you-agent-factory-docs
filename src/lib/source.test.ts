@@ -346,6 +346,11 @@ describe("docs navigation source", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
+      "System feature set",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Additional references",
     ] as const) {
       expect(separatorNames).not.toContain(former);
     }

@@ -849,6 +849,17 @@ those paths only accept collection section refs.
   fail-closed via `assertExplorerMessages`, and `localizePageTree` remaps them
   through `buildDefaultVirtualFolderLabelLocalizer` (empty virtual folders still
   prune when no locale-shipped pages remain).
+- Explorer IA / taxonomy / folder-order contracts (PS-100 story 006): keep
+  locked expects in `explorer-ia-contract.test.ts`,
+  `sidebar-grouping-documentation-taxonomy.test.ts`, generated page-tree /
+  adapter / collection verification, and `plan-issues-r02-reconciliation` /
+  related r02 suites that assert folder order. Reject former Program separator
+  labels (Basics→Additional reference and System feature set / Factory
+  Configuration / System Operations / Additional references) as absence
+  expects only — never require them. Signature helper unit fixtures in
+  `explorer-tree-signature.test.ts` should use the locked Orientation /
+  Capabilities / Interfaces / Operations + Configuring shape, not retired
+  taxonomy names.
 - Packaged CLI reference surfaces: place `packaged-documents` under Program
   Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
   Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;
