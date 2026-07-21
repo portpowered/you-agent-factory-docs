@@ -166,7 +166,13 @@ at the repository root during implementation batches.
 
 ## Quality Gates
 
-Before opening or merging reconciliation PRs, run from the repository root:
+Before opening or merging reconciliation PRs, run from the repository root.
+Agents and maintainers must use **real** root `Makefile` targets only — do
+**not** invent names such as `ui-build`, `all`, or `links`. Primary shared
+entrypoints: `setup`, `check`, `build`, `ci`, `dev`, `a11y` (also `test`,
+`linkcheck`, `validate-data`). The root `Makefile` `.PHONY` line is the source
+of truth for the full target list; see `README.md` **Quality Gates** and
+`AGENTS.md` **Local Make entrypoints**.
 
 ```sh
 make check      # typecheck + lint
@@ -176,7 +182,5 @@ make linkcheck  # internal docs link validation
 make ci
 ```
 
-Use only real root `Makefile` targets (see `README.md` **Quality Gates**). Do
-not invent names such as `ui-build`, `all`, or `links`. Optional contributor
-notes and GitHub workflow alignment live in
+Optional contributor notes and GitHub workflow alignment live in
 `docs/contributors/CONTRIBUTING.md`.

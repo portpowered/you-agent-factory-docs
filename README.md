@@ -84,7 +84,13 @@ make dev
 
 Local maintainers and GitHub Actions share one Makefile contract (owned by the
 B00 CI/deploy foundation lane — do not edit `Makefile` or `.github/workflows/*`
-from meta-doc rewrite work):
+from meta-doc rewrite work).
+
+Use only **real** Makefile targets. Do **not** invent names such as `ui-build`.
+Primary shared entrypoints: `setup`, `check`, `build`, `ci`, `dev`, `a11y`
+(plus `test`, `linkcheck`, `validate-data`, and the other stages in the table
+below). The root `Makefile` `.PHONY` line is the source of truth for the full
+target list — do not invent a second parallel contract.
 
 | Stage | Command | Role |
 | --- | --- | --- |

@@ -86,11 +86,24 @@ Accurate “former / retired” wording elsewhere remains allowed.
   entrypoint note so agents do not invent it later.
 - Root `Makefile` `.PHONY` / target definitions were not changed by this audit.
 
+## Maintainer entrypoint note (story 003 — applied)
+
+Short primary-entrypoints notes now live where agents/maintainers already read
+instructions (not a second parallel contract):
+
+- `AGENTS.md` — **Local Make entrypoints** (`setup`, `check`, `build`, `ci`,
+  `dev`, `a11y`; forbid inventing `ui-build`; point at root `Makefile`
+  `.PHONY` + README Quality Gates)
+- `README.md` **Quality Gates** — explicit real-targets-only preamble before
+  the stage table
+- `factory/docs/overview.md` **Quality Gates** — same rule + primary list,
+  cross-links README / AGENTS
+
 ## Follow-on work (other PRD stories)
 
 1. ~~Replace false live instructions listed above with real targets.~~ Done in story 002.
-2. Add or tighten a short primary-entrypoints maintainer note (README /
-   AGENTS / factory overview) pointing at the root Makefile.
+2. ~~Add or tighten a short primary-entrypoints maintainer note (README /
+   AGENTS / factory overview) pointing at the root Makefile.~~ Done in story 003.
 3. Opportunistically scrub `docs/temp/**` if instructional `ui-build` reappears.
 4. Confirm lane fences: instruction docs/scripts comments only; no new Make
    targets; no page-chrome / IA / feature-package moves.
