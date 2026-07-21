@@ -136,7 +136,10 @@ describe("throttling-and-limits documentation page", () => {
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
 
       expect(document.body.textContent).toMatch(/Configured resource capacity/);
       expect(document.body.textContent).toMatch(/Provider limits/);

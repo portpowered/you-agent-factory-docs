@@ -87,7 +87,10 @@ describe("api documentation how-to page", () => {
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
@@ -181,7 +184,10 @@ describe("api documentation how-to page", () => {
       );
       expect(catalogLinks.length).toBeGreaterThan(0);
       expect(howToUseSection?.textContent).toMatch(/operations catalog/i);
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
 
       // Dual-page: catalog UI stays on /docs/references/api only.
       expect(

@@ -240,8 +240,10 @@ describe("mcp documentation page", () => {
       expect(limitsSection?.textContent).toMatch(/HTTP|SSE/i);
       expect(limitsSection?.textContent).toMatch(/Cursor/i);
       expect(limitsSection?.textContent).toMatch(/dynamic-workflows/i);
-      expect(document.getElementById("related")).toBeNull();
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

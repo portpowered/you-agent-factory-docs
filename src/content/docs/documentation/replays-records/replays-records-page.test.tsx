@@ -60,7 +60,10 @@ describe("replays-records documentation page", () => {
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
     expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("references")).toBeNull();
 
     const howToUseSection = document.getElementById("how-to-use");
     expect(howToUseSection).toBeTruthy();

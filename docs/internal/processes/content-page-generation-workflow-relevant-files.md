@@ -66,6 +66,13 @@ For published non-FAQ documentation under
   / References headings or `#related` curated links must assert absence (or
   drop those asserts) in the same lane as the MDX strip so CI stays green;
   keep teaching-body link asserts.
+- Formalize absence on every non-FAQ documentation `*-page.test.tsx` English
+  render proof for stripped pages: `queryByRole("heading", { name: "Related
+  To"|"References" })` null, `#related` / `#references` DOM null, and Tags
+  heading present. Keep FAQ page tests on Related presence until `#190` /
+  PF-D2. Pages that had no colocated test (for example cli, resources,
+  what-is-you-agent-factory) get a lean page-owned render proof with the same
+  absence block.
 - After MDX strip, clean owned non-FAQ `messages/*.json`: remove
   `sections.related` / `sections.references` footer titles; drop link / label
   keys used only by stripped Related-footer lists; keep teaching-body link
