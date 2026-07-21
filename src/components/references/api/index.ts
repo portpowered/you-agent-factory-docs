@@ -266,6 +266,8 @@ export {
   isApiSseOperation,
 } from "./sse-operations";
 export {
+  API_ACCENT_CSS_VARS,
+  API_ACCENT_TOKEN_CLASSES,
   API_CODE_COPY_POLICY,
   API_CODE_PANEL_ATTR,
   API_METHOD_BADGE_TONE_CLASSES,
@@ -274,6 +276,7 @@ export {
   API_TOKEN_CLASSES,
   type ApiMethodBadgeToneKey,
   apiMethodBadgeToneClass,
+  avoidsPrimaryAccentClasses,
   usesSemanticTokenClasses,
 } from "./theme-tokens";
 export {

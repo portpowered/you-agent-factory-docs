@@ -90,8 +90,8 @@ hooks, and SSR cost.
 | `src/components/references/api/sse-operation-summary.ts` | Pure hybrid SSE summaries: HTTP transport semantics + `/docs/references/events` catalog links |
 | `src/components/references/api/api-sse-operation-summary.tsx` | SSE summary panel UI (static-only; no live EventSource) |
 | `src/components/references/api/assert-sse-summaries-browser.ts` | Playwright harness probe: three SSE summaries, roles, events links, no full catalog |
-| `src/components/references/api/theme-tokens.ts` | Production semantic theme token classes, method-badge tones, CodePanel code-copy policy, dual Shiki options |
-| `src/components/references/api/theme-tokens.test.ts` | Token-class / code-copy policy / host contrast proofs |
+| `src/components/references/api/theme-tokens.ts` | Production semantic theme token classes, secondary/muted-secondary accent roles for tabs/badges/chips, method-badge tones, CodePanel code-copy policy, dual Shiki options |
+| `src/components/references/api/theme-tokens.test.ts` | Token-class / accent-role / code-copy policy / host contrast proofs |
 | `src/components/references/api/api-theme-code-copy.test.tsx` | CodePanel + copy affordance, method badge tones, theme-root harness wiring |
 | `src/components/references/api/assert-theme-code-copy-browser.ts` | Playwright harness probe: theme root, method badges, CodePanel copy, no playground |
 | `src/components/references/api/a11y-verification.ts` | Phone/tablet/desktop viewports, keyboard focus contract, print policy, reduced-motion scroll helper |
@@ -289,12 +289,17 @@ hooks, and SSR cost.
 ## Theme tokens and code-copy
 
 - Production contract: `theme-tokens.ts` — `API_THEME_ROOT_ATTR`
-  (`data-api-reference-theme`), `API_TOKEN_CLASSES`, method-badge tone classes,
-  `API_CODE_COPY_POLICY` (site `CodePanel` + fumadocs `useCopyButton`, no second
-  widget), and dual Shiki options for later `createAPIPage` wiring.
+  (`data-api-reference-theme`), `API_TOKEN_CLASSES`, `API_ACCENT_TOKEN_CLASSES`
+  (selected → secondary blue, quiet → muted secondary; never primary yellow for
+  tabs/badges/chips), `API_ACCENT_CSS_VARS` for theme-root remaps, method-badge
+  tone classes, `API_CODE_COPY_POLICY` (site `CodePanel` + fumadocs
+  `useCopyButton`, no second widget), and dual Shiki options for later
+  `createAPIPage` wiring.
 - Do **not** introduce page-only hex/oklch color systems under
   `src/components/references/api/`. Method meaning stays in badge text;
-  tones are semantic chrome only.
+  tones are semantic chrome only. Keep `API_TOKEN_CLASSES.primary` as a
+  non-accent host alias only — wire tab/badge/chip accents through
+  `API_ACCENT_TOKEN_CLASSES` / `API_ACCENT_CSS_VARS`.
 - `ApiOperationExamples` marks CodePanel with `data-api-code-panel` and uses
   the shared copy affordance (`data-api-example="copy"`).
 - Harness mounts the theme root marker so browser probes can assert tokenized
