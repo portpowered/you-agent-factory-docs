@@ -85,10 +85,11 @@ describe("blog post page render", () => {
   it("renders the production bottlenecks post with metadata and MDX body content", async () => {
     const page = await renderBlogPostPage("bottlenecks");
     const html = renderToStaticMarkup(page);
+    const title =
+      "Factory bottlenecks: where long-running agent work actually stalls";
 
-    expect(html).toContain(
-      "Factory bottlenecks: where long-running agent work actually stalls",
-    );
+    expect(html).toContain(title);
+    expect(html.match(/<h1\b/g)?.length).toBe(1);
     expect(html).toContain(
       "A listicle comparison of common you-agent-factory limiting stages",
     );
@@ -97,6 +98,9 @@ describe("blog post page render", () => {
     expect(html).toContain('class="sr-only">Authors: </span>');
     expect(html).toContain("Site Team");
     expect(html).toContain("Foundations");
+    expect(html).toContain('aria-label="Tags"');
+    expect(html).not.toContain('data-testid="tag-pill-list"');
+    expect(html).not.toContain(">Tags</h2>");
     expect(html).toContain('data-blog-slug="bottlenecks"');
     expect(html).toContain("Saturated task queue");
     expect(html).toContain("Where one stage caps the run");

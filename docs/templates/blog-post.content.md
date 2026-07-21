@@ -4,10 +4,11 @@ Blog posts may contain raw MDX prose because they are narrative content. Use `bl
 
 ## Recommended Content
 
-* `title`: post title.
+* `title`: post title shown once via renderer `DocsTitle` (do not duplicate with MDX `# <T k="title" />`).
 * `description`: subtitle shown once via renderer `DocsDescription` (do not duplicate with a body Summary block).
 * `contextSentence`: short context line for the post.
 * `takeaway`: optional metadata for search indexing; do not render `## Summary` / `<T k="takeaway" />` in published MDX (duplicates `DocsDescription`).
+* Tags: frontmatter `tags` render once via renderer `BlogPostMeta` (do not add `TagPillList` or a bottom `## Tags` section).
 * `context`: what changed, what was released, what factory workflow shifted, or what confusion this post addresses.
 * `mainIdea`: argument or interpretation.
 * `whyItMatters`: practical implication for readers.

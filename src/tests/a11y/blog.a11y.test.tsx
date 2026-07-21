@@ -111,10 +111,15 @@ describe("blog accessibility", () => {
       expectedH1: REPRESENTATIVE_BLOG_POST_TITLE,
     });
     expect(structure.headingLevels[0]).toBe(1);
+    expect(structure.headingLevels.filter((level) => level === 1)).toEqual([1]);
     expect(structure.headingLevels).toContain(2);
     expect(
       screen.queryByRole("heading", { level: 2, name: "Summary" }),
     ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: "Tags" }),
+    ).toBeNull();
+    expect(screen.queryByTestId("tag-pill-list")).toBeNull();
     expect(
       screen.getByText(
         /A practical comparison of you-agent-factory with custom scripts/,

@@ -12,6 +12,10 @@ describe("bottlenecks blog post", () => {
     const html = renderToStaticMarkup(page);
 
     expect(html).toContain("Factory bottlenecks");
+    expect(html.match(/<h1\b/g)?.length).toBe(1);
+    expect(html).toContain("Foundations");
+    expect(html).not.toContain('data-testid="tag-pill-list"');
+    expect(html).not.toContain(">Tags</h2>");
     expect(html).toContain("Saturated task queue");
     expect(html).toContain("Where one stage caps the run");
     expect(html).toContain("bottlenecks-stage-throughput-chart");

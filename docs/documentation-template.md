@@ -178,6 +178,9 @@ Blog posts should include:
   `BlogRelatedDocs` / Related reference pages chrome on published posts)
 * do not render `## Summary` / `<T k="takeaway" />` chrome that duplicates
   renderer `DocsDescription`; keep optional `takeaway` in messages for search
+* do not render MDX `# <T k="title" />` — renderer `DocsTitle` is the only title
+* do not render `TagPillList` or bottom `## Tags` sections — renderer
+  `BlogPostMeta` is the only tags presentation
 
 Blog posts may use `blog-post.content.md` as an outline, but unlike canonical
 docs pages they may keep narrative prose in the MDX file when localization is

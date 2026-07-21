@@ -112,6 +112,12 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `DocsDescription` (description) once and absence of a Summary heading /
   takeaway body block. Do not edit DocsOpeningSummary / docs-slug-renderer
   opening-summary chrome from blog lanes.
+* Published blog posts keep a single title via renderer `DocsTitle` and a
+  single tags presentation via `BlogPostMeta`. Do not render MDX
+  `# <T k="title" />`, body `TagPillList`, or bottom `## Tags` sections.
+  SSR/page tests should assert exactly one `h1`, absence of
+  `data-testid="tag-pill-list"`, and absence of a `Tags` h2, while still
+  checking frontmatter tag labels from `BlogPostMeta` when tags are present.
 * Historical note: `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve
   related-doc kinds wired through `getRegistryRecordById` (concept, module,
   model, and other tagged kinds in that lookup). Published `documentation.*`

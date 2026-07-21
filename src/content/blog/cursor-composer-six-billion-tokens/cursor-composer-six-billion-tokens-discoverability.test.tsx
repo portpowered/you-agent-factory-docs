@@ -145,7 +145,12 @@ describe("cursor-composer-six-billion-tokens blog discoverability (004)", () => 
     const html = renderToStaticMarkup(page);
 
     expect(html).toContain(BLOG_TITLE);
+    expect(html.match(/<h1\b/g)?.length).toBe(1);
     expect(html).toContain("Why this examination exists");
+    expect(html).toContain("Foundations");
+    expect(html).toContain('aria-label="Tags"');
+    expect(html).not.toContain('data-testid="tag-pill-list"');
+    expect(html).not.toContain(">Tags</h2>");
     expect(html).not.toContain('data-testid="blog-related-docs"');
     expect(html).not.toContain("Related reference pages");
     expect(html).toContain("/docs/concepts/harness");
