@@ -42,7 +42,7 @@ const WIRED_SLOT_SET = new Set<string>([
 ]);
 
 describe("LandingHarnessPage", () => {
-  test("renders wired Wave A fills from fixtures and keeps unwired slots as placeholders", async () => {
+  test("composes Wave A + Wave B fills together and keeps unwired slots as placeholders", async () => {
     setNodeEnv("development");
     delete process.env.ENABLE_COMPONENT_EXAMPLES;
 
@@ -51,7 +51,7 @@ describe("LandingHarnessPage", () => {
 
     expect(html).toContain('data-landing-page=""');
 
-    // Wired footer (SiteFooter) from fixture columns/meta
+    // Wave A: wired footer (SiteFooter) from fixture columns/meta
     expect(html).toContain('data-testid="site-footer"');
     expect(html).toContain('data-testid="site-footer-columns"');
     expect(html).toContain('data-testid="site-footer-meta"');
@@ -64,7 +64,7 @@ describe("LandingHarnessPage", () => {
     expect(html).toContain(fixtureLandingPageData.footer.meta.copyright);
     expect(html).not.toContain('data-landing-placeholder="footer"');
 
-    // Wired whaleBubbles from fixture bubble labels
+    // Wave A: wired whaleBubbles from fixture bubble labels
     expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-whale-plate=""');
     for (const bubble of fixtureLandingPageData.whaleBubbles.bubbles) {
@@ -72,7 +72,7 @@ describe("LandingHarnessPage", () => {
     }
     expect(html).not.toContain('data-landing-placeholder="whaleBubbles"');
 
-    // Wired hero: ParticleSphere + optional Terminal from fixture commands
+    // Wave A: wired hero — ParticleSphere + optional Terminal from fixture commands
     expect(html).toContain('data-landing-harness-hero=""');
     expect(html).toContain('data-particle-sphere=""');
     expect(html).toContain('data-particle-sphere-canvas=""');
@@ -80,7 +80,7 @@ describe("LandingHarnessPage", () => {
     expect(html).toContain(fixtureLandingPageData.cta.installCommand);
     expect(html).not.toContain('data-landing-placeholder="hero"');
 
-    // Wired Wave B carousel (FactoryCarousel) from fixture slides
+    // Wave B: wired carousel (FactoryCarousel) from fixture slides
     expect(html).toContain('data-factory-carousel=""');
     expect(html).not.toContain('data-landing-placeholder="carousel"');
     for (const slide of fixtureLandingPageData.carousel.slides) {
@@ -89,7 +89,7 @@ describe("LandingHarnessPage", () => {
       expect(html).toContain(slide.command);
     }
 
-    // Wired Wave B faq (FaqPanel) from fixture items
+    // Wave B: wired faq (FaqPanel) from fixture items
     expect(html).toContain('data-landing-faq-panel=""');
     expect(html).not.toContain('data-landing-placeholder="faq"');
     for (const item of fixtureLandingPageData.faq.items) {
@@ -97,7 +97,7 @@ describe("LandingHarnessPage", () => {
       expect(html).toContain(item.answer);
     }
 
-    // Wired Wave B cta (CtaBand) from fixture + faq-cta-harness defaults
+    // Wave B: wired cta (CtaBand) from fixture + faq-cta-harness defaults
     expect(html).toContain('data-landing-cta-band=""');
     expect(html).not.toContain('data-landing-placeholder="cta"');
     expect(html).toContain(fixtureLandingPageData.cta.headline);
@@ -105,12 +105,16 @@ describe("LandingHarnessPage", () => {
     expect(html).toContain(fixtureLandingPageData.cta.installCommand);
     expect(html).toContain("Install the CLI");
 
-    // Remaining unwired slots stay labeled placeholders
-    for (const slot of LANDING_SLOT_ORDER) {
-      if (WIRED_SLOT_SET.has(slot)) {
-        continue;
-      }
+    // Remaining unwired slots (header, capability, youi) stay labeled placeholders
+    const remainingPlaceholders = LANDING_SLOT_ORDER.filter(
+      (slot) => !WIRED_SLOT_SET.has(slot),
+    );
+    expect(remainingPlaceholders).toEqual(["header", "capability", "youi"]);
+    for (const slot of remainingPlaceholders) {
       expect(html).toContain(`data-landing-placeholder="${slot}"`);
+    }
+    for (const slot of WIRED_SLOT_SET) {
+      expect(html).not.toContain(`data-landing-placeholder="${slot}"`);
     }
 
     // Unwired fixture content trees are not mounted as filled slots

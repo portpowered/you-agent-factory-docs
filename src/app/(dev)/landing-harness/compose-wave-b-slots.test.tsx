@@ -1,4 +1,5 @@
-import { describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, test } from "bun:test";
+import { cleanup, render, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
@@ -13,7 +14,33 @@ import {
   WIRED_WAVE_B_SLOTS,
 } from "./compose-wave-b-slots";
 
+function mockPrefersReducedMotion(reduce: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: reduce && query.includes("prefers-reduced-motion: reduce"),
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
+const originalMatchMedia = window.matchMedia;
+
 describe("composeWaveBCarouselSlot", () => {
+  afterEach(() => {
+    cleanup();
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: originalMatchMedia,
+    });
+  });
+
   test("maps fixture slides onto FactoryCarousel public slide contract", () => {
     const props = mapFixtureCarouselToFactoryCarouselProps(
       fixtureLandingPageData.carousel,
@@ -63,6 +90,43 @@ describe("composeWaveBCarouselSlot", () => {
       expect(html).toContain(slide.command);
       expect(html).toContain(`data-factory-slide="${slide.id}"`);
     }
+  });
+
+  test("prefers-reduced-motion: reduce reports static carousel motion on harness fill", async () => {
+    mockPrefersReducedMotion(true);
+    const { container } = render(composeWaveBCarouselSlot() as ReactElement);
+
+    await waitFor(() => {
+      expect(
+        container
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("static");
+    });
+
+    const activeTitle = fixtureLandingPageData.carousel.slides[0]?.title ?? "";
+    expect(container.querySelectorAll("[data-carousel-slide]").length).toBe(1);
+    expect(container.textContent).toContain(activeTitle);
+    expect(
+      container.querySelectorAll("[data-carousel-depth='neighbor']").length,
+    ).toBe(0);
+  });
+
+  test("no reduced-motion preference keeps depth carousel motion on harness fill", async () => {
+    mockPrefersReducedMotion(false);
+    const { container } = render(composeWaveBCarouselSlot() as ReactElement);
+
+    await waitFor(() => {
+      expect(
+        container
+          .querySelector("[data-factory-carousel]")
+          ?.getAttribute("data-carousel-motion"),
+      ).toBe("depth");
+    });
+
+    expect(
+      container.querySelectorAll("[data-carousel-slide]").length,
+    ).toBeGreaterThan(1);
   });
 });
 
