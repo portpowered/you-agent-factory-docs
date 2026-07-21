@@ -88,7 +88,9 @@ and the shared related-registry-docs component/blog wrapper.
   `sections.related.title` to `""` (`pageSectionSchema` rejects empty
   titles). Drop the heading instead: plain `<section id="related">` +
   `<RelatedDocs />`, and omit `sections.related` from page messages. See
-  `content-page-generation-workflow-relevant-files.md` §5b.
+  `content-page-generation-workflow-relevant-files.md` §5b. Prove no
+  Related-footer `LocalizedLinkList` via `#related` lacking
+  `ul.mt-3.list-disc` (RelatedDocList uses `ul.space-y-3`).
 * Do not reintroduce Atlas chrome **`Related Concepts And Modules`** in concept
   (or other) page messages, `docs/templates/concept.messages.en.json`, or
   `docs/templates/glossary.messages.en.json`. The retired path

@@ -104,7 +104,12 @@ Before the first authored page under a rewrite-era CLI collection can pass
    `#related` + `<RelatedDocs />`, use a plain `<section id="related">`
    (no `Section` / `titleKey`) and remove `sections.related` from locale
    messages. Keep answer-section `LocalizedLinkList` mounts; strip only the
-   Related-footer hardcoded sibling list.
+   Related-footer hardcoded sibling list. In colocated page tests, prove the
+   strip with `#related` scoped asserts: `ul.mt-3.list-disc` absent
+   (`LocalizedLinkList` marker), `[data-testid="curated-related-docs"]`
+   present, and `Related To` / Limits headings null. Prefer scoping answer
+   links with `within(#section-id)` so RelatedDocs curated titles cannot
+   masquerade as answer-section LocalizedLinkList proofs.
 6. Browser verify with `bun run start` serves the last production build.
    After editing page MDX or colocated messages, run `bun run build` (or
    use `bun run dev`) before curling the route, or the HTML will still show
