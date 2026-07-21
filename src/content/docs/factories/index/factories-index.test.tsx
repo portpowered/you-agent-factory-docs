@@ -52,10 +52,22 @@ describe("factories index", () => {
       "[data-factories-index-full-schema-link]",
     );
     expect(fullSchema?.getAttribute("href")).toBe("/docs/references/schema");
+    expect(fullSchema?.className).toContain("text-secondary");
+    expect(fullSchema?.className).toContain("decoration-secondary");
+    expect(fullSchema?.className).toContain("underline-offset-4");
+    expect(fullSchema?.className).toContain("hover:underline");
+    expect(fullSchema?.className).not.toMatch(/\btext-primary\b/);
+    expect(fullSchema?.className).not.toMatch(/\bdecoration-primary\b/);
     const fullApi = document.querySelector(
       "[data-factories-index-full-api-link]",
     );
     expect(fullApi?.getAttribute("href")).toBe("/docs/references/api");
+    expect(fullApi?.className).toContain("text-secondary");
+    expect(fullApi?.className).toContain("decoration-secondary");
+    expect(fullApi?.className).toContain("underline-offset-4");
+    expect(fullApi?.className).toContain("hover:underline");
+    expect(fullApi?.className).not.toMatch(/\btext-primary\b/);
+    expect(fullApi?.className).not.toMatch(/\bdecoration-primary\b/);
 
     expect(
       screen.getByRole("list", { name: indexMessages.listLabel }),
