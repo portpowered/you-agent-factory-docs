@@ -55,9 +55,10 @@ describe("composeWaveAFooterSlot", () => {
     const html = renderToStaticMarkup(composeWaveAFooterSlot() as ReactElement);
 
     expect(html).toContain('data-testid="site-footer"');
-    expect(html).toContain("Product");
-    expect(html).toContain("Community");
-    expect(html).toContain("© you-agent-factory");
+    for (const column of fixtureLandingPageData.footer.columns) {
+      expect(html).toContain(column.title);
+    }
+    expect(html).toContain(fixtureLandingPageData.footer.meta.copyright);
     expect(html).toContain('data-testid="site-footer-art"');
     expect(html).not.toContain('data-landing-placeholder="footer"');
   });
@@ -70,7 +71,12 @@ describe("composeWaveAWhaleBubblesSlot", () => {
     );
 
     expect(props.whaleSrc).toBe(fixtureLandingPageData.whaleBubbles.whaleSrc);
-    expect(props.items).toEqual(fixtureLandingPageData.whaleBubbles.bubbles);
+    expect(props.items).toEqual(
+      fixtureLandingPageData.whaleBubbles.bubbles.map(({ id, label }) => ({
+        id,
+        label,
+      })),
+    );
   });
 
   test("falls back to WHALE_BUBBLES_FIXTURE_* when fixture fields are empty", () => {
@@ -87,24 +93,27 @@ describe("composeWaveAWhaleBubblesSlot", () => {
 
     expect(html).toContain('data-whale-bubbles-section=""');
     expect(html).toContain('data-whale-plate=""');
-    expect(html).toContain('data-whale-bubbles-item-count="3"');
-    expect(html).toContain("Harness");
-    expect(html).toContain("Loop");
-    expect(html).toContain("Worktree");
+    expect(html).toContain(
+      `data-whale-bubbles-item-count="${fixtureLandingPageData.whaleBubbles.bubbles.length}"`,
+    );
+    for (const bubble of fixtureLandingPageData.whaleBubbles.bubbles) {
+      expect(html).toContain(bubble.label);
+    }
     expect(html).not.toContain('data-landing-placeholder="whaleBubbles"');
   });
 });
 
 describe("composeWaveAHeroSlot", () => {
-  test("maps fixture install + distinct carousel commands onto Terminal lines", () => {
+  test("maps distinct current fixture commands onto Terminal lines", () => {
     const lines = mapFixtureCommandsToTerminalLines({
       cta: fixtureLandingPageData.cta,
       carousel: fixtureLandingPageData.carousel,
     });
 
-    expect(lines[0]).toBe(fixtureLandingPageData.cta.installCommand);
-    expect(lines).toContain("you run --named @loop/write-review");
-    expect(lines).toContain("you docs agents");
+    expect(lines[0]).toBe(fixtureLandingPageData.carousel.slides[0]?.command);
+    for (const slide of fixtureLandingPageData.carousel.slides) {
+      expect(lines).toContain(slide.command);
+    }
     expect(new Set(lines).size).toBe(lines.length);
   });
 
@@ -136,7 +145,9 @@ describe("composeWaveAHeroSlot", () => {
     expect(html).toContain('data-landing-harness-hero-terminal=""');
     expect(html).toContain('data-terminal=""');
     expect(html).toContain('data-terminal-variant="install"');
-    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain(
+      fixtureLandingPageData.cta.installCommand.replaceAll('"', "&quot;"),
+    );
     expect(html).not.toContain('data-landing-placeholder="hero"');
   });
 

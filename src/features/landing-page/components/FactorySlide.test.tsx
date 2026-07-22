@@ -1,10 +1,12 @@
-import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, mock, test } from "bun:test";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { FactorySlide } from "./FactorySlide";
 
 describe("FactorySlide", () => {
   afterEach(() => {
     cleanup();
+    mock.restore();
   });
 
   test("renders title, blurb, and Terminal command chrome", () => {
@@ -31,7 +33,46 @@ describe("FactorySlide", () => {
     expect(terminal).toBeTruthy();
     expect(
       document.querySelector("[data-terminal-body] code")?.textContent,
-    ).toBe("you run --named @goal/example");
+    ).toBe("you run --named @goal/example --provider codex");
+  });
+
+  test("provider controls update the command copied from the active feature", async () => {
+    const user = userEvent.setup();
+    const writeText = mock(() => Promise.resolve());
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    render(
+      <FactorySlide
+        id="slide-provider"
+        title="Provider"
+        blurb="Choose an editor provider."
+        command="you run --named @goal/example"
+      />,
+    );
+
+    const cursor = screen.getByRole("button", { name: "Cursor" });
+    expect(
+      screen
+        .getByRole("button", { name: "Codex" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
+
+    await user.click(cursor);
+
+    expect(cursor.getAttribute("aria-pressed")).toBe("true");
+    expect(
+      document.querySelector("[data-terminal-body] code")?.textContent,
+    ).toBe("you run --named @goal/example --provider cursor");
+
+    await user.click(screen.getByRole("button", { name: "Copy" }));
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith(
+        "you run --named @goal/example --provider cursor",
+      );
+    });
   });
 
   test("renders optional art when provided and omits it when absent", () => {

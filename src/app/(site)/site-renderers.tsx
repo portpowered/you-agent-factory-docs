@@ -24,6 +24,7 @@ import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders"
 import { FamilyDocsFooterNeighbors } from "@/features/docs/components/FamilyDocsFooterNeighbors";
 import { TagResourceList } from "@/features/docs/components/TagResourceList";
 import { SearchPagePanelContent } from "@/features/docs/search/SearchPagePanel";
+import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
 import {
   EMPTY_SEARCH_PAGE_HANDOFF,
   resolveSearchPageHandoff,
@@ -204,10 +205,20 @@ export async function renderBlogIndexPage(
   );
 }
 
-export async function renderHomePage(_locale: SiteLocale = defaultLocale) {
-  // Locale retained for callers (default + localized home). Fixture landing
-  // content is English until a later i18n pass; chrome bypass is story 003.
-  return <LandingPage {...composeProductionLandingSlots()} />;
+export async function renderHomePage(locale: SiteLocale = defaultLocale) {
+  const messages = await loadUiMessages(locale);
+  return (
+    <LandingPage
+      {...composeProductionLandingSlots(
+        undefined,
+        process.env,
+        <SearchTrigger
+          className="!h-8 !border-[#ecece4]/25 !bg-transparent !text-[#ecece4]/75 hover:!text-[#191f2b]"
+          messages={messages}
+        />,
+      )}
+    />
+  );
 }
 
 export async function renderBrowseIndexPage(

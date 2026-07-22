@@ -5,7 +5,7 @@ import type { FactorySlideData } from "@/features/landing-page/components/Factor
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 
 /**
- * Fixture slides for the carousel-only harness (4 slides from landing fixtures).
+ * Fixture slides for the carousel-only harness (current landing fixtures).
  * Local constants / existing data only — no CMS or schema invention.
  */
 export const FACTORY_CAROUSEL_HARNESS_SLIDES: FactorySlideData[] = [
@@ -23,7 +23,15 @@ export function FactoryCarouselHarnessView() {
       data-factory-carousel-harness=""
     >
       <div className="w-full max-w-3xl" data-factory-carousel-harness-stage="">
-        <FactoryCarousel slides={FACTORY_CAROUSEL_HARNESS_SLIDES} />
+        <FactoryCarousel
+          eyebrow="pre-installed factories"
+          featureArtSrc="/home/octopus.png"
+          initialIndex={Math.min(
+            1,
+            Math.max(0, FACTORY_CAROUSEL_HARNESS_SLIDES.length - 1),
+          )}
+          slides={FACTORY_CAROUSEL_HARNESS_SLIDES}
+        />
       </div>
     </main>
   );

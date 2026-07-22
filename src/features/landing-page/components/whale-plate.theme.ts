@@ -27,11 +27,11 @@ export type WhalePlateThemeKnobs = {
 
 /** motion-whale.md / landing-page.theme.ts whale defaults. */
 export const DEFAULT_WHALE_PLATE_THEME = {
-  initialScale: 0.78,
-  initialY: 48,
+  initialScale: 0.88,
+  initialY: 28,
   durationMs: 1600,
   ease: [0.16, 0.84, 0.22, 1] as const satisfies WhaleCubicBezier,
-  blurPx: 6,
+  blurPx: 2,
   viewAmount: 0.3,
   bubbleDelayMs: 280,
 } as const satisfies WhalePlateThemeKnobs;
@@ -40,7 +40,7 @@ export const DEFAULT_WHALE_PLATE_THEME = {
 export const WHALE_PLATE_DEFAULT_SRC = "/home/mid-end-whale.png";
 
 /** Initial opacity when first seen (motion-whale recipe; not a separate schema). */
-export const WHALE_PLATE_INITIAL_OPACITY = 0.35;
+export const WHALE_PLATE_INITIAL_OPACITY = 0.78;
 
 export function resolveWhalePlateTheme(
   overrides?: Partial<WhalePlateThemeKnobs>,

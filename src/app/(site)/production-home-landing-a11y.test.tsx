@@ -82,9 +82,10 @@ describe("production home LandingPage a11y + reduced-motion", () => {
     const landingHeader = document.querySelector("[data-landing-header]");
     expect(landingHeader).toBeTruthy();
 
-    const nav = screen.getByRole("navigation", { name: "Landing" });
     for (const item of fixtureLandingPageData.header.nav) {
-      const link = within(nav).getByRole("link", { name: item.label });
+      const link = within(landingHeader as HTMLElement).getByRole("link", {
+        name: item.label,
+      });
       link.focus();
       expect(document.activeElement).toBe(link);
       expect(link.className).toContain("focus-visible:ring");
@@ -93,7 +94,7 @@ describe("production home LandingPage a11y + reduced-motion", () => {
     expect(
       screen.getByRole("heading", {
         level: 1,
-        name: fixtureLandingPageData.hero.title,
+        name: fixtureLandingPageData.hero.title.replace("\n", " "),
       }),
     ).toBeTruthy();
 
@@ -110,7 +111,7 @@ describe("production home LandingPage a11y + reduced-motion", () => {
     await expectNoSeriousAxeViolations(document.body);
   });
 
-  test("prefers-reduced-motion keeps ParticleSphere static and WhalePlate settled", async () => {
+  test("prefers-reduced-motion keeps ParticleSphere static with the shared whale scene", async () => {
     mockPrefersReducedMotion(true);
     stubCanvas2dContext();
     const rafSpy = spyOn(window, "requestAnimationFrame").mockImplementation(
@@ -131,15 +132,16 @@ describe("production home LandingPage a11y + reduced-motion", () => {
 
     expect(rafSpy).not.toHaveBeenCalled();
 
-    await waitFor(() => {
-      expect(
-        document
-          .querySelector("[data-whale-plate]")
-          ?.getAttribute("data-whale-phase"),
-      ).toBe("settled");
-    });
-
+    expect(document.querySelector("[data-whale-plate]")).toBeNull();
+    expect(
+      document.querySelector("[data-landing-mid-scene-whale]"),
+    ).toBeTruthy();
     expect(document.querySelector("[data-whale-bubbles-section]")).toBeTruthy();
+    expect(
+      document
+        .querySelector("[data-whale-bubbles-section]")
+        ?.getAttribute("data-whale-bubbles-armed"),
+    ).toBe("true");
     rafSpy.mockRestore();
   });
 });

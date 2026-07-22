@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
+  buildStaticSurfaceMetadata,
+  renderBrowseIndexPage,
+} from "@/app/(site)/site-renderers";
+import {
   buildDocsPageMetadata,
   renderDocsSlugPage,
 } from "@/app/docs/docs-slug-renderer";
@@ -11,6 +15,7 @@ import {
   isDocsPageShippedForLocale,
   loadShippedLocalizedDocsPages,
 } from "@/lib/content/pages";
+import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   generateStaticLocaleParams,
   resolveRouteLocaleOrNotFound,
@@ -27,6 +32,7 @@ export async function generateStaticParams() {
   const params: Array<{ locale: string; slug?: string[] }> = [];
 
   for (const { locale } of generateStaticLocaleParams()) {
+    params.push({ locale, slug: [] });
     const pages = await loadShippedLocalizedDocsPages(locale);
     for (const entry of buildDocsCatchAllStaticParamsFromDocsSlugs(
       pages.map((page) => page.docsSlug),
@@ -50,6 +56,16 @@ export async function generateMetadata({
 }: LocalizedDocsSlugPageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params;
   const locale = resolveRouteLocaleOrNotFound(rawLocale);
+  if (!slug || slug.length === 0) {
+    const messages = await loadUiMessages(locale);
+    return buildStaticSurfaceMetadata(
+      { surface: "browse" },
+      {
+        title: messages.browseIndex.title,
+        description: messages.browseIndex.description,
+      },
+    );
+  }
   const docsSlug = slug?.join("/");
   if (docsSlug && !isDocsPageShippedForLocale(docsSlug, locale)) {
     notFound();
@@ -62,6 +78,9 @@ export default async function LocalizedDocsSlugPage({
 }: LocalizedDocsSlugPageProps) {
   const { locale: rawLocale, slug } = await params;
   const locale = resolveRouteLocaleOrNotFound(rawLocale);
+  if (!slug || slug.length === 0) {
+    return renderBrowseIndexPage(locale);
+  }
   const docsSlug = slug?.join("/");
   if (docsSlug && !isDocsPageShippedForLocale(docsSlug, locale)) {
     notFound();

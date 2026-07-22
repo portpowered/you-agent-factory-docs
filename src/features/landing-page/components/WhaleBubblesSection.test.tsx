@@ -104,7 +104,7 @@ describe("WhaleBubblesSection", () => {
 
     const bubbles = container.querySelector("[data-feature-bubbles]");
     expect(bubbles?.getAttribute("data-feature-bubbles-armed")).toBe("false");
-    expect(bubbles?.getAttribute("data-feature-bubbles-phase")).toBe("waiting");
+    expect(bubbles?.getAttribute("data-feature-bubbles-phase")).toBe("visible");
   });
 
   test("arms bubbles after whale settle then reveals after delay", async () => {
@@ -128,7 +128,7 @@ describe("WhaleBubblesSection", () => {
 
     expect(section()?.getAttribute("data-whale-bubbles-armed")).toBe("false");
     expect(bubbles()?.getAttribute("data-feature-bubbles-phase")).toBe(
-      "waiting",
+      "visible",
     );
 
     triggerIntersect(true);
@@ -141,9 +141,9 @@ describe("WhaleBubblesSection", () => {
       );
     });
 
-    // Still waiting until bubbleDelayMs elapses after settle.
+    // Authored bubbles remain visible while their entrance motion arms.
     expect(bubbles()?.getAttribute("data-feature-bubbles-phase")).toBe(
-      "waiting",
+      "visible",
     );
 
     await waitFor(() => {
@@ -183,5 +183,28 @@ describe("WhaleBubblesSection", () => {
     const bubbles = document.querySelector("[data-feature-bubbles]");
     expect(section?.getAttribute("data-whale-bubbles-delay-ms")).toBe("320");
     expect(bubbles?.getAttribute("data-feature-bubbles-delay-ms")).toBe("320");
+  });
+
+  test("uses a shared scene whale without rendering a duplicate local plate", () => {
+    const { container } = render(
+      <WhaleBubblesSection
+        renderPlate={false}
+        whaleSrc={WHALE_BUBBLES_HARNESS_SRC}
+      />,
+    );
+
+    expect(
+      container.querySelector("[data-whale-bubbles-plate-slot]"),
+    ).toBeNull();
+    expect(
+      container
+        .querySelector("[data-whale-bubbles-section]")
+        ?.getAttribute("data-whale-bubbles-armed"),
+    ).toBe("true");
+    expect(
+      container
+        .querySelector("[data-feature-bubbles]")
+        ?.getAttribute("data-feature-bubbles-armed"),
+    ).toBe("true");
   });
 });

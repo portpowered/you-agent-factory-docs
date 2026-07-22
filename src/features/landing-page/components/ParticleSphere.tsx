@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type PointerEvent, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import {
   type ParticleSphereThemeKnobs,
@@ -9,6 +9,8 @@ import {
 import {
   createParticleSphereRestPose,
   type Particle3D,
+  type Point2D,
+  repelProjectedPoint,
   rotateParticlesY,
 } from "./particle-sphere-simulation";
 
@@ -35,6 +37,8 @@ function paintSphereFrame(
   width: number,
   height: number,
   particles: readonly Particle3D[],
+  pointer?: Point2D,
+  pointerStrength = 0,
 ): void {
   ctx.clearRect(0, 0, width, height);
 
@@ -62,14 +66,16 @@ function paintSphereFrame(
 
   for (const p of sorted) {
     const depth = (p.z + 1) / 2;
-    const px = cx + p.x * scale;
-    const py = cy - p.y * scale;
+    const projected = { x: cx + p.x * scale, y: cy - p.y * scale };
+    const painted = pointer
+      ? repelProjectedPoint(projected, pointer, scale * 0.34, pointerStrength)
+      : projected;
     const radius = 1.1 + depth * 1.7;
     const alpha = 0.25 + depth * 0.7;
 
     ctx.beginPath();
     ctx.fillStyle = `rgba(210, 232, 245, ${alpha.toFixed(3)})`;
-    ctx.arc(px, py, radius, 0, Math.PI * 2);
+    ctx.arc(painted.x, painted.y, radius, 0, Math.PI * 2);
     ctx.fill();
   }
 }
@@ -81,6 +87,9 @@ function paintSphereFrame(
 export function ParticleSphere({ className, theme }: ParticleSphereProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pointerRef = useRef<Point2D | null>(null);
+  const lastPointerRef = useRef<Point2D | null>(null);
+  const pointerStrengthRef = useRef(0);
   const resolvedTheme = resolveParticleSphereTheme(theme);
 
   useEffect(() => {
@@ -114,12 +123,22 @@ export function ParticleSphere({ className, theme }: ParticleSphereProps) {
       canvas.style.width = `${cssWidth}px`;
       canvas.style.height = `${cssHeight}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      paintSphereFrame(ctx, cssWidth, cssHeight, particles);
+      paintSphereFrame(
+        ctx,
+        cssWidth,
+        cssHeight,
+        particles,
+        pointerRef.current ?? lastPointerRef.current ?? undefined,
+        pointerStrengthRef.current,
+      );
     };
 
     const tick = () => {
       if (!running) return;
       angle += 0.008;
+      const pointerTarget = pointerRef.current ? 1 : 0;
+      pointerStrengthRef.current +=
+        (pointerTarget - pointerStrengthRef.current) * 0.14;
       const rotated = rotateParticlesY(restParticles, angle);
       resizeAndPaint(rotated);
       frameId = window.requestAnimationFrame(tick);
@@ -148,6 +167,20 @@ export function ParticleSphere({ className, theme }: ParticleSphereProps) {
     };
   }, [theme]);
 
+  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
+    if (prefersReducedMotion()) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const point = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+    pointerRef.current = point;
+    lastPointerRef.current = point;
+    event.currentTarget.dataset.particlePointer = "active";
+  }
+
+  function handlePointerLeave(event: PointerEvent<HTMLDivElement>) {
+    pointerRef.current = null;
+    event.currentTarget.dataset.particlePointer = "inactive";
+  }
+
   return (
     <div
       ref={hostRef}
@@ -156,10 +189,18 @@ export function ParticleSphere({ className, theme }: ParticleSphereProps) {
       data-particle-sphere=""
       data-particle-count={resolvedTheme.particleCount}
       data-particle-repulsion={String(resolvedTheme.repulsion)}
+      data-particle-pointer="inactive"
+      onPointerLeave={handlePointerLeave}
+      onPointerMove={handlePointerMove}
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-[8%] rounded-full opacity-65 [background-image:radial-gradient(circle,rgba(236,236,228,0.72)_0_1px,transparent_1.4px)] [background-size:6px_6px] [mask-image:radial-gradient(circle_at_center,#000_0%,#000_67%,transparent_73%)]"
+        data-particle-sphere-fallback=""
+      />
       <canvas
         ref={canvasRef}
-        className="block h-full w-full"
+        className="relative z-10 block h-full w-full"
         data-particle-sphere-canvas=""
       />
     </div>

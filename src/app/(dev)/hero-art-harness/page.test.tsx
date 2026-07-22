@@ -56,7 +56,7 @@ describe("HeroArtHarnessPage", () => {
     expect(html).toContain('data-youi-showcase=""');
 
     for (const item of CAPABILITY_STRIP_DEFAULT_ITEMS) {
-      expect(html).toContain(item.label);
+      expect(html).toContain(`data-capability-strip-item-id="${item.id}"`);
     }
 
     expect(html).toContain('data-hero-art-harness-torn-edge="after-hero"');

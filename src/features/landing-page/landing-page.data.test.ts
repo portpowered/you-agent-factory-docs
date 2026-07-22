@@ -36,16 +36,37 @@ describe("landing-page.data", () => {
     expect(fixtureLandingPageData.header.nav.length).toBeGreaterThan(0);
     expect(
       fixtureLandingPageData.capability.items.map((item) => item.label),
-    ).toEqual(["FLOWS", "AGENTS", "ENTRY", "OS"]);
+    ).toEqual([
+      "YOU",
+      "CLI",
+      "MCP API SSE",
+      "FLOWS : JS | GRAPH",
+      "AGENTS : CODEX | CLAUDE | 10+",
+      "ENTRY : CLI | API | MCP | UI",
+      "OS : MAC | LINUX | WINDOWS",
+    ]);
     expect(
-      fixtureLandingPageData.carousel.slides.length,
-    ).toBeGreaterThanOrEqual(4);
+      fixtureLandingPageData.header.nav.map((item) => item.label),
+    ).not.toContain("Install");
+    expect(fixtureLandingPageData.carousel.slides).toHaveLength(8);
+    expect(
+      fixtureLandingPageData.carousel.slides.map((slide) => slide.title),
+    ).toEqual([
+      "ralph",
+      "LOOP",
+      "review",
+      "goal",
+      "custom",
+      "deep-research",
+      "one-shot",
+      "classify",
+    ]);
 
     for (const slide of fixtureLandingPageData.carousel.slides) {
       expect(slide.id.length).toBeGreaterThan(0);
       expect(slide.title.length).toBeGreaterThan(0);
       expect(slide.blurb.length).toBeGreaterThan(0);
-      expect(slide.command.length).toBeGreaterThan(0);
+      expect(typeof slide.command).toBe("string");
     }
 
     expect(
@@ -54,6 +75,7 @@ describe("landing-page.data", () => {
     expect(fixtureLandingPageData.whaleBubbles.whaleSrc).toBe(
       "/home/mid-end-whale.png",
     );
+    expect(fixtureLandingPageData.whaleBubbles.bubbles).toHaveLength(15);
     expect(fixtureLandingPageData.hero.portraitSrc).toBe(
       "/home/woman-head.png",
     );

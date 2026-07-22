@@ -43,6 +43,12 @@ export {
   PRIMARY_BUBBLE_CLASSES,
 } from "./components/FeatureBubbles";
 export {
+  applyProviderParameter,
+  HeroCommandPanel,
+  type HeroCommandPanelProps,
+  type HeroModelProvider,
+} from "./components/HeroCommandPanel";
+export {
   HERO_PORTRAIT_DEFAULT_ALT,
   HERO_PORTRAIT_DEFAULT_SRC,
   HERO_PORTRAIT_INTRINSIC_HEIGHT,

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, spyOn, test } from "bun:test";
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { ParticleSphere } from "./ParticleSphere";
 import {
   DEFAULT_PARTICLE_SPHERE_THEME,
@@ -11,6 +11,7 @@ import {
   createParticleSphereRestPose,
   createSphereParticles,
   meanNearestNeighborDistance,
+  repelProjectedPoint,
 } from "./particle-sphere-simulation";
 
 function mockPrefersReducedMotion(reduce: boolean) {
@@ -108,6 +109,22 @@ describe("particle-sphere-simulation", () => {
     expect(config.particleCount).toBe(72);
     expect(particles).toHaveLength(72);
   });
+
+  test("pointer repulsion opens a bounded cavity and fades to rest", () => {
+    const point = { x: 105, y: 100 };
+    const pointer = { x: 100, y: 100 };
+    const repelled = repelProjectedPoint(point, pointer, 40, 1);
+    const resting = repelProjectedPoint(point, pointer, 40, 0);
+
+    expect(repelled.x).toBeGreaterThan(point.x);
+    expect(
+      Math.hypot(repelled.x - pointer.x, repelled.y - pointer.y),
+    ).toBeGreaterThan(Math.hypot(point.x - pointer.x, point.y - pointer.y));
+    expect(
+      Math.hypot(repelled.x - pointer.x, repelled.y - pointer.y),
+    ).toBeLessThanOrEqual(40);
+    expect(resting).toEqual(point);
+  });
 });
 
 describe("ParticleSphere", () => {
@@ -155,6 +172,20 @@ describe("ParticleSphere", () => {
     const marked = document.querySelector("[data-particle-sphere]");
     expect(marked?.getAttribute("data-particle-count")).toBe("88");
     expect(marked?.getAttribute("data-particle-repulsion")).toBe("0.72");
+  });
+
+  test("tracks pointer entry and leave for the interactive cavity", () => {
+    mockPrefersReducedMotion(false);
+    const { container } = render(<ParticleSphere />);
+    const host = container.querySelector(
+      "[data-particle-sphere]",
+    ) as HTMLElement;
+
+    fireEvent.pointerMove(host, { clientX: 30, clientY: 40 });
+    expect(host.dataset.particlePointer).toBe("active");
+
+    fireEvent.pointerLeave(host);
+    expect(host.dataset.particlePointer).toBe("inactive");
   });
 
   test("prefers-reduced-motion: reduce paints a static frame without rAF loop", async () => {

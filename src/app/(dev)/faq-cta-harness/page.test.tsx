@@ -2,6 +2,7 @@ import { afterEach, describe, expect, mock, test } from "bun:test";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
+import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 
 mock.module("next/navigation", () => ({
   notFound: () => {
@@ -58,7 +59,7 @@ describe("FaqCtaHarnessPage", () => {
     expect(html).toContain("References");
     expect(html).toContain('href="/docs/references"');
 
-    expect(html).toContain("What is you-agent-factory?");
+    expect(html).toContain(fixtureLandingPageData.faq.items[0]?.question ?? "");
     expect(html).toContain("Install the CLI");
     expect(html).toContain(landingHomeAssets.seadragonCrop);
   });

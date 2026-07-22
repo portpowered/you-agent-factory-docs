@@ -23,6 +23,10 @@ import { cn } from "@/lib/utils";
 export type FactoryCarouselProps = {
   slides: FactorySlideData[];
   className?: string;
+  /** Exact heading printed across the wide feature card. */
+  eyebrow?: string;
+  /** Artwork shown inside the wide feature card. */
+  featureArtSrc?: string;
   /**
    * Controlled active index (0-based). When set, the carousel follows this
    * value so tests and parents can change which slide is primary.
@@ -38,7 +42,7 @@ export type FactoryCarouselProps = {
 
 export type CarouselSlideDepthRole = "active" | "neighbor" | "far";
 
-/** Visual motion mode: depth stack vs static active-only (reduced motion). */
+/** Visual motion mode: animated collage vs static collage (reduced motion). */
 export type CarouselMotionMode = "depth" | "static";
 
 export type CarouselSlideDepth = {
@@ -103,6 +107,56 @@ function clampIndex(index: number, length: number): number {
   return index;
 }
 
+type CarouselVisualSlot = {
+  height: string;
+  left: string;
+  top: string;
+  width: string;
+  zIndex: number;
+};
+
+/**
+ * The reference composition always keeps one wide feature card, the previous
+ * card clipped at the left edge, and the next three cards overlapping its
+ * right half. Rotating the index preserves that exact silhouette.
+ */
+function getCarouselVisualSlot(
+  index: number,
+  activeIndex: number,
+  length: number,
+): CarouselVisualSlot {
+  const forward = (((index - activeIndex) % length) + length) % length;
+
+  if (forward === 0) {
+    return {
+      height: "clamp(24rem, 52vw, 52rem)",
+      left: "9%",
+      top: "0",
+      width: "82%",
+      zIndex: 10,
+    };
+  }
+
+  if (forward === length - 1) {
+    return {
+      height: "clamp(11rem, 21vw, 21rem)",
+      left: "0.5%",
+      top: "clamp(8.5rem, 19vw, 19rem)",
+      width: "14.5%",
+      zIndex: 20,
+    };
+  }
+
+  const rightSlot = Math.min(forward - 1, 2);
+  return {
+    height: "clamp(11rem, 21vw, 21rem)",
+    left: `${55 + rightSlot * 15}%`,
+    top: "clamp(8.5rem, 19vw, 19rem)",
+    width: "14.5%",
+    zIndex: 20 + rightSlot,
+  };
+}
+
 /**
  * Wrap active index by `delta` steps. Empty length stays at 0.
  * Preferred for demo carousels with a small fixed slide count.
@@ -131,6 +185,8 @@ type DragSession = {
 export function FactoryCarousel({
   slides,
   className,
+  eyebrow,
+  featureArtSrc,
   activeIndex: controlledActiveIndex,
   initialIndex = 0,
   onActiveIndexChange,
@@ -243,50 +299,79 @@ export function FactoryCarousel({
   }
 
   const activeSlide = slides[resolvedIndex];
-  const depthSlides =
-    motionMode === "depth"
-      ? slides.map((slide, index) => {
-          const depth = getCarouselSlideDepth(index, resolvedIndex, theme);
-          const isActive = depth.role === "active";
-          const slideStyle: CSSProperties = {
-            transform: `translateX(${depth.translateX}) scale(${depth.scale})`,
-            opacity: depth.opacity,
-            zIndex: depth.zIndex,
-            transitionProperty: "transform, opacity",
-            transitionDuration: `${theme.transitionMs}ms`,
-            transitionTimingFunction: "cubic-bezier(0.16, 0.84, 0.22, 1)",
-          };
+  const collageSlides = slides.map((slide, index) => {
+    const depth = getCarouselSlideDepth(index, resolvedIndex, theme);
+    const isActive = index === resolvedIndex;
+    const visualSlot = getCarouselVisualSlot(
+      index,
+      resolvedIndex,
+      slides.length,
+    );
+    const forward =
+      (((index - resolvedIndex) % slides.length) + slides.length) %
+      slides.length;
+    const railSide = isActive
+      ? "active"
+      : forward === slides.length - 1
+        ? "left"
+        : forward === 1
+          ? "right"
+          : "far";
+    const slideStyle: CSSProperties = {
+      height: visualSlot.height,
+      left: visualSlot.left,
+      top: visualSlot.top,
+      width: visualSlot.width,
+      zIndex: visualSlot.zIndex,
+      transitionProperty: "left, top, width, height, transform, opacity",
+      transitionDuration: reduceMotion ? "0ms" : `${theme.transitionMs}ms`,
+      transitionTimingFunction: "cubic-bezier(0.16, 0.84, 0.22, 1)",
+    };
 
-          return (
-            <div
-              key={slide.id}
-              aria-hidden={isActive ? undefined : true}
-              className={cn(
-                "factory-carousel__slide absolute inset-x-0 mx-auto w-[min(100%,28rem)] px-4 select-none",
-                isActive ? "pointer-events-auto" : "pointer-events-none",
-              )}
-              data-active={isActive ? "true" : undefined}
-              data-carousel-depth={depth.role}
-              data-carousel-slide={slide.id}
-              data-carousel-slide-index={String(index)}
-              // Neighbor/far slides stay in the DOM for depth visuals but must
-              // not expose Terminal copy controls (or other focusables) while
-              // aria-hidden — inert removes them from tab order / AT.
-              inert={isActive ? undefined : true}
-              style={slideStyle}
-            >
-              <FactorySlide {...slide} />
-            </div>
-          );
-        })
-      : null;
+    return (
+      <div
+        key={slide.id}
+        className={cn(
+          "factory-carousel__slide pointer-events-auto absolute select-none",
+        )}
+        data-active={isActive ? "true" : undefined}
+        data-carousel-depth={depth.role}
+        data-carousel-slide={slide.id}
+        data-carousel-slide-index={String(index)}
+        data-carousel-slot={isActive ? "feature" : "rail"}
+        data-carousel-rail-side={railSide}
+        style={slideStyle}
+      >
+        <div
+          aria-hidden={isActive ? undefined : true}
+          className="h-full w-full"
+          inert={isActive ? undefined : true}
+        >
+          <FactorySlide
+            {...slide}
+            backgroundArtSrc={isActive ? featureArtSrc : undefined}
+            presentation={isActive ? "feature" : "rail"}
+          />
+        </div>
+        {!isActive ? (
+          <button
+            aria-label={`Show ${slide.title} factory`}
+            className="absolute inset-0 z-30 cursor-pointer bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#f3bd3d]"
+            data-carousel-select={slide.id}
+            onClick={() => setActiveIndex(index)}
+            type="button"
+          />
+        ) : null}
+      </div>
+    );
+  });
 
   return (
     <section
       aria-label="Factory carousel"
       aria-roledescription="carousel"
       className={cn(
-        "factory-carousel relative w-full overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+        "factory-carousel relative w-full overflow-clip outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
         className,
       )}
       data-factory-carousel=""
@@ -311,53 +396,72 @@ export function FactoryCarousel({
       </div>
 
       <div
-        className="factory-carousel__track relative mx-auto flex min-h-[22rem] w-full max-w-3xl touch-pan-y items-center justify-center"
+        className="factory-carousel__track relative mx-auto min-h-[clamp(25rem,58vw,58rem)] w-full max-w-[100rem] touch-pan-y"
         data-carousel-track=""
         onPointerCancel={onPointerCancel}
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUp}
       >
-        {motionMode === "static" ? (
-          <div
-            key={activeSlide.id}
-            className="factory-carousel__slide relative mx-auto w-[min(100%,28rem)] px-4 select-none"
-            data-active="true"
-            data-carousel-depth="active"
-            data-carousel-slide={activeSlide.id}
-            data-carousel-slide-index={String(resolvedIndex)}
-          >
-            <FactorySlide {...activeSlide} />
-          </div>
-        ) : (
-          depthSlides
-        )}
+        {eyebrow ? (
+          <p className="pointer-events-none absolute top-[clamp(0.65rem,1.5vw,1.5rem)] left-[14%] z-30 font-sans text-[clamp(2rem,5.6vw,5.6rem)] leading-none font-normal tracking-[-0.055em] text-[#191f2b] lowercase">
+            {eyebrow}
+          </p>
+        ) : null}
+        {collageSlides}
       </div>
 
+      <fieldset
+        className="relative z-50 mx-auto -mt-[clamp(3rem,6vw,6rem)] hidden w-[min(92%,80rem)] flex-wrap justify-center gap-x-5 gap-y-2 border-0 pb-12 md:flex"
+        data-carousel-factory-selectors=""
+      >
+        <legend className="sr-only">Choose a factory</legend>
+        {slides.map((slide, index) => {
+          const selected = index === resolvedIndex;
+          return (
+            <button
+              aria-pressed={selected}
+              className={cn(
+                "border-b py-1 font-mono text-xs uppercase tracking-[0.08em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f3bd3d]",
+                selected
+                  ? "border-[#f3bd3d] text-[#f3bd3d]"
+                  : "border-transparent text-[#f1eee6]/60 hover:text-[#f1eee6]",
+              )}
+              data-carousel-factory-selector={slide.id}
+              key={slide.id}
+              onClick={() => setActiveIndex(index)}
+              type="button"
+            >
+              {slide.title}
+            </button>
+          );
+        })}
+      </fieldset>
+
       <div
-        className="factory-carousel__controls mx-auto mt-4 flex w-full max-w-3xl items-center justify-center gap-3"
+        className="factory-carousel__controls pointer-events-none absolute inset-0 z-40"
         data-carousel-controls=""
       >
         <Button
           aria-label="Previous slide"
-          className="factory-carousel__prev"
+          className="factory-carousel__prev pointer-events-auto absolute top-1/2 left-2 size-9 -translate-y-1/2 rounded-full border-[#f1eee6]/50 bg-[#191f2b]/75 p-0 text-[#f1eee6] opacity-20 transition-opacity hover:opacity-100 focus-visible:opacity-100"
           data-carousel-prev=""
           onClick={() => step(-1)}
-          size="sm"
+          size="icon"
           type="button"
           variant="outline"
         >
-          Previous
+          <span aria-hidden="true">←</span>
         </Button>
         <Button
           aria-label="Next slide"
-          className="factory-carousel__next"
+          className="factory-carousel__next pointer-events-auto absolute top-1/2 right-2 size-9 -translate-y-1/2 rounded-full border-[#f1eee6]/50 bg-[#191f2b]/75 p-0 text-[#f1eee6] opacity-20 transition-opacity hover:opacity-100 focus-visible:opacity-100"
           data-carousel-next=""
           onClick={() => step(1)}
-          size="sm"
+          size="icon"
           type="button"
           variant="outline"
         >
-          Next
+          <span aria-hidden="true">→</span>
         </Button>
       </div>
     </section>

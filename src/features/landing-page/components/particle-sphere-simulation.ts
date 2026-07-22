@@ -9,6 +9,41 @@ export type Particle3D = {
   z: number;
 };
 
+export type Point2D = { x: number; y: number };
+
+/**
+ * Push a projected point outside a circular pointer cavity.
+ * `strength` fades the displacement so pointer leave restores the rest pose.
+ */
+export function repelProjectedPoint(
+  point: Point2D,
+  pointer: Point2D,
+  radius: number,
+  strength = 1,
+): Point2D {
+  const dx = point.x - pointer.x;
+  const dy = point.y - pointer.y;
+  const distance = Math.hypot(dx, dy);
+  const safeRadius = Math.max(0, radius);
+  const influence = Math.max(0, Math.min(1, strength));
+
+  if (safeRadius === 0 || distance >= safeRadius || influence === 0) {
+    return point;
+  }
+
+  const directionX = distance > 0.001 ? dx / distance : 1;
+  const directionY = distance > 0.001 ? dy / distance : 0;
+  const edgeX = pointer.x + directionX * safeRadius;
+  const edgeY = pointer.y + directionY * safeRadius;
+  const falloff = 1 - distance / safeRadius;
+  const blend = influence * (0.72 + falloff * 0.28);
+
+  return {
+    x: point.x + (edgeX - point.x) * blend,
+    y: point.y + (edgeY - point.y) * blend,
+  };
+}
+
 export type ParticleSphereSimulationConfig = ParticleSphereThemeKnobs & {
   /** Unit-sphere radius before projection (kept at 1 for math clarity). */
   radius: number;

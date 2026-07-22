@@ -43,7 +43,7 @@ describe("FactoryCarouselHarnessPage", () => {
 
     expect(html).toContain("data-factory-carousel-harness");
     expect(html).toContain("data-factory-carousel");
-    expect(html).toContain("Install");
+    expect(html).toContain("ralph");
   });
 
   test("calls notFound in production unless ENABLE_COMPONENT_EXAMPLES=1", async () => {

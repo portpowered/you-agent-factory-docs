@@ -68,5 +68,25 @@ describe("LandingPage", () => {
     expect(html).toContain(
       `--landing-carousel-neighbor-scale:${vars["--landing-carousel-neighbor-scale"]}`,
     );
+    expect(html).toContain("JetBrains Mono Variable");
+  });
+
+  test("layers one whale and one painted transition behind the whole mid scene", () => {
+    const html = renderToStaticMarkup(
+      <LandingPage
+        midSceneBackgroundSrc="/home/mid-end-whale.png"
+        midSceneTransitionSrc="/home/you-you-you-background.png"
+      />,
+    );
+
+    expect(html).toContain('data-landing-mid-scene-whale=""');
+    expect(html).toContain('src="/home/mid-end-whale.png"');
+    expect(html).toContain('data-landing-mid-scene-transition=""');
+    expect(html).toContain('src="/home/you-you-you-background.png"');
+    expect(html).toContain("w-[500%]");
+    expect(html).toContain("overflow-visible");
+    expect(html).toContain("opacity-100");
+    expect(html).toContain('data-landing-whale-mouth-spacing=""');
+    expect(html).not.toContain("down-transition.png");
   });
 });

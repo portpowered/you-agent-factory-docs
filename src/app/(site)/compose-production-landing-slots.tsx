@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Terminal, type TerminalProps } from "@/features/code";
+import type { TerminalProps } from "@/features/code";
 import { SiteFooter, type SiteFooterProps } from "@/features/footer";
 import {
   CapabilityStrip,
@@ -11,6 +11,9 @@ import {
   FaqPanel,
   type FaqPanelItem,
   type FaqPanelProps,
+  HeroCommandPanel,
+  type HeroModelProvider,
+  HeroPortrait,
   HeroSection,
   LandingFooterArt,
   LandingHeader,
@@ -21,7 +24,10 @@ import {
   YouiShowcase,
 } from "@/features/landing-page";
 import { ParticleSphere } from "@/features/landing-page/components/ParticleSphere";
-import type { LandingPageSlots } from "@/features/landing-page/LandingPage";
+import type {
+  LandingPageProps,
+  LandingPageSlots,
+} from "@/features/landing-page/LandingPage";
 import {
   fixtureLandingPageData,
   type LandingCapabilityData,
@@ -35,10 +41,13 @@ import {
   type LandingWhaleBubblesData,
   type LandingYouiData,
 } from "@/features/landing-page/landing-page.data";
+import { resolveLandingHomeAssets } from "@/features/landing-page/landing-page.public-assets";
 import {
   WHALE_BUBBLES_FIXTURE_ITEMS,
   WHALE_BUBBLES_FIXTURE_SRC,
 } from "@/features/landing-page/whale-bubbles.fixtures";
+import type { BuildModeEnv } from "@/lib/build/static-export";
+import { resolvePublicAssetHref } from "@/lib/navigation/site-metadata-path";
 
 /** Compose-local FAQ heading — same default as harness Wave B / faq-cta-harness. */
 const FAQ_PANEL_HEADING = "FAQ";
@@ -72,7 +81,8 @@ export type WiredProductionLandingSlot =
 export type ProductionLandingSlots = Pick<
   LandingPageSlots,
   WiredProductionLandingSlot
->;
+> &
+  Pick<LandingPageProps, "midSceneBackgroundSrc" | "midSceneTransitionSrc">;
 
 /**
  * Map fixture header onto the public LandingHeader contract.
@@ -96,9 +106,54 @@ export function mapFixtureHeaderToLandingHeaderProps(
 /** Real production header slot: LandingHeader from fixture nav. */
 export function composeProductionHeaderSlot(
   header: LandingHeaderData = fixtureLandingPageData.header,
+  search?: ReactNode,
 ): ReactNode {
-  return <LandingHeader {...mapFixtureHeaderToLandingHeaderProps(header)} />;
+  return (
+    <LandingHeader
+      {...mapFixtureHeaderToLandingHeaderProps(header)}
+      search={search}
+    />
+  );
 }
+
+export const HOMEPAGE_INSTALL_COMMAND =
+  "curl -fsSL https://youagentfactory.com/install.sh | sh";
+
+export const HOMEPAGE_GOAL_COMMAND =
+  'you run -a "loop" --to "build site, no mistakes"';
+
+export const HOMEPAGE_MODEL_PROVIDERS = [
+  {
+    id: "claude",
+    label: "Claude",
+    parameter: "--provider claude",
+  },
+  {
+    id: "codex",
+    label: "Codex",
+    parameter: "--provider codex",
+  },
+  {
+    id: "cursor",
+    label: "Cursor",
+    parameter: "--provider cursor",
+  },
+  {
+    id: "agy",
+    label: "Agy",
+    parameter: "--provider agy",
+  },
+  {
+    id: "opencode",
+    label: "OpenCode",
+    parameter: "--provider opencode",
+  },
+  {
+    id: "pi",
+    label: "Pi",
+    parameter: "--provider pi",
+  },
+] as const satisfies readonly HeroModelProvider[];
 
 export type FixtureHeroCommandSources = {
   cta?: LandingCtaContent;
@@ -151,18 +206,23 @@ export function mapFixtureCommandsToTerminalProps(
  */
 export function composeProductionHeroSlot(
   hero: LandingHeroData = fixtureLandingPageData.hero,
-  commandSources: FixtureHeroCommandSources = {
+  _commandSources: FixtureHeroCommandSources = {
     cta: fixtureLandingPageData.cta,
     carousel: fixtureLandingPageData.carousel,
   },
 ): ReactNode {
-  const terminal = mapFixtureCommandsToTerminalProps(commandSources);
-
   return (
     <HeroSection
-      sphere={<ParticleSphere className="h-full min-h-[220px] w-full" />}
-      subtitle={hero.subtitle}
-      terminal={terminal != null ? <Terminal {...terminal} /> : undefined}
+      portrait={<HeroPortrait src={hero.portraitSrc} />}
+      sphere={<ParticleSphere className="aspect-square h-auto w-full" />}
+      subtitle=""
+      terminal={
+        <HeroCommandPanel
+          goalCommand={HOMEPAGE_GOAL_COMMAND}
+          installCommand={HOMEPAGE_INSTALL_COMMAND}
+          providers={HOMEPAGE_MODEL_PROVIDERS}
+        />
+      }
       title={hero.title}
     />
   );
@@ -181,8 +241,15 @@ export function composeProductionCapabilitySlot(
  */
 export function composeProductionYouiSlot(
   youi: LandingYouiData = fixtureLandingPageData.youi,
+  graphSrc?: string,
 ): ReactNode {
-  return <YouiShowcase backgroundSrc={youi.imageSrc} title={youi.title} />;
+  return (
+    <YouiShowcase
+      backgroundSrc={youi.imageSrc}
+      graphSrc={graphSrc}
+      title={youi.title}
+    />
+  );
 }
 
 /**
@@ -214,9 +281,23 @@ export function mapFixtureCarouselToFactoryCarouselProps(
 /** Real production carousel slot: FactoryCarousel from fixture slides. */
 export function composeProductionCarouselSlot(
   carousel: LandingCarouselData = fixtureLandingPageData.carousel,
+  octopusSrc?: string,
 ): ReactNode {
   return (
-    <FactoryCarousel {...mapFixtureCarouselToFactoryCarouselProps(carousel)} />
+    <section
+      className="relative isolate overflow-hidden bg-transparent pb-24 text-[#191f2b] [--foreground:#191f2b] [--muted-foreground:#46505f]"
+      data-factory-scene=""
+    >
+      <div className="relative mx-auto max-w-[100rem]">
+        <FactoryCarousel
+          {...mapFixtureCarouselToFactoryCarouselProps(carousel)}
+          className="relative z-10"
+          eyebrow="pre-installed factories"
+          featureArtSrc={octopusSrc}
+          initialIndex={Math.min(1, Math.max(0, carousel.slides.length - 1))}
+        />
+      </div>
+    </section>
   );
 }
 
@@ -241,7 +322,13 @@ export function mapFixtureFaqToFaqPanelProps(
 export function composeProductionFaqSlot(
   faq: LandingFaqData = fixtureLandingPageData.faq,
 ): ReactNode {
-  return <FaqPanel {...mapFixtureFaqToFaqPanelProps(faq)} />;
+  return (
+    <FaqPanel
+      {...mapFixtureFaqToFaqPanelProps(faq)}
+      className="mx-auto max-w-[100rem]"
+      surface="parchment"
+    />
+  );
 }
 
 /**
@@ -265,8 +352,18 @@ export function mapFixtureCtaToCtaBandProps(
 /** Real production cta slot: CtaBand from fixture CTA fields. */
 export function composeProductionCtaSlot(
   cta: LandingCtaContent = fixtureLandingPageData.cta,
+  fogSrc?: string,
 ): ReactNode {
-  return <CtaBand {...mapFixtureCtaToCtaBandProps(cta)} />;
+  return (
+    <CtaBand
+      {...mapFixtureCtaToCtaBandProps(cta)}
+      fogSrc={fogSrc}
+      installCommand={undefined}
+      showAction={false}
+      supporting={undefined}
+      surface="overlay"
+    />
+  );
 }
 
 /**
@@ -285,6 +382,7 @@ export function mapFixtureWhaleBubblesToSectionProps(
       ? whaleBubbles.bubbles.map((bubble) => ({
           id: bubble.id,
           label: bubble.label,
+          description: bubble.description,
         }))
       : WHALE_BUBBLES_FIXTURE_ITEMS;
 
@@ -298,6 +396,7 @@ export function composeProductionWhaleBubblesSlot(
   return (
     <WhaleBubblesSection
       {...mapFixtureWhaleBubblesToSectionProps(whaleBubbles)}
+      renderPlate={false}
     />
   );
 }
@@ -308,26 +407,45 @@ export function composeProductionWhaleBubblesSlot(
  */
 export function mapFixtureFooterToSiteFooterProps(
   footer: LandingFooterData = fixtureLandingPageData.footer,
+  fieldSrc?: string,
 ): SiteFooterProps {
   const art =
     footer.artSrc != null && footer.artSrc.length > 0 ? (
-      <LandingFooterArt src={footer.artSrc} />
+      <LandingFooterArt fieldSrc={fieldSrc} src={footer.artSrc} />
     ) : undefined;
 
   return {
     columns: footer.columns,
     meta: {
       copyright: footer.meta.copyright,
+      links: [
+        ...(footer.meta.author
+          ? [{ label: footer.meta.author, href: "/coming-soon/about" }]
+          : []),
+        ...(footer.meta.license
+          ? [
+              {
+                label: footer.meta.license,
+                href: "https://github.com/portpowered/you-agent-factory/blob/main/LICENSE",
+              },
+            ]
+          : []),
+      ],
     },
     art,
+    className:
+      "[--background:#dfd6c5] [--foreground:#191f2b] [--muted-foreground:#46505f] [--border:rgba(25,31,43,0.22)]",
   };
 }
 
 /** Real production footer: SiteFooter + LandingFooterArt. */
 export function composeProductionFooterSlot(
   footer: LandingFooterData = fixtureLandingPageData.footer,
+  fieldSrc?: string,
 ): ReactNode {
-  return <SiteFooter {...mapFixtureFooterToSiteFooterProps(footer)} />;
+  return (
+    <SiteFooter {...mapFixtureFooterToSiteFooterProps(footer, fieldSrc)} />
+  );
 }
 
 /**
@@ -337,19 +455,53 @@ export function composeProductionFooterSlot(
  */
 export function composeProductionLandingSlots(
   data: LandingPageData = fixtureLandingPageData,
+  basePathOrEnv: string | BuildModeEnv = process.env,
+  search?: ReactNode,
 ): ProductionLandingSlots {
+  const assets = resolveLandingHomeAssets(basePathOrEnv);
+  const resolveOptionalAsset = (assetPath: string | undefined) =>
+    assetPath === undefined
+      ? undefined
+      : resolvePublicAssetHref(assetPath, basePathOrEnv);
+
   return {
-    header: composeProductionHeaderSlot(data.header),
-    hero: composeProductionHeroSlot(data.hero, {
-      cta: data.cta,
-      carousel: data.carousel,
-    }),
+    header: composeProductionHeaderSlot(data.header, search),
+    hero: composeProductionHeroSlot(
+      {
+        ...data.hero,
+        portraitSrc:
+          resolveOptionalAsset(data.hero.portraitSrc) ?? assets.womanHead,
+      },
+      {
+        cta: data.cta,
+        carousel: data.carousel,
+      },
+    ),
     capability: composeProductionCapabilitySlot(data.capability),
-    youi: composeProductionYouiSlot(data.youi),
-    carousel: composeProductionCarouselSlot(data.carousel),
+    youi: composeProductionYouiSlot(
+      {
+        ...data.youi,
+        imageSrc: resolveOptionalAsset(data.youi.imageSrc) ?? assets.monkey,
+      },
+      assets.factoryGraphUi,
+    ),
+    carousel: composeProductionCarouselSlot(data.carousel, assets.octopus),
     faq: composeProductionFaqSlot(data.faq),
-    cta: composeProductionCtaSlot(data.cta),
-    whaleBubbles: composeProductionWhaleBubblesSlot(data.whaleBubbles),
-    footer: composeProductionFooterSlot(data.footer),
+    cta: composeProductionCtaSlot(data.cta, assets.ctaFog),
+    whaleBubbles: composeProductionWhaleBubblesSlot({
+      ...data.whaleBubbles,
+      whaleSrc:
+        resolveOptionalAsset(data.whaleBubbles.whaleSrc) ?? assets.midEndWhale,
+    }),
+    footer: composeProductionFooterSlot(
+      {
+        ...data.footer,
+        artSrc:
+          resolveOptionalAsset(data.footer.artSrc) ?? assets.seadragonCrop,
+      },
+      assets.youYouYouBackground,
+    ),
+    midSceneBackgroundSrc: assets.midEndWhale,
+    midSceneTransitionSrc: assets.youYouYouBackground,
   };
 }

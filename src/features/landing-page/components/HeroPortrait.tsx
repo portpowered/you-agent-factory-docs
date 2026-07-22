@@ -33,7 +33,7 @@ export const HERO_PORTRAIT_INTRINSIC_HEIGHT = 801;
  * Matches layout intent: majority of a narrow viewport, ~320px on desktop —
  * not an unconstrained full-viewport / 100vw default.
  */
-export const HERO_PORTRAIT_SIZES = "(max-width: 768px) 60vw, 320px";
+export const HERO_PORTRAIT_SIZES = "(max-width: 768px) 78vw, 480px";
 
 /** Default descriptive alt for the fixture portrait subject. */
 export const HERO_PORTRAIT_DEFAULT_ALT = "Portrait";
@@ -58,7 +58,7 @@ export function HeroPortrait({
     <div
       aria-hidden={isDecorative ? true : undefined}
       className={cn(
-        "relative block max-w-[min(100%,20rem)] select-none",
+        "relative block w-full max-w-[min(100%,30rem)] select-none drop-shadow-[0_20px_24px_rgba(0,0,0,0.3)]",
         className,
       )}
       data-hero-portrait=""

@@ -3,13 +3,14 @@
  * (fill-high-traffic-locales-008).
  *
  * Opt-in: requires VERIFY_PRODUCTION_INTEGRATION_TESTS=1 and a fresh
- * production build. Walks home → getting-started → install/CLI for ja,
- * zh-CN, and vi; asserts target-language prose, copyable install/run
- * commands, and language switching among filled surfaces.
+ * production build. Walks the shared production landing → getting-started →
+ * install/CLI for ja, zh-CN, and vi; asserts target-language docs prose,
+ * copyable install/run commands, and language switching among filled docs.
  */
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import type { Page } from "playwright";
+import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { getDocsPageDir } from "@/lib/content/content-paths";
 import { loadPageMessages } from "@/lib/content/page-messages-load";
 import type { NonDefaultLocale } from "@/lib/content/shipped-localized-docs";
@@ -38,7 +39,6 @@ const INSTALL_PS1_COMMAND =
 const CLAUDE_INIT_COMMAND = "you init --executor claude";
 const RUN_COMMAND = "you run --named @goal/blah";
 
-const ENGLISH_HOME_SUBTITLE = "Docs for the agent factory CLI";
 const ENGLISH_GETTING_STARTED_TITLE = "Getting Started";
 
 describe("high-traffic locales browser journey", () => {
@@ -47,13 +47,11 @@ describe("high-traffic locales browser journey", () => {
       return;
     }
 
-    const enHome = await loadUiMessages("en");
     const enGettingStarted = await loadPageMessages(
       getDocsPageDir("guides", "getting-started"),
       "en",
       { route: "/docs/guides/getting-started" },
     );
-    expect(enHome.home.subtitle).toBe(ENGLISH_HOME_SUBTITLE);
     expect(enGettingStarted.title).toBe(ENGLISH_GETTING_STARTED_TITLE);
 
     const session = await acquireVerifyServerSession({
@@ -68,7 +66,6 @@ describe("high-traffic locales browser journey", () => {
       page.setDefaultTimeout(60_000);
 
       for (const locale of NON_DEFAULT_LOCALES) {
-        const home = (await loadUiMessages(locale)).home;
         const gettingStarted = await loadPageMessages(
           getDocsPageDir("guides", "getting-started"),
           locale,
@@ -85,7 +82,6 @@ describe("high-traffic locales browser journey", () => {
           { route: `/${locale}/docs/documentation/cli` },
         );
 
-        expect(home.subtitle).not.toBe(ENGLISH_HOME_SUBTITLE);
         expect(gettingStarted.title).not.toBe(ENGLISH_GETTING_STARTED_TITLE);
 
         await page.goto(`${session.baseUrl}/${locale}`, {
@@ -93,37 +89,12 @@ describe("high-traffic locales browser journey", () => {
         });
 
         await page
-          .getByRole("heading", { level: 1, name: home.title, exact: true })
-          .waitFor({ state: "visible" });
-        // home.intro is metadata-only; assert visible body prose instead.
-        // Scope to article so docs sidebar chrome (English tree titles) does
-        // not false-fail "no English stub body" checks.
-        await expectArticleContains(page, home.subtitle);
-        await page
           .getByRole("heading", {
-            level: 2,
-            name: home.installSectionTitle,
+            level: 1,
+            name: fixtureLandingPageData.hero.title.replace("\n", " "),
             exact: true,
           })
           .waitFor({ state: "visible" });
-        await page
-          .getByRole("heading", {
-            level: 2,
-            name: home.runSectionTitle,
-            exact: true,
-          })
-          .waitFor({ state: "visible" });
-        await page
-          .getByRole("heading", {
-            level: 2,
-            name: home.whySectionTitle,
-            exact: true,
-          })
-          .waitFor({ state: "visible" });
-        await expectArticleContains(page, home.whyBody);
-        await expectArticleContains(page, INSTALL_COMMAND);
-        await expectArticleContains(page, RUN_COMMAND);
-        expect(await articleContent(page)).not.toContain(ENGLISH_HOME_SUBTITLE);
 
         await page.goto(
           `${session.baseUrl}/${locale}/docs/guides/getting-started`,
@@ -132,9 +103,9 @@ describe("high-traffic locales browser journey", () => {
         await page
           .getByRole("heading", { level: 1, name: gettingStarted.title })
           .waitFor({ state: "visible" });
-        if (gettingStarted.openingSummary) {
-          await expectArticleContains(page, gettingStarted.openingSummary);
-        }
+        // openingSummary is metadata-only; the localized description is the
+        // visible lead on the rendered guide.
+        await expectArticleContains(page, gettingStarted.description);
         // PS-200: Getting Started owns the full install teaching path.
         await expectArticleContains(page, INSTALL_COMMAND);
         await expectArticleContains(page, INSTALL_PS1_COMMAND);
@@ -162,7 +133,9 @@ describe("high-traffic locales browser journey", () => {
         const gettingStartedHref = await page
           .getByRole("link", { name: gettingStartedLabel })
           .getAttribute("href");
-        expect(gettingStartedHref).toMatch(/\/docs\/guides\/getting-started$/);
+        expect(gettingStartedHref).toMatch(
+          /\/docs\/guides\/getting-started\/?$/,
+        );
         const installArticle = await articleContent(page);
         expect(installArticle).not.toContain(INSTALL_COMMAND);
         expect(installArticle).not.toContain(INSTALL_PS1_COMMAND);
@@ -201,7 +174,7 @@ describe("high-traffic locales browser journey", () => {
       const languageOpenJa = (await loadUiMessages("ja")).language.open;
       await page.getByRole("button", { name: languageOpenJa }).click();
       await page.getByRole("menuitem", { name: /简体中文/ }).click();
-      await page.waitForURL("**/zh-CN/docs/guides/getting-started");
+      await page.waitForURL(/\/zh-CN\/docs\/guides\/getting-started\/?$/);
       await page
         .getByRole("heading", {
           level: 1,
@@ -215,7 +188,7 @@ describe("high-traffic locales browser journey", () => {
       const languageOpenZh = (await loadUiMessages("zh-CN")).language.open;
       await page.getByRole("button", { name: languageOpenZh }).click();
       await page.getByRole("menuitem", { name: /^Tiếng Việt$/i }).click();
-      await page.waitForURL("**/vi/docs/guides/getting-started");
+      await page.waitForURL(/\/vi\/docs\/guides\/getting-started\/?$/);
       await page
         .getByRole("heading", {
           level: 1,

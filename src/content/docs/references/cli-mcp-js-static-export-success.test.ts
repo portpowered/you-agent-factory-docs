@@ -15,19 +15,19 @@ const repoRoot = join(import.meta.dir, "../../../..");
 const PUBLISHED_ROUTES = [
   {
     slug: "cli",
-    htmlRelativePath: "out/docs/references/cli.html",
+    htmlRelativePath: "out/docs/references/cli/index.html",
     inventoryAttr: "data-cli-command-inventory",
     countAttr: "data-cli-command-count",
   },
   {
     slug: "mcp-reference",
-    htmlRelativePath: "out/docs/references/mcp-reference.html",
+    htmlRelativePath: "out/docs/references/mcp-reference/index.html",
     inventoryAttr: "data-mcp-tool-inventory",
     countAttr: "data-mcp-tool-count",
   },
   {
     slug: "javascript-runtime",
-    htmlRelativePath: "out/docs/references/javascript-runtime.html",
+    htmlRelativePath: "out/docs/references/javascript-runtime/index.html",
     inventoryAttr: "data-javascript-runtime-inventory",
     countAttr: "data-javascript-symbol-count",
   },
@@ -60,8 +60,8 @@ describe("W11 CLI/MCP/JS static-export inventory success", () => {
 
     // Old inventory artifact must be absent so /docs/references/mcp cannot
     // silently 200 as the moved MCP Reference page under static export.
-    expect(existsSync(join(repoRoot, "out/docs/references/mcp.html"))).toBe(
-      false,
-    );
+    expect(
+      existsSync(join(repoRoot, "out/docs/references/mcp/index.html")),
+    ).toBe(false);
   });
 });

@@ -40,7 +40,11 @@ const BUILT_HTML_DOC_ROUTES = [
   {
     path: "/docs/documentation/install",
     file: ".next/server/app/docs/documentation/install.html",
-    requiredSidebarUrls: [INSTALL_DOCS_URL],
+    // The install compatibility page remains directly addressable, but PS-200
+    // deliberately demotes it from explorer membership in favor of the full
+    // Getting Started path.
+    requiredSidebarUrls: [],
+    forbiddenSidebarUrls: [INSTALL_DOCS_URL],
   },
 ] as const;
 
@@ -166,6 +170,11 @@ describe("docs sidebar navigation (built HTML)", () => {
       expect(hasLegacyPlaceholderSidebar(visibleHtml)).toBe(false);
       for (const url of route.requiredSidebarUrls) {
         expect(sidebar).toContain(url);
+      }
+      if ("forbiddenSidebarUrls" in route) {
+        for (const url of route.forbiddenSidebarUrls) {
+          expect(sidebar).not.toContain(url);
+        }
       }
     });
   }

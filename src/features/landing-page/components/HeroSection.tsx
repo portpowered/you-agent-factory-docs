@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, Fragment, type ReactNode } from "react";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { cn } from "@/lib/utils";
 import { HeroPortrait } from "./HeroPortrait";
@@ -33,6 +33,8 @@ export type HeroSectionProps = {
    * Pass `""` to hide.
    */
   subtitle?: string;
+  /** Small reference badges printed above the primary YOU wordmark. */
+  badges?: readonly string[];
   /** Root className for layout / section placement. */
   className?: string;
   /** Optional inline styles for section anchoring. */
@@ -48,6 +50,7 @@ export const HERO_SECTION_TERMINAL_HOLE_MIN_HEIGHT = 160;
 export const HERO_SECTION_DEFAULT_TITLE = fixtureLandingPageData.hero.title;
 export const HERO_SECTION_DEFAULT_SUBTITLE =
   fixtureLandingPageData.hero.subtitle;
+export const HERO_SECTION_DEFAULT_BADGES = ["OPEN SOURCE", "MIT LICENSE"];
 
 function holeOrPlaceholder(
   holeName: "sphere" | "terminal",
@@ -80,71 +83,87 @@ export function HeroSection({
   terminal,
   title = HERO_SECTION_DEFAULT_TITLE,
   subtitle = HERO_SECTION_DEFAULT_SUBTITLE,
+  badges = HERO_SECTION_DEFAULT_BADGES,
   className,
   style,
 }: HeroSectionProps) {
   const hasTitle = typeof title === "string" && title.length > 0;
   const hasSubtitle = typeof subtitle === "string" && subtitle.length > 0;
   const portraitNode = portrait !== undefined ? portrait : <HeroPortrait />;
+  const titleLines = title.split("\n");
 
   return (
     <section
       aria-label={hasTitle ? undefined : "Hero"}
       className={cn(
-        "relative mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10 sm:px-6 sm:py-14",
+        "relative z-20 mx-auto grid min-h-[50rem] w-full max-w-[100rem] grid-cols-1 items-center gap-2 overflow-visible px-[clamp(1rem,4vw,4rem)] pt-0 pb-0 sm:px-8 md:grid-cols-[minmax(0,1.16fr)_minmax(22rem,0.84fr)] lg:gap-4",
         className,
       )}
       data-hero-section=""
       style={style}
     >
-      {hasTitle || hasSubtitle ? (
-        <header
-          className="space-y-2 text-center sm:text-left"
-          data-hero-section-copy=""
-        >
-          {hasTitle ? (
-            <h1
-              className="m-0 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl"
-              data-hero-section-title=""
-            >
-              {title}
-            </h1>
-          ) : null}
-          {hasSubtitle ? (
-            <p
-              className="m-0 max-w-2xl text-sm text-muted-foreground sm:text-base"
-              data-hero-section-subtitle=""
-            >
-              {subtitle}
-            </p>
-          ) : null}
-        </header>
-      ) : null}
+      <div
+        className="pointer-events-none absolute top-[-3%] right-[-34%] z-0 flex aspect-square w-[min(100vw,88rem)] items-center justify-center sm:right-[-28%] md:top-[-8%] md:right-[-24%]"
+        data-hero-section-sphere=""
+      >
+        {holeOrPlaceholder(
+          "sphere",
+          sphere,
+          HERO_SECTION_SPHERE_HOLE_MIN_HEIGHT,
+        )}
+      </div>
 
       <div
-        className="grid w-full grid-cols-1 items-center gap-6 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)_minmax(0,18rem)]"
-        data-hero-section-layout=""
+        className="relative z-20 flex min-w-0 flex-col items-start gap-4 pt-0"
+        data-hero-section-copy-column=""
       >
-        <div
-          className="flex justify-center md:justify-start"
-          data-hero-section-portrait=""
-        >
-          {portraitNode}
-        </div>
+        {hasTitle || hasSubtitle ? (
+          <header
+            className="w-full space-y-1 text-left"
+            data-hero-section-copy=""
+          >
+            {badges.length > 0 ? (
+              <div
+                className="flex flex-wrap gap-x-5 gap-y-1 font-sans text-[0.64rem] font-semibold tracking-[-0.02em] text-[#ecece4] uppercase sm:text-xs"
+                data-hero-section-badges=""
+              >
+                {badges.map((badge) => (
+                  <span key={badge}>{badge}</span>
+                ))}
+              </div>
+            ) : null}
+            {hasTitle ? (
+              <h1
+                className="m-0 whitespace-pre-line font-mono text-[clamp(3.8rem,8.4vw,8.5rem)] leading-[0.7] font-black tracking-[-0.09em] text-[#ecece4] uppercase"
+                data-hero-section-title=""
+              >
+                {titleLines.map((line, index) => {
+                  const highlighted = index === 0 && line.startsWith("YOU ");
+                  return (
+                    <Fragment key={line}>
+                      <span className="block">
+                        {highlighted ? (
+                          <>
+                            <span className="mr-[0.08em] inline-block bg-[#ecece4] px-[0.08em] text-[1.12em] text-[#191f2b]">
+                              YOU
+                            </span>{" "}
+                            {line.slice(4)}
+                          </>
+                        ) : (
+                          line
+                        )}
+                      </span>
+                      {index < titleLines.length - 1 ? "\n" : null}
+                    </Fragment>
+                  );
+                })}
+              </h1>
+            ) : null}
+          </header>
+        ) : null}
 
         <div
-          className="flex min-h-[var(--hero-section-sphere-min,220px)] w-full items-center justify-center"
-          data-hero-section-sphere=""
-        >
-          {holeOrPlaceholder(
-            "sphere",
-            sphere,
-            HERO_SECTION_SPHERE_HOLE_MIN_HEIGHT,
-          )}
-        </div>
-
-        <div
-          className="flex min-h-[var(--hero-section-terminal-min,160px)] w-full items-center justify-center md:col-span-2 lg:col-span-1"
+          className="flex min-h-[var(--hero-section-terminal-min,160px)] w-[min(90vw,44rem)] max-w-none items-center md:w-[min(55vw,44rem)]"
           data-hero-section-terminal=""
         >
           {holeOrPlaceholder(
@@ -152,6 +171,27 @@ export function HeroSection({
             terminal,
             HERO_SECTION_TERMINAL_HOLE_MIN_HEIGHT,
           )}
+        </div>
+
+        {hasSubtitle ? (
+          <p
+            className="m-0 max-w-[56rem] whitespace-pre-line text-[0.68rem] leading-[1.28] text-[#ecece4]/86 sm:text-xs lg:text-sm"
+            data-hero-section-subtitle=""
+          >
+            {subtitle}
+          </p>
+        ) : null}
+      </div>
+
+      <div
+        className="relative isolate min-h-[29rem] w-full sm:min-h-[36rem] md:min-h-[48rem]"
+        data-hero-section-layout=""
+      >
+        <div
+          className="pointer-events-none absolute bottom-[-3%] left-1/2 z-10 flex w-[min(94%,38rem)] -translate-x-1/2 justify-center md:right-[-4%] md:bottom-[-6%] md:left-auto md:w-[min(112%,38rem)] md:translate-x-0"
+          data-hero-section-portrait=""
+        >
+          {portraitNode}
         </div>
       </div>
     </section>
