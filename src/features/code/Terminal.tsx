@@ -17,6 +17,10 @@ export type TerminalProps = {
   lines: string[];
   /** Optional chip/tab labels rendered in the terminal chrome. */
   chips?: string[];
+  /** Selected interactive chip. Chips remain presentational when omitted. */
+  activeChip?: string;
+  /** Enables chip buttons and reports the selected chip. */
+  onChipChange?: (chip: string) => void;
   /** Visual shell: yellow install vs dark pill. Defaults to `"install"`. */
   variant?: TerminalVariant;
   className?: string;
@@ -31,6 +35,8 @@ export type TerminalProps = {
 export function Terminal({
   lines,
   chips,
+  activeChip,
+  onChipChange,
   variant = "install",
   className,
 }: TerminalProps) {
@@ -86,20 +92,40 @@ export function Terminal({
             data-terminal-chips=""
             className="flex min-w-0 flex-1 flex-wrap items-center gap-1"
           >
-            {chips.map((chip) => (
-              <span
-                key={chip}
-                data-terminal-chip=""
-                className={cn(
-                  "truncate rounded-md px-2 py-0.5 text-xs font-medium",
-                  isInstall
-                    ? "bg-[color-mix(in_oklab,var(--primary-foreground)_14%,transparent)] text-[var(--primary-foreground)]"
+            {chips.map((chip) => {
+              const selected = chip === activeChip;
+              const chipClassName = cn(
+                "truncate rounded-md px-2 py-0.5 text-xs font-medium",
+                isInstall
+                  ? "bg-[color-mix(in_oklab,var(--primary-foreground)_14%,transparent)] text-[var(--primary-foreground)]"
+                  : selected
+                    ? "bg-[#f3bd3d] text-[#191f2b]"
                     : "bg-zinc-800 text-zinc-200",
-                )}
-              >
-                {chip}
-              </span>
-            ))}
+                onChipChange &&
+                  "transition-colors hover:bg-[#f3bd3d] hover:text-[#191f2b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f3bd3d]",
+              );
+
+              return onChipChange ? (
+                <button
+                  aria-pressed={selected}
+                  className={chipClassName}
+                  data-terminal-chip=""
+                  key={chip}
+                  onClick={() => onChipChange(chip)}
+                  type="button"
+                >
+                  {chip}
+                </button>
+              ) : (
+                <span
+                  className={chipClassName}
+                  data-terminal-chip=""
+                  key={chip}
+                >
+                  {chip}
+                </span>
+              );
+            })}
           </div>
         ) : (
           <div className="min-w-0 flex-1" />

@@ -4,11 +4,14 @@ import { join } from "node:path";
 import {
   LANDING_HOME_ASSET_ROOT,
   LANDING_HOME_PUBLIC_DIR,
+  type LandingHomeAssetKey,
   landingHomeAssetFiles,
   landingHomeAssetPath,
   landingHomeAssets,
 } from "@/features/landing-page/landing-page.assets";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
+import { resolveLandingHomeAssets } from "@/features/landing-page/landing-page.public-assets";
+import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 
 describe("landing-page.assets", () => {
   test("public/home exists as the reserved homepage asset root", () => {
@@ -37,6 +40,20 @@ describe("landing-page.assets", () => {
     expect(fixtureLandingPageData.footer.artSrc?.startsWith("/home/")).toBe(
       true,
     );
+  });
+
+  test("project-site exports prefix every homepage public asset", () => {
+    const basePath = BUILT_APP_GITHUB_PAGES_BASE_PATH;
+    const resolved = resolveLandingHomeAssets({
+      NEXT_STATIC_EXPORT: "1",
+      GITHUB_PAGES_BASE_PATH: basePath,
+    });
+
+    for (const [key, assetPath] of Object.entries(landingHomeAssets)) {
+      expect(resolved[key as LandingHomeAssetKey]).toBe(
+        `${basePath}${assetPath}`,
+      );
+    }
   });
 
   test("staged homepage assets are present under public/home when sources were available", () => {

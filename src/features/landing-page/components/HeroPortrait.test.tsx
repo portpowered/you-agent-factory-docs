@@ -20,7 +20,7 @@ describe("HeroPortrait", () => {
     expect(HERO_PORTRAIT_DEFAULT_SRC).toBe(landingHomeAssets.womanHead);
     expect(HERO_PORTRAIT_DEFAULT_SRC).toBe("/home/woman-head.png");
     expect(html).toContain(`sizes="${HERO_PORTRAIT_SIZES}"`);
-    expect(HERO_PORTRAIT_SIZES).toContain("320px");
+    expect(HERO_PORTRAIT_SIZES).toContain("480px");
     expect(HERO_PORTRAIT_SIZES).not.toBe("100vw");
     expect(html).toContain(`width="${HERO_PORTRAIT_INTRINSIC_WIDTH}"`);
     expect(html).toContain(`height="${HERO_PORTRAIT_INTRINSIC_HEIGHT}"`);

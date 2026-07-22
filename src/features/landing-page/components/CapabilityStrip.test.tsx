@@ -12,23 +12,20 @@ describe("CapabilityStrip", () => {
     cleanup();
   });
 
-  test("renders default FLOWS / AGENTS / ENTRY / OS fixture labels", () => {
+  test("renders the poster-scale capability field", () => {
     const html = renderToStaticMarkup(<CapabilityStrip />);
 
     expect(html).toContain('data-capability-strip=""');
-    expect(html).toContain('data-capability-strip-count="4"');
+    expect(html).toContain('data-capability-strip-count="7"');
     expect(html).toContain('aria-label="Capabilities"');
     expect(html).toContain("<ul");
     expect(html).toContain("FLOWS");
     expect(html).toContain("AGENTS");
     expect(html).toContain("ENTRY");
     expect(html).toContain("OS");
-    expect(CAPABILITY_STRIP_DEFAULT_ITEMS.map((item) => item.label)).toEqual([
-      "FLOWS",
-      "AGENTS",
-      "ENTRY",
-      "OS",
-    ]);
+    expect(CAPABILITY_STRIP_DEFAULT_ITEMS.map((item) => item.label)).toEqual(
+      fixtureLandingPageData.capability.items.map((item) => item.label),
+    );
     expect(CAPABILITY_STRIP_DEFAULT_ITEMS).toEqual(
       fixtureLandingPageData.capability.items,
     );
@@ -62,13 +59,16 @@ describe("CapabilityStrip", () => {
     expect(html).not.toContain("FLOWS");
   });
 
-  test("non-interactive items use list semantics without links", () => {
+  test("default poster items expose direct documentation links", () => {
     const html = renderToStaticMarkup(<CapabilityStrip />);
 
     expect(html).toContain("<ul");
     expect(html).toContain("<li");
-    expect(html).not.toContain("data-capability-strip-link");
-    expect(html).not.toContain("<a ");
+    expect(html).toContain('data-capability-token="mcp"');
+    expect(html).toContain('data-capability-token="api"');
+    expect(html).toContain('data-capability-token="sse"');
+    expect(html).toContain('data-capability-token="js"');
+    expect(html).toContain('data-capability-token="graph"');
   });
 
   test("items with href are keyboard-focusable links with focus treatment", () => {
@@ -88,19 +88,40 @@ describe("CapabilityStrip", () => {
     expect(link.tagName).toBe("A");
     expect(link.getAttribute("href")).toBe("#flows");
     expect(link.className).toContain("focus-visible:ring-2");
-    expect(link.className).toContain("focus-visible:ring-ring");
+    expect(link.className).toContain("focus-visible:ring-[#191f2b]");
 
-    const plain = container.querySelector(
+    const autoLinked = container.querySelector(
       '[data-capability-strip-item-id="agents"]',
     );
-    expect(plain?.querySelector("a")).toBeNull();
-    expect(plain?.textContent).toContain("AGENTS");
+    expect(autoLinked?.querySelector("a")?.getAttribute("href")).toBe(
+      "/docs/workers",
+    );
+    expect(autoLinked?.textContent).toContain("AGENTS");
   });
 
-  test("horizontal strip classes wrap on narrow viewports", () => {
+  test("poster field keeps the reference typography in one stacked column", () => {
     const html = renderToStaticMarkup(<CapabilityStrip />);
 
-    expect(html).toContain("flex");
-    expect(html).toContain("flex-wrap");
+    expect(html).toContain("flex-col");
+    expect(html).toContain("justify-center");
+    expect(html).toContain('data-capability-copy-position="transition"');
+    expect(html).toContain("pt-0");
+    expect(html).toContain("text-[#191f2b]");
+  });
+
+  test("renders the painted YOU background beneath the feature copy", () => {
+    const html = renderToStaticMarkup(
+      <CapabilityStrip backgroundSrc="/home/you-you-you-background.png" />,
+    );
+
+    expect(html).toContain('data-capability-background=""');
+    expect(html).toContain('src="/home/you-you-you-background.png"');
+  });
+
+  test("does not render the retired down-transition layer", () => {
+    const html = renderToStaticMarkup(<CapabilityStrip />);
+
+    expect(html).not.toContain("data-capability-transition");
+    expect(html).not.toContain("down-transition.png");
   });
 });

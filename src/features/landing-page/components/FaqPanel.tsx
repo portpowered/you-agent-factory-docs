@@ -16,11 +16,13 @@ export type FaqPanelProps = {
   /** Optional section heading above the list. */
   heading?: string;
   className?: string;
+  /** Visual surface; transparent lets a shared scene image show through. */
+  surface?: "parchment" | "transparent";
 };
 
 const QUESTION_BUTTON_CLASS = cn(
   "flex w-full items-center justify-between gap-3 text-left",
-  "rounded-sm px-1 py-1 text-base font-semibold text-foreground",
+  "rounded-sm px-1 py-1 font-sans text-lg font-medium leading-snug text-[#191f2b] sm:text-xl",
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 );
 
@@ -28,9 +30,16 @@ const QUESTION_BUTTON_CLASS = cn(
  * Landing-page FAQ panel: parchment list with keyboard-reachable question
  * disclosures. Owned by W-faq-cta — not docs FAQ chrome (`features/faq`).
  */
-export function FaqPanel({ items, heading, className }: FaqPanelProps) {
+export function FaqPanel({
+  items,
+  heading,
+  className,
+  surface = "parchment",
+}: FaqPanelProps) {
   const baseId = useId();
-  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(() => new Set());
+  const [openIds, setOpenIds] = useState<ReadonlySet<string>>(
+    () => new Set(items.map((item) => item.id)),
+  );
 
   function toggle(id: string) {
     setOpenIds((prev) => {
@@ -48,25 +57,28 @@ export function FaqPanel({ items, heading, className }: FaqPanelProps) {
     <section
       aria-label={heading ?? "Frequently asked questions"}
       className={cn(
-        "relative w-full overflow-hidden rounded-lg border border-[#c4b49a]/70",
-        "bg-[linear-gradient(165deg,#f7f0e2_0%,#efe4d0_48%,#e8dcc4_100%)]",
-        "px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_10px_28px_rgba(72,52,28,0.12)]",
-        "text-[#3d3428]",
+        "relative w-full overflow-hidden text-[#3d3428] sm:w-[72%]",
+        surface === "parchment"
+          ? ["border-0 bg-[#dfd6c5]", "px-5 py-7 shadow-none sm:px-10 sm:py-12"]
+          : "border-0 bg-transparent px-0 py-7 shadow-none sm:px-0 sm:py-10",
         className,
       )}
       data-landing-faq-panel=""
-      data-landing-faq-parchment=""
+      data-landing-faq-parchment={surface === "parchment" ? "" : undefined}
+      data-landing-faq-surface={surface}
     >
-      {/* Soft edge vignette — reads as paper, not a flat card. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(92,70,40,0.08)_100%)]"
-      />
+      {surface === "parchment" ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(92,70,40,0.08)_100%)]"
+          data-landing-faq-vignette=""
+        />
+      ) : null}
 
       <div className="relative">
         {heading ? (
           <h2
-            className="mb-4 text-lg font-semibold tracking-tight text-[#2f281f]"
+            className="mb-8 font-sans text-4xl font-medium tracking-[-0.055em] text-[#191f2b] uppercase sm:text-6xl"
             data-landing-faq-heading=""
           >
             {heading}
@@ -117,7 +129,7 @@ export function FaqPanel({ items, heading, className }: FaqPanelProps) {
                     id={panelId}
                     aria-labelledby={headingId}
                     hidden={!isOpen}
-                    className="mt-2 px-1 text-sm leading-relaxed text-[#4a4034]"
+                    className="mt-3 px-1 text-base leading-relaxed whitespace-pre-line text-[#4a4034] sm:text-lg"
                     data-landing-faq-answer=""
                   >
                     {item.answer}

@@ -30,7 +30,7 @@ describe("LandingHeader", () => {
     expect(nav.getAttribute("data-landing-header-nav")).toBe("");
 
     for (const item of FIXTURE_NAV) {
-      const link = within(nav).getByRole("link", { name: item.label });
+      const link = within(header).getByRole("link", { name: item.label });
       expect(link.getAttribute("href")).toBe(item.href);
       expect(link.className).toContain("focus-visible:ring-2");
     }
@@ -70,5 +70,15 @@ describe("LandingHeader", () => {
     rerender(<LandingHeader items={[{ label: "Blog", href: "/blog" }]} />);
     expect(document.querySelector("[data-landing-header-search]")).toBeNull();
     expect(screen.getByRole("link", { name: "Blog" })).toBeTruthy();
+  });
+
+  test("keeps the brand in the geometric center grid column", () => {
+    render(<LandingHeader brand="YOU" items={[...FIXTURE_NAV]} />);
+
+    const brand = screen.getByRole("link", { name: "YOU" });
+    expect(brand.className).toContain("col-start-2");
+    expect(brand.parentElement?.className).toContain(
+      "grid-cols-[1fr_auto_1fr]",
+    );
   });
 });

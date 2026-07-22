@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render } from "@testing-library/react";
 import {
   FactoryCarousel,
   FactorySlide,
@@ -27,9 +27,8 @@ describe("factory-carousel-harness", () => {
     expect(sample.id).toBe("sample");
   });
 
-  test("fixture slides are 4–5 local factory slides", () => {
-    expect(FACTORY_CAROUSEL_HARNESS_SLIDES.length).toBeGreaterThanOrEqual(4);
-    expect(FACTORY_CAROUSEL_HARNESS_SLIDES.length).toBeLessThanOrEqual(5);
+  test("fixture slides mirror the current local factory set", () => {
+    expect(FACTORY_CAROUSEL_HARNESS_SLIDES.length).toBe(8);
     for (const slide of FACTORY_CAROUSEL_HARNESS_SLIDES) {
       expect(slide.id.length).toBeGreaterThan(0);
       expect(slide.title.length).toBeGreaterThan(0);
@@ -50,8 +49,12 @@ describe("factory-carousel-harness", () => {
     ).toBeTruthy();
     expect(container.querySelector("[data-factory-carousel]")).toBeTruthy();
 
-    expect(screen.getByText("Install")).toBeTruthy();
-    expect(screen.getByText("Loop")).toBeTruthy();
+    expect(
+      container.querySelector('[data-carousel-slide="slide-ralph"]'),
+    ).toBeTruthy();
+    expect(
+      container.querySelector('[data-carousel-slide="slide-loop"]'),
+    ).toBeTruthy();
 
     // Carousel-only: no sibling-lane chrome markers.
     expect(container.querySelector("[data-landing-page]")).toBeNull();

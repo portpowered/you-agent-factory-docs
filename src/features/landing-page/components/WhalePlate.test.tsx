@@ -175,8 +175,8 @@ describe("WhalePlate", () => {
     const image = document.querySelector(
       "img[data-whale-plate-image]",
     ) as HTMLImageElement;
-    expect(image.style.transform).toContain("scale(0.78)");
-    expect(image.style.opacity).toBe("0.35");
+    expect(image.style.transform).toContain("scale(0.88)");
+    expect(image.style.opacity).toBe("0.78");
 
     const host = document.querySelector("[data-whale-plate]");
     expect(host?.getAttribute("data-whale-phase")).toBe("initial");

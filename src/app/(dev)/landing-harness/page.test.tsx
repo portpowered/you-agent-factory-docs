@@ -77,7 +77,9 @@ describe("LandingHarnessPage", () => {
     expect(html).toContain('data-particle-sphere=""');
     expect(html).toContain('data-particle-sphere-canvas=""');
     expect(html).toContain('data-terminal=""');
-    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain(
+      fixtureLandingPageData.cta.installCommand.replaceAll('"', "&quot;"),
+    );
     expect(html).not.toContain('data-landing-placeholder="hero"');
 
     // Wave B: wired carousel (FactoryCarousel) from fixture slides
@@ -86,7 +88,7 @@ describe("LandingHarnessPage", () => {
     for (const slide of fixtureLandingPageData.carousel.slides) {
       expect(html).toContain(slide.title);
       expect(html).toContain(slide.blurb);
-      expect(html).toContain(slide.command);
+      expect(html).toContain(slide.command.replaceAll('"', "&quot;"));
     }
 
     // Wave B: wired faq (FaqPanel) from fixture items
@@ -102,7 +104,9 @@ describe("LandingHarnessPage", () => {
     expect(html).not.toContain('data-landing-placeholder="cta"');
     expect(html).toContain(fixtureLandingPageData.cta.headline);
     expect(html).toContain(fixtureLandingPageData.cta.supporting);
-    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain(
+      fixtureLandingPageData.cta.installCommand.replaceAll('"', "&quot;"),
+    );
     expect(html).toContain("Install the CLI");
 
     // Remaining unwired slots (header, capability, youi) stay labeled placeholders
@@ -120,11 +124,7 @@ describe("LandingHarnessPage", () => {
     // Unwired fixture content trees are not mounted as filled slots
     // (command strings may still appear via soft-wired Terminal chrome /
     // FactoryCarousel slides).
-    expect(html).not.toContain(fixtureLandingPageData.hero.title);
     expect(html).not.toContain(fixtureLandingPageData.hero.subtitle);
-    expect(html).not.toContain(
-      fixtureLandingPageData.capability.items[0]?.label ?? "",
-    );
     expect(html).not.toContain(fixtureLandingPageData.youi.title);
 
     const vars = landingThemeToCssVars();

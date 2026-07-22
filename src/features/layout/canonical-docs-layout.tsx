@@ -24,7 +24,7 @@ export function CanonicalDocsLayout({
   const pageTree = localizePageTree(source.pageTree, locale, { messages });
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-[#191f2b] text-[#ecece4] [--background:#191f2b] [--foreground:#ecece4] [--card:#232a38] [--muted:#232a38] [--muted-foreground:#b8bdc7] [--sidebar:#191f2b] [--sidebar-foreground:#ecece4]">
       <DocsHeader messages={messages} pageTree={pageTree} locale={locale} />
       <main className="flex min-h-0 flex-1 flex-col">
         <DocsLayout

@@ -237,7 +237,7 @@
     "onThisPageBrowse": "Browse"
   },
   "browseIndex": {
-    "title": "Browse",
+    "title": "Docs",
     "description": "Start from the kind of collection you need: guides, concepts, techniques, or documentation. This page points you to the right part of the reference and gives a few strong starting pages.",
     "quickRoutesTitle": "Quick routes",
     "quickRoutesDescription": "Use these entry points when you know how you want to explore, but not the exact page yet.",

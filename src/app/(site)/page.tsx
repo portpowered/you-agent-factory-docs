@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
-import { renderHomePage } from "./site-renderers";
+import { renderHomePage } from "./home-renderer";
 
 export async function generateMetadata(): Promise<Metadata> {
   const messages = await loadUiMessages();

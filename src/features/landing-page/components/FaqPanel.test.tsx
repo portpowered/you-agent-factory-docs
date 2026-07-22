@@ -44,7 +44,7 @@ describe("FaqPanel", () => {
       const control = within(questionHeading).getByRole("button", {
         name: item.question,
       });
-      expect(control.getAttribute("aria-expanded")).toBe("false");
+      expect(control.getAttribute("aria-expanded")).toBe("true");
       expect(control.className).toContain("focus-visible:ring-2");
     }
   });
@@ -59,12 +59,10 @@ describe("FaqPanel", () => {
     expect(answerPanelId).toBeTruthy();
     const answerPanel = document.getElementById(answerPanelId as string);
     expect(answerPanel).toBeTruthy();
-    expect(answerPanel?.hidden).toBe(true);
+    expect(answerPanel?.hidden).toBe(false);
     expect(answerPanel?.textContent).toContain(first.answer);
 
-    await user.click(control);
     expect(control.getAttribute("aria-expanded")).toBe("true");
-    expect(answerPanel?.hidden).toBe(false);
     expect(
       screen.getByRole("region", { name: first.question }).textContent,
     ).toContain(first.answer);
@@ -72,6 +70,10 @@ describe("FaqPanel", () => {
     await user.click(control);
     expect(control.getAttribute("aria-expanded")).toBe("false");
     expect(answerPanel?.hidden).toBe(true);
+
+    await user.click(control);
+    expect(control.getAttribute("aria-expanded")).toBe("true");
+    expect(answerPanel?.hidden).toBe(false);
   });
 
   test("empty items render a stable empty panel without throwing", () => {
@@ -83,5 +85,21 @@ describe("FaqPanel", () => {
     expect(panel.getAttribute("data-landing-faq-panel")).toBe("");
     expect(panel.querySelector("[data-landing-faq-empty]")).toBeTruthy();
     expect(panel.querySelectorAll("[data-landing-faq-item]")).toHaveLength(0);
+  });
+
+  test("transparent surface removes the standalone parchment card", () => {
+    render(
+      <FaqPanel
+        heading="FAQ"
+        items={[...FIXTURE_ITEMS]}
+        surface="transparent"
+      />,
+    );
+
+    const panel = screen.getByRole("region", { name: "FAQ" });
+    expect(panel.getAttribute("data-landing-faq-surface")).toBe("transparent");
+    expect(panel.getAttribute("data-landing-faq-parchment")).toBeNull();
+    expect(panel.querySelector("[data-landing-faq-vignette]")).toBeNull();
+    expect(panel.className).toContain("bg-transparent");
   });
 });

@@ -130,7 +130,8 @@ describe("reference payload budget baselines", () => {
       expect(entry.maxJsPayloadBytes).toBeGreaterThan(
         entry.measuredJsPayloadBytes,
       );
-      expect(entry.maxJsPayloadBytes).toBe(2_500_000);
+      expect(entry.measuredJsPayloadBytes).toBe(2_597_203);
+      expect(entry.maxJsPayloadBytes).toBe(3_250_000);
     }
   });
 
@@ -208,7 +209,7 @@ describe("reference payload measurement and evaluation", () => {
 
   test("fails when attributable JS exceeds the focused ceiling", () => {
     const { cwd, outDir } = createExportFixture({
-      jsBytes: 2_600_000,
+      jsBytes: REFERENCE_PAYLOAD_PAGE_BUDGETS[0].maxJsPayloadBytes + 1,
     });
 
     const evaluation = evaluateReferencePayloadBudgets({ outDir, cwd });

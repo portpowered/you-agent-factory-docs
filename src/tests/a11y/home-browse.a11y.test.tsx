@@ -47,13 +47,16 @@ describe("home and browse accessibility", () => {
     expect(document.querySelector("main")).toBeTruthy();
 
     const structure = expectCriticalPageStructure(document, {
-      expectedH1: fixtureLandingPageData.hero.title,
+      expectedH1: /YOU AGENT\s+FACTORY CLI/,
     });
     expect(structure.headingLevels[0]).toBe(1);
 
-    const nav = screen.getByRole("navigation", { name: "Landing" });
+    const header = document.querySelector("[data-landing-header]");
+    expect(header).toBeTruthy();
     for (const item of fixtureLandingPageData.header.nav) {
-      const link = within(nav).getByRole("link", { name: item.label });
+      const link = within(header as HTMLElement).getByRole("link", {
+        name: item.label,
+      });
       link.focus();
       expect(document.activeElement).toBe(link);
       expect(link.className).toContain("focus-visible:ring");

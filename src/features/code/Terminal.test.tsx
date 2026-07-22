@@ -84,6 +84,29 @@ describe("Terminal", () => {
     ).toBe("line-one\nline-two");
   });
 
+  test("interactive chips expose selection and report provider changes", () => {
+    const onChipChange = mock(() => undefined);
+    render(
+      <Terminal
+        activeChip="Codex"
+        chips={["Codex", "Cursor", "Claude"]}
+        lines={["you run --provider codex"]}
+        onChipChange={onChipChange}
+        variant="dark"
+      />,
+    );
+
+    expect(
+      screen
+        .getByRole("button", { name: "Codex" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
+
+    fireEvent.click(screen.getByRole("button", { name: "Claude" }));
+
+    expect(onChipChange).toHaveBeenCalledWith("Claude");
+  });
+
   test("install and dark variants remain visually distinct via markers", () => {
     const { rerender } = render(
       <Terminal lines={["echo install"]} variant="install" />,

@@ -60,7 +60,7 @@ export const landingPageTheme: LandingPageTheme = {
     neighborOpacity: 0.55,
     farScale: 0.72,
     farOpacity: 0.28,
-    transitionMs: 420,
+    transitionMs: 1200,
     dragThresholdPx: 48,
   },
   sphere: {

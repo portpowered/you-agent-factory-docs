@@ -87,7 +87,7 @@ describe("composeWaveBCarouselSlot", () => {
     for (const slide of fixtureLandingPageData.carousel.slides) {
       expect(html).toContain(slide.title);
       expect(html).toContain(slide.blurb);
-      expect(html).toContain(slide.command);
+      expect(html).toContain(slide.command.replaceAll('"', "&quot;"));
       expect(html).toContain(`data-factory-slide="${slide.id}"`);
     }
   });
@@ -105,11 +105,17 @@ describe("composeWaveBCarouselSlot", () => {
     });
 
     const activeTitle = fixtureLandingPageData.carousel.slides[0]?.title ?? "";
-    expect(container.querySelectorAll("[data-carousel-slide]").length).toBe(1);
+    expect(container.querySelectorAll("[data-carousel-slide]").length).toBe(
+      fixtureLandingPageData.carousel.slides.length,
+    );
     expect(container.textContent).toContain(activeTitle);
     expect(
       container.querySelectorAll("[data-carousel-depth='neighbor']").length,
-    ).toBe(0);
+    ).toBeGreaterThan(0);
+    expect(
+      (container.querySelector("[data-carousel-slide]") as HTMLElement).style
+        .transitionDuration,
+    ).toBe("0ms");
   });
 
   test("no reduced-motion preference keeps depth carousel motion on harness fill", async () => {
@@ -180,7 +186,9 @@ describe("composeWaveBCtaSlot", () => {
     expect(html).not.toContain('data-landing-placeholder="cta"');
     expect(html).toContain(fixtureLandingPageData.cta.headline);
     expect(html).toContain(fixtureLandingPageData.cta.supporting);
-    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain(
+      fixtureLandingPageData.cta.installCommand.replaceAll('"', "&quot;"),
+    );
     expect(html).toContain("Install the CLI");
     expect(html).toContain('href="/docs/guides"');
   });

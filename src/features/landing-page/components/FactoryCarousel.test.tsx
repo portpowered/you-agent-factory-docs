@@ -131,10 +131,10 @@ describe("FactoryCarousel", () => {
     mockPrefersReducedMotion(false);
     render(<FactoryCarousel slides={fixtureSlides} />);
 
-    expect(screen.getByText("Install")).toBeTruthy();
-    expect(screen.getByText("Loop")).toBeTruthy();
-    expect(screen.getByText("Worktree")).toBeTruthy();
-    expect(screen.getByText("Harness")).toBeTruthy();
+    expect(slideEl("slide-install").textContent).toContain("Install");
+    expect(slideEl("slide-loop").textContent).toContain("Loop");
+    expect(slideEl("slide-worktree").textContent).toContain("Worktree");
+    expect(slideEl("slide-harness").textContent).toContain("Harness");
 
     expect(
       document.querySelector('[data-factory-slide="slide-install"]'),
@@ -144,7 +144,7 @@ describe("FactoryCarousel", () => {
     );
   });
 
-  test("active slide is primary; neighbors show depth scale/opacity/z", async () => {
+  test("active slide is the wide feature card and rails overlap it", async () => {
     mockPrefersReducedMotion(false);
     render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
 
@@ -163,47 +163,42 @@ describe("FactoryCarousel", () => {
 
     expect(active.getAttribute("data-active")).toBe("true");
     expect(active.getAttribute("data-carousel-depth")).toBe("active");
-    expect(active.hasAttribute("inert")).toBe(false);
-    expect(active.getAttribute("aria-hidden")).toBeNull();
+    const activeContent = active.querySelector(":scope > div");
+    const neighborLeftContent = neighborLeft.querySelector(":scope > div");
+    const neighborRightContent = neighborRight.querySelector(":scope > div");
+    const farContent = far.querySelector(":scope > div");
+    expect(activeContent?.hasAttribute("inert")).toBe(false);
+    expect(activeContent?.getAttribute("aria-hidden")).toBeNull();
     expect(neighborLeft.getAttribute("data-carousel-depth")).toBe("neighbor");
     expect(neighborRight.getAttribute("data-carousel-depth")).toBe("neighbor");
     expect(far.getAttribute("data-carousel-depth")).toBe("far");
-    expect(neighborLeft.getAttribute("aria-hidden")).toBe("true");
-    expect(neighborRight.getAttribute("aria-hidden")).toBe("true");
-    expect(far.getAttribute("aria-hidden")).toBe("true");
-    expect(neighborLeft.hasAttribute("inert")).toBe(true);
-    expect(neighborRight.hasAttribute("inert")).toBe(true);
-    expect(far.hasAttribute("inert")).toBe(true);
+    expect(neighborLeftContent?.getAttribute("aria-hidden")).toBe("true");
+    expect(neighborRightContent?.getAttribute("aria-hidden")).toBe("true");
+    expect(farContent?.getAttribute("aria-hidden")).toBe("true");
+    expect(neighborLeftContent?.hasAttribute("inert")).toBe(true);
+    expect(neighborRightContent?.hasAttribute("inert")).toBe(true);
+    expect(farContent?.hasAttribute("inert")).toBe(true);
+    expect(
+      neighborLeft.querySelector('[data-carousel-select="slide-install"]'),
+    ).toBeTruthy();
 
-    const activeStyle = active.style;
-    const neighborStyle = neighborLeft.style;
-    const farStyle = far.style;
-
-    expect(activeStyle.opacity).toBe("1");
-    expect(Number(neighborStyle.opacity)).toBeLessThan(1);
-    expect(Number(farStyle.opacity)).toBeLessThan(
-      Number(neighborStyle.opacity),
+    expect(active.getAttribute("data-carousel-slot")).toBe("feature");
+    expect(neighborLeft.getAttribute("data-carousel-slot")).toBe("rail");
+    expect(neighborRight.getAttribute("data-carousel-slot")).toBe("rail");
+    expect(far.getAttribute("data-carousel-slot")).toBe("rail");
+    expect(active.style.left).toBe("9%");
+    expect(active.style.width).toBe("82%");
+    expect(neighborLeft.style.left).toBe("0.5%");
+    expect(neighborRight.style.left).toBe("55%");
+    expect(Number(neighborLeft.style.zIndex)).toBeGreaterThan(
+      Number(active.style.zIndex),
     );
-
-    expect(activeStyle.transform).toContain(
-      `scale(${landingPageTheme.carousel.activeScale})`,
-    );
-    expect(neighborStyle.transform).toContain(
-      `scale(${landingPageTheme.carousel.neighborScale})`,
-    );
-    expect(farStyle.transform).toContain(
-      `scale(${landingPageTheme.carousel.farScale})`,
-    );
-
-    expect(Number(activeStyle.zIndex)).toBeGreaterThan(
-      Number(neighborStyle.zIndex),
-    );
-    expect(Number(neighborStyle.zIndex)).toBeGreaterThan(
-      Number(farStyle.zIndex),
+    expect(active.style.transitionDuration).toBe(
+      `${landingPageTheme.carousel.transitionMs}ms`,
     );
   });
 
-  test("prefers-reduced-motion: reduce shows only the static active slide", async () => {
+  test("prefers-reduced-motion keeps the collage and removes travel", async () => {
     mockPrefersReducedMotion(true);
     render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
 
@@ -216,20 +211,20 @@ describe("FactoryCarousel", () => {
     });
 
     const slides = document.querySelectorAll("[data-carousel-slide]");
-    expect(slides.length).toBe(1);
+    expect(slides.length).toBe(fixtureSlides.length);
     expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
     expect(slideEl("slide-loop").getAttribute("data-carousel-depth")).toBe(
       "active",
     );
-    expect(
-      document.querySelector('[data-carousel-slide="slide-install"]'),
-    ).toBeNull();
-    expect(slideEl("slide-loop").style.transform).toBe("");
+    expect(slideEl("slide-install").getAttribute("data-carousel-slot")).toBe(
+      "rail",
+    );
+    expect(slideEl("slide-loop").style.transitionDuration).toBe("0ms");
     expect(
       document.querySelectorAll("[data-carousel-depth='neighbor']").length,
-    ).toBe(0);
-    expect(screen.getByText("Loop")).toBeTruthy();
-    expect(screen.queryByText("Install")).toBeNull();
+    ).toBeGreaterThan(0);
+    expect(slideEl("slide-loop").textContent).toContain("Loop");
+    expect(slideEl("slide-install").textContent).toContain("Install");
   });
 
   test("reduced-motion path still advances via buttons and keyboard", async () => {
@@ -252,7 +247,9 @@ describe("FactoryCarousel", () => {
     await user.click(screen.getByRole("button", { name: "Next slide" }));
     expect(root.getAttribute("data-carousel-active-index")).toBe("1");
     expect(slideEl("slide-loop").getAttribute("data-active")).toBe("true");
-    expect(document.querySelectorAll("[data-carousel-slide]").length).toBe(1);
+    expect(document.querySelectorAll("[data-carousel-slide]").length).toBe(
+      fixtureSlides.length,
+    );
 
     root.focus();
     await user.keyboard("{ArrowRight}");
@@ -317,6 +314,52 @@ describe("FactoryCarousel", () => {
     await user.click(screen.getByRole("button", { name: "Previous slide" }));
     expect(root?.getAttribute("data-carousel-active-index")).toBe("3");
     expect(slideEl("slide-harness").getAttribute("data-active")).toBe("true");
+  });
+
+  test("clicking a visible rail card promotes it to the active feature", async () => {
+    mockPrefersReducedMotion(false);
+    const user = userEvent.setup();
+    render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Show Worktree factory" }),
+    );
+
+    expect(slideEl("slide-worktree").getAttribute("data-active")).toBe("true");
+    expect(
+      document
+        .querySelector("[data-factory-carousel]")
+        ?.getAttribute("data-carousel-active-index"),
+    ).toBe("2");
+  });
+
+  test("desktop factory selectors change state and rotate card positions", async () => {
+    mockPrefersReducedMotion(false);
+    const user = userEvent.setup();
+    render(<FactoryCarousel slides={fixtureSlides} initialIndex={1} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    const selectorHost = document.querySelector(
+      "[data-carousel-factory-selectors]",
+    );
+    const worktreeSelector = document.querySelector(
+      '[data-carousel-factory-selector="slide-worktree"]',
+    ) as HTMLButtonElement;
+
+    expect(selectorHost?.className).toContain("md:flex");
+    expect(worktreeSelector.getAttribute("aria-pressed")).toBe("false");
+    expect(slideEl("slide-loop").style.left).toBe("9%");
+    expect(slideEl("slide-worktree").style.left).toBe("55%");
+
+    await user.click(worktreeSelector);
+
+    expect(root.getAttribute("data-carousel-active-index")).toBe("2");
+    expect(worktreeSelector.getAttribute("aria-pressed")).toBe("true");
+    expect(slideEl("slide-worktree").getAttribute("data-active")).toBe("true");
+    expect(slideEl("slide-worktree").style.left).toBe("9%");
+    expect(slideEl("slide-worktree").style.width).toBe("82%");
+    expect(slideEl("slide-loop").style.left).toBe("0.5%");
+    expect(slideEl("slide-loop").style.width).toBe("14.5%");
   });
 
   test("ArrowLeft and ArrowRight on the focused carousel change the active slide", async () => {

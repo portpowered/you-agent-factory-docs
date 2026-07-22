@@ -31,7 +31,6 @@ import {
 import { TagLandingEmptyState } from "@/features/docs/tags/TagLandingEmptyState";
 import { TagSearchHandoff } from "@/features/docs/tags/TagSearchHandoff";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
-import { LandingPage } from "@/features/landing-page/LandingPage";
 import { loadPublishedArchitectureEntries } from "@/lib/content/architecture";
 import { resolveNextPublishedBlogPost } from "@/lib/content/blog-next-post";
 import {
@@ -73,7 +72,6 @@ import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
-import { composeProductionLandingSlots } from "./compose-production-landing-slots";
 
 export type SearchPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -202,12 +200,6 @@ export async function renderBlogIndexPage(
       </DocsBody>
     </DocsPage>
   );
-}
-
-export async function renderHomePage(_locale: SiteLocale = defaultLocale) {
-  // Locale retained for callers (default + localized home). Fixture landing
-  // content is English until a later i18n pass; chrome bypass is story 003.
-  return <LandingPage {...composeProductionLandingSlots()} />;
 }
 
 export async function renderBrowseIndexPage(

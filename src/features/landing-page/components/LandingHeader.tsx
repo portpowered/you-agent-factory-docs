@@ -25,12 +25,12 @@ export type LandingHeaderProps = {
 };
 
 const BRAND_LINK_CLASS = cn(
-  "text-sm font-semibold tracking-tight text-foreground",
+  "font-mono text-xl font-black tracking-[-0.08em] text-[#ecece4] sm:text-2xl",
   "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 );
 
 const NAV_LINK_CLASS = cn(
-  "text-sm text-muted-foreground transition-colors hover:text-foreground",
+  "font-mono text-[0.65rem] font-semibold tracking-[0.12em] text-[#ecece4]/70 uppercase transition-colors hover:text-[#f3bd3d]",
   "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 );
 
@@ -39,53 +39,71 @@ const NAV_LINK_CLASS = cn(
  * Owned by W-faq-cta — not docs header chrome.
  */
 export function LandingHeader({
-  brand = "you-agent-factory",
+  brand = "YOU",
   brandHref = "/",
   items,
   search,
   className,
 }: LandingHeaderProps) {
+  const splitAt = Math.ceil(items.length / 2);
+  const leftItems = items.slice(0, splitAt);
+  const rightItems = items.slice(splitAt);
+
+  const renderItems = (navItems: LandingHeaderNavItem[]) =>
+    navItems.map((item) => (
+      <li key={item.id ?? `${item.href}:${item.label}`}>
+        <a
+          href={item.href}
+          className={NAV_LINK_CLASS}
+          data-landing-header-nav-link=""
+        >
+          {item.label}
+        </a>
+      </li>
+    ));
+
   return (
     <header
       className={cn(
-        "flex w-full items-center gap-6 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-sm",
+        "relative z-50 w-full bg-[#191f2b]/92 text-[#ecece4] backdrop-blur-sm",
         className,
       )}
       data-landing-header=""
     >
-      <a
-        href={brandHref}
-        className={BRAND_LINK_CLASS}
-        data-landing-header-brand=""
-      >
-        {brand}
-      </a>
+      <div className="mx-auto grid min-h-16 w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:min-h-20 sm:px-8">
+        <nav
+          aria-label="Landing"
+          className="hidden min-w-0 justify-self-start sm:block"
+          data-landing-header-nav=""
+        >
+          <ul className="grid w-full grid-cols-2 items-center gap-5">
+            {renderItems(leftItems)}
+          </ul>
+        </nav>
 
-      <nav
-        aria-label="Landing"
-        className="min-w-0 flex-1"
-        data-landing-header-nav=""
-      >
-        <ul className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          {items.map((item) => (
-            <li key={item.id ?? `${item.href}:${item.label}`}>
-              <a
-                href={item.href}
-                className={NAV_LINK_CLASS}
-                data-landing-header-nav-link=""
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+        <a
+          href={brandHref}
+          className={cn(BRAND_LINK_CLASS, "col-start-2")}
+          data-landing-header-brand=""
+        >
+          {brand}
+        </a>
 
-      {search != null ? (
-        <div className="shrink-0" data-landing-header-search="">
-          {search}
+        <div className="col-start-3 flex min-w-0 items-center justify-end gap-5">
+          {rightItems.length > 0 ? (
+            <nav aria-label="Landing secondary" className="hidden sm:block">
+              <ul className="grid w-full grid-cols-2 items-center gap-5 text-right [&>li:last-child]:col-start-2">
+                {renderItems(rightItems)}
+              </ul>
+            </nav>
+          ) : null}
+          {search != null ? (
+            <div className="min-w-0 shrink" data-landing-header-search="">
+              {search}
+            </div>
+          ) : null}
         </div>
-      ) : null}
+      </div>
     </header>
   );
 }

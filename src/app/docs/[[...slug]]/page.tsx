@@ -6,7 +6,12 @@ import {
   mergeDocsCatchAllStaticParams,
 } from "@/lib/content/docs-catch-all-static-params";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
+import { loadUiMessages } from "@/lib/content/ui-messages";
 import { source } from "@/lib/source";
+import {
+  buildStaticSurfaceMetadata,
+  renderBrowseIndexPage,
+} from "../../(site)/site-renderers";
 import {
   buildDocsPageMetadata,
   renderDocsSlugPage,
@@ -27,7 +32,7 @@ export function generateStaticParams() {
 
   return ensureStaticExportParams(
     omitRetiredAtlasDocsStaticParams(
-      mergeDocsCatchAllStaticParams(fromSource, fromPublished),
+      mergeDocsCatchAllStaticParams([{ slug: [] }], fromSource, fromPublished),
     ),
     {
       slug: STATIC_EXPORT_EMPTY_DOCS_SLUG,
@@ -39,10 +44,23 @@ export async function generateMetadata({
   params,
 }: DocsPageProps): Promise<Metadata> {
   const { slug } = await params;
+  if (!slug || slug.length === 0) {
+    const messages = await loadUiMessages();
+    return buildStaticSurfaceMetadata(
+      { surface: "browse" },
+      {
+        title: messages.browseIndex.title,
+        description: messages.browseIndex.description,
+      },
+    );
+  }
   return buildDocsPageMetadata(slug);
 }
 
 export default async function DocsSlugPage({ params }: DocsPageProps) {
   const { slug } = await params;
+  if (!slug || slug.length === 0) {
+    return renderBrowseIndexPage();
+  }
   return renderDocsSlugPage(slug);
 }

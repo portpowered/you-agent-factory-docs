@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@fontsource-variable/jetbrains-mono";
 @import "@you-agent-factory/components/styles.css";
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
@@ -225,6 +226,83 @@ button[data-search] {
 .ontology-timeline {
   width: 100%;
   overflow-x: hidden;
+}
+
+@keyframes feature-bubble-detail {
+  from {
+    opacity: 0;
+    transform: translateY(2rem) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile factory carousel: the active workflow becomes the content while the
+ * previous and next workflows remain visible as draggable/clickable edges. */
+@media (max-width: 767px) {
+  .factory-carousel__track {
+    min-height: 25rem !important;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="active"] {
+    left: 10% !important;
+    top: 1.5rem !important;
+    width: 80% !important;
+    height: 21rem !important;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="left"],
+  .factory-carousel__slide[data-carousel-rail-side="right"] {
+    display: block;
+    top: 5rem !important;
+    width: 13% !important;
+    height: 14rem !important;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="left"] {
+    left: -2% !important;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="right"] {
+    left: 89% !important;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="far"] {
+    display: none;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide {
+    background: transparent;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__art,
+  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__command {
+    display: none;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__copy {
+    position: absolute;
+    inset: 4rem 0 auto;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__title {
+    font-size: clamp(3.25rem, 16vw, 6rem);
+  }
+
+  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__blurb {
+    max-width: 18rem;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .factory-carousel__controls {
+    display: none;
+  }
 }
 
 /*

@@ -3,11 +3,13 @@ import { cleanup, render, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { LandingPage } from "@/features/landing-page/LandingPage";
+import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import {
   WHALE_BUBBLES_FIXTURE_ITEMS,
   WHALE_BUBBLES_FIXTURE_SRC,
 } from "@/features/landing-page/whale-bubbles.fixtures";
+import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   composeProductionCapabilitySlot,
   composeProductionCarouselSlot,
@@ -70,7 +72,7 @@ describe("composeProductionHeaderSlot", () => {
     );
 
     expect(html).toContain('data-landing-header=""');
-    expect(html).toContain("you-agent-factory");
+    expect(html).toContain(">YOU</a>");
     expect(html).toContain("Docs");
     expect(html).toContain('href="/docs"');
     expect(html).not.toContain('data-landing-placeholder="header"');
@@ -84,9 +86,13 @@ describe("composeProductionHeroSlot", () => {
       carousel: fixtureLandingPageData.carousel,
     });
 
-    expect(lines[0]).toBe(fixtureLandingPageData.cta.installCommand);
-    expect(lines).toContain("you run --named @goal/example");
-    expect(lines).toContain("you run --named @loop/write-review");
+    expect(lines).toHaveLength(fixtureLandingPageData.carousel.slides.length);
+    expect(lines).toContain(
+      'you run -a @u/loop --every "1h" --to "check the website, fix bugs"',
+    );
+    expect(lines).toContain(
+      'you run -a "deep-research" --to "research the best approach"',
+    );
     expect(mapFixtureCommandsToTerminalProps()?.variant).toBe("install");
   });
 
@@ -96,10 +102,15 @@ describe("composeProductionHeroSlot", () => {
     );
 
     expect(html).toContain('data-hero-section=""');
-    expect(html).toContain(fixtureLandingPageData.hero.title);
-    expect(html).toContain(fixtureLandingPageData.hero.subtitle);
+    expect(html).toContain("YOU");
+    expect(html).toContain("AGENT");
+    expect(html).toContain("FACTORY CLI");
+    expect(html).not.toContain(fixtureLandingPageData.hero.subtitle);
     expect(html).toContain('data-particle-sphere=""');
-    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
+    expect(html).toContain("https://youagentfactory.com/install.sh");
+    expect(html).toContain("OPEN SOURCE");
+    expect(html).toContain("MIT LICENSE");
+    expect(html).toContain("Windows");
     expect(html).not.toContain('data-landing-placeholder="sphere"');
     expect(html).not.toContain('data-landing-placeholder="terminal"');
   });
@@ -186,7 +197,9 @@ describe("composeProductionCarouselSlot", () => {
     for (const slide of fixtureLandingPageData.carousel.slides) {
       expect(html).toContain(slide.title);
       expect(html).toContain(slide.blurb);
-      expect(html).toContain(slide.command);
+      if (slide.command.length > 0) {
+        expect(html).toContain(slide.command.replaceAll('"', "&quot;"));
+      }
       expect(html).toContain(`data-factory-slide="${slide.id}"`);
     }
   });
@@ -205,12 +218,18 @@ describe("composeProductionCarouselSlot", () => {
       ).toBe("static");
     });
 
-    const activeTitle = fixtureLandingPageData.carousel.slides[0]?.title ?? "";
-    expect(container.querySelectorAll("[data-carousel-slide]").length).toBe(1);
+    const activeTitle = fixtureLandingPageData.carousel.slides[1]?.title ?? "";
+    expect(container.querySelectorAll("[data-carousel-slide]").length).toBe(
+      fixtureLandingPageData.carousel.slides.length,
+    );
     expect(container.textContent).toContain(activeTitle);
     expect(
       container.querySelectorAll("[data-carousel-depth='neighbor']").length,
-    ).toBe(0);
+    ).toBeGreaterThan(0);
+    expect(
+      container.querySelector<HTMLElement>("[data-active='true']")?.style
+        .transitionDuration,
+    ).toBe("0ms");
   });
 
   test("no reduced-motion preference keeps depth carousel motion on production fill", async () => {
@@ -253,6 +272,7 @@ describe("composeProductionFaqSlot", () => {
     );
 
     expect(html).toContain('data-landing-faq-panel=""');
+    expect(html).toContain('data-landing-faq-surface="parchment"');
     expect(html).toContain('data-landing-faq-parchment=""');
     expect(html).not.toContain('data-landing-placeholder="faq"');
 
@@ -284,12 +304,12 @@ describe("composeProductionCtaSlot", () => {
 
     expect(html).toContain('data-landing-cta-band=""');
     expect(html).toContain('data-landing-cta-fog=""');
+    expect(html).toContain('data-landing-cta-surface="overlay"');
     expect(html).not.toContain('data-landing-placeholder="cta"');
     expect(html).toContain(fixtureLandingPageData.cta.headline);
-    expect(html).toContain(fixtureLandingPageData.cta.supporting);
-    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
-    expect(html).toContain("Install the CLI");
-    expect(html).toContain('href="/docs/guides"');
+    expect(html).not.toContain('data-landing-cta-supporting=""');
+    expect(html).not.toContain('data-landing-cta-command=""');
+    expect(html).not.toContain('data-landing-cta-action=""');
   });
 });
 
@@ -316,8 +336,10 @@ describe("composeProductionWhaleBubblesSlot", () => {
     );
 
     expect(html).toContain('data-whale-bubbles-section=""');
-    expect(html).toContain("Harness");
-    expect(html).toContain("Loop");
+    expect(html).not.toContain('data-whale-bubbles-plate-slot=""');
+    expect(html).toContain("Many feature, such wow");
+    expect(html).toContain("Dynamic Workflow");
+    expect(html).toContain("Event stream based resumption");
   });
 });
 
@@ -351,9 +373,12 @@ describe("composeProductionFooterSlot", () => {
     );
 
     expect(html).toContain('data-testid="site-footer"');
-    expect(html).toContain("Product");
-    expect(html).toContain("Community");
-    expect(html).toContain("© you-agent-factory");
+    expect(html).toContain("References");
+    expect(html).toContain("Support");
+    expect(html).toContain("July 19th, 2026");
+    expect(html).toContain("ANDREAS ABDI");
+    expect(html).toContain("MIT LICENSE");
+    expect(html).toContain("factory configuration");
     expect(html).toContain('data-landing-footer-art=""');
     expect(html).not.toContain('data-landing-placeholder="footer"');
   });
@@ -374,11 +399,17 @@ describe("composeProductionLandingSlots", () => {
     ]);
   });
 
-  test("returns only wired production slot keys", () => {
+  test("returns wired slots plus the shared mid-scene art", () => {
     const slots = composeProductionLandingSlots();
     const keys = Object.keys(slots).sort();
 
-    expect(keys).toEqual([...WIRED_PRODUCTION_LANDING_SLOTS].sort());
+    expect(keys).toEqual(
+      [
+        ...WIRED_PRODUCTION_LANDING_SLOTS,
+        "midSceneBackgroundSrc",
+        "midSceneTransitionSrc",
+      ].sort(),
+    );
     expect(slots).toHaveProperty("header");
     expect(slots).toHaveProperty("hero");
     expect(slots).toHaveProperty("capability");
@@ -388,6 +419,8 @@ describe("composeProductionLandingSlots", () => {
     expect(slots).toHaveProperty("cta");
     expect(slots).toHaveProperty("whaleBubbles");
     expect(slots).toHaveProperty("footer");
+    expect(slots).toHaveProperty("midSceneBackgroundSrc");
+    expect(slots).toHaveProperty("midSceneTransitionSrc");
   });
 
   test("LandingPage mounts wired fills including carousel, faq, and cta", () => {
@@ -405,6 +438,10 @@ describe("composeProductionLandingSlots", () => {
     expect(html).toContain('data-landing-faq-panel=""');
     expect(html).toContain('data-landing-cta-band=""');
     expect(html).toContain('data-whale-bubbles-section=""');
+    expect(html).toContain('data-landing-mid-scene-whale=""');
+    expect(html).toContain('data-landing-mid-scene-transition=""');
+    expect(html).not.toContain('data-whale-bubbles-plate-slot=""');
+    expect(html).not.toContain("down-transition.png");
     expect(html).toContain('data-testid="site-footer"');
     expect(html).not.toContain('data-landing-placeholder="carousel"');
     expect(html).not.toContain('data-landing-placeholder="faq"');
@@ -419,7 +456,9 @@ describe("composeProductionLandingSlots", () => {
     for (const slide of fixtureLandingPageData.carousel.slides) {
       expect(html).toContain(slide.title);
       expect(html).toContain(slide.blurb);
-      expect(html).toContain(slide.command);
+      if (slide.command.length > 0) {
+        expect(html).toContain(slide.command.replaceAll('"', "&quot;"));
+      }
     }
 
     for (const item of fixtureLandingPageData.faq.items) {
@@ -428,9 +467,36 @@ describe("composeProductionLandingSlots", () => {
     }
 
     expect(html).toContain(fixtureLandingPageData.cta.headline);
-    expect(html).toContain(fixtureLandingPageData.cta.supporting);
-    expect(html).toContain(fixtureLandingPageData.cta.installCommand);
-    expect(html).toContain("Install the CLI");
-    expect(html).toContain('href="/docs/guides"');
+    expect(html).not.toContain('data-landing-cta-supporting=""');
+    expect(html).not.toContain('data-landing-cta-command=""');
+    expect(html).not.toContain('data-landing-cta-action=""');
+  });
+
+  test("project-site production markup prefixes homepage image URLs", () => {
+    const basePath = BUILT_APP_GITHUB_PAGES_BASE_PATH;
+    const html = renderToStaticMarkup(
+      <LandingPage
+        {...composeProductionLandingSlots(fixtureLandingPageData, {
+          NEXT_STATIC_EXPORT: "1",
+          GITHUB_PAGES_BASE_PATH: basePath,
+        })}
+      />,
+    );
+
+    for (const assetPath of [
+      landingHomeAssets.womanHead,
+      landingHomeAssets.monkey,
+      landingHomeAssets.factoryGraphUi,
+      landingHomeAssets.midEndWhale,
+      landingHomeAssets.seadragonCrop,
+      landingHomeAssets.ctaFog,
+      landingHomeAssets.octopus,
+      landingHomeAssets.youYouYouBackground,
+    ]) {
+      expect(html).toContain(`${basePath}${assetPath}`);
+      expect(html).not.toContain(`src="${assetPath}"`);
+      expect(html).not.toContain(`url(${assetPath})`);
+    }
+    expect(html).not.toContain(landingHomeAssets.downTransition);
   });
 });

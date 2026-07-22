@@ -1,5 +1,6 @@
-import { afterEach, describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { SiteFooter } from "@/features/footer";
 import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
 import { LandingFooterArt } from "./LandingFooterArt";
@@ -39,6 +40,24 @@ describe("LandingFooterArt", () => {
       "[data-landing-footer-art-image]",
     ) as HTMLImageElement | null;
     expect(image?.getAttribute("src")).toBe("/home/you-you-you-background.png");
+  });
+
+  test("copies the footer install command", async () => {
+    const user = userEvent.setup();
+    const writeText = mock(() => Promise.resolve());
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    render(<LandingFooterArt />);
+
+    await user.click(
+      screen.getByRole("button", { name: "Copy install command" }),
+    );
+
+    expect(writeText).toHaveBeenCalledWith(
+      "curl -fsSL https://youagentfactory.com/install.sh | sh",
+    );
   });
 
   test("renders stably inside SiteFooter art slot without editing footer package", () => {
