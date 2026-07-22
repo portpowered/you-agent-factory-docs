@@ -7,7 +7,7 @@ import {
   HomeArticle,
 } from "@/features/home/home-article";
 import { LandingPage } from "@/features/landing-page/LandingPage";
-import { renderHomePage } from "./site-renderers";
+import { renderHomePage } from "./home-renderer";
 
 function collectElementTypes(node: ReactNode, out: Set<unknown>): void {
   if (!isValidElement(node)) {

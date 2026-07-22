@@ -84,9 +84,15 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * ceiling) / ~28.88 MiB search bootstrap. API HTML alone is ~10.26 MiB × 4
  * locales from full Schema UI SSR — product-required for component-object
  * visibility. Ceilings: 360 MiB total / 15 MiB Next static JS / 32 MiB search.
+ * Raised total-out again on 2026-07-22 UTC after the reference-aligned landing
+ * and docs-root convergence added 14 intentional static routes (four docs
+ * roots plus ten linked coming-soon destinations). CI measured ~366.29 MiB
+ * total while Next static JS (~13.50 MiB) and search bootstrap (~22.87 MiB)
+ * remained below their existing focused ceilings. The total ceiling is now
+ * 375 MiB; JS and search ceilings remain unchanged.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 360_000_000,
+  maxTotalOutBytes: 375_000_000,
   maxNextStaticJsBytes: 15_000_000,
   maxSearchBootstrapBytes: 32_000_000,
 } as const;

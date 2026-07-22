@@ -65,8 +65,8 @@ export const REFERENCE_PAYLOAD_BUDGET_MEASUREMENT_METHOD = {
    * Re-measure on this lane's `out/` before raising ceilings.
    */
   baselineSource: {
-    measuredAtUtc: "2026-07-21T09:30:00Z",
-    note: "Events HTML remeasured after intentional linked OpenAPI component splay on /docs/references/events (repair-events-inline-schema-components-splay) — ~164 nested published component schemas inlined so InferenceOutcome-class deep links resolve on-page. Dev SSR HTML observed 4_527_337 bytes (assert-events-page-inline-schema-splay-browser.ts); attributable JS unchanged (~2.14 MiB). Factory-schema remains the prior `$defs` catalog splay baseline (~1.98–2.00 MiB). API baseline unchanged from the prior Fumadocs APIPage measurement.",
+    measuredAtUtc: "2026-07-22T23:20:00Z",
+    note: "Events HTML retains the intentional linked OpenAPI component splay (~164 nested published component schemas). The reference-aligned landing added interactive provider controls to the shared Terminal client surface; a fresh static export measured 2_597_203 attributable JS bytes on API, events, and factory-schema. The 3.25 MB ceiling restores roughly 25% headroom without changing any HTML ceiling.",
   } as const,
 } as const;
 
@@ -94,10 +94,10 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
       routeId: "references-api",
       path: "/docs/references/api",
       measuredHtmlBytes: 10_258_887,
-      measuredJsPayloadBytes: 2_136_570,
+      measuredJsPayloadBytes: 2_597_203,
       // ~25% headroom above Fumadocs Schema UI SSR HTML for 45 operations.
       maxHtmlBytes: 13_000_000,
-      maxJsPayloadBytes: 2_500_000,
+      maxJsPayloadBytes: 3_250_000,
     },
     {
       routeId: "references-events",
@@ -105,20 +105,20 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
       // Linked component schema splay inlines transitive published `$ref`
       // targets (InferenceOutcome-class) on the events page.
       measuredHtmlBytes: 4_527_337,
-      measuredJsPayloadBytes: 2_136_570,
+      measuredJsPayloadBytes: 2_597_203,
       // ~25% headroom above the post-splay SSR HTML measurement.
       maxHtmlBytes: 5_700_000,
-      maxJsPayloadBytes: 2_500_000,
+      maxJsPayloadBytes: 3_250_000,
     },
     {
       routeId: "references-factory-schema",
       path: "/docs/references/factory-schema",
       // Catalog splay renders the transitive Factory `$defs` closure on-page.
       measuredHtmlBytes: 1_997_920,
-      measuredJsPayloadBytes: 2_136_570,
+      measuredJsPayloadBytes: 2_597_203,
       // ~25% headroom above the splayed catalog SSR HTML.
       maxHtmlBytes: 2_500_000,
-      maxJsPayloadBytes: 2_500_000,
+      maxJsPayloadBytes: 3_250_000,
     },
   ] as const;
 

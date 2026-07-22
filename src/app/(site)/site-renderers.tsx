@@ -24,7 +24,6 @@ import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders"
 import { FamilyDocsFooterNeighbors } from "@/features/docs/components/FamilyDocsFooterNeighbors";
 import { TagResourceList } from "@/features/docs/components/TagResourceList";
 import { SearchPagePanelContent } from "@/features/docs/search/SearchPagePanel";
-import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
 import {
   EMPTY_SEARCH_PAGE_HANDOFF,
   resolveSearchPageHandoff,
@@ -32,7 +31,6 @@ import {
 import { TagLandingEmptyState } from "@/features/docs/tags/TagLandingEmptyState";
 import { TagSearchHandoff } from "@/features/docs/tags/TagSearchHandoff";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
-import { LandingPage } from "@/features/landing-page/LandingPage";
 import { loadPublishedArchitectureEntries } from "@/lib/content/architecture";
 import { resolveNextPublishedBlogPost } from "@/lib/content/blog-next-post";
 import {
@@ -74,7 +72,6 @@ import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
-import { composeProductionLandingSlots } from "./compose-production-landing-slots";
 
 export type SearchPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -202,22 +199,6 @@ export async function renderBlogIndexPage(
         )}
       </DocsBody>
     </DocsPage>
-  );
-}
-
-export async function renderHomePage(locale: SiteLocale = defaultLocale) {
-  const messages = await loadUiMessages(locale);
-  return (
-    <LandingPage
-      {...composeProductionLandingSlots(
-        undefined,
-        process.env,
-        <SearchTrigger
-          className="!h-8 !border-[#ecece4]/25 !bg-transparent !text-[#ecece4]/75 hover:!text-[#191f2b]"
-          messages={messages}
-        />,
-      )}
-    />
   );
 }
 
