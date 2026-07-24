@@ -8,6 +8,7 @@ import { join } from "node:path";
 import { DEFAULT_EXPORT_OUT_DIR } from "@/lib/build/export-out-directory";
 import { FACTORY_EXPORTED_SITE_BUDGET_BASELINES } from "@/lib/build/exported-site-budget";
 import { MAKE_CI_PREREQUISITES } from "@/lib/ci-required-path";
+import { VERIFY_PRODUCTION_INTEGRATION_TESTS_ENV } from "@/lib/verify/server-lifecycle";
 import {
   assertPackagedFactoryCloseoutBudgetCeilingsLocked,
   listPackagedFactoryCloseoutCoveredGateFamilies,
@@ -23,6 +24,18 @@ import {
 
 const repoRoot = join(import.meta.dir, "../../..");
 const outDir = join(repoRoot, DEFAULT_EXPORT_OUT_DIR);
+
+function requireTrustedOutOrSkip(): boolean {
+  if (existsSync(outDir)) {
+    return true;
+  }
+  if (process.env[VERIFY_PRODUCTION_INTEGRATION_TESTS_ENV] === "1") {
+    throw new Error(
+      "trusted out/ is required for packaged-factory closeout gates tip proof under make test-integration",
+    );
+  }
+  return false;
+}
 
 describe("packaged-factory-reference-family-closeout gates (pure)", () => {
   test("catalogues the PRD repository gate inventory in order", () => {
@@ -123,7 +136,9 @@ describe("packaged-factory-reference-family-closeout gates (pure)", () => {
 
 describe("packaged-factory-reference-family-closeout gates (tip)", () => {
   test("import-leakage detectors + locked budget evaluation stay green on tip", async () => {
-    expect(existsSync(outDir)).toBe(true);
+    if (!requireTrustedOutOrSkip()) {
+      return;
+    }
 
     const budgetOnly = provePackagedFactoryCloseoutBudgetAgainstOut({
       cwd: repoRoot,

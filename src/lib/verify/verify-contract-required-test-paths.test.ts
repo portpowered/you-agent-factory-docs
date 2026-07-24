@@ -29,4 +29,21 @@ describe("VERIFY_CONTRACT_REQUIRED_TEST_PATHS", () => {
       "make test-verify-contract",
     );
   });
+
+  test("includes packaged-factory reference family closeout tip proofs", () => {
+    const closeoutTipTests = [
+      "src/lib/verify/packaged-factory-reference-family-closeout-a11y.test.tsx",
+      "src/lib/verify/packaged-factory-reference-family-closeout-corpus.test.tsx",
+      "src/lib/verify/packaged-factory-reference-family-closeout-deep-research.test.tsx",
+      "src/lib/verify/packaged-factory-reference-family-closeout-evidence.test.ts",
+      "src/lib/verify/packaged-factory-reference-family-closeout-export-css.test.ts",
+      "src/lib/verify/packaged-factory-reference-family-closeout-gates.test.ts",
+      "src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts",
+      "src/lib/verify/packaged-factory-reference-family-closeout-replay.test.tsx",
+    ] as const;
+
+    for (const relativePath of closeoutTipTests) {
+      expect(VERIFY_CONTRACT_REQUIRED_TEST_PATHS).toContain(relativePath);
+    }
+  });
 });

@@ -13,7 +13,8 @@
  * redesign ownership surfaces or regenerate the corpus.
  */
 
-import { resolve } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { join, resolve } from "node:path";
 import {
   type ChildRecordingImportGraphHit,
   collectChildRecordingImportGraphInputs,
@@ -32,11 +33,18 @@ import {
   YOUI_LANDING_ALLOWED_GOAL_RECORDING_BASENAME,
   type YouiLandingImportGraphForbiddenHit,
 } from "@/features/landing-page/youi-landing-import-graph";
+import {
+  DEFAULT_EXPORT_OUT_DIR,
+  resolveExportHtmlFilePath,
+} from "@/lib/build/export-out-directory";
 import { getProjectRoot } from "@/lib/content/content-paths";
 import {
   PACKAGED_FACTORY_RECORDING_SLUGS,
   type PackagedFactoryRecordingSlug,
 } from "@/lib/packaged-factory-generated-source-corpus/recording-samples-model";
+
+/** Goal recording id observed in exported goal-child / home payloads. */
+const CLOSEOUT_EXPORT_GOAL_RECORDING_ID = "packaged-goal-sample" as const;
 
 /** Standard replay children that own a route-local recording on tip. */
 export const PACKAGED_FACTORY_CLOSEOUT_STANDARD_CHILD_SLUGS =
@@ -95,6 +103,43 @@ export type PackagedFactoryCloseoutYouiImportGraphEvidence = {
   inputPathCount: number;
 };
 
+/** Foreign packaged-recording filenames that must not appear in goal/home payloads. */
+export const PACKAGED_FACTORY_CLOSEOUT_FOREIGN_RECORDING_FILENAMES = [
+  "subagent.factory-recording.v1.json",
+  "fusion.factory-recording.v1.json",
+  "review.factory-recording.v1.json",
+  "quorum.factory-recording.v1.json",
+  "tts.factory-recording.v1.json",
+] as const;
+
+/** Home/index corpus markers that must not leak into the landing export payload. */
+export const PACKAGED_FACTORY_CLOSEOUT_HOME_FORBIDDEN_PAYLOAD_MARKERS = [
+  ...PACKAGED_FACTORY_CLOSEOUT_FOREIGN_RECORDING_FILENAMES,
+  "deep-research.source.json",
+  "generate-packaged-factories-index",
+  "generated/index.json",
+] as const;
+
+/** Parent index export must stay free of interactive replay markers. */
+export const PACKAGED_FACTORY_CLOSEOUT_PARENT_FORBIDDEN_PAYLOAD_MARKERS = [
+  "data-factory-replay",
+  "data-factory-recording",
+  "src/features/factory-replay/",
+] as const;
+
+export type PackagedFactoryCloseoutExportPayloadRouteId =
+  | "goal-child"
+  | "parent-index"
+  | "home-youi";
+
+export type PackagedFactoryCloseoutExportPayloadEvidence = {
+  routeId: PackagedFactoryCloseoutExportPayloadRouteId;
+  routePath: string;
+  htmlPath: string;
+  requiredMarkersPresent: readonly string[];
+  forbiddenMarkersAbsent: readonly string[];
+};
+
 export type PackagedFactoryCloseoutPositiveControlEvidence = {
   parentDetectorObservesReplay: true;
   youiPollutedFixtureObservesForbidden: true;
@@ -118,7 +163,9 @@ export class PackagedFactoryCloseoutImportGraphError extends Error {
     | "missing-goal-recording"
     | "missing-factory-replay"
     | "missing-generated-index"
-    | "positive-control-failed";
+    | "positive-control-failed"
+    | "export-payload-leak"
+    | "export-payload-missing";
 
   constructor(
     code: PackagedFactoryCloseoutImportGraphError["code"],
@@ -452,6 +499,158 @@ export async function provePackagedFactoryCloseoutImportGraphPositiveControls(op
     youiPollutedFixtureObservesForbidden: true,
     youiPollutedMarkers: youiMarkers,
   };
+}
+
+/**
+ * Collects exported HTML plus optionally linked `/_next/static/chunks/*.js`
+ * bodies for a route. This is the observable payload readers download — not a
+ * Bun.build metafile inventory.
+ *
+ * Use `includeLinkedChunks: false` for surfaces (parent index) that must stay
+ * replay-free in static HTML but may preload shared site chunks that other
+ * routes use for factory-replay.
+ */
+export function collectPackagedFactoryCloseoutExportRoutePayload(options: {
+  cwd?: string;
+  outDir?: string;
+  routePath: string;
+  includeLinkedChunks?: boolean;
+}): { htmlPath: string; payload: string } {
+  const cwd = options.cwd ?? getProjectRoot();
+  const outDir = options.outDir ?? DEFAULT_EXPORT_OUT_DIR;
+  const includeLinkedChunks = options.includeLinkedChunks !== false;
+  const htmlPath = resolveExportHtmlFilePath(outDir, options.routePath, cwd);
+  if (!existsSync(htmlPath)) {
+    throw new PackagedFactoryCloseoutImportGraphError(
+      "export-payload-missing",
+      `Missing export HTML for ${options.routePath} at ${htmlPath}`,
+    );
+  }
+
+  const html = readFileSync(htmlPath, "utf8");
+  if (!includeLinkedChunks) {
+    return { htmlPath, payload: html };
+  }
+
+  const absoluteOutDir = resolve(cwd, outDir);
+  const scriptSrcs = [
+    ...html.matchAll(/src="(\/_next\/static\/chunks\/[^"]+)"/g),
+  ].map((match) => match[1]);
+
+  const chunkBodies: string[] = [];
+  for (const src of scriptSrcs) {
+    const chunkPath = join(absoluteOutDir, src.slice(1));
+    if (!existsSync(chunkPath)) {
+      continue;
+    }
+    chunkBodies.push(readFileSync(chunkPath, "utf8"));
+  }
+
+  return {
+    htmlPath,
+    payload: [html, ...chunkBodies].join("\n"),
+  };
+}
+
+function assertPayloadMarkers(options: {
+  routeId: PackagedFactoryCloseoutExportPayloadRouteId;
+  routePath: string;
+  htmlPath: string;
+  payload: string;
+  required: readonly string[];
+  forbidden: readonly string[];
+}): PackagedFactoryCloseoutExportPayloadEvidence {
+  const missingRequired = options.required.filter(
+    (marker) => !options.payload.includes(marker),
+  );
+  if (missingRequired.length > 0) {
+    throw new PackagedFactoryCloseoutImportGraphError(
+      "export-payload-missing",
+      `${options.routeId} export payload missing required marker(s): ${missingRequired.join(", ")}`,
+    );
+  }
+
+  const leaked = options.forbidden.filter((marker) =>
+    options.payload.includes(marker),
+  );
+  if (leaked.length > 0) {
+    throw new PackagedFactoryCloseoutImportGraphError(
+      "export-payload-leak",
+      `${options.routeId} export payload leaked forbidden marker(s): ${leaked.join(", ")}`,
+    );
+  }
+
+  return {
+    routeId: options.routeId,
+    routePath: options.routePath,
+    htmlPath: options.htmlPath,
+    requiredMarkersPresent: options.required,
+    forbiddenMarkersAbsent: options.forbidden,
+  };
+}
+
+/**
+ * Behavioral export-payload exclusion proof for representative family routes.
+ * Observes shipped HTML + linked client chunks under trusted `out/`.
+ */
+export function provePackagedFactoryCloseoutExportPayloadExclusions(options?: {
+  cwd?: string;
+  outDir?: string;
+}): readonly PackagedFactoryCloseoutExportPayloadEvidence[] {
+  const cwd = options?.cwd ?? getProjectRoot();
+  const outDir = options?.outDir ?? DEFAULT_EXPORT_OUT_DIR;
+
+  const goal = collectPackagedFactoryCloseoutExportRoutePayload({
+    cwd,
+    outDir,
+    routePath: "/docs/references/packaged-factories-index/goal",
+  });
+  const parent = collectPackagedFactoryCloseoutExportRoutePayload({
+    cwd,
+    outDir,
+    routePath: "/docs/references/packaged-factories-index",
+    // Parent must stay replay-free in static HTML; shared site chunks may still
+    // carry factory-replay for other routes and are not a parent-page leak.
+    includeLinkedChunks: false,
+  });
+  const home = collectPackagedFactoryCloseoutExportRoutePayload({
+    cwd,
+    outDir,
+    routePath: "/",
+  });
+
+  return [
+    assertPayloadMarkers({
+      routeId: "goal-child",
+      routePath: "/docs/references/packaged-factories-index/goal",
+      htmlPath: goal.htmlPath,
+      payload: goal.payload,
+      required: [
+        CLOSEOUT_EXPORT_GOAL_RECORDING_ID,
+        'data-factory-replay-mode="full"',
+      ],
+      forbidden: PACKAGED_FACTORY_CLOSEOUT_FOREIGN_RECORDING_FILENAMES,
+    }),
+    assertPayloadMarkers({
+      routeId: "parent-index",
+      routePath: "/docs/references/packaged-factories-index",
+      htmlPath: parent.htmlPath,
+      payload: parent.payload,
+      required: [
+        "data-packaged-factories-index",
+        "data-packaged-factory-definition-code",
+      ],
+      forbidden: PACKAGED_FACTORY_CLOSEOUT_PARENT_FORBIDDEN_PAYLOAD_MARKERS,
+    }),
+    assertPayloadMarkers({
+      routeId: "home-youi",
+      routePath: "/",
+      htmlPath: home.htmlPath,
+      payload: home.payload,
+      required: ["data-youi-showcase", CLOSEOUT_EXPORT_GOAL_RECORDING_ID],
+      forbidden: PACKAGED_FACTORY_CLOSEOUT_HOME_FORBIDDEN_PAYLOAD_MARKERS,
+    }),
+  ];
 }
 
 /**

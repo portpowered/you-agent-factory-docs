@@ -63,15 +63,17 @@ function cleanup() {
   }
 }
 
-process.on("exit", cleanup);
-process.on("SIGINT", () => {
-  cleanup();
-  process.exit(1);
-});
-process.on("SIGTERM", () => {
-  cleanup();
-  process.exit(1);
-});
+function installCliProcessCleanupHandlers(): void {
+  process.on("exit", cleanup);
+  process.on("SIGINT", () => {
+    cleanup();
+    process.exit(1);
+  });
+  process.on("SIGTERM", () => {
+    cleanup();
+    process.exit(1);
+  });
+}
 
 function ensureStaticExport(): void {
   if (existsSync(GOAL_EXPORT_HTML) || existsSync(GOAL_EXPORT_INDEX)) {
@@ -388,7 +390,18 @@ async function observeHomeYoui(
   };
 }
 
-async function main(): Promise<void> {
+export type PackagedFactoryCloseoutEvidenceBrowserProof = {
+  baseUrl: string;
+  servedFrom: "existing-base-url" | "static-export";
+  gateOutcomeSource: string;
+  evidencePack: ReturnType<typeof buildPackagedFactoryCloseoutEvidencePack>;
+};
+
+/**
+ * In-app family browser evidence against trusted static `out/` (or an existing
+ * base URL). Used by the CLI assert script and the required integration suite.
+ */
+export async function provePackagedFactoryCloseoutEvidenceInBrowser(): Promise<PackagedFactoryCloseoutEvidenceBrowserProof> {
   const recordedAtUtc = utcNow();
   const tipCommitSha = readTipCommitSha();
   const { outcomes: gateOutcomes, source: gateSource } =
@@ -423,32 +436,42 @@ async function main(): Promise<void> {
     });
     assertPackagedFactoryCloseoutEvidencePackIsComplete(pack);
 
-    console.log(
-      JSON.stringify(
-        {
-          ok: true,
-          baseUrl,
-          servedFrom: EXISTING_BASE_URL ? "existing-base-url" : "static-export",
-          gateOutcomeSource: gateSource,
-          evidencePack: pack,
-        },
-        null,
-        2,
-      ),
-    );
+    return {
+      baseUrl,
+      servedFrom: EXISTING_BASE_URL ? "existing-base-url" : "static-export",
+      gateOutcomeSource: gateSource,
+      evidencePack: pack,
+    };
   } finally {
     await browser.close();
-  }
-}
-
-main()
-  .catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
     if (cleanupServer) {
       await cleanupServer().catch(() => {});
       cleanupServer = undefined;
     }
+  }
+}
+
+async function main(): Promise<void> {
+  const proof = await provePackagedFactoryCloseoutEvidenceInBrowser();
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        baseUrl: proof.baseUrl,
+        servedFrom: proof.servedFrom,
+        gateOutcomeSource: proof.gateOutcomeSource,
+        evidencePack: proof.evidencePack,
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+if (import.meta.main) {
+  installCliProcessCleanupHandlers();
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
   });
+}

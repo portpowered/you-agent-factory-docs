@@ -1,27 +1,50 @@
 /**
  * Closeout story 004 — tip proofs for route-local import graphs and
- * home/index exclusions (children, parent index, landing Youi, positive controls).
+ * home/index exclusions (children, parent index, landing Youi, positive controls),
+ * plus behavioral exported HTML/chunk payload exclusions under trusted `out/`.
  */
 import { describe, expect, test } from "bun:test";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import {
   findForeignPackagedRecordingHits,
   ownedPackagedFactoryRecordingFilename,
 } from "@/content/docs/references/packaged-factories-index/child-recording-import-graph";
 import { findForbiddenParentImportGraphHits } from "@/content/docs/references/packaged-factories-index/parent-import-graph";
 import { findForbiddenYouiLandingImportGraphHits } from "@/features/landing-page/youi-landing-import-graph";
+import { VERIFY_PRODUCTION_INTEGRATION_TESTS_ENV } from "@/lib/verify/server-lifecycle";
 import {
   PACKAGED_FACTORY_CLOSEOUT_CHILD_IMPORT_GRAPH_CASES,
+  PACKAGED_FACTORY_CLOSEOUT_FOREIGN_RECORDING_FILENAMES,
+  PACKAGED_FACTORY_CLOSEOUT_HOME_FORBIDDEN_PAYLOAD_MARKERS,
+  PACKAGED_FACTORY_CLOSEOUT_PARENT_FORBIDDEN_PAYLOAD_MARKERS,
   PACKAGED_FACTORY_CLOSEOUT_PARENT_OWNERSHIP_ENTRYPOINTS,
   PACKAGED_FACTORY_CLOSEOUT_STANDARD_CHILD_SLUGS,
   PACKAGED_FACTORY_CLOSEOUT_YOUI_OWNERSHIP_ENTRYPOINTS,
   PackagedFactoryCloseoutImportGraphError,
   provePackagedFactoryCloseoutChildImportGraph,
+  provePackagedFactoryCloseoutExportPayloadExclusions,
   provePackagedFactoryCloseoutImportGraphPositiveControls,
   provePackagedFactoryCloseoutParentImportGraphs,
   provePackagedFactoryCloseoutStandardChildImportGraphs,
   provePackagedFactoryCloseoutYouiImportGraphs,
   provePackagedFactoryReferenceFamilyCloseoutImportGraphs,
 } from "./packaged-factory-reference-family-closeout-import-graphs";
+
+const repoRoot = join(import.meta.dir, "../../..");
+const outDir = join(repoRoot, "out");
+
+function requireTrustedOutOrSkip(): boolean {
+  if (existsSync(outDir)) {
+    return true;
+  }
+  if (process.env[VERIFY_PRODUCTION_INTEGRATION_TESTS_ENV] === "1") {
+    throw new Error(
+      "trusted out/ is required for packaged-factory closeout export-payload tip proof under make test-integration",
+    );
+  }
+  return false;
+}
 
 describe("packaged-factory-reference-family-closeout import graphs (pure)", () => {
   test("standard child ownership cases cover all recording slugs", () => {
@@ -91,6 +114,25 @@ describe("packaged-factory-reference-family-closeout import graphs (pure)", () =
       ".source.json",
       "generate-packaged-factories-index",
     ]);
+  });
+
+  test("export-payload classifier fails closed on leaked sibling recording", () => {
+    expect(PACKAGED_FACTORY_CLOSEOUT_FOREIGN_RECORDING_FILENAMES).toContain(
+      "subagent.factory-recording.v1.json",
+    );
+    expect(PACKAGED_FACTORY_CLOSEOUT_HOME_FORBIDDEN_PAYLOAD_MARKERS).toContain(
+      "generate-packaged-factories-index",
+    );
+    expect(
+      PACKAGED_FACTORY_CLOSEOUT_PARENT_FORBIDDEN_PAYLOAD_MARKERS,
+    ).toContain("data-factory-replay");
+
+    expect(() =>
+      provePackagedFactoryCloseoutExportPayloadExclusions({
+        cwd: repoRoot,
+        outDir: "definitely-missing-out-dir-for-closeout-payload-fixture",
+      }),
+    ).toThrow(/Missing export HTML|export-payload-missing/);
   });
 });
 
@@ -179,5 +221,25 @@ describe("packaged-factory-reference-family-closeout import graphs (tip)", () =>
     expect(error).toBeInstanceOf(Error);
     expect(error.code).toBe("foreign-recording");
     expect(error.name).toBe("PackagedFactoryCloseoutImportGraphError");
+  });
+
+  test("exported HTML + linked chunks observe route-local recording exclusions", () => {
+    if (!requireTrustedOutOrSkip()) {
+      return;
+    }
+
+    const evidence = provePackagedFactoryCloseoutExportPayloadExclusions({
+      cwd: repoRoot,
+    });
+    expect(evidence.map((entry) => entry.routeId)).toEqual([
+      "goal-child",
+      "parent-index",
+      "home-youi",
+    ]);
+    for (const entry of evidence) {
+      expect(entry.requiredMarkersPresent.length).toBeGreaterThan(0);
+      expect(entry.forbiddenMarkersAbsent.length).toBeGreaterThan(0);
+      expect(existsSync(entry.htmlPath)).toBe(true);
+    }
   });
 });

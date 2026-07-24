@@ -116,8 +116,8 @@ avoidable import leakage over raising budget ceilings.
 
 | Path | Role |
 | --- | --- |
-| `src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.ts` | Closeout-owned tip proof helpers: six child recording isolation, parent replay-free graphs, Youi home exclusions, positive-control detectors |
-| `src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts` | Pure classifier + live tip Bun.build metafile proofs |
+| `src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.ts` | Closeout-owned tip proof helpers: six child recording isolation, parent replay-free graphs, Youi home exclusions, positive-control detectors, exported HTML+chunk payload exclusions |
+| `src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts` | Pure classifier + live tip Bun.build metafile proofs + out/ payload exclusion tip (fail-closed under `make test-integration`) |
 | `src/content/docs/references/packaged-factories-index/child-recording-import-graph.ts` | Reused owned-/foreign-recording classification + child collector |
 | `src/content/docs/references/packaged-factories-index/parent-import-graph.ts` | Reused parent forbidden markers + collector |
 | `src/features/landing-page/youi-landing-import-graph.ts` | Reused Youi forbidden markers + collector |
@@ -144,6 +144,11 @@ avoidable import leakage over raising budget ceilings.
    `src/features/factory-replay/index.ts` (parent detector must fire) and from
    `youi-landing-import-graph.polluted-fixture.ts` (Youi detector must observe
    non-goal / index / source markers).
+5. **Exported payload exclusions (behavioral)** —
+   `provePackagedFactoryCloseoutExportPayloadExclusions` reads trusted `out/`
+   HTML plus linked `/_next/static/chunks` for goal child, parent index, and
+   home, and asserts required markers present / forbidden recordings+corpus
+   markers absent.
 
 ## Key files (story 005 — keyboard/touch a11y, graph containment, hydration)
 
@@ -243,7 +248,10 @@ avoidable import leakage over raising budget ceilings.
 | --- | --- |
 | `src/lib/verify/packaged-factory-reference-family-closeout-evidence.ts` | Closeout-owned tip proof helpers: browser surface contracts, gate/SHA evidence pack assembly, residual-follow-up vs complete-statement fail-closed rules, ownership fence |
 | `src/lib/verify/packaged-factory-reference-family-closeout-evidence.test.ts` | Pure fail-closed + green pack proofs |
-| `src/lib/verify/assert-packaged-factory-reference-family-closeout-evidence-browser.ts` | Playwright probe against static `out/` (port 3627 / `CLOSEOUT_EVIDENCE_PROBE_BASE_URL`): parent index order + panels/links, goal+subagent full Play/Pause, deep-research purpose/usage/two-link, home Youi compact activation; emits JSON evidence pack |
+| `src/lib/verify/assert-packaged-factory-reference-family-closeout-evidence-browser.ts` | Playwright probe against static `out/` (port 3627 / `CLOSEOUT_EVIDENCE_PROBE_BASE_URL`): parent index order + panels/links, goal+subagent full Play/Pause, deep-research purpose/usage/two-link, home Youi compact activation; exports `provePackagedFactoryCloseoutEvidenceInBrowser` |
+| `src/lib/verify/packaged-factory-reference-family-closeout-evidence-browser-verify.test.ts` | Required integration suite wrapper — runs the evidence browser prove under `make test-integration` |
+| `src/lib/verify/verify-contract-required-test-paths.ts` | Registers all eight closeout tip `*.test.*` files so `make test-verify-contract` / CI `contracts` execute them |
+| `src/lib/verify/production-integration-test-paths.ts` | Registers out/-backed closeout tip + evidence browser verify under `make test-integration` |
 | `src/lib/verify/packaged-factory-reference-family-closeout-gates.ts` | Reused story 007 repository gate inventory for evidence pack outcomes |
 
 ### Story 008 acceptance mapping
@@ -335,6 +343,10 @@ bun test src/lib/verify/packaged-factory-reference-family-closeout-export-css.te
 bun test src/lib/verify/packaged-factory-reference-family-closeout-gates.test.ts
 bun test src/lib/verify/packaged-factory-reference-family-closeout-evidence.test.ts
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
+make test-verify-contract
+# after make build:
+VERIFY_PRODUCTION_INTEGRATION_TESTS=1 bun test src/lib/verify/packaged-factory-reference-family-closeout-evidence-browser-verify.test.ts
+make test-integration
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-a11y-browser.ts
@@ -342,3 +354,14 @@ bun src/lib/verify/assert-packaged-factory-reference-family-closeout-export-css-
 CLOSEOUT_EVIDENCE_ASSUME_GATES_PASS=1 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-evidence-browser.ts
 make validate-data && make linkcheck && make check && make build && make a11y && make budget && make ci
 ```
+
+### Required-suite wiring (review follow-up)
+
+- All eight closeout tip `*.test.*` files are listed in
+  `VERIFY_CONTRACT_REQUIRED_TEST_PATHS` (`make test-verify-contract` / CI
+  `contracts`).
+- Out/-backed tip rows (gates budget, import-graph export payloads) and the
+  story 008 evidence browser verify are listed in
+  `PRODUCTION_INTEGRATION_TEST_PATHS` (`make test-integration` after
+  `make build`). Contracts soft-skips those tip rows when `out/` is absent;
+  integration fails closed without a trusted export.
