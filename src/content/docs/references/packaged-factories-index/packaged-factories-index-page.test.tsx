@@ -1,9 +1,10 @@
 /**
  * Page-owned proofs for references/packaged-factories-index.
  * Asserts published route presence, registry alignment, concise reference
- * chrome, family-index discoverability, and ordered generated enumeration
- * rendering — not replay mounts, child page bodies, or route-family loader
- * registration (later stories).
+ * chrome, family-index discoverability, ordered generated enumeration
+ * rendering, and index-only page MDX component-map merge via the route-family
+ * loader — not child replay maps, child page bodies, or import-graph isolation
+ * (later stories).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -16,6 +17,7 @@ import { REFERENCE_FAMILY_DISCOVERABILITY_ROUTES } from "../family-index/referen
 import { resolveReferenceFamilyDiscoverabilityCards } from "../family-index/resolve-reference-family-discoverability";
 import generatedIndex from "./generated/index.json";
 import { PackagedFactoriesIndex } from "./PackagedFactoriesIndex";
+import { pageMdxComponents } from "./page-mdx-components";
 
 const PAGE_URL = "/docs/references/packaged-factories-index";
 const REGISTRY_ID = "reference.packaged-factories-index";
@@ -276,5 +278,57 @@ describe("packaged-factories-index ordered enumeration", () => {
     ).toBe(generatedIndex.entries[0]?.factoryJsonText);
     expect(document.querySelector("[data-factory-replay]")).toBeNull();
     expect(document.querySelector("[data-factory-visualizer]")).toBeNull();
+  });
+});
+
+describe("packaged-factories-index page MDX component map", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  test("exports an index-only map keyed to PackagedFactoriesIndex", () => {
+    expect(Object.keys(pageMdxComponents).sort()).toEqual([
+      "PackagedFactoriesIndex",
+    ]);
+    expect(pageMdxComponents.PackagedFactoriesIndex).toBe(
+      PackagedFactoriesIndex,
+    );
+    expect(
+      Object.keys(pageMdxComponents).some((key) =>
+        /replay|recording|visualizer|playback/i.test(key),
+      ),
+    ).toBe(false);
+  });
+
+  test("route-family loader merges the map so parent MDX renders the index", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "references",
+      slug: "packaged-factories-index",
+    });
+
+    render(
+      <main>
+        <DocsPageProviders
+          assets={loadedPage.assets}
+          messages={loadedPage.messages}
+        >
+          {loadedPage.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    const root = screen.getByTestId("packaged-factories-index");
+    expect(root.getAttribute("data-packaged-factories-index-package")).toBe(
+      "@you-agent-factory/packaged-factories",
+    );
+    expect(
+      within(root)
+        .getAllByRole("article")
+        .map((node) => node.id),
+    ).toEqual([...ALLOWLIST_ORDER]);
+    expect(document.querySelector("[data-factory-replay]")).toBeNull();
+    expect(document.querySelector("[data-factory-visualizer]")).toBeNull();
+    expect(document.querySelector("[data-factory-recording]")).toBeNull();
+    expect(screen.queryByText(/usage example/i)).toBeNull();
   });
 });

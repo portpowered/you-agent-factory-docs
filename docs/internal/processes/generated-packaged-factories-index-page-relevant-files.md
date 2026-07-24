@@ -21,7 +21,7 @@ factory-replay feature internals (beyond thin child component-map placeholders
 required for literal imports), child page bodies, landing composition,
 dependency pins, or global CSS.
 
-## Key files (stories 001–002 — parent shell + ordered index)
+## Key files (stories 001–003 — parent shell, ordered index, index-only map)
 
 | Path | Role |
 | --- | --- |
@@ -55,8 +55,10 @@ dependency pins, or global CSS.
   components are not resolved by the compile path.
 - Use site `CodePanel` (`@/features/factory-ui/data-display`) for unabridged
   definition panels. Full source must remain in the DOM (scroll clipping is OK).
-- Keep the parent free of replay/recording/visualizer/playback mounts; later
-  stories add literal child replay component-map imports.
+- Keep the parent free of replay/recording/visualizer/playback mounts. Story
+  003’s `page-mdx-components` must stay index-only (`PackagedFactoriesIndex`
+  only). Later stories add literal child replay component-map imports under
+  nested slugs without widening the parent map.
 - Fumadocs only maps `**/page.mdx` bundles to routes, so the Batch 2
   `generated/` corpus beside the parent page does not create child routes by
   itself. Child hrefs are still emitted as
