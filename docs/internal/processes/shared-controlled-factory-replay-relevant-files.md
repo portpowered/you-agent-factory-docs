@@ -47,6 +47,26 @@ Rules:
 - Cache hits return the **same** `PreparedReplayProjection` object reference.
 - Soft cap: `MAX_CACHED_REPLAY_PROJECTIONS` (32), oldest Map key evicted first.
 
+## Autoplay scheduler (story 003+)
+
+| Concern | Location |
+| --- | --- |
+| Single chained 2000 ms timeout | `autoplay-scheduler.ts` → `createAutoplayScheduler` |
+| Cadence constant | `AUTOPLAY_INTERVAL_MS` (`2000`) |
+
+Rules:
+
+- Own **at most one** pending timeout handle. Prefer one handle replaced on
+  each schedule (chained), never overlapping parallel advance timers.
+- `sync({ playing, allowed })` aligns the timer with host play + gate state;
+  Pause / Reset / `allowed: false` / `dispose()` clear any pending timeout.
+- On fire: call the Advance callback, then chain the next timeout only if still
+  playing and allowed. Final-tick hold+loop comes from `reducePlayback` Advance
+  wrapping final → earliest after one full cadence on the final tick.
+- Inject `setTimeout` / `clearTimeout` in tests (manual fake clock) so cadence
+  assertions never depend on wall-clock flakiness. Gates (story 004) only flip
+  `allowed`; they do not own a second timer.
+
 ## Packaged dependencies (consume, do not re-own)
 
 | Package | Use |
