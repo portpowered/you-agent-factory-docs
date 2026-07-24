@@ -1,12 +1,12 @@
 /**
  * Page-owned publish proof for references/packaged-factories-index/subagent.
- * Covers concise reference surface: canonical name, one-sentence description,
- * concrete invocation examples, and parent definition link. Replay mount and
- * recording isolation proofs belong to later stories in this PRD.
+ * Covers concise reference surface plus full-mode subagent-only replay mount.
+ * Per-route recording isolation import-graph proofs belong to a later story.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES } from "@/features/factory-replay";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
@@ -15,14 +15,30 @@ const PAGE_RENDER_TIMEOUT_MS = 30_000;
 const REGISTRY_ID = "reference.packaged-factories-index-subagent";
 const ROUTE_SLUG = "packaged-factories-index/subagent";
 
+function ensureIntersectionObserverStub(): void {
+  if (typeof globalThis.IntersectionObserver === "function") {
+    return;
+  }
+  globalThis.IntersectionObserver = class {
+    disconnect(): void {}
+    observe(): void {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+    unobserve(): void {}
+  } as unknown as typeof IntersectionObserver;
+}
+
 describe("packaged-factories-index/subagent reference page", () => {
   afterEach(() => {
     cleanup();
   });
 
   test(
-    "publishes /docs/references/packaged-factories-index/subagent with concise @you/subagent reference content",
+    "publishes /docs/references/packaged-factories-index/subagent with concise @you/subagent reference content and full-mode replay",
     async () => {
+      ensureIntersectionObserverStub();
+
       const fumadocsPage = source.getPage([
         "references",
         "packaged-factories-index",
@@ -64,7 +80,9 @@ describe("packaged-factories-index/subagent reference page", () => {
         loadedPage.messages.sections?.limitsAndAssumptions,
       ).toBeUndefined();
       expect(loadedPage.messages.sections?.operationalNotes).toBeUndefined();
-      expect(loadedPage.messages.sections?.deterministicReplay).toBeUndefined();
+      expect(
+        String(loadedPage.messages.sections?.deterministicReplay?.title ?? ""),
+      ).toBe("Deterministic replay");
 
       render(
         <main>
@@ -83,6 +101,9 @@ describe("packaged-factories-index/subagent reference page", () => {
       ).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Complete definition" }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Deterministic replay" }),
       ).toBeTruthy();
 
       const canonical = document.querySelector(
@@ -114,6 +135,26 @@ describe("packaged-factories-index/subagent reference page", () => {
       expect(document.body.textContent).not.toMatch(
         /"id":\s*"builtin-subagent"|unabridged factory\.json/i,
       );
+
+      const replayRoot = screen.getByRole("region", {
+        name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.chrome.regionLabel,
+      });
+      expect(replayRoot.getAttribute("data-factory-replay-mode")).toBe("full");
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.timeline.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.topology.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.progress.regionLabel,
+        }),
+      ).toBeTruthy();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

@@ -1,7 +1,7 @@
 /**
  * Shared page MDX component map for remaining standard packaged-factories-index
- * replay children still on the placeholder: subagent, fusion, review, quorum,
- * tts. Goal resolves its child-owned map instead.
+ * replay children still on the placeholder: fusion, review, quorum, tts. Goal
+ * and subagent resolve their child-owned maps instead.
  *
  * Thin placeholder until Batch 4 authors sibling child page bodies. Keep this
  * module free of parent index mounts and free of packaged-factory recording

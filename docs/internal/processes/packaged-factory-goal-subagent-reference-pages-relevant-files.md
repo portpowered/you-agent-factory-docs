@@ -52,7 +52,16 @@ landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/subagent/assets.json` | Empty local asset config |
 | `src/content/registry/references/packaged-factories-index/subagent.json` | Registry id `reference.packaged-factories-index-subagent`, slug `packaged-factories-index/subagent` |
 | `src/content/docs/references/packaged-factories-index/subagent/subagent-page.test.tsx` | Route + concise content publish proofs |
-| `src/content/docs/references/packaged-factories-index/subagent/assert-subagent-child-reference-browser.ts` | Browser markers for concise content (replay markers deferred to story 004) |
+
+## Key files (story 004 — subagent-only full-mode replay)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/subagent/SubagentFactoryReplay.tsx` | Client mount: `ControlledFactoryReplay` `mode="full"` with only `generated/subagent.factory-recording.v1.json` |
+| `src/content/docs/references/packaged-factories-index/subagent/page-mdx-components.tsx` | Subagent-owned MDX map exporting `SubagentFactoryReplay` |
+| `src/lib/content/route-family-local-docs-page-load.ts` | `packaged-factories-index/subagent` case literal-imports the subagent-owned map (not shared `replay-page-mdx-components`) |
+| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Asserts goal and subagent resolve child-owned maps; remaining standard children keep the shared placeholder |
+| `src/content/docs/references/packaged-factories-index/subagent/assert-subagent-child-reference-browser.ts` | Browser markers for concise content + `data-factory-replay-mode="full"` |
 
 ## Patterns
 
