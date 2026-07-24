@@ -322,7 +322,7 @@ export async function renderSectionCollectionIndexPage(
 
 /**
  * Authored `/docs/references` family index: unlabeled openingSummary purpose
- * lead and eight-route Contract surfaces discoverability cards—owned by the
+ * lead and nine-route Contract surfaces discoverability cards—owned by the
  * references index lane.
  */
 export async function renderReferencesFamilyIndexPage(

@@ -13,7 +13,7 @@ type ReferencesFamilyIndexProps = {
 
 /**
  * Authored `/docs/references` family index: short openingSummary purpose lead
- * and discoverability cards for all eight planned reference routes.
+ * and discoverability cards for all nine planned reference routes.
  */
 export function ReferencesFamilyIndex({
   messages,
