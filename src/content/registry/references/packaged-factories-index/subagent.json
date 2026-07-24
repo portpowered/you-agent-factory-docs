@@ -1,0 +1,18 @@
+{
+  "id": "reference.packaged-factories-index-subagent",
+  "slug": "packaged-factories-index/subagent",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "@you/subagent",
+    "subagent packaged factory",
+    "you subagent factory"
+  ],
+  "tags": [],
+  "relatedIds": ["reference.packaged-factories-index"],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-24T00:00:00.000Z",
+  "updatedAt": "2026-07-24T00:00:00.000Z"
+}

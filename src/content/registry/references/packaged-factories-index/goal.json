@@ -1,0 +1,14 @@
+{
+  "id": "reference.packaged-factories-index-goal",
+  "slug": "packaged-factories-index/goal",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["@you/goal", "goal packaged factory", "you goal factory"],
+  "tags": [],
+  "relatedIds": ["reference.packaged-factories-index"],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-24T00:00:00.000Z",
+  "updatedAt": "2026-07-24T00:00:00.000Z"
+}
