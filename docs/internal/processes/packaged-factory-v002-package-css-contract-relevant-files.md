@@ -36,6 +36,32 @@ landing Youi wiring, or upstream npm publish repairs in this lane.
 | `src/lib/packaged-factory-v002/clean-consumer-install.ts` | Disposable temp-dir registry install + installed version readback |
 | `src/lib/packaged-factory-v002/clean-consumer-install.test.ts` | Live registry install success + unpublished fail-closed proof |
 
+## Key files (story 002 — declared public exports)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/packaged-factory-v002/required-public-exports.ts` | Pure required surface list (recording parser, replay projections, visualizer components/styles, packaged-factories manifest + `./factories/<slug>.json`, deep-research) |
+| `src/lib/packaged-factory-v002/export-map-coverage.ts` | Pure `exports` map coverage helpers (exact + single-segment `*` patterns) |
+| `src/lib/packaged-factory-v002/public-export-proof.ts` | Clean-consumer install + export-map-gated resolve/import proof |
+| `src/lib/packaged-factory-v002/public-export-proof.test.ts` | Live proofs for client/replay/visualizers + fail-closed packaged-factories gap |
+
+### Declared packaged-factories contract (do not invent)
+
+Documented public subpaths (from the upstream data-only package README):
+
+- `@you-agent-factory/packaged-factories/manifest` — catalog order/metadata
+- `@you-agent-factory/packaged-factories/factories/<slug>.json` — flattened factory definitions
+
+Do **not** treat nested authored paths such as
+`factories/<slug>/factory.json` or `factories/<slug>/scripts/*.js` as public
+exports. Those are package-internal source trees.
+
+**Current registry gap:** published `packaged-factories@0.0.2` ships the
+authored `factories/` tree with **no** `exports` map. The proof fails closed
+(`missing-export-map`) until upstream republishes the data-only catalog
+artifact with the documented export map. See
+`tasks/ideas-to-review/packaged-factory/packaged-factories-0-0-2-export-map-mismatch.md`.
+
 ## Patterns
 
 - Prefer a disposable temporary consumer directory for install/export proof so
@@ -50,11 +76,18 @@ landing Youi wiring, or upstream npm publish repairs in this lane.
   `npm install`.
 - Keep pure pin/manifest helpers IO-free so later host-pin contract tests can
   reuse the same five-package list without spawning installs.
+- For public-export proofs: read the installed package `exports` map first;
+  fail closed when the map is missing or does not cover the required subpath;
+  only then `createRequire(consumer/package.json).resolve(specifier)` and
+  import/read. Never walk undocumented package directories to invent paths.
+- Legacy Node resolution without an `exports` map can invent filesystem paths
+  (for example nested `factories/<slug>/factory.json`); those must still fail
+  the contract because they are not declared public exports.
 
 ## Verification
 
 ```bash
-bun test src/lib/packaged-factory-v002/clean-consumer-install.test.ts
+bun test src/lib/packaged-factory-v002/
 bunx biome check src/lib/packaged-factory-v002/
 bun run typecheck
 ```
@@ -64,4 +97,6 @@ bun run typecheck
 - Prior components host integration:
   `docs/internal/processes/factory-components-host-integration-relevant-files.md`
   (still documents host `@0.0.0` until story 003 pins `0.0.2`)
+- Similar public-export resolver pattern for `@you-agent-factory/api`:
+  `src/lib/references/api-package-artifact-resolver.ts`
 - PRD lane: `packaged-factory-v002-package-css-contract`
