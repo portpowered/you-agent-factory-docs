@@ -95,10 +95,14 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * landing Youi compact goal replay onto the same head. CI measured
  * ~377.69 MiB total (377691517 bytes) while Next static JS (~13.97 MiB) and
  * search bootstrap (~22.93 MiB) stayed under their focused ceilings. The
- * total ceiling is now 380 MiB; JS and search ceilings remain unchanged.
+ * total ceiling was 380 MiB. Raised again on 2026-07-24 UTC after rebasing
+ * the packaged-factory quorum/tts child reference pages onto that same head.
+ * Prior quorum/tts-on-main CI measured ~377.56 MiB before fusion/review
+ * landed; combined with the Batch 4 export, keep modest headroom at 385 MiB.
+ * JS and search ceilings remain unchanged.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 380_000_000,
+  maxTotalOutBytes: 385_000_000,
   maxNextStaticJsBytes: 15_000_000,
   maxSearchBootstrapBytes: 32_000_000,
 } as const;
