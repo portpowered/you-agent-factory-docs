@@ -2,7 +2,8 @@
  * Focused proofs for packaged-factories-index nested child component-map
  * wiring: standard replay children share one literal replay-page map;
  * deep-research resolves a distinct non-replay map. Does not author child
- * page bodies (Batch 4) or assert parent import-graph isolation (story 005).
+ * page bodies (Batch 4). Parent import-graph isolation is covered by
+ * packaged-factories-index-import-graph.test.ts.
  */
 import { describe, expect, test } from "bun:test";
 import { loadRouteFamilyPageMdxComponents } from "@/lib/content/route-family-local-docs-page-load";

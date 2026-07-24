@@ -2,9 +2,11 @@
  * Page-owned proofs for references/packaged-factories-index.
  * Asserts published route presence, registry alignment, concise reference
  * chrome, family-index discoverability, ordered generated enumeration
- * rendering, and index-only page MDX component-map merge via the route-family
- * loader — not child replay maps, child page bodies, or import-graph isolation
- * (later stories).
+ * rendering (unabridged definitions, JS-only shape, stable child links /
+ * anchors, no replay/playback UI), and index-only page MDX component-map merge
+ * via the route-family loader. Import-graph isolation lives in
+ * packaged-factories-index-import-graph.test.ts. Does not author child page
+ * bodies.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";

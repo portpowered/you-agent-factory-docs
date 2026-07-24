@@ -21,7 +21,7 @@ factory-replay feature internals (beyond thin child component-map placeholders
 required for literal imports), child page bodies, landing composition,
 dependency pins, or global CSS.
 
-## Key files (stories 001–004 — parent shell, ordered index, maps, nested loader)
+## Key files (stories 001–005 — parent shell through import isolation)
 
 | Path | Role |
 | --- | --- |
@@ -31,6 +31,7 @@ dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/page-mdx-components.tsx` | Index-only MDX map exporting `PackagedFactoriesIndex` |
 | `src/content/docs/references/packaged-factories-index/replay-page-mdx-components.tsx` | Shared thin placeholder map for standard replay children |
 | `src/content/docs/references/packaged-factories-index/deep-research-page-mdx-components.tsx` | Non-replay placeholder map for `deep-research` only |
+| `src/content/docs/references/packaged-factories-index/parent-import-graph.ts` | Bun metafile collector + pure forbidden-marker classification for parent ownership |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Literal static imports for parent + nested child maps (`loadRouteFamilyPageMdxComponents`) |
 | `src/content/docs/references/packaged-factories-index/generated/index.json` | Batch 2 ordered corpus (read-only for this lane) |
 | `src/content/docs/references/packaged-factories-index/messages/en.json` | Concise reference-oriented local messages (no usage-example sections) |
@@ -40,6 +41,7 @@ dependency pins, or global CSS.
 | `src/content/docs/references/family-index/messages/*.json` | Localized discoverability card title/body for `packaged-factories-index` |
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-page.test.tsx` | Route, discovery, and enumeration render proofs |
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Nested child map identity + loader wiring proofs |
+| `src/content/docs/references/packaged-factories-index/packaged-factories-index-import-graph.test.ts` | Parent import-graph isolation vs replay/visualizer/recording modules |
 | `src/content/docs/references/packaged-factories-index/project-packaged-factories-index.test.ts` | Pure projection proofs including JavaScript-only shape |
 
 ## Patterns
@@ -69,6 +71,12 @@ dependency pins, or global CSS.
 - Prove nested map wiring via `loadRouteFamilyPageMdxComponents` map identity
   (shared replay vs non-replay) without authoring Batch 4 child `page.mdx`
   bodies.
+- Prove parent import isolation with Bun.build `metafile` inputs from
+  `page-mdx-components.tsx` / `PackagedFactoriesIndex.tsx`, then classify
+  forbidden markers (`@you-agent-factory/factory-replay`,
+  `@you-agent-factory/factory-visualizers`, `src/features/factory-replay/`,
+  `*.factory-recording.v1.json`). Keep classification pure; keep bundling in
+  the collector. Do not grep unrelated source inventories.
 - Fumadocs only maps `**/page.mdx` bundles to routes, so the Batch 2
   `generated/` corpus beside the parent page does not create child routes by
   itself. Child hrefs are still emitted as
