@@ -50,6 +50,37 @@ avoidable import leakage over raising budget ceilings.
    committed `factories/<slug>.factory.json` UTF-8 bytes (and
    `generated/index.json` `factoryJsonText`).
 
+## Key files (story 002 — exact raw JavaScript + minimal deep-research child)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/packaged-factory-reference-family-closeout-deep-research.ts` | Closeout-owned tip proof helpers: companion exactness vs live acquire, no derived companion fields, JavaScript-only pass-through display, deep-research child message/DOM forbidden-surface asserts |
+| `src/lib/verify/packaged-factory-reference-family-closeout-deep-research.test.tsx` | Pure fail-closed + live tip proofs (companion bytes, JS-only CodePanel, purpose/usage/two-link child) |
+| `src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts` | Playwright browser probe for the deep-research child on a unique port |
+| `src/lib/packaged-factory-generated-source-corpus/acquire-companion-source.ts` | Reused live companion acquisition (do not fork) |
+| `src/content/docs/references/packaged-factories-index/generated/deep-research.source.json` | Committed exact companion UTF-8 contract under test |
+| `src/content/docs/references/packaged-factories-index/deep-research/` | Minimal child page (read-only unless tip regresses) |
+
+### Story 002 acceptance mapping
+
+1. **Exact raw JavaScript display** —
+   `provePackagedFactoryCloseoutExactCompanionJavascript` requires committed
+   `deep-research.source.json` === `index.json` `companionSource` === live
+   `acquireDeepResearchCompanionSource` UTF-8 bytes + SHA-256, with only
+   allowed metadata keys (no stages/workers/callGraph/ast/summary). The
+   JavaScript-only index path renders those same companion bytes through
+   `PackagedFactoriesIndex` without rewriting.
+2. **Minimal deep-research child** —
+   `assertPackagedFactoryCloseoutDeepResearchChildMessages` + rendered page
+   proofs require Purpose body, one `Usage` fenced invocation, and links to
+   `/docs/references/javascript-runtime` and `/docs/factories/dynamic-workflows`
+   only (no teaching-chrome section keys).
+3. **No child raw-source / replay duplication** — forbidden selectors
+   (`[data-factory-replay*]`, `[data-factory-visualizer]`,
+   `[data-packaged-factory-definition*]`, schema expand markers) must be absent
+   on the child; non-replay MDX map stays empty and never equals the shared
+   replay map.
+
 ## Patterns
 
 - Closeout proofs compose Batch 2 verify/generate helpers; they do not invent a
@@ -60,14 +91,21 @@ avoidable import leakage over raising budget ceilings.
 - Parent index panel accessibility for story 001 is the accessible code panel
   (`<pre>` in `CodePanel`) remaining in the DOM with full unabridged text —
   scroll clipping is OK; truncation is not.
+- Story 002 treats companion JavaScript as an exact UTF-8 artifact +
+  JavaScript-only display contract. On tip, deep-research still ships
+  `factory.json` on the parent index; companion JS is proven via committed
+  artifacts + the JavaScript-only CodePanel path using those same bytes — not
+  by duplicating raw source onto the child page.
 - Later closeout stories (replay gates, import graphs, a11y/export/CSS, gates,
   browser evidence) should add sibling `packaged-factory-reference-family-closeout-*`
-  modules rather than expanding story 001 beyond corpus + unabridged index.
+  modules rather than expanding earlier story modules beyond their ownership.
 
 ## Reproduce
 
 ```bash
 bun run prepare:content-runtime
 bun test src/lib/verify/packaged-factory-reference-family-closeout-corpus.test.tsx
+bun test src/lib/verify/packaged-factory-reference-family-closeout-deep-research.test.tsx
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
+bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
 ```
