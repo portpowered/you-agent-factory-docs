@@ -111,6 +111,25 @@ Rules:
 - Attach `rootRef` from the hook to the replay root for intersection gating.
   Tests may pass `bindDomGates={false}`.
 
+## Compact-mode composition (story 006+)
+
+| Concern | Location |
+| --- | --- |
+| Pure topology + tick/timeline position mapping | `compact-mode-composition.ts` → `deriveCompactModeComposition` |
+| Compact React composition | `controlled-factory-replay-compact.tsx` |
+
+Rules:
+
+- Reuse `useControlledFactoryReplay` (same transitions, cache, cadence, gates).
+- Compose `FactoryTopologyReplay` plus visible tick + timeline position text and
+  Play/Pause only — never `WorkProgressVisualizer` or
+  `FactoryRecordingTopologyReplay`.
+- Do not mount `FactoryTimelineScrubber` in compact; show position via chrome /
+  timeline message helpers (`selectedTick`, `position`).
+- `progressVisible` is always `false`; fixture tests assert Work progress
+  region present in full and absent in compact for the same recording.
+- Tests may pass `bindDomGates={false}`.
+
 ## Packaged dependencies (consume, do not re-own)
 
 | Package | Use |

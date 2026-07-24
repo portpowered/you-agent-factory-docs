@@ -1,11 +1,11 @@
 /**
  * Shared host-controlled factory-replay feature.
  *
- * Stories 001–005 freeze pure playback transitions, public projection
+ * Stories 001–006 freeze pure playback transitions, public projection
  * preparation/cache, the single chained 2000 ms autoplay scheduler,
- * visibility / intersection / reduced-motion gates, and full-mode composition
- * with host-controlled selected tick. Later stories add compact mode and the
- * frozen public entry.
+ * visibility / intersection / reduced-motion gates, full-mode composition,
+ * and compact-mode composition with host-controlled selected tick. Later
+ * stories freeze the public mode entry.
  */
 
 export type {
@@ -35,6 +35,14 @@ export {
   AUTOPLAY_INTERVAL_MS,
   createAutoplayScheduler,
 } from "./autoplay-scheduler";
+export type {
+  CompactModeComposition,
+  CompactModeCompositionInput,
+  CompactModePresentationStatus,
+} from "./compact-mode-composition";
+export { deriveCompactModeComposition } from "./compact-mode-composition";
+export type { ControlledFactoryReplayCompactProps } from "./controlled-factory-replay-compact";
+export { ControlledFactoryReplayCompact } from "./controlled-factory-replay-compact";
 export type { ControlledFactoryReplayFullProps } from "./controlled-factory-replay-full";
 export { ControlledFactoryReplayFull } from "./controlled-factory-replay-full";
 export type {
