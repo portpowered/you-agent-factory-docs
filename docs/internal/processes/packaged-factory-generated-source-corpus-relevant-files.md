@@ -55,3 +55,26 @@ workers, or companion JavaScript.
    SHA-256 of the acquired UTF-8 bytes.
 4. Fail closed on missing allowlisted files, wrong version, path escape,
    invalid JSON/shape, or missing canonical `name`.
+
+## Key files (story 002 — companion JavaScript preservation)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/packaged-factory-generated-source-corpus/companion-source-model.ts` | Pure companion source types + builder: raw UTF-8 text, relative path, SHA-256, straightforward metadata only (`sourceKind`, canonical name, child slug, package version) |
+| `src/lib/packaged-factory-generated-source-corpus/acquire-companion-source.ts` | Build-only IO: filesystem pull → fail-closed companion acquisition |
+| `src/lib/packaged-factory-generated-source-corpus/companion-source-model.test.ts` | Pure fail-closed + no-interpretation proofs |
+| `src/lib/packaged-factory-generated-source-corpus/acquire-companion-source.test.ts` | Live host pull + missing-companion fail-closed proofs |
+
+### Companion JavaScript rule
+
+- Allowlisted path:
+  `factories/deep-research/scripts/deep-research.workflow.js`
+- Preserve complete raw UTF-8 text exactly as pulled. Hash with SHA-256.
+- Metadata only from package / deep-research `factory.json` (canonical name,
+  child slug `deep-research`, package version `0.0.2`) plus a fixed
+  `sourceKind: "companion-javascript"`.
+- Do **not** parse, execute, traverse, interpret, summarize, or emit derived
+  stage/worker/call-graph artifacts from the script body.
+- Batch 1 filesystem pull still lists the companion as optional at the
+  allowlist layer; **this corpus lane treats it as required** and fails closed
+  when absent — never invent substitute JavaScript.
