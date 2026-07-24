@@ -40,7 +40,7 @@ Republish `@you-agent-factory/packaged-factories` so the installed
 or replace the broken `0.0.2` artifact so Batch 1 can pin one exact version
 that proves clean.
 
-## Upstream status (re-checked 2026-07-24 02:55 UTC)
+## Upstream status (re-checked 2026-07-24 03:03 UTC)
 
 - Source of truth already lands the exports map in
   `packages/packaged-factories/package.json` on
@@ -53,16 +53,21 @@ that proves clean.
 - [you-agent-factory#1260](https://github.com/portpowered/you-agent-factory/pull/1260)
   (website manifest consumption) **merged** 2026-07-24; it assumes the public
   data exports but does not republish npm.
+- [you-agent-factory#1265](https://github.com/portpowered/you-agent-factory/pull/1265)
+  merged 2026-07-24 (`pss-fnd-03-owner-derived-import-enforcement`) — unrelated
+  to packaged-factories npm republish.
 - [you-agent-factory#1239](https://github.com/portpowered/you-agent-factory/pull/1239)
-  (`Fix public package releases`) remains an open draft / conflicting (updated
-  `2026-07-22T23:29:58Z`).
+  (`Fix public package releases`) remains an open draft / CONFLICTING
+  (`updatedAt` `2026-07-22T23:29:58Z`; `mergeable: CONFLICTING`).
 - Active upstream workflow: `Release Publish and Verification`
-  (`.github/workflows/release.yml`). No newer registry artifact observed.
+  (`.github/workflows/release.yml`). Recent runs are old/cancelled/skipped
+  (latest listed run `2026-06-02`); no newer registry artifact observed.
 - npm still only has `0.0.0` and `0.0.2`; downloaded `0.0.2` tarball has
   `files: ["factories"]` and **no** `exports` (registry `0.0.2` time
-  `2026-07-23T00:42:41.557Z`; package `modified` `2026-07-23T00:42:41.715Z`;
-  `dist-tags.latest=0.0.2`). Nested authored paths only
-  (`factories/<slug>/factory.json`); no `generated/` tree.
+  `2026-07-23T00:42:41.557Z`; package `modified`
+  `2026-07-23T00:42:41.715Z`; `dist-tags.latest=0.0.2`). Nested authored
+  paths only (`factories/<slug>/factory.json`); no `generated/` tree.
+  Sibling packages `@you-agent-factory/{client,components,factory-replay,factory-visualizers}@0.0.2` remain published with usable export maps.
 
 ## Evidence in this repo
 
