@@ -40,7 +40,7 @@ Republish `@you-agent-factory/packaged-factories` so the installed
 or replace the broken `0.0.2` artifact so Batch 1 can pin one exact version
 that proves clean.
 
-## Upstream status (re-checked 2026-07-24 02:53 UTC)
+## Upstream status (re-checked 2026-07-24 02:55 UTC)
 
 - Source of truth already lands the exports map in
   `packages/packaged-factories/package.json` on
@@ -56,10 +56,13 @@ that proves clean.
 - [you-agent-factory#1239](https://github.com/portpowered/you-agent-factory/pull/1239)
   (`Fix public package releases`) remains an open draft / conflicting (updated
   `2026-07-22T23:29:58Z`).
+- Active upstream workflow: `Release Publish and Verification`
+  (`.github/workflows/release.yml`). No newer registry artifact observed.
 - npm still only has `0.0.0` and `0.0.2`; downloaded `0.0.2` tarball has
-  `files: ["factories"]` and **no** `exports` (registry Updated
-  `2026-07-23T00:42:41.715Z`; `dist-tags.latest=0.0.2`). Nested authored
-  paths only (`factories/<slug>/factory.json`); no `generated/` tree.
+  `files: ["factories"]` and **no** `exports` (registry `0.0.2` time
+  `2026-07-23T00:42:41.557Z`; package `modified` `2026-07-23T00:42:41.715Z`;
+  `dist-tags.latest=0.0.2`). Nested authored paths only
+  (`factories/<slug>/factory.json`); no `generated/` tree.
 
 ## Evidence in this repo
 
