@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "factory-recording/v1",
+  "id": "packaged-fusion-sample",
+  "title": "fusion packaged factory sample",
+  "summary": "Distinctive factory-recording/v1 sample for packaged-factories fusion.",
+  "factory": {
+    "name": "fusion",
+    "workTypes": [
+      {
+        "name": "task",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "draft",
+            "type": "PROCESSING"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ],
+        "handlingBehavior": [
+          "DEFAULT"
+        ]
+      }
+    ],
+    "workstations": [
+      {
+        "name": "draft-fusion",
+        "worker": "fusion-drafter",
+        "inputs": [
+          {
+            "workType": "task",
+            "state": "init"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "task",
+            "state": "draft"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "task",
+            "state": "failed"
+          }
+        ]
+      },
+      {
+        "name": "refine-fusion",
+        "worker": "fusion-refiner",
+        "inputs": [
+          {
+            "workType": "task",
+            "state": "draft"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "task",
+            "state": "complete"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "task",
+            "state": "failed"
+          }
+        ]
+      }
+    ],
+    "workers": [
+      {
+        "name": "fusion-drafter",
+        "type": "AGENT_WORKER"
+      },
+      {
+        "name": "fusion-refiner",
+        "type": "AGENT_WORKER"
+      }
+    ]
+  },
+  "events": [
+    {
+      "schemaVersion": "agent-factory.event.v1",
+      "id": "evt-fusion-topology-001",
+      "type": "INITIAL_STRUCTURE_REQUEST",
+      "context": {
+        "sequence": 1,
+        "tick": 0,
+        "eventTime": "2026-07-23T00:00:00.000Z",
+        "sessionId": "session-packaged-fusion",
+        "sessionSequence": 1
+      },
+      "payload": {
+        "factory": {
+          "name": "fusion",
+          "workTypes": [
+            {
+              "name": "task",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "draft",
+                  "type": "PROCESSING"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ],
+              "handlingBehavior": [
+                "DEFAULT"
+              ]
+            }
+          ],
+          "workstations": [
+            {
+              "name": "draft-fusion",
+              "worker": "fusion-drafter",
+              "inputs": [
+                {
+                  "workType": "task",
+                  "state": "init"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "task",
+                  "state": "draft"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "task",
+                  "state": "failed"
+                }
+              ]
+            },
+            {
+              "name": "refine-fusion",
+              "worker": "fusion-refiner",
+              "inputs": [
+                {
+                  "workType": "task",
+                  "state": "draft"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "task",
+                  "state": "complete"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "task",
+                  "state": "failed"
+                }
+              ]
+            }
+          ],
+          "workers": [
+            {
+              "name": "fusion-drafter",
+              "type": "AGENT_WORKER"
+            },
+            {
+              "name": "fusion-refiner",
+              "type": "AGENT_WORKER"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

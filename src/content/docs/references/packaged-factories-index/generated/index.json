@@ -1,0 +1,1281 @@
+{
+  "formatVersion": "1",
+  "packageName": "@you-agent-factory/packaged-factories",
+  "packageVersion": "0.0.2",
+  "exportsMapAbsent": true,
+  "entries": [
+    {
+      "canonicalName": "@you/goal",
+      "packagedDescription": null,
+      "childSlug": "goal",
+      "sourceRelativePath": "factories/goal/factory.json",
+      "factoryJsonText": "{\n  \"name\": \"@you/goal\",\n  \"id\": \"builtin-goal\",\n  \"invocationReturn\": {\n    \"policy\": \"EXPLICIT\",\n    \"workTypeName\": \"goal\",\n    \"terminalState\": \"complete\"\n  },\n  \"workTypes\": [\n    {\n      \"name\": \"goal\",\n      \"handlingBehavior\": [\"DEFAULT\"],\n      \"states\": [\n        {\"name\": \"init\", \"type\": \"INITIAL\"},\n        {\"name\": \"execute\", \"type\": \"PROCESSING\"},\n        {\"name\": \"complete\", \"type\": \"TERMINAL\"},\n        {\"name\": \"failed\", \"type\": \"FAILED\"}\n      ]\n    }\n  ],\n  \"workers\": [\n    {\n      \"name\": \"goal-executor\",\n      \"type\": \"AGENT_WORKER\",\n      \"stopToken\": \"<COMPLETE>\",\n      \"promptFile\": \"prompts/executor.md\"\n    }\n  ],\n  \"workstations\": [\n    {\n      \"name\": \"execute-goal\",\n      \"type\": \"AGENT_RUN\",\n      \"behavior\": \"REPEATER\",\n      \"worker\": \"goal-executor\",\n      \"inputs\": [\n        {\"workType\": \"goal\", \"state\": \"init\"}\n      ],\n      \"outputs\": [\n        {\"workType\": \"goal\", \"state\": \"complete\"}\n      ],\n      \"onContinue\": [\n        {\"workType\": \"goal\", \"state\": \"init\"}\n      ],\n      \"onRejection\": [\n        {\"workType\": \"goal\", \"state\": \"init\"}\n      ],\n      \"onFailure\": [\n        {\"workType\": \"goal\", \"state\": \"failed\"}\n      ],\n      \"promptFile\": \"prompts/executor.md\"\n    }\n  ]\n}\n",
+      "factoryJson": {
+        "name": "@you/goal",
+        "id": "builtin-goal",
+        "invocationReturn": {
+          "policy": "EXPLICIT",
+          "workTypeName": "goal",
+          "terminalState": "complete"
+        },
+        "workTypes": [
+          {
+            "name": "goal",
+            "handlingBehavior": [
+              "DEFAULT"
+            ],
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "execute",
+                "type": "PROCESSING"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          }
+        ],
+        "workers": [
+          {
+            "name": "goal-executor",
+            "type": "AGENT_WORKER",
+            "stopToken": "<COMPLETE>",
+            "promptFile": "prompts/executor.md"
+          }
+        ],
+        "workstations": [
+          {
+            "name": "execute-goal",
+            "type": "AGENT_RUN",
+            "behavior": "REPEATER",
+            "worker": "goal-executor",
+            "inputs": [
+              {
+                "workType": "goal",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "goal",
+                "state": "complete"
+              }
+            ],
+            "onContinue": [
+              {
+                "workType": "goal",
+                "state": "init"
+              }
+            ],
+            "onRejection": [
+              {
+                "workType": "goal",
+                "state": "init"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "goal",
+                "state": "failed"
+              }
+            ],
+            "promptFile": "prompts/executor.md"
+          }
+        ]
+      },
+      "packageVersion": "0.0.2",
+      "factoryJsonSha256": "382cf4e415ce0ed68384f698221060a7bfd816a87f83ba85af45db124c0f6d2e"
+    },
+    {
+      "canonicalName": "@you/subagent",
+      "packagedDescription": null,
+      "childSlug": "subagent",
+      "sourceRelativePath": "factories/subagent/factory.json",
+      "factoryJsonText": "{\n  \"name\": \"@you/subagent\",\n  \"id\": \"builtin-subagent\",\n  \"invocationSignature\": {\n    \"parameters\": [\n      {\n        \"name\": \"input\",\n        \"description\": \"Text request for the one-pass subagent.\",\n        \"required\": true,\n        \"bindings\": [\n          {\"kind\": \"POSITIONAL\", \"position\": 1},\n          {\"kind\": \"STDIN\"}\n        ]\n      }\n    ]\n  },\n  \"examples\": [\n    {\n      \"name\": \"positional-input\",\n      \"description\": {\"type\": \"LOCALIZABLE_ASSET\", \"value\": \"Summarize a release request.\"},\n      \"args\": {\"input\": \"Summarize this release\"}\n    },\n    {\n      \"name\": \"stdin-input\",\n      \"description\": {\"type\": \"LOCALIZABLE_ASSET\", \"value\": \"Summarize the same request using structured input.\"},\n      \"args\": {\"input\": \"Summarize this release\"}\n    }\n  ],\n  \"workTypes\": [\n    {\n      \"name\": \"task\",\n      \"handlingBehavior\": [\"DEFAULT\"],\n      \"states\": [\n        {\"name\": \"init\", \"type\": \"INITIAL\"},\n        {\"name\": \"complete\", \"type\": \"TERMINAL\"},\n        {\"name\": \"failed\", \"type\": \"FAILED\"}\n      ]\n    }\n  ],\n  \"resources\": [],\n  \"workers\": [\n    {\n      \"name\": \"subagent-worker\",\n      \"type\": \"AGENT_WORKER\",\n      \"agentTools\": {\n        \"policy\": \"READ_ONLY\"\n      },\n      \"promptFile\": \"prompts/worker.md\"\n    }\n  ],\n  \"workstations\": [\n    {\n      \"name\": \"run-subagent\",\n      \"type\": \"AGENT_RUN\",\n      \"worker\": \"subagent-worker\",\n      \"inputs\": [\n        {\"workType\": \"task\", \"state\": \"init\"}\n      ],\n      \"outputs\": [\n        {\"workType\": \"task\", \"state\": \"complete\"}\n      ],\n      \"onFailure\": [\n        {\"workType\": \"task\", \"state\": \"failed\"}\n      ],\n      \"promptFile\": \"prompts/run-subagent.md\"\n    }\n  ]\n}\n",
+      "factoryJson": {
+        "name": "@you/subagent",
+        "id": "builtin-subagent",
+        "invocationSignature": {
+          "parameters": [
+            {
+              "name": "input",
+              "description": "Text request for the one-pass subagent.",
+              "required": true,
+              "bindings": [
+                {
+                  "kind": "POSITIONAL",
+                  "position": 1
+                },
+                {
+                  "kind": "STDIN"
+                }
+              ]
+            }
+          ]
+        },
+        "examples": [
+          {
+            "name": "positional-input",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Summarize a release request."
+            },
+            "args": {
+              "input": "Summarize this release"
+            }
+          },
+          {
+            "name": "stdin-input",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Summarize the same request using structured input."
+            },
+            "args": {
+              "input": "Summarize this release"
+            }
+          }
+        ],
+        "workTypes": [
+          {
+            "name": "task",
+            "handlingBehavior": [
+              "DEFAULT"
+            ],
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          }
+        ],
+        "resources": [],
+        "workers": [
+          {
+            "name": "subagent-worker",
+            "type": "AGENT_WORKER",
+            "agentTools": {
+              "policy": "READ_ONLY"
+            },
+            "promptFile": "prompts/worker.md"
+          }
+        ],
+        "workstations": [
+          {
+            "name": "run-subagent",
+            "type": "AGENT_RUN",
+            "worker": "subagent-worker",
+            "inputs": [
+              {
+                "workType": "task",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "task",
+                "state": "complete"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "task",
+                "state": "failed"
+              }
+            ],
+            "promptFile": "prompts/run-subagent.md"
+          }
+        ]
+      },
+      "packageVersion": "0.0.2",
+      "factoryJsonSha256": "d80315f40326db1fdab536bbbead5ca6ddf83f86eded86750d3914d553eac52d"
+    },
+    {
+      "canonicalName": "@you/fusion",
+      "packagedDescription": null,
+      "childSlug": "fusion",
+      "sourceRelativePath": "factories/fusion/factory.json",
+      "factoryJsonText": "{\n  \"name\": \"@you/fusion\",\n  \"id\": \"builtin-fusion\",\n  \"invocationSignature\": {\n    \"parameters\": [\n      {\n        \"name\": \"input\",\n        \"description\": \"Text request to run through the two-stage fusion flow.\",\n        \"required\": true,\n        \"bindings\": [\n          {\"kind\": \"POSITIONAL\", \"position\": 1},\n          {\"kind\": \"STDIN\"}\n        ]\n      },\n      {\n        \"name\": \"output\",\n        \"description\": \"Optional output-path hint for file-oriented callers.\",\n        \"externalName\": \"output\",\n        \"aliases\": [\"o\"],\n        \"typeHint\": \"FILE_PATH\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"firstProvider\",\n        \"description\": \"Optional provider override for the first fusion pass.\",\n        \"externalName\": \"first-provider\",\n        \"aliases\": [\"p1\"],\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"secondProvider\",\n        \"description\": \"Optional provider override for the second fusion pass.\",\n        \"externalName\": \"second-provider\",\n        \"aliases\": [\"p2\"],\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"firstModel\",\n        \"description\": \"Optional model override for the first fusion pass.\",\n        \"externalName\": \"first-model\",\n        \"aliases\": [\"m1\"],\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"secondModel\",\n        \"description\": \"Optional model override for the second fusion pass.\",\n        \"externalName\": \"second-model\",\n        \"aliases\": [\"m2\"],\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"firstEffort\",\n        \"description\": \"Reasoning effort hint for the first fusion pass.\",\n        \"externalName\": \"first-effort\",\n        \"aliases\": [\"e1\"],\n        \"choices\": [\"low\", \"medium\", \"high\"],\n        \"defaultValue\": \"medium\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"secondEffort\",\n        \"description\": \"Reasoning effort hint for the second fusion pass.\",\n        \"externalName\": \"second-effort\",\n        \"aliases\": [\"e2\"],\n        \"choices\": [\"low\", \"medium\", \"high\"],\n        \"defaultValue\": \"medium\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      }\n    ],\n    \"outputContract\": {\n      \"mode\": \"FILE\",\n      \"pathParameter\": \"output\",\n      \"contentType\": \"text/markdown\",\n      \"fileExtension\": \".md\",\n      \"description\": \"When output is supplied, callers can treat the refined answer as file-oriented markdown content.\"\n    }\n  },\n  \"examples\": [\n    {\n      \"name\": \"positional-input-with-provider-overrides\",\n      \"description\": {\"type\": \"LOCALIZABLE_ASSET\", \"value\": \"Draft a release summary with provider overrides.\"},\n      \"args\": {\"input\": \"Draft a release summary\", \"firstProvider\": \"CLAUDE\", \"secondProvider\": \"CODEX\", \"output\": \"fusion-summary.md\"}\n    },\n    {\n      \"name\": \"stdin-input-with-model-overrides\",\n      \"description\": {\"type\": \"LOCALIZABLE_ASSET\", \"value\": \"Draft a release summary with model overrides.\"},\n      \"args\": {\"input\": \"Draft a release summary\", \"firstModel\": \"claude-sonnet-4-20250514\", \"secondModel\": \"gpt-5\"}\n    }\n  ],\n  \"workTypes\": [\n    {\n      \"name\": \"task\",\n      \"handlingBehavior\": [\"DEFAULT\"],\n      \"states\": [\n        {\"name\": \"init\", \"type\": \"INITIAL\"},\n        {\"name\": \"draft\", \"type\": \"PROCESSING\"},\n        {\"name\": \"complete\", \"type\": \"TERMINAL\"},\n        {\"name\": \"failed\", \"type\": \"FAILED\"}\n      ]\n    }\n  ],\n  \"resources\": [],\n  \"workers\": [\n    {\n      \"name\": \"fusion-drafter\",\n      \"type\": \"AGENT_WORKER\",\n      \"modelProvider\": \"${firstProvider}\",\n      \"model\": \"${firstModel}\",\n      \"body\": \"First-stage drafter for @you/fusion.\\nReasoning effort: ${firstEffort}\"\n    },\n    {\n      \"name\": \"fusion-refiner\",\n      \"type\": \"AGENT_WORKER\",\n      \"modelProvider\": \"${secondProvider}\",\n      \"model\": \"${secondModel}\",\n      \"body\": \"Second-stage refiner for @you/fusion.\\nReasoning effort: ${secondEffort}\"\n    }\n  ],\n  \"workstations\": [\n    {\n      \"name\": \"draft-fusion\",\n      \"type\": \"AGENT_RUN\",\n      \"worker\": \"fusion-drafter\",\n      \"inputs\": [\n        {\"workType\": \"task\", \"state\": \"init\"}\n      ],\n      \"outputs\": [\n        {\"workType\": \"task\", \"state\": \"draft\"}\n      ],\n      \"onFailure\": [\n        {\"workType\": \"task\", \"state\": \"failed\"}\n      ],\n      \"body\": \"Create a strong first draft for the request.\\n\\nRequest:\\n${input}\"\n    },\n    {\n      \"name\": \"refine-fusion\",\n      \"type\": \"AGENT_RUN\",\n      \"worker\": \"fusion-refiner\",\n      \"inputs\": [\n        {\"workType\": \"task\", \"state\": \"draft\"}\n      ],\n      \"outputs\": [\n        {\"workType\": \"task\", \"state\": \"complete\"}\n      ],\n      \"onFailure\": [\n        {\"workType\": \"task\", \"state\": \"failed\"}\n      ],\n      \"body\": \"Refine the current draft into the final response for the same request.\\n\\nOriginal request:\\n${input}\"\n    }\n  ]\n}\n",
+      "factoryJson": {
+        "name": "@you/fusion",
+        "id": "builtin-fusion",
+        "invocationSignature": {
+          "parameters": [
+            {
+              "name": "input",
+              "description": "Text request to run through the two-stage fusion flow.",
+              "required": true,
+              "bindings": [
+                {
+                  "kind": "POSITIONAL",
+                  "position": 1
+                },
+                {
+                  "kind": "STDIN"
+                }
+              ]
+            },
+            {
+              "name": "output",
+              "description": "Optional output-path hint for file-oriented callers.",
+              "externalName": "output",
+              "aliases": [
+                "o"
+              ],
+              "typeHint": "FILE_PATH",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "firstProvider",
+              "description": "Optional provider override for the first fusion pass.",
+              "externalName": "first-provider",
+              "aliases": [
+                "p1"
+              ],
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "secondProvider",
+              "description": "Optional provider override for the second fusion pass.",
+              "externalName": "second-provider",
+              "aliases": [
+                "p2"
+              ],
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "firstModel",
+              "description": "Optional model override for the first fusion pass.",
+              "externalName": "first-model",
+              "aliases": [
+                "m1"
+              ],
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "secondModel",
+              "description": "Optional model override for the second fusion pass.",
+              "externalName": "second-model",
+              "aliases": [
+                "m2"
+              ],
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "firstEffort",
+              "description": "Reasoning effort hint for the first fusion pass.",
+              "externalName": "first-effort",
+              "aliases": [
+                "e1"
+              ],
+              "choices": [
+                "low",
+                "medium",
+                "high"
+              ],
+              "defaultValue": "medium",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "secondEffort",
+              "description": "Reasoning effort hint for the second fusion pass.",
+              "externalName": "second-effort",
+              "aliases": [
+                "e2"
+              ],
+              "choices": [
+                "low",
+                "medium",
+                "high"
+              ],
+              "defaultValue": "medium",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            }
+          ],
+          "outputContract": {
+            "mode": "FILE",
+            "pathParameter": "output",
+            "contentType": "text/markdown",
+            "fileExtension": ".md",
+            "description": "When output is supplied, callers can treat the refined answer as file-oriented markdown content."
+          }
+        },
+        "examples": [
+          {
+            "name": "positional-input-with-provider-overrides",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Draft a release summary with provider overrides."
+            },
+            "args": {
+              "input": "Draft a release summary",
+              "firstProvider": "CLAUDE",
+              "secondProvider": "CODEX",
+              "output": "fusion-summary.md"
+            }
+          },
+          {
+            "name": "stdin-input-with-model-overrides",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Draft a release summary with model overrides."
+            },
+            "args": {
+              "input": "Draft a release summary",
+              "firstModel": "claude-sonnet-4-20250514",
+              "secondModel": "gpt-5"
+            }
+          }
+        ],
+        "workTypes": [
+          {
+            "name": "task",
+            "handlingBehavior": [
+              "DEFAULT"
+            ],
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "draft",
+                "type": "PROCESSING"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          }
+        ],
+        "resources": [],
+        "workers": [
+          {
+            "name": "fusion-drafter",
+            "type": "AGENT_WORKER",
+            "modelProvider": "${firstProvider}",
+            "model": "${firstModel}",
+            "body": "First-stage drafter for @you/fusion.\nReasoning effort: ${firstEffort}"
+          },
+          {
+            "name": "fusion-refiner",
+            "type": "AGENT_WORKER",
+            "modelProvider": "${secondProvider}",
+            "model": "${secondModel}",
+            "body": "Second-stage refiner for @you/fusion.\nReasoning effort: ${secondEffort}"
+          }
+        ],
+        "workstations": [
+          {
+            "name": "draft-fusion",
+            "type": "AGENT_RUN",
+            "worker": "fusion-drafter",
+            "inputs": [
+              {
+                "workType": "task",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "task",
+                "state": "draft"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "task",
+                "state": "failed"
+              }
+            ],
+            "body": "Create a strong first draft for the request.\n\nRequest:\n${input}"
+          },
+          {
+            "name": "refine-fusion",
+            "type": "AGENT_RUN",
+            "worker": "fusion-refiner",
+            "inputs": [
+              {
+                "workType": "task",
+                "state": "draft"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "task",
+                "state": "complete"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "task",
+                "state": "failed"
+              }
+            ],
+            "body": "Refine the current draft into the final response for the same request.\n\nOriginal request:\n${input}"
+          }
+        ]
+      },
+      "packageVersion": "0.0.2",
+      "factoryJsonSha256": "ffced05cae1ebe978ade5777304a62f72ddbafc338e138328bacfa3a33bfbf55"
+    },
+    {
+      "canonicalName": "@you/review",
+      "packagedDescription": null,
+      "childSlug": "review",
+      "sourceRelativePath": "factories/review/factory.json",
+      "factoryJsonText": "{\n  \"name\": \"@you/review\",\n  \"id\": \"builtin-review\",\n  \"invocationSignature\": {\n    \"parameters\": [\n      {\n        \"name\": \"input\",\n        \"description\": \"Work request that must be independently reviewed before it is returned.\",\n        \"required\": true,\n        \"bindings\": [\n          {\"kind\": \"POSITIONAL\", \"position\": 1},\n          {\"kind\": \"STDIN\"}\n        ]\n      }\n    ]\n  },\n  \"examples\": [\n    {\"name\": \"positional-input\", \"description\": {\"type\": \"LOCALIZABLE_ASSET\", \"value\": \"Review draft release notes.\"}, \"args\": {\"input\": \"Draft the release notes\"}}\n  ],\n  \"invocationReturn\": {\n    \"policy\": \"EXPLICIT\",\n    \"workTypeName\": \"reviewable-work\",\n    \"terminalState\": \"approved\"\n  },\n  \"workTypes\": [\n    {\n      \"name\": \"reviewable-work\",\n      \"handlingBehavior\": [\"DEFAULT\"],\n      \"states\": [\n        {\"name\": \"init\", \"type\": \"INITIAL\"},\n        {\"name\": \"in-review\", \"type\": \"PROCESSING\"},\n        {\"name\": \"approved\", \"type\": \"TERMINAL\"},\n        {\"name\": \"failed\", \"type\": \"FAILED\"}\n      ]\n    }\n  ],\n  \"workers\": [\n    {\"name\": \"review-work-executor\", \"type\": \"AGENT_WORKER\", \"promptFile\": \"prompts/executor.md\"},\n    {\"name\": \"review-work-reviewer\", \"type\": \"AGENT_WORKER\", \"promptFile\": \"prompts/reviewer.md\"}\n  ],\n  \"workstations\": [\n    {\n      \"name\": \"execute-review-work\",\n      \"type\": \"AGENT_RUN\",\n      \"worker\": \"review-work-executor\",\n      \"workPropagation\": {\"mode\": \"PRESERVE_INPUT\"},\n      \"inputs\": [{\"workType\": \"reviewable-work\", \"state\": \"init\"}],\n      \"outputs\": [{\"workType\": \"reviewable-work\", \"state\": \"in-review\"}],\n      \"onFailure\": [{\"workType\": \"reviewable-work\", \"state\": \"failed\"}],\n      \"promptFile\": \"prompts/executor.md\"\n    },\n    {\n      \"name\": \"review-review-work\",\n      \"type\": \"AGENT_RUN\",\n      \"worker\": \"review-work-reviewer\",\n      \"outcomeFormat\": \"decision-envelope\",\n      \"inputs\": [{\"workType\": \"reviewable-work\", \"state\": \"in-review\"}],\n      \"outputs\": [{\"workType\": \"reviewable-work\", \"state\": \"approved\"}],\n      \"onRejection\": [{\"workType\": \"reviewable-work\", \"state\": \"init\"}],\n      \"onFailure\": [{\"workType\": \"reviewable-work\", \"state\": \"failed\"}],\n      \"promptFile\": \"prompts/reviewer.md\"\n    }\n  ]\n}\n",
+      "factoryJson": {
+        "name": "@you/review",
+        "id": "builtin-review",
+        "invocationSignature": {
+          "parameters": [
+            {
+              "name": "input",
+              "description": "Work request that must be independently reviewed before it is returned.",
+              "required": true,
+              "bindings": [
+                {
+                  "kind": "POSITIONAL",
+                  "position": 1
+                },
+                {
+                  "kind": "STDIN"
+                }
+              ]
+            }
+          ]
+        },
+        "examples": [
+          {
+            "name": "positional-input",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Review draft release notes."
+            },
+            "args": {
+              "input": "Draft the release notes"
+            }
+          }
+        ],
+        "invocationReturn": {
+          "policy": "EXPLICIT",
+          "workTypeName": "reviewable-work",
+          "terminalState": "approved"
+        },
+        "workTypes": [
+          {
+            "name": "reviewable-work",
+            "handlingBehavior": [
+              "DEFAULT"
+            ],
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "in-review",
+                "type": "PROCESSING"
+              },
+              {
+                "name": "approved",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          }
+        ],
+        "workers": [
+          {
+            "name": "review-work-executor",
+            "type": "AGENT_WORKER",
+            "promptFile": "prompts/executor.md"
+          },
+          {
+            "name": "review-work-reviewer",
+            "type": "AGENT_WORKER",
+            "promptFile": "prompts/reviewer.md"
+          }
+        ],
+        "workstations": [
+          {
+            "name": "execute-review-work",
+            "type": "AGENT_RUN",
+            "worker": "review-work-executor",
+            "workPropagation": {
+              "mode": "PRESERVE_INPUT"
+            },
+            "inputs": [
+              {
+                "workType": "reviewable-work",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "reviewable-work",
+                "state": "in-review"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "reviewable-work",
+                "state": "failed"
+              }
+            ],
+            "promptFile": "prompts/executor.md"
+          },
+          {
+            "name": "review-review-work",
+            "type": "AGENT_RUN",
+            "worker": "review-work-reviewer",
+            "outcomeFormat": "decision-envelope",
+            "inputs": [
+              {
+                "workType": "reviewable-work",
+                "state": "in-review"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "reviewable-work",
+                "state": "approved"
+              }
+            ],
+            "onRejection": [
+              {
+                "workType": "reviewable-work",
+                "state": "init"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "reviewable-work",
+                "state": "failed"
+              }
+            ],
+            "promptFile": "prompts/reviewer.md"
+          }
+        ]
+      },
+      "packageVersion": "0.0.2",
+      "factoryJsonSha256": "c87c7ed284a0da158def1634024fddcb68967cb936fb1f9006f08d7968cfed5b"
+    },
+    {
+      "canonicalName": "@you/quorum",
+      "packagedDescription": null,
+      "childSlug": "quorum",
+      "sourceRelativePath": "factories/quorum/factory.json",
+      "factoryJsonText": "{\n  \"name\": \"@you/quorum\",\n  \"id\": \"builtin-quorum\",\n  \"invocationReturn\": {\"policy\":\"EXPLICIT\",\"workTypeName\":\"quorum-merge\",\"terminalState\":\"complete\"},\n  \"invocationSignature\": {\n    \"parameters\": [\n      {\"name\":\"input\",\"description\":\"Text request evaluated by the quorum workers.\",\"required\":true,\"bindings\":[{\"kind\":\"POSITIONAL\",\"position\":1},{\"kind\":\"STDIN\"}]},\n      {\"name\":\"branchProvider\",\"description\":\"Provider for both independent quorum branch workers. Defaults to CODEX.\",\"externalName\":\"branch-provider\",\"aliases\":[\"bp\"],\"choices\":[\"CLAUDE\",\"CODEX\"],\"defaultValue\":\"CODEX\",\"bindings\":[{\"kind\":\"NAMED\"}]},\n      {\"name\":\"branchModel\",\"description\":\"Model for both independent quorum branch workers. Defaults to gpt-5.\",\"externalName\":\"branch-model\",\"aliases\":[\"bm\"],\"defaultValue\":\"gpt-5\",\"bindings\":[{\"kind\":\"NAMED\"}]},\n      {\"name\":\"mergeProvider\",\"description\":\"Provider for the final quorum merge worker. Defaults to CODEX.\",\"externalName\":\"merge-provider\",\"aliases\":[\"mp\"],\"choices\":[\"CLAUDE\",\"CODEX\"],\"defaultValue\":\"CODEX\",\"bindings\":[{\"kind\":\"NAMED\"}]},\n      {\"name\":\"mergeModel\",\"description\":\"Model for the final quorum merge worker. Defaults to gpt-5.\",\"externalName\":\"merge-model\",\"aliases\":[\"mm\"],\"defaultValue\":\"gpt-5\",\"bindings\":[{\"kind\":\"NAMED\"}]}\n    ]\n  },\n  \"examples\": [\n    {\"name\":\"default-quorum\",\"description\":{\"type\":\"LOCALIZABLE_ASSET\",\"value\":\"Compare release plans with the default quorum.\"},\"args\":{\"input\":\"Compare the two proposed release plans.\"}},\n    {\"name\":\"role-specific-models\",\"description\":{\"type\":\"LOCALIZABLE_ASSET\",\"value\":\"Compare release plans with role-specific providers and models.\"},\"args\":{\"input\":\"Compare the two proposed release plans.\",\"branchProvider\":\"CODEX\",\"branchModel\":\"gpt-5\",\"mergeProvider\":\"CLAUDE\",\"mergeModel\":\"claude-sonnet-4-20250514\"}}\n  ],\n  \"workTypes\": [\n    {\"name\":\"task\",\"handlingBehavior\":[\"DEFAULT\"],\"states\":[{\"name\":\"init\",\"type\":\"INITIAL\"},{\"name\":\"quorum-context\",\"type\":\"PROCESSING\"},{\"name\":\"complete\",\"type\":\"TERMINAL\"},{\"name\":\"failed\",\"type\":\"FAILED\"}]},\n    {\"name\":\"quorum-branch-a\",\"states\":[{\"name\":\"init\",\"type\":\"INITIAL\"},{\"name\":\"complete\",\"type\":\"TERMINAL\"},{\"name\":\"failed\",\"type\":\"FAILED\"}]},\n    {\"name\":\"quorum-branch-b\",\"states\":[{\"name\":\"init\",\"type\":\"INITIAL\"},{\"name\":\"complete\",\"type\":\"TERMINAL\"},{\"name\":\"failed\",\"type\":\"FAILED\"}]},\n    {\"name\":\"quorum-merge\",\"states\":[{\"name\":\"init\",\"type\":\"INITIAL\"},{\"name\":\"complete\",\"type\":\"TERMINAL\"},{\"name\":\"failed\",\"type\":\"FAILED\"}]}\n  ],\n  \"resources\": [],\n  \"workers\": [\n    {\"name\":\"quorum-branch-a\",\"type\":\"AGENT_WORKER\",\"modelProvider\":\"${branchProvider}\",\"model\":\"${branchModel}\",\"body\":\"First independent quorum branch for @you/quorum.\"},\n    {\"name\":\"quorum-branch-b\",\"type\":\"AGENT_WORKER\",\"modelProvider\":\"${branchProvider}\",\"model\":\"${branchModel}\",\"body\":\"Second independent quorum branch for @you/quorum.\"},\n    {\"name\":\"quorum-merge\",\"type\":\"AGENT_WORKER\",\"modelProvider\":\"${mergeProvider}\",\"model\":\"${mergeModel}\",\"body\":\"Final merge worker for @you/quorum.\"}\n  ],\n  \"workstations\": [\n    {\"name\":\"split-quorum\",\"type\":\"LOGICAL_MOVE\",\"workPropagation\":{\"mode\":\"PRESERVE_INPUT\"},\"inputs\":[{\"workType\":\"task\",\"state\":\"init\"}],\"outputs\":[{\"workType\":\"task\",\"state\":\"quorum-context\"},{\"workType\":\"quorum-branch-a\",\"state\":\"init\"},{\"workType\":\"quorum-branch-b\",\"state\":\"init\"}],\"onFailure\":[{\"workType\":\"task\",\"state\":\"failed\"}],\"body\":\"Preserve the original request and create two independent quorum branch Work items.\"},\n    {\"name\":\"run-quorum-branch-a\",\"type\":\"AGENT_RUN\",\"worker\":\"quorum-branch-a\",\"inputs\":[{\"workType\":\"quorum-branch-a\",\"state\":\"init\"}],\"outputs\":[{\"workType\":\"quorum-branch-a\",\"state\":\"complete\"}],\"onFailure\":[{\"workType\":\"quorum-branch-a\",\"state\":\"failed\"}],\"body\":\"Produce branch A's independent assessment of the request.\\n\\nOriginal request:\\n{{ range (index .Inputs 0).Content }}{{ .Text }}{{ end }}\"},\n    {\"name\":\"run-quorum-branch-b\",\"type\":\"AGENT_RUN\",\"worker\":\"quorum-branch-b\",\"inputs\":[{\"workType\":\"quorum-branch-b\",\"state\":\"init\"}],\"outputs\":[{\"workType\":\"quorum-branch-b\",\"state\":\"complete\"}],\"onFailure\":[{\"workType\":\"quorum-branch-b\",\"state\":\"failed\"}],\"body\":\"Produce branch B's independent assessment of the request.\\n\\nOriginal request:\\n{{ range (index .Inputs 0).Content }}{{ .Text }}{{ end }}\"},\n    {\"name\":\"merge-quorum\",\"type\":\"AGENT_RUN\",\"worker\":\"quorum-merge\",\"inputs\":[{\"workType\":\"task\",\"state\":\"quorum-context\"},{\"workType\":\"quorum-branch-a\",\"state\":\"complete\"},{\"workType\":\"quorum-branch-b\",\"state\":\"complete\"}],\"outputs\":[{\"workType\":\"quorum-merge\",\"state\":\"complete\"}],\"onFailure\":[{\"workType\":\"quorum-merge\",\"state\":\"failed\"}],\"body\":\"Synthesize the two quorum assessments into one final response. The inputs are ordered as original request, branch A, then branch B.\\n\\nOriginal request:\\n{{ range (index .Inputs 0).Content }}{{ .Text }}{{ end }}\\n\\nBranch A output:\\n{{ (index .Inputs 1).Payload }}\\n\\nBranch B output:\\n{{ (index .Inputs 2).Payload }}\"}\n  ]\n}\n",
+      "factoryJson": {
+        "name": "@you/quorum",
+        "id": "builtin-quorum",
+        "invocationReturn": {
+          "policy": "EXPLICIT",
+          "workTypeName": "quorum-merge",
+          "terminalState": "complete"
+        },
+        "invocationSignature": {
+          "parameters": [
+            {
+              "name": "input",
+              "description": "Text request evaluated by the quorum workers.",
+              "required": true,
+              "bindings": [
+                {
+                  "kind": "POSITIONAL",
+                  "position": 1
+                },
+                {
+                  "kind": "STDIN"
+                }
+              ]
+            },
+            {
+              "name": "branchProvider",
+              "description": "Provider for both independent quorum branch workers. Defaults to CODEX.",
+              "externalName": "branch-provider",
+              "aliases": [
+                "bp"
+              ],
+              "choices": [
+                "CLAUDE",
+                "CODEX"
+              ],
+              "defaultValue": "CODEX",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "branchModel",
+              "description": "Model for both independent quorum branch workers. Defaults to gpt-5.",
+              "externalName": "branch-model",
+              "aliases": [
+                "bm"
+              ],
+              "defaultValue": "gpt-5",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "mergeProvider",
+              "description": "Provider for the final quorum merge worker. Defaults to CODEX.",
+              "externalName": "merge-provider",
+              "aliases": [
+                "mp"
+              ],
+              "choices": [
+                "CLAUDE",
+                "CODEX"
+              ],
+              "defaultValue": "CODEX",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "mergeModel",
+              "description": "Model for the final quorum merge worker. Defaults to gpt-5.",
+              "externalName": "merge-model",
+              "aliases": [
+                "mm"
+              ],
+              "defaultValue": "gpt-5",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            }
+          ]
+        },
+        "examples": [
+          {
+            "name": "default-quorum",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Compare release plans with the default quorum."
+            },
+            "args": {
+              "input": "Compare the two proposed release plans."
+            }
+          },
+          {
+            "name": "role-specific-models",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Compare release plans with role-specific providers and models."
+            },
+            "args": {
+              "input": "Compare the two proposed release plans.",
+              "branchProvider": "CODEX",
+              "branchModel": "gpt-5",
+              "mergeProvider": "CLAUDE",
+              "mergeModel": "claude-sonnet-4-20250514"
+            }
+          }
+        ],
+        "workTypes": [
+          {
+            "name": "task",
+            "handlingBehavior": [
+              "DEFAULT"
+            ],
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "quorum-context",
+                "type": "PROCESSING"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          },
+          {
+            "name": "quorum-branch-a",
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          },
+          {
+            "name": "quorum-branch-b",
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          },
+          {
+            "name": "quorum-merge",
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          }
+        ],
+        "resources": [],
+        "workers": [
+          {
+            "name": "quorum-branch-a",
+            "type": "AGENT_WORKER",
+            "modelProvider": "${branchProvider}",
+            "model": "${branchModel}",
+            "body": "First independent quorum branch for @you/quorum."
+          },
+          {
+            "name": "quorum-branch-b",
+            "type": "AGENT_WORKER",
+            "modelProvider": "${branchProvider}",
+            "model": "${branchModel}",
+            "body": "Second independent quorum branch for @you/quorum."
+          },
+          {
+            "name": "quorum-merge",
+            "type": "AGENT_WORKER",
+            "modelProvider": "${mergeProvider}",
+            "model": "${mergeModel}",
+            "body": "Final merge worker for @you/quorum."
+          }
+        ],
+        "workstations": [
+          {
+            "name": "split-quorum",
+            "type": "LOGICAL_MOVE",
+            "workPropagation": {
+              "mode": "PRESERVE_INPUT"
+            },
+            "inputs": [
+              {
+                "workType": "task",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "task",
+                "state": "quorum-context"
+              },
+              {
+                "workType": "quorum-branch-a",
+                "state": "init"
+              },
+              {
+                "workType": "quorum-branch-b",
+                "state": "init"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "task",
+                "state": "failed"
+              }
+            ],
+            "body": "Preserve the original request and create two independent quorum branch Work items."
+          },
+          {
+            "name": "run-quorum-branch-a",
+            "type": "AGENT_RUN",
+            "worker": "quorum-branch-a",
+            "inputs": [
+              {
+                "workType": "quorum-branch-a",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "quorum-branch-a",
+                "state": "complete"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "quorum-branch-a",
+                "state": "failed"
+              }
+            ],
+            "body": "Produce branch A's independent assessment of the request.\n\nOriginal request:\n{{ range (index .Inputs 0).Content }}{{ .Text }}{{ end }}"
+          },
+          {
+            "name": "run-quorum-branch-b",
+            "type": "AGENT_RUN",
+            "worker": "quorum-branch-b",
+            "inputs": [
+              {
+                "workType": "quorum-branch-b",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "quorum-branch-b",
+                "state": "complete"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "quorum-branch-b",
+                "state": "failed"
+              }
+            ],
+            "body": "Produce branch B's independent assessment of the request.\n\nOriginal request:\n{{ range (index .Inputs 0).Content }}{{ .Text }}{{ end }}"
+          },
+          {
+            "name": "merge-quorum",
+            "type": "AGENT_RUN",
+            "worker": "quorum-merge",
+            "inputs": [
+              {
+                "workType": "task",
+                "state": "quorum-context"
+              },
+              {
+                "workType": "quorum-branch-a",
+                "state": "complete"
+              },
+              {
+                "workType": "quorum-branch-b",
+                "state": "complete"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "quorum-merge",
+                "state": "complete"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "quorum-merge",
+                "state": "failed"
+              }
+            ],
+            "body": "Synthesize the two quorum assessments into one final response. The inputs are ordered as original request, branch A, then branch B.\n\nOriginal request:\n{{ range (index .Inputs 0).Content }}{{ .Text }}{{ end }}\n\nBranch A output:\n{{ (index .Inputs 1).Payload }}\n\nBranch B output:\n{{ (index .Inputs 2).Payload }}"
+          }
+        ]
+      },
+      "packageVersion": "0.0.2",
+      "factoryJsonSha256": "bdeb877e96f77fd5c9c51bfe9af827f8f63ead4d7ba14d0b0fa22c3e540e43b1"
+    },
+    {
+      "canonicalName": "@you/tts",
+      "packagedDescription": null,
+      "childSlug": "tts",
+      "sourceRelativePath": "factories/tts/factory.json",
+      "factoryJsonText": "{\n  \"name\": \"@you/tts\",\n  \"id\": \"builtin-tts\",\n  \"workTypes\": [\n    {\n      \"name\": \"task\",\n      \"handlingBehavior\": [\"DEFAULT\"],\n      \"states\": [\n        {\"name\": \"init\", \"type\": \"INITIAL\"},\n        {\"name\": \"complete\", \"type\": \"TERMINAL\"},\n        {\"name\": \"failed\", \"type\": \"FAILED\"}\n      ]\n    }\n  ],\n  \"resources\": [\n    {\n      \"name\": \"omnivoice-cache\",\n      \"type\": \"MODEL\",\n      \"capacity\": 1,\n      \"model\": \"OMNIVOICE_Q4_K_M\",\n      \"backend\": \"LLAMACPP\",\n      \"loadPolicy\": \"ON_DEMAND\"\n    }\n  ],\n  \"workers\": [\n    {\n      \"name\": \"tts-executor\",\n      \"type\": \"MODEL_WORKER\",\n      \"model\": \"OMNIVOICE_Q4_K_M\",\n      \"modelProvider\": \"CODEX\",\n      \"modelLocality\": \"LOCAL\",\n      \"command\": \"omnivoice-llamacpp\",\n      \"resources\": [\n        {\"name\": \"omnivoice-cache\", \"capacity\": 1}\n      ],\n      \"operations\": [\n        {\n          \"name\": \"TTS\",\n          \"inputs\": [\n            {\"name\": \"text\", \"contentTypes\": [\"TEXT\"], \"required\": true}\n          ],\n          \"outputs\": [\n            {\"name\": \"audio\", \"contentTypes\": [\"AUDIO\"]}\n          ]\n        }\n      ],\n      \"body\": \"You are the @you/tts built-in factory worker.\"\n    }\n  ],\n  \"workstations\": [\n    {\n      \"name\": \"execute-tts\",\n      \"type\": \"MODEL_INVOKE\",\n      \"worker\": \"tts-executor\",\n      \"operation\": \"TTS\",\n      \"operationBindings\": [\n        {\n          \"slot\": \"text\",\n          \"selector\": {\"type\": \"TEXT\"}\n        }\n      ],\n      \"inputs\": [\n        {\"workType\": \"task\", \"state\": \"init\"}\n      ],\n      \"outputs\": [\n        {\"workType\": \"task\", \"state\": \"complete\"}\n      ],\n      \"onFailure\": [\n        {\"workType\": \"task\", \"state\": \"failed\"}\n      ],\n      \"body\": \"Convert the requested text into speech for {{ .WorkID }}.\"\n    }\n  ]\n}\n",
+      "factoryJson": {
+        "name": "@you/tts",
+        "id": "builtin-tts",
+        "workTypes": [
+          {
+            "name": "task",
+            "handlingBehavior": [
+              "DEFAULT"
+            ],
+            "states": [
+              {
+                "name": "init",
+                "type": "INITIAL"
+              },
+              {
+                "name": "complete",
+                "type": "TERMINAL"
+              },
+              {
+                "name": "failed",
+                "type": "FAILED"
+              }
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "name": "omnivoice-cache",
+            "type": "MODEL",
+            "capacity": 1,
+            "model": "OMNIVOICE_Q4_K_M",
+            "backend": "LLAMACPP",
+            "loadPolicy": "ON_DEMAND"
+          }
+        ],
+        "workers": [
+          {
+            "name": "tts-executor",
+            "type": "MODEL_WORKER",
+            "model": "OMNIVOICE_Q4_K_M",
+            "modelProvider": "CODEX",
+            "modelLocality": "LOCAL",
+            "command": "omnivoice-llamacpp",
+            "resources": [
+              {
+                "name": "omnivoice-cache",
+                "capacity": 1
+              }
+            ],
+            "operations": [
+              {
+                "name": "TTS",
+                "inputs": [
+                  {
+                    "name": "text",
+                    "contentTypes": [
+                      "TEXT"
+                    ],
+                    "required": true
+                  }
+                ],
+                "outputs": [
+                  {
+                    "name": "audio",
+                    "contentTypes": [
+                      "AUDIO"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "body": "You are the @you/tts built-in factory worker."
+          }
+        ],
+        "workstations": [
+          {
+            "name": "execute-tts",
+            "type": "MODEL_INVOKE",
+            "worker": "tts-executor",
+            "operation": "TTS",
+            "operationBindings": [
+              {
+                "slot": "text",
+                "selector": {
+                  "type": "TEXT"
+                }
+              }
+            ],
+            "inputs": [
+              {
+                "workType": "task",
+                "state": "init"
+              }
+            ],
+            "outputs": [
+              {
+                "workType": "task",
+                "state": "complete"
+              }
+            ],
+            "onFailure": [
+              {
+                "workType": "task",
+                "state": "failed"
+              }
+            ],
+            "body": "Convert the requested text into speech for {{ .WorkID }}."
+          }
+        ]
+      },
+      "packageVersion": "0.0.2",
+      "factoryJsonSha256": "e33f7549f1434df1c371379c1914fac95703017821341983ac55ebd8fce6dec7"
+    },
+    {
+      "canonicalName": "@you/deep-research",
+      "packagedDescription": null,
+      "childSlug": "deep-research",
+      "sourceRelativePath": "factories/deep-research/factory.json",
+      "factoryJsonText": "{\n  \"name\": \"@you/deep-research\",\n  \"id\": \"builtin-deep-research\",\n  \"invocationSignature\": {\n    \"parameters\": [\n      {\n        \"name\": \"topic\",\n        \"description\": \"Research topic for the lead research workflow.\",\n        \"required\": true,\n        \"bindings\": [\n          {\"kind\": \"POSITIONAL\", \"position\": 1},\n          {\"kind\": \"STDIN\"}\n        ]\n      },\n      {\n        \"name\": \"researchDepth\",\n        \"description\": \"Investigation breadth from 1 (focused) through 3 (broad). Defaults to 2.\",\n        \"externalName\": \"researchDepth\",\n        \"typeHint\": \"STRING\",\n        \"defaultValue\": \"2\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"maxSubagents\",\n        \"description\": \"Maximum specialist child agents for this invocation, from 0 through 2. Defaults to 2.\",\n        \"externalName\": \"maxSubagents\",\n        \"typeHint\": \"STRING\",\n        \"defaultValue\": \"2\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"modelProvider\",\n        \"description\": \"Approved provider for specialist research execution. Defaults to CODEX.\",\n        \"externalName\": \"model-provider\",\n        \"typeHint\": \"STRING\",\n        \"defaultValue\": \"CODEX\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"model\",\n        \"description\": \"Approved model for specialist research execution. Defaults to gpt-5.\",\n        \"externalName\": \"model\",\n        \"typeHint\": \"STRING\",\n        \"defaultValue\": \"gpt-5\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      },\n      {\n        \"name\": \"reasoningEffort\",\n        \"description\": \"Approved reasoning effort for specialist research execution. Defaults to medium.\",\n        \"externalName\": \"reasoning-effort\",\n        \"typeHint\": \"STRING\",\n        \"defaultValue\": \"medium\",\n        \"bindings\": [\n          {\"kind\": \"NAMED\"}\n        ]\n      }\n    ]\n  },\n  \"examples\": [\n    {\n      \"name\": \"positional-topic\",\n      \"description\": {\"type\": \"LOCALIZABLE_ASSET\", \"value\": \"Compare two workflow architecture approaches.\"},\n      \"args\": {\"topic\": \"Compare event sourcing and state machines for workflow orchestration\"}\n    },\n    {\n      \"name\": \"stdin-topic\",\n      \"description\": {\"type\": \"LOCALIZABLE_ASSET\", \"value\": \"Research retrieval-augmented generation trade-offs.\"},\n      \"args\": {\"topic\": \"What are the trade-offs of retrieval-augmented generation?\"}\n    }\n  ],\n  \"orchestrator\": {\n    \"kind\": \"JAVASCRIPT\",\n    \"javascript\": {\n      \"sourceRef\": \"scripts/deep-research.workflow.js\",\n      \"argsSchema\": {\n        \"type\": \"object\",\n        \"required\": [\"topic\"],\n        \"properties\": {\n          \"topic\": {\n            \"type\": \"string\",\n            \"minLength\": 1,\n            \"description\": \"The subject to investigate.\"\n          },\n          \"researchDepth\": {\n            \"type\": \"integer\",\n            \"minimum\": 1,\n            \"maximum\": 3,\n            \"default\": 2,\n            \"description\": \"Investigation breadth: 1 focused, 2 balanced, or 3 broad.\"\n          },\n          \"maxSubagents\": {\n            \"type\": \"integer\",\n            \"minimum\": 0,\n            \"maximum\": 2,\n            \"default\": 2,\n            \"description\": \"Per-invocation specialist cap within the factory policy ceiling.\"\n          },\n          \"modelProvider\": {\n            \"type\": \"string\",\n            \"enum\": [\"CODEX\"],\n            \"default\": \"CODEX\",\n            \"description\": \"The package's approved specialist execution provider.\"\n          },\n          \"model\": {\n            \"type\": \"string\",\n            \"enum\": [\"gpt-5\"],\n            \"minLength\": 1,\n            \"default\": \"gpt-5\",\n            \"description\": \"The requested specialist execution model, subject to package policy.\"\n          },\n          \"reasoningEffort\": {\n            \"type\": \"string\",\n            \"enum\": [\"medium\"],\n            \"minLength\": 1,\n            \"default\": \"medium\",\n            \"description\": \"The requested specialist reasoning effort, subject to package policy.\"\n          }\n        },\n        \"additionalProperties\": false\n      },\n      \"defaultPolicy\": {\n        \"mode\": \"READ_ONLY\",\n        \"maxAgents\": 3,\n        \"concurrency\": 2,\n        \"maxDepth\": 1,\n        \"maxRetries\": 0,\n        \"allowNetwork\": false,\n        \"allowConnectors\": false,\n        \"allowDangerFullAccess\": false,\n        \"writableRoots\": [],\n        \"allowedModels\": [\"gpt-5\"],\n        \"allowedReasoningEfforts\": [\"medium\"]\n      }\n    }\n  }\n}\n",
+      "factoryJson": {
+        "name": "@you/deep-research",
+        "id": "builtin-deep-research",
+        "invocationSignature": {
+          "parameters": [
+            {
+              "name": "topic",
+              "description": "Research topic for the lead research workflow.",
+              "required": true,
+              "bindings": [
+                {
+                  "kind": "POSITIONAL",
+                  "position": 1
+                },
+                {
+                  "kind": "STDIN"
+                }
+              ]
+            },
+            {
+              "name": "researchDepth",
+              "description": "Investigation breadth from 1 (focused) through 3 (broad). Defaults to 2.",
+              "externalName": "researchDepth",
+              "typeHint": "STRING",
+              "defaultValue": "2",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "maxSubagents",
+              "description": "Maximum specialist child agents for this invocation, from 0 through 2. Defaults to 2.",
+              "externalName": "maxSubagents",
+              "typeHint": "STRING",
+              "defaultValue": "2",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "modelProvider",
+              "description": "Approved provider for specialist research execution. Defaults to CODEX.",
+              "externalName": "model-provider",
+              "typeHint": "STRING",
+              "defaultValue": "CODEX",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "model",
+              "description": "Approved model for specialist research execution. Defaults to gpt-5.",
+              "externalName": "model",
+              "typeHint": "STRING",
+              "defaultValue": "gpt-5",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            },
+            {
+              "name": "reasoningEffort",
+              "description": "Approved reasoning effort for specialist research execution. Defaults to medium.",
+              "externalName": "reasoning-effort",
+              "typeHint": "STRING",
+              "defaultValue": "medium",
+              "bindings": [
+                {
+                  "kind": "NAMED"
+                }
+              ]
+            }
+          ]
+        },
+        "examples": [
+          {
+            "name": "positional-topic",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Compare two workflow architecture approaches."
+            },
+            "args": {
+              "topic": "Compare event sourcing and state machines for workflow orchestration"
+            }
+          },
+          {
+            "name": "stdin-topic",
+            "description": {
+              "type": "LOCALIZABLE_ASSET",
+              "value": "Research retrieval-augmented generation trade-offs."
+            },
+            "args": {
+              "topic": "What are the trade-offs of retrieval-augmented generation?"
+            }
+          }
+        ],
+        "orchestrator": {
+          "kind": "JAVASCRIPT",
+          "javascript": {
+            "sourceRef": "scripts/deep-research.workflow.js",
+            "argsSchema": {
+              "type": "object",
+              "required": [
+                "topic"
+              ],
+              "properties": {
+                "topic": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "The subject to investigate."
+                },
+                "researchDepth": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 3,
+                  "default": 2,
+                  "description": "Investigation breadth: 1 focused, 2 balanced, or 3 broad."
+                },
+                "maxSubagents": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2,
+                  "default": 2,
+                  "description": "Per-invocation specialist cap within the factory policy ceiling."
+                },
+                "modelProvider": {
+                  "type": "string",
+                  "enum": [
+                    "CODEX"
+                  ],
+                  "default": "CODEX",
+                  "description": "The package's approved specialist execution provider."
+                },
+                "model": {
+                  "type": "string",
+                  "enum": [
+                    "gpt-5"
+                  ],
+                  "minLength": 1,
+                  "default": "gpt-5",
+                  "description": "The requested specialist execution model, subject to package policy."
+                },
+                "reasoningEffort": {
+                  "type": "string",
+                  "enum": [
+                    "medium"
+                  ],
+                  "minLength": 1,
+                  "default": "medium",
+                  "description": "The requested specialist reasoning effort, subject to package policy."
+                }
+              },
+              "additionalProperties": false
+            },
+            "defaultPolicy": {
+              "mode": "READ_ONLY",
+              "maxAgents": 3,
+              "concurrency": 2,
+              "maxDepth": 1,
+              "maxRetries": 0,
+              "allowNetwork": false,
+              "allowConnectors": false,
+              "allowDangerFullAccess": false,
+              "writableRoots": [],
+              "allowedModels": [
+                "gpt-5"
+              ],
+              "allowedReasoningEfforts": [
+                "medium"
+              ]
+            }
+          }
+        }
+      },
+      "packageVersion": "0.0.2",
+      "factoryJsonSha256": "4bb5a22e99ddb059097bea21fde7f6ce6d8d60b00947e927b765d22e6ffa99af"
+    }
+  ],
+  "companionSource": {
+    "formatVersion": "1",
+    "sourceKind": "companion-javascript",
+    "childSlug": "deep-research",
+    "canonicalName": "@you/deep-research",
+    "packageVersion": "0.0.2",
+    "relativePath": "factories/deep-research/scripts/deep-research.workflow.js",
+    "sourceText": "return (async function () {\n  phase(\"lead-research\");\n\n  const topic = args.topic;\n  const researchDepth = args.researchDepth === undefined ? 2 : args.researchDepth;\n  const maxSubagents = args.maxSubagents === undefined ? 2 : args.maxSubagents;\n  const modelProvider = args.modelProvider === undefined ? \"CODEX\" : args.modelProvider;\n  const model = args.model === undefined ? \"gpt-5\" : args.model;\n  const reasoningEffort = args.reasoningEffort === undefined ? \"medium\" : args.reasoningEffort;\n  // Longer topics carry enough scope to benefit from the two complementary\n  // specialist roles while short questions remain a lead-only investigation.\n  const needsSpecialists = args.topic.length >= 40;\n\n  let specialistFindings = [];\n  if (needsSpecialists && maxSubagents > 0) {\n    phase(\"specialist-research\");\n    specialistFindings = await parallel([\n      {\n        label: \"research-specialist-technical\",\n        prompt: \"Investigate technical mechanisms and supporting evidence for the research topic at breadth level \" + researchDepth + \".\",\n        modelProvider: modelProvider,\n        model: model,\n        reasoningEffort: reasoningEffort,\n      },\n      {\n        label: \"research-specialist-tradeoffs\",\n        prompt: \"Investigate practical trade-offs, risks, and counterarguments for the research topic at breadth level \" + researchDepth + \".\",\n        modelProvider: modelProvider,\n        model: model,\n        reasoningEffort: reasoningEffort,\n      },\n    ].slice(0, maxSubagents));\n  }\n\n  phase(\"lead-synthesis\");\n  const specialistEvidence = specialistFindings.length === 0\n    ? \"No specialist findings were requested.\"\n    : specialistFindings[0].output.text + (specialistFindings.length > 1 ? \"\\n\" + specialistFindings[1].output.text : \"\");\n  const leadSynthesis = await agent.run({\n    label: \"lead-research-synthesis\",\n    prompt: \"You are the lead researcher. Investigate and synthesize a coherent answer for the topic: \" + topic + \". \" +\n      \"Use breadth level \" + researchDepth + \". Incorporate these completed specialist findings when present: \" +\n      specialistEvidence,\n    modelProvider: modelProvider,\n    model: model,\n    reasoningEffort: reasoningEffort,\n  });\n\n  return {\n    topic: topic,\n    role: \"lead-researcher\",\n    researchDepth: researchDepth,\n    maxSubagents: maxSubagents,\n    execution: {\n      modelProvider: modelProvider,\n      model: model,\n      reasoningEffort: reasoningEffort,\n    },\n    synthesis: {\n      leadResult: leadSynthesis.output,\n    },\n  };\n})();\n",
+    "sourceSha256": "34eced10c33ec0cc2d37fec2d15193ebc6e9df1b6829190aba66b550287e2f8d"
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "schemaVersion": "factory-recording/v1",
+  "id": "packaged-review-sample",
+  "title": "review packaged factory sample",
+  "summary": "Distinctive factory-recording/v1 sample for packaged-factories review.",
+  "factory": {
+    "name": "review",
+    "workTypes": [
+      {
+        "name": "reviewable-work",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "in-review",
+            "type": "PROCESSING"
+          },
+          {
+            "name": "approved",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ],
+        "handlingBehavior": [
+          "DEFAULT"
+        ]
+      }
+    ],
+    "workstations": [
+      {
+        "name": "execute-review-work",
+        "worker": "review-work-executor",
+        "inputs": [
+          {
+            "workType": "reviewable-work",
+            "state": "init"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "reviewable-work",
+            "state": "in-review"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "reviewable-work",
+            "state": "failed"
+          }
+        ]
+      },
+      {
+        "name": "review-review-work",
+        "worker": "review-work-reviewer",
+        "inputs": [
+          {
+            "workType": "reviewable-work",
+            "state": "in-review"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "reviewable-work",
+            "state": "approved"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "reviewable-work",
+            "state": "failed"
+          }
+        ],
+        "onRejection": [
+          {
+            "workType": "reviewable-work",
+            "state": "init"
+          }
+        ]
+      }
+    ],
+    "workers": [
+      {
+        "name": "review-work-executor",
+        "type": "AGENT_WORKER"
+      },
+      {
+        "name": "review-work-reviewer",
+        "type": "AGENT_WORKER"
+      }
+    ]
+  },
+  "events": [
+    {
+      "schemaVersion": "agent-factory.event.v1",
+      "id": "evt-review-topology-001",
+      "type": "INITIAL_STRUCTURE_REQUEST",
+      "context": {
+        "sequence": 1,
+        "tick": 0,
+        "eventTime": "2026-07-23T00:00:00.000Z",
+        "sessionId": "session-packaged-review",
+        "sessionSequence": 1
+      },
+      "payload": {
+        "factory": {
+          "name": "review",
+          "workTypes": [
+            {
+              "name": "reviewable-work",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "in-review",
+                  "type": "PROCESSING"
+                },
+                {
+                  "name": "approved",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ],
+              "handlingBehavior": [
+                "DEFAULT"
+              ]
+            }
+          ],
+          "workstations": [
+            {
+              "name": "execute-review-work",
+              "worker": "review-work-executor",
+              "inputs": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "init"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "in-review"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "failed"
+                }
+              ]
+            },
+            {
+              "name": "review-review-work",
+              "worker": "review-work-reviewer",
+              "inputs": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "in-review"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "approved"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "failed"
+                }
+              ],
+              "onRejection": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "init"
+                }
+              ]
+            }
+          ],
+          "workers": [
+            {
+              "name": "review-work-executor",
+              "type": "AGENT_WORKER"
+            },
+            {
+              "name": "review-work-reviewer",
+              "type": "AGENT_WORKER"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
