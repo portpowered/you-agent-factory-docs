@@ -1,10 +1,15 @@
 /**
- * Clean-consumer public-export proof for packaged-factory 0.0.2 Batch 1.
+ * Clean-consumer public-export proof for packaged-factory 0.0.2 Batch 1 library
+ * packages (client / factory-replay / factory-visualizers).
  *
  * Installs the five exact pins into a disposable consumer, then resolves each
- * required surface only through that package's published `exports` map. Missing
- * export-map coverage fails closed — proofs never walk undocumented
- * `node_modules` internals or invent nested authored-source paths.
+ * required library surface only through that package's published `exports` map.
+ * Missing export-map coverage fails closed — proofs never invent undocumented
+ * package-internal paths for these ESM libraries.
+ *
+ * Packaged-factories@0.0.2 is proven separately via allowlisted filesystem pull
+ * (`packaged-factories-filesystem-pull.ts`); absence of its exports map is
+ * expected and must not be treated as a library-export failure.
  */
 
 import { readFileSync, rmSync } from "node:fs";
@@ -278,7 +283,8 @@ export async function proveRequiredPublicExportSurface(
 
 /**
  * Install the five exact 0.0.2 packages into a disposable consumer and prove
- * every required Batch 1 public-export surface through declared exports only.
+ * every required Batch 1 library public-export surface through declared
+ * exports only (client / factory-replay / factory-visualizers).
  */
 export async function provePackagedFactoryV002PublicExports(
   options: PublicExportProofDependencies & {
