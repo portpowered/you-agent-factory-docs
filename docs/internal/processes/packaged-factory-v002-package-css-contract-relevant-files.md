@@ -110,6 +110,29 @@ bun test src/lib/packaged-factory-v002/transpile-packages-posture.test.ts
 make build
 ```
 
+## Key files (story 005 — global CSS order)
+
+| Path | Role |
+| --- | --- |
+| `src/app/globals.css` | Single host entry: components styles, then visualizers styles; no direct `@xyflow/react` stylesheet |
+| `src/lib/packaged-factory-v002/global-css-order.ts` | Pure import-order constants + fail-closed assertion helpers |
+| `src/lib/packaged-factory-v002/global-css-order-proof.ts` | Reads host `globals.css` + resolves visualizers styles (React Flow nested import) |
+| `src/lib/packaged-factory-v002/global-css-order.test.ts` | Contract: order, duplicates, missing imports, forbidden React Flow import |
+
+### Global CSS order contract
+
+1. Import `@you-agent-factory/components/styles.css` exactly once.
+2. Import `@you-agent-factory/factory-visualizers/styles.css` exactly once,
+   **after** components styles.
+3. Do **not** `@import "@xyflow/react/dist/style.css"` (or equivalent) in
+   `globals.css` — visualizers `styles.css` already pulls React Flow base CSS.
+
+Prove with:
+
+```bash
+bun test src/lib/packaged-factory-v002/global-css-order.test.ts
+```
+
 ## Patterns
 
 - Prefer a disposable temporary consumer directory for install/acquisition
@@ -141,6 +164,10 @@ make build
   `PACKAGED_FACTORY_V002_HOST_TRANSPILE_PACKAGES` (empty at 0.0.2 compiled ESM);
   `next.config.ts` spreads that constant; fail closed if any of the five
   packages reappear in the list.
+- Global CSS order: components styles before visualizers styles in
+  `src/app/globals.css`; never reintroduce a direct `@xyflow/react` stylesheet
+  import — prove with `assertPackagedFactoryV002GlobalCssOrder` /
+  `provePackagedFactoryV002GlobalCssOrder()`.
 
 ## Verification
 
