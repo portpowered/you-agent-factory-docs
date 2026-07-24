@@ -40,13 +40,15 @@ Republish `@you-agent-factory/packaged-factories` so the installed
 or replace the broken `0.0.2` artifact so Batch 1 can pin one exact version
 that proves clean.
 
-## Upstream status (re-checked 2026-07-24 03:03 UTC)
+## Upstream status (re-checked 2026-07-24 03:05 UTC)
 
 - Source of truth already lands the exports map in
   `packages/packaged-factories/package.json` on
   `portpowered/you-agent-factory` (`./manifest`, `./schemas/*`,
   `./factories/*.json` / `./factories/*.yaml` → `generated/` + `schemas/`).
-  Default-branch package `version` there is still `0.0.0`.
+  Default-branch package `version` there is still `0.0.0`; `files` points at
+  `generated/manifest.json`, `generated/factories`, and schemas — not the
+  authored nested `factories/` tree npm still ships.
 - [you-agent-factory#1258](https://github.com/portpowered/you-agent-factory/pull/1258)
   (`packaged-factories-npm-publication`) **merged** 2026-07-23 after the broken
   npm `0.0.2` tarball publish (~00:42Z that day). Registry was not republished.
@@ -63,8 +65,7 @@ that proves clean.
   (`.github/workflows/release.yml`). Recent runs are old/cancelled/skipped
   (latest listed run `2026-06-02`); no newer registry artifact observed.
 - npm still only has `0.0.0` and `0.0.2`; downloaded `0.0.2` tarball has
-  `files: ["factories"]` and **no** `exports` (registry `0.0.2` time
-  `2026-07-23T00:42:41.557Z`; package `modified`
+  `files: ["factories"]` and **no** `exports` (package `modified`
   `2026-07-23T00:42:41.715Z`; `dist-tags.latest=0.0.2`). Nested authored
   paths only (`factories/<slug>/factory.json`); no `generated/` tree.
   Sibling packages `@you-agent-factory/{client,components,factory-replay,factory-visualizers}@0.0.2` remain published with usable export maps.
