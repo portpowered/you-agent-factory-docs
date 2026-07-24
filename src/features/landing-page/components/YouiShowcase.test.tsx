@@ -4,10 +4,13 @@ import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import {
   YOUI_SHOWCASE_BACKGROUND_SIZES,
+  YOUI_SHOWCASE_CONTENT_CLASSNAME,
   YOUI_SHOWCASE_DEFAULT_BACKGROUND_SRC,
   YOUI_SHOWCASE_DEFAULT_GRAPH_ALT,
   YOUI_SHOWCASE_DEFAULT_GRAPH_SRC,
   YOUI_SHOWCASE_DEFAULT_TITLE,
+  YOUI_SHOWCASE_FOREGROUND_CLASSNAME,
+  YOUI_SHOWCASE_GRAPH_FALLBACK_CLASSNAME,
   YOUI_SHOWCASE_GRAPH_INTRINSIC_HEIGHT,
   YOUI_SHOWCASE_GRAPH_INTRINSIC_WIDTH,
   YOUI_SHOWCASE_GRAPH_SIZES,
@@ -23,6 +26,8 @@ describe("YouiShowcase", () => {
     expect(html).toContain('data-youi-showcase=""');
     expect(html).toContain('data-youi-showcase-background=""');
     expect(html).toContain('data-youi-showcase-background-image=""');
+    expect(html).toContain('data-youi-showcase-foreground=""');
+    expect(html).toContain('data-youi-showcase-graph-fallback=""');
     expect(html).toContain('data-youi-showcase-graph-image=""');
     expect(html).toContain(`src="${YOUI_SHOWCASE_DEFAULT_BACKGROUND_SRC}"`);
     expect(html).toContain(`src="${YOUI_SHOWCASE_DEFAULT_GRAPH_SRC}"`);
@@ -43,6 +48,21 @@ describe("YouiShowcase", () => {
     expect(html).toContain(`height="${YOUI_SHOWCASE_GRAPH_INTRINSIC_HEIGHT}"`);
   });
 
+  test("keeps fixed content and foreground geometry in SSR HTML", () => {
+    const html = renderToStaticMarkup(<YouiShowcase />);
+
+    expect(YOUI_SHOWCASE_CONTENT_CLASSNAME).toContain(
+      "min-h-[clamp(48rem,82vw,82rem)]",
+    );
+    expect(YOUI_SHOWCASE_CONTENT_CLASSNAME).toContain("max-w-[100rem]");
+    expect(YOUI_SHOWCASE_FOREGROUND_CLASSNAME).toContain(
+      "max-w-[min(92vw,52rem)]",
+    );
+    expect(html).toContain(YOUI_SHOWCASE_CONTENT_CLASSNAME);
+    expect(html).toContain(YOUI_SHOWCASE_FOREGROUND_CLASSNAME);
+    expect(html).toContain(YOUI_SHOWCASE_GRAPH_FALLBACK_CLASSNAME);
+  });
+
   test("defaults title from fixtureLandingPageData.youi", () => {
     const html = renderToStaticMarkup(<YouiShowcase />);
 
@@ -51,12 +71,28 @@ describe("YouiShowcase", () => {
     expect(html).toContain(fixtureLandingPageData.youi.title);
   });
 
-  test("background is presentational; graph UI has meaningful alt", () => {
+  test("background is presentational; graph fallback has meaningful alt", () => {
     const html = renderToStaticMarkup(<YouiShowcase />);
 
     expect(html).toContain('data-youi-showcase-background=""');
     expect(html).toContain('aria-hidden="true"');
     expect(html).toContain(`alt="${YOUI_SHOWCASE_DEFAULT_GRAPH_ALT}"`);
+    expect(html).toContain('data-youi-showcase-graph-fallback=""');
+  });
+
+  test("semantic static graph fallback remains when replay island is inactive", () => {
+    const html = renderToStaticMarkup(
+      <YouiShowcase
+        replayIsland={<div data-youi-replay-island-inactive="">pending</div>}
+      />,
+    );
+
+    expect(html).toContain('data-youi-showcase-foreground=""');
+    expect(html).toContain('data-youi-showcase-graph-fallback=""');
+    expect(html).toContain(`src="${YOUI_SHOWCASE_DEFAULT_GRAPH_SRC}"`);
+    expect(html).toContain(`alt="${YOUI_SHOWCASE_DEFAULT_GRAPH_ALT}"`);
+    expect(html).toContain('data-youi-showcase-replay-slot=""');
+    expect(html).toContain('data-youi-replay-island-inactive=""');
   });
 
   test("accepts className, title, and src overrides", () => {
@@ -86,9 +122,12 @@ describe("YouiShowcase", () => {
 
     expect(html).toContain('data-youi-showcase=""');
     expect(html).toContain('data-youi-showcase-content=""');
+    expect(html).toContain(YOUI_SHOWCASE_CONTENT_CLASSNAME);
     expect(html).toContain('aria-label="Youi showcase"');
     expect(html).not.toContain("data-youi-showcase-background");
+    expect(html).not.toContain("data-youi-showcase-foreground");
     expect(html).not.toContain("data-youi-showcase-graph-image");
+    expect(html).not.toContain("data-youi-showcase-graph-fallback");
     expect(html).not.toContain("data-youi-showcase-title");
   });
 
@@ -100,9 +139,28 @@ describe("YouiShowcase", () => {
 
     expect(withoutGraph).toContain("data-youi-showcase-background-image");
     expect(withoutGraph).not.toContain("data-youi-showcase-graph-image");
+    expect(withoutGraph).not.toContain("data-youi-showcase-foreground");
     expect(withoutBackground).toContain("data-youi-showcase-graph-image");
+    expect(withoutBackground).toContain("data-youi-showcase-graph-fallback");
+    expect(withoutBackground).toContain("data-youi-showcase-foreground");
     expect(withoutBackground).not.toContain(
       "data-youi-showcase-background-image",
     );
+  });
+
+  test("replay island alone still mounts a stable foreground host", () => {
+    const html = renderToStaticMarkup(
+      <YouiShowcase
+        graphSrc=""
+        replayIsland={<span data-youi-replay-only="">island</span>}
+      />,
+    );
+
+    expect(html).toContain('data-youi-showcase-content=""');
+    expect(html).toContain(YOUI_SHOWCASE_CONTENT_CLASSNAME);
+    expect(html).toContain('data-youi-showcase-foreground=""');
+    expect(html).toContain('data-youi-showcase-replay-slot=""');
+    expect(html).toContain('data-youi-replay-only=""');
+    expect(html).not.toContain("data-youi-showcase-graph-fallback");
   });
 });

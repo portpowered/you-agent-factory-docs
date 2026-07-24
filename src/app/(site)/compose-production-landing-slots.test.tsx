@@ -140,6 +140,19 @@ describe("composeProductionYouiSlot", () => {
     expect(html).toContain(fixtureLandingPageData.youi.title);
     expect(html).toContain(`src="${fixtureLandingPageData.youi.imageSrc}"`);
   });
+
+  test("wires near-viewport goal replay gate while keeping static graph fallback", () => {
+    const html = renderToStaticMarkup(
+      composeProductionYouiSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-youi-showcase-graph-fallback=""');
+    expect(html).toContain('data-youi-showcase-replay-slot=""');
+    expect(html).toContain('data-youi-compact-goal-replay-near-viewport=""');
+    expect(html).toContain('data-youi-compact-goal-replay-activated="false"');
+    expect(html).not.toContain('data-youi-compact-goal-replay-island=""');
+    expect(html).not.toContain('data-factory-replay-mode="compact"');
+  });
 });
 
 describe("composeProductionCarouselSlot", () => {

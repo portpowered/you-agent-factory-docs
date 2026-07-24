@@ -24,6 +24,7 @@ import {
   YouiShowcase,
 } from "@/features/landing-page";
 import { ParticleSphere } from "@/features/landing-page/components/ParticleSphere";
+import { YouiCompactGoalReplayNearViewport } from "@/features/landing-page/components/YouiCompactGoalReplayNearViewport";
 import type {
   LandingPageProps,
   LandingPageSlots,
@@ -238,6 +239,9 @@ export function composeProductionCapabilitySlot(
 /**
  * Youi showcase from fixture youi fields. Maps `imageSrc` → `backgroundSrc`;
  * graph uses YouiShowcase public defaults when not present on fixture.
+ * Wires the near-viewport gate as `replayIsland` so the literal client import
+ * of the compact goal replay island activates near the viewport while the
+ * semantic/static graph fallback stays in delivered HTML until then.
  */
 export function composeProductionYouiSlot(
   youi: LandingYouiData = fixtureLandingPageData.youi,
@@ -247,6 +251,7 @@ export function composeProductionYouiSlot(
     <YouiShowcase
       backgroundSrc={youi.imageSrc}
       graphSrc={graphSrc}
+      replayIsland={<YouiCompactGoalReplayNearViewport />}
       title={youi.title}
     />
   );

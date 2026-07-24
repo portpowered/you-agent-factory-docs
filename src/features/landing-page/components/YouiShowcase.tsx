@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ export type YouiShowcaseProps = {
    * Factory graph UI (foreground) image URL.
    * Defaults to staged `landingHomeAssets.factoryGraphUi`
    * (`/home/factory-graph-ui.png`).
-   * Empty string omits the foreground without crashing.
+   * Empty string omits the static graph fallback without crashing.
    */
   graphSrc?: string;
   /**
@@ -27,6 +27,12 @@ export type YouiShowcaseProps = {
    * Defaults to a short descriptive alt; nearby title also labels the section.
    */
   graphAlt?: string;
+  /**
+   * Optional client replay island mounted inside the fixed foreground host.
+   * When omitted (or not yet active), the semantic/static graph fallback
+   * remains the visible foreground in the delivered HTML.
+   */
+  replayIsland?: ReactNode;
   /** Root className for layout / section placement. */
   className?: string;
   /** Optional inline styles for section anchoring. */
@@ -60,6 +66,24 @@ export const YOUI_SHOWCASE_BACKGROUND_SIZES = "(max-width: 768px) 100vw, 720px";
  */
 export const YOUI_SHOWCASE_GRAPH_SIZES = "(max-width: 768px) 85vw, 480px";
 
+/**
+ * Fixed content geometry for the server-rendered Youi shell: clamped min-height
+ * and a constrained max-width so the section never collapses into an empty hole
+ * before or without a client replay island.
+ */
+export const YOUI_SHOWCASE_CONTENT_CLASSNAME =
+  "relative z-10 mx-auto flex min-h-[clamp(48rem,82vw,82rem)] w-full max-w-[100rem] flex-col items-center justify-center gap-8 px-5 py-20 sm:px-8 sm:py-28";
+
+/**
+ * Constrained foreground host that holds the semantic/static graph fallback
+ * (and later a compact replay island) without changing surrounding shell size.
+ */
+export const YOUI_SHOWCASE_FOREGROUND_CLASSNAME =
+  "relative block w-full max-w-[min(92vw,52rem)]";
+
+export const YOUI_SHOWCASE_GRAPH_FALLBACK_CLASSNAME =
+  "block h-auto w-full border-2 border-[#ecece4]/20 shadow-[0_28px_80px_rgba(0,0,0,0.52)]";
+
 const YOUI_MONKEY_INSTANCES = [
   "far-left",
   "left",
@@ -75,13 +99,16 @@ const YOUI_MONKEY_INSTANCES = [
  *
  * Background is presentational (`aria-hidden`). Foreground graph UI carries a
  * meaningful alt (or is labeled by the nearby title). Missing optional image
- * srcs keep a stable host without crashing.
+ * srcs keep a stable host without crashing. The static graph remains in the
+ * delivered HTML as the semantic fallback when a client replay island is not
+ * yet active.
  */
 export function YouiShowcase({
   backgroundSrc = YOUI_SHOWCASE_DEFAULT_BACKGROUND_SRC,
   graphSrc = YOUI_SHOWCASE_DEFAULT_GRAPH_SRC,
   title = YOUI_SHOWCASE_DEFAULT_TITLE,
   graphAlt = YOUI_SHOWCASE_DEFAULT_GRAPH_ALT,
+  replayIsland,
   className,
   style,
 }: YouiShowcaseProps) {
@@ -89,6 +116,8 @@ export function YouiShowcase({
     typeof backgroundSrc === "string" && backgroundSrc.length > 0;
   const hasGraph = typeof graphSrc === "string" && graphSrc.length > 0;
   const hasTitle = typeof title === "string" && title.length > 0;
+  const hasReplayIsland = replayIsland != null;
+  const showForeground = hasGraph || hasReplayIsland;
 
   return (
     <section
@@ -127,7 +156,7 @@ export function YouiShowcase({
       ) : null}
 
       <div
-        className="relative z-10 mx-auto flex min-h-[clamp(48rem,82vw,82rem)] w-full max-w-[100rem] flex-col items-center justify-center gap-8 px-5 py-20 sm:px-8 sm:py-28"
+        className={YOUI_SHOWCASE_CONTENT_CLASSNAME}
         data-youi-showcase-content=""
       >
         {hasTitle ? (
@@ -139,18 +168,29 @@ export function YouiShowcase({
           </h2>
         ) : null}
 
-        {hasGraph ? (
-          <img
-            alt={graphAlt}
-            className="block h-auto w-full max-w-[min(92vw,52rem)] border-2 border-[#ecece4]/20 shadow-[0_28px_80px_rgba(0,0,0,0.52)]"
-            data-youi-showcase-graph-image=""
-            decoding="async"
-            draggable={false}
-            height={YOUI_SHOWCASE_GRAPH_INTRINSIC_HEIGHT}
-            sizes={YOUI_SHOWCASE_GRAPH_SIZES}
-            src={graphSrc}
-            width={YOUI_SHOWCASE_GRAPH_INTRINSIC_WIDTH}
-          />
+        {showForeground ? (
+          <div
+            className={YOUI_SHOWCASE_FOREGROUND_CLASSNAME}
+            data-youi-showcase-foreground=""
+          >
+            {hasGraph ? (
+              <img
+                alt={graphAlt}
+                className={YOUI_SHOWCASE_GRAPH_FALLBACK_CLASSNAME}
+                data-youi-showcase-graph-fallback=""
+                data-youi-showcase-graph-image=""
+                decoding="async"
+                draggable={false}
+                height={YOUI_SHOWCASE_GRAPH_INTRINSIC_HEIGHT}
+                sizes={YOUI_SHOWCASE_GRAPH_SIZES}
+                src={graphSrc}
+                width={YOUI_SHOWCASE_GRAPH_INTRINSIC_WIDTH}
+              />
+            ) : null}
+            {hasReplayIsland ? (
+              <div data-youi-showcase-replay-slot="">{replayIsland}</div>
+            ) : null}
+          </div>
         ) : null}
       </div>
     </section>
