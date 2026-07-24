@@ -26,14 +26,15 @@ Batch 3 — keep using that path; do not switch deep-research onto
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/references/packaged-factories-index/deep-research/page.mdx` | Minimal nested reference: purpose section (later: usage + required links) |
-| `src/content/docs/references/packaged-factories-index/deep-research/messages/en.json` | Concise purpose copy; no teaching/how-to chrome keys |
+| `src/content/docs/references/packaged-factories-index/deep-research/page.mdx` | Minimal nested reference: purpose + one usage fenced example (later: required links) |
+| `src/content/docs/references/packaged-factories-index/deep-research/messages/en.json` | Concise purpose + Usage title only; no teaching/how-to chrome keys |
 | `src/content/docs/references/packaged-factories-index/deep-research/assets.json` | Empty local asset config |
 | `src/content/registry/references/packaged-factories-index-deep-research.json` | Registry id `reference.packaged-factories-index-deep-research`, leaf slug `deep-research` |
 | `src/content/docs/references/packaged-factories-index/deep-research-page-mdx-components.tsx` | Parent-owned non-replay MDX map (Batch 3); keep empty of replay mounts |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Literal loader case for `packaged-factories-index/deep-research` → non-replay map |
-| `src/content/docs/references/packaged-factories-index/deep-research/deep-research-page.test.tsx` | Nested route, purpose, registry, non-replay map proofs |
-| `src/content/docs/references/packaged-factories-index/deep-research/assert-deep-research-purpose-browser.ts` | Playwright purpose-page browser verify (webpack `next dev`, unique port) |
+| `src/content/docs/references/packaged-factories-index/deep-research/deep-research-page.test.tsx` | Nested route, purpose, single usage example, registry, non-replay map proofs |
+| `src/content/docs/references/packaged-factories-index/deep-research/assert-deep-research-purpose-browser.ts` | Playwright purpose+usage browser verify (webpack `next dev`, unique port) |
+| `src/content/docs/references/packaged-factories-index/generated/factories/deep-research.factory.json` | Ground truth for the packaged example topic (read-only; do not edit from this lane) |
 
 ## Patterns
 
@@ -46,6 +47,11 @@ Batch 3 — keep using that path; do not switch deep-research onto
   required links. Do not add replay, recordings, visualizers, timelines, event
   history, raw packaged source dumps, AST/stages/workers views, schema
   expansion, extended operational notes, or teaching sections.
+- Title the usage section `Usage` (not `How To Use`). Put exactly one fenced
+  `you run --named @you/deep-research "…"` example in MDX, grounded in the
+  packaged `positional-topic` example topic from
+  `generated/factories/deep-research.factory.json`. Do not add a second
+  invocation, walkthrough steps, or operational-note prose.
 - Resolve MDX mounts through the existing parent-level
   `deep-research-page-mdx-components` non-replay map. Do not invent a second
   child-local `page-mdx-components.tsx` unless the loader case is updated to

@@ -1,9 +1,11 @@
 /**
  * Browser verify for `/docs/references/packaged-factories-index/deep-research`
- * after publishing the minimal nested purpose page (story 001).
+ * after publishing the minimal nested purpose + usage page (stories 001–002).
  *
  * Proves: nested route resolves; Purpose heading and purpose body are visible;
- * no teaching-chrome headings; no replay/visualizer markers.
+ * Usage heading and the single concrete `you run --named @you/deep-research`
+ * example are visible without hover/modal/replay; no teaching-chrome headings;
+ * no replay/visualizer markers.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  *
@@ -24,6 +26,8 @@ const EXISTING_BASE_URL = process.env.DEEP_RESEARCH_PAGE_PROBE_BASE_URL?.trim();
 
 const PURPOSE_SNIPPET =
   "@you/deep-research investigates a research topic with a lead research pass";
+const USAGE_EXAMPLE =
+  'you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"';
 
 let server: ChildProcess | undefined;
 
@@ -76,7 +80,12 @@ async function warmPage(baseUrl: string): Promise<void> {
       });
       if (response.ok) {
         const html = await response.text();
-        if (html.includes("Purpose") && html.includes(PURPOSE_SNIPPET)) {
+        if (
+          html.includes("Purpose") &&
+          html.includes(PURPOSE_SNIPPET) &&
+          html.includes("Usage") &&
+          html.includes("@you/deep-research")
+        ) {
           return;
         }
       }
@@ -133,6 +142,21 @@ async function main() {
     const purposeText = page.getByText(PURPOSE_SNIPPET, { exact: false });
     await purposeText.waitFor({ state: "visible", timeout: 30_000 });
 
+    const usageHeading = page.getByRole("heading", { name: "Usage" });
+    await usageHeading.waitFor({ state: "visible", timeout: 30_000 });
+
+    const usageExample = page.getByText(USAGE_EXAMPLE, { exact: false });
+    await usageExample.waitFor({ state: "visible", timeout: 30_000 });
+
+    const namedInvocationCount = await page
+      .getByText(/you run --named @you\/deep-research/)
+      .count();
+    if (namedInvocationCount !== 1) {
+      throw new Error(
+        `Expected exactly one @you/deep-research usage example, found ${namedInvocationCount}`,
+      );
+    }
+
     const forbiddenHeadings = [
       "What It Covers",
       "Key Concepts",
@@ -158,7 +182,7 @@ async function main() {
       );
     }
 
-    console.log("deep-research nested purpose page browser verify: ok");
+    console.log("deep-research nested purpose+usage page browser verify: ok");
   } finally {
     await browser.close();
   }

@@ -5,6 +5,9 @@
     "purpose": {
       "title": "Purpose",
       "body": "@you/deep-research investigates a research topic with a lead research pass. When the topic needs more breadth, it can call specialist investigators and then synthesize the findings into one result."
+    },
+    "usage": {
+      "title": "Usage"
     }
   }
 }

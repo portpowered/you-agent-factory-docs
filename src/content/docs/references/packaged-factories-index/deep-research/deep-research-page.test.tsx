@@ -1,8 +1,9 @@
 /**
  * Page-owned proofs for references/packaged-factories-index/deep-research.
  * Story 001: published nested route, purpose description, and non-replay
- * component-map resolution. Later stories extend usage, links, and forbidden-
- * surface proofs in this same colocated suite.
+ * component-map resolution.
+ * Story 002: one visible minimal concrete usage example (no walkthrough
+ * expansion). Later stories extend links and forbidden-surface proofs.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -21,6 +22,8 @@ const PAGE_URL = "/docs/references/packaged-factories-index/deep-research";
 const REGISTRY_ID = "reference.packaged-factories-index-deep-research";
 const PURPOSE_BODY =
   "@you/deep-research investigates a research topic with a lead research pass. When the topic needs more breadth, it can call specialist investigators and then synthesize the findings into one result.";
+const USAGE_EXAMPLE =
+  'you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"';
 
 describe("packaged-factories-index/deep-research nested reference page", () => {
   afterEach(() => {
@@ -77,6 +80,43 @@ describe("packaged-factories-index/deep-research nested reference page", () => {
     expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(document.querySelector("[data-factory-replay]")).toBeNull();
+    expect(document.querySelector("[data-factory-visualizer]")).toBeNull();
+  });
+
+  test("shows exactly one minimal concrete usage example in the page body", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "references",
+      slug: "packaged-factories-index/deep-research",
+    });
+
+    expect(loadedPage.messages.sections?.usage?.title).toBe("Usage");
+    expect(loadedPage.messages.sections?.usage?.body).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+
+    render(
+      <main>
+        <DocsPageProviders
+          assets={loadedPage.assets}
+          messages={loadedPage.messages}
+        >
+          {loadedPage.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: "Usage" })).toBeTruthy();
+    expect(screen.getByText(USAGE_EXAMPLE)).toBeTruthy();
+
+    const namedInvocations = screen.getAllByText(
+      /you run --named @you\/deep-research/,
+    );
+    expect(namedInvocations).toHaveLength(1);
+
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(
+      screen.queryByText(/step 1|walkthrough|tutorial|operational note/i),
     ).toBeNull();
     expect(document.querySelector("[data-factory-replay]")).toBeNull();
     expect(document.querySelector("[data-factory-visualizer]")).toBeNull();
