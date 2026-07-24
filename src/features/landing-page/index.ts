@@ -109,6 +109,12 @@ export {
   type YouiCompactGoalReplayIslandProps,
 } from "./components/YouiCompactGoalReplayIsland";
 export {
+  YOUI_COMPACT_GOAL_REPLAY_NEAR_VIEWPORT_ROOT_MARGIN,
+  YOUI_COMPACT_GOAL_REPLAY_NEAR_VIEWPORT_THRESHOLD,
+  YouiCompactGoalReplayNearViewport,
+  type YouiCompactGoalReplayNearViewportProps,
+} from "./components/YouiCompactGoalReplayNearViewport";
+export {
   YOUI_SHOWCASE_BACKGROUND_SIZES,
   YOUI_SHOWCASE_CONTENT_CLASSNAME,
   YOUI_SHOWCASE_DEFAULT_BACKGROUND_SRC,

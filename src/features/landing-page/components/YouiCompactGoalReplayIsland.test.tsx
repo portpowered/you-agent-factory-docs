@@ -76,7 +76,7 @@ describe("YouiCompactGoalReplayIsland", () => {
     expect(root.getAttribute("data-playing")).toBe("false");
   });
 
-  test("SSR showcase keeps static fallback while mounting the compact island slot", () => {
+  test("direct island mount keeps static fallback in showcase HTML when active", () => {
     const html = renderToStaticMarkup(
       <YouiShowcase
         replayIsland={<YouiCompactGoalReplayIsland bindDomGates={false} />}
