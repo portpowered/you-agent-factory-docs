@@ -1,0 +1,42 @@
+---
+title: "@you/deep-research"
+description: "Run lead topic research with optional specialist help and synthesis through the packaged @you/deep-research factory."
+kind: "reference"
+registryId: "reference.packaged-factories-index-deep-research"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "deep-research"
+  - "@you/deep-research"
+  - "deep research packaged factory"
+updatedAt: "2026-07-24"
+---
+
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+
+<Section id="purpose" titleKey="sections.purpose.title">
+  <T k="sections.purpose.body" />
+</Section>
+
+<Section id="usage" titleKey="sections.usage.title">
+  ```bash
+  you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"
+  ```
+</Section>
+
+<LocalizedLinkList
+  items={[
+    {
+      href: "/docs/references/javascript-runtime",
+      labelKey: "links.javascriptRuntime",
+    },
+    {
+      href: "/docs/factories/dynamic-workflows",
+      labelKey: "links.dynamicWorkflows",
+    },
+  ]}
+/>

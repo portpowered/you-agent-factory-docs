@@ -1,0 +1,18 @@
+{
+  "id": "reference.packaged-factories-index-deep-research",
+  "slug": "deep-research",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "deep-research",
+    "@you/deep-research",
+    "deep research packaged factory"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-24T00:00:00.000Z",
+  "updatedAt": "2026-07-24T00:00:00.000Z"
+}
