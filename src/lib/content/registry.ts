@@ -78,14 +78,21 @@ type ParsedRegistryFile = {
   record: RegistryRecord;
 };
 
-async function readRegistryDirectory(
-  registryRoot: string,
-  directory: RegistryDirectory,
-): Promise<ParsedRegistryFile[]> {
-  const directoryPath = getRegistryCollectionRoot(directory.name, registryRoot);
-  let entries: string[];
+/**
+ * Collect registry JSON paths under a kind directory.
+ *
+ * Supports multi-segment slugs (for example `packaged-factories-index/goal`)
+ * as nested files (`…/packaged-factories-index/goal.json`). Skips colocated
+ * `messages/` trees (tag locale files), which are not registry records.
+ */
+async function listRegistryJsonFiles(directoryPath: string): Promise<string[]> {
+  let dirents: Array<{
+    name: string;
+    isDirectory(): boolean;
+    isFile(): boolean;
+  }>;
   try {
-    entries = await readdir(directoryPath);
+    dirents = await readdir(directoryPath, { withFileTypes: true });
   } catch (error) {
     const code =
       error && typeof error === "object" && "code" in error
@@ -101,11 +108,32 @@ async function readRegistryDirectory(
     );
   }
 
-  const jsonFiles = entries.filter((entry) => entry.endsWith(".json")).sort();
+  const files: string[] = [];
+  for (const dirent of dirents) {
+    const entryPath = join(directoryPath, dirent.name);
+    if (dirent.isDirectory()) {
+      if (dirent.name === "messages") {
+        continue;
+      }
+      files.push(...(await listRegistryJsonFiles(entryPath)));
+      continue;
+    }
+    if (dirent.isFile() && dirent.name.endsWith(".json")) {
+      files.push(entryPath);
+    }
+  }
+  return files.sort();
+}
+
+async function readRegistryDirectory(
+  registryRoot: string,
+  directory: RegistryDirectory,
+): Promise<ParsedRegistryFile[]> {
+  const directoryPath = getRegistryCollectionRoot(directory.name, registryRoot);
+  const jsonFiles = await listRegistryJsonFiles(directoryPath);
   const parsed: ParsedRegistryFile[] = [];
 
-  for (const fileName of jsonFiles) {
-    const path = join(directoryPath, fileName);
+  for (const path of jsonFiles) {
     const raw = await readFile(path, "utf8");
     let json: unknown;
     try {

@@ -1,0 +1,26 @@
+{
+  "title": "@you/goal",
+  "description": "Look up the packaged @you/goal factory: canonical name, a one-sentence description, concrete named-run examples, and a link to the complete parent definition.",
+  "sections": {
+    "overview": {
+      "title": "Overview",
+      "body": "@you/goal is the packaged named factory that drives goal work from init through execute until the run reaches a complete or failed terminal state."
+    },
+    "invocationExamples": {
+      "title": "Invocation examples",
+      "body": "Invoke the packaged factory by canonical name with you run --named."
+    },
+    "completeDefinition": {
+      "title": "Complete definition",
+      "body": "The parent Packaged Factory Reference keeps the complete packaged definition source and published metadata for this package."
+    },
+    "deterministicReplay": {
+      "title": "Deterministic replay",
+      "body": "Inspect a full-mode deterministic work-graph replay for the packaged goal recording: timeline scrubber, topology, and work progress."
+    }
+  },
+  "links": {
+    "canonicalName": "@you/goal",
+    "completeDefinition": "Complete @you/goal definition on Packaged Factory Reference"
+  }
+}

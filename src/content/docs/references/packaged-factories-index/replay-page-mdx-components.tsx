@@ -1,11 +1,13 @@
 /**
- * Shared page MDX component map for standard packaged-factories-index replay
- * children: goal, subagent, fusion, review, quorum, tts.
+ * Shared page MDX component map for remaining standard packaged-factories-index
+ * replay children still on the placeholder: fusion, review, quorum, tts. Goal
+ * and subagent resolve their child-owned maps instead.
  *
- * Thin placeholder until Batch 4 authors child page bodies. Keep this module
- * free of parent index mounts. Do not register these in the shared module MDX
- * map. Route-family loader cases import this file with literal static
- * specifiers so Next’s static export bundler can resolve nested child maps.
+ * Thin placeholder until Batch 4 authors sibling child page bodies. Keep this
+ * module free of parent index mounts and free of packaged-factory recording
+ * imports. Do not register these in the shared module MDX map. Route-family
+ * loader cases import this file with literal static specifiers so Next’s
+ * static export bundler can resolve nested child maps.
  */
 export const packagedFactoriesIndexChildComponentMapKind =
   "standard-replay" as const;
