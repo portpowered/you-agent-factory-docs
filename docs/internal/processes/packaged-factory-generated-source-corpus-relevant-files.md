@@ -122,6 +122,27 @@ workers, or companion JavaScript.
 - Fail closed on parser failure, topology `ok: false`, thrown progress
   projection, missing corpus entry, or duplicated topology fingerprints.
 
+## Key files (story 005 — pure / drift fail-closed proofs)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/packaged-factory-generated-source-corpus/corpus-drift.ts` | Pure compare/assert helpers for source-hash drift and generated-artifact byte drift |
+| `src/lib/packaged-factory-generated-source-corpus/verify-committed-corpus.ts` | Build-only IO: regenerate from installed package, load committed generated tree, assert no drift |
+| `src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts` | Pure + live-host fail-closed proofs (order, unabridged defs, companion text, six recordings, hash drift, committed regeneration, parser/projection failures) |
+
+### Drift rule
+
+- Source hashes in `manifest.json` must match SHA-256 of acquired allowlisted
+  package file bytes (`factory.json` definitions + deep-research companion JS).
+- Regenerating the bundle from the installed package must produce byte-identical
+  contents for every committed file under
+  `src/content/docs/references/packaged-factories-index/generated/`.
+- Fail closed on missing allowlisted files, wrong package version, invalid
+  factory definition JSON/shape, recording parser failure, and replay
+  projection failure (`topology.ok === false` or thrown progress projection).
+- Drift/pure tests assert corpus behavior only — do not scan React pages, route
+  loaders, CSS, or dependency manifests as a substitute.
+
 ## Generated tree layout
 
 ```
