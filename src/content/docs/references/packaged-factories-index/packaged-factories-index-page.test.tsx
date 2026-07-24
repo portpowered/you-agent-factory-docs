@@ -69,9 +69,9 @@ describe("packaged-factories-index reference page shell", () => {
     const overview = String(
       loadedPage.messages.sections?.indexOverview?.body ?? "",
     );
-    expect(overview).toMatch(/allowlist order|canonical name/i);
+    expect(overview).toMatch(/goal, subagent, fusion|canonical name/i);
     expect(overview).not.toMatch(
-      /usage example|how to run|replay|visualizer|playback|Model Atlas/i,
+      /This reference|docs-owned|usage example|how to run|replay|visualizer|playback|Model Atlas/i,
     );
 
     render(
