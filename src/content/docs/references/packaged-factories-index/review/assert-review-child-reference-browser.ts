@@ -1,7 +1,7 @@
 /**
  * Browser verify for /docs/references/packaged-factories-index/review concise
- * reference content (story 003). Uses webpack in worktrees where Turbopack
- * cannot resolve the hoisted Next package.
+ * reference content plus full-mode replay mount markers. Uses webpack in
+ * worktrees where Turbopack cannot resolve the hoisted Next package.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
@@ -94,6 +94,12 @@ try {
     "Invocation examples",
     "Operational notes",
     "Complete definition",
+    "Deterministic replay",
+    'data-factory-replay-mode="full"',
+    "Factory replay",
+    "Timeline scrubber",
+    "Factory topology",
+    "Work progress",
   ];
 
   for (const marker of required) {
@@ -113,9 +119,9 @@ try {
     throw new Error("Child page must not embed unabridged factory.json");
   }
 
-  if (normalized.includes("Deterministic replay")) {
+  if (normalized.includes("fusion.factory-recording.v1.json")) {
     throw new Error(
-      "Story 003 review page must not mount deterministic replay yet",
+      "Review child page HTML must not reference the fusion recording",
     );
   }
 

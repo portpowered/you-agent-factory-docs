@@ -1,8 +1,8 @@
 /**
  * Focused proofs for packaged-factories-index nested child component-map
  * wiring: remaining standard replay children share one literal replay-page
- * map; fusion resolves its child-owned map; deep-research resolves a distinct
- * non-replay map. Parent import-graph isolation is covered by
+ * map; fusion and review resolve child-owned maps; deep-research resolves a
+ * distinct non-replay map. Parent import-graph isolation is covered by
  * packaged-factories-index-import-graph.test.ts.
  */
 import { describe, expect, test } from "bun:test";
@@ -17,12 +17,12 @@ import {
   packagedFactoriesIndexChildComponentMapKind as replayMapKind,
   pageMdxComponents as replayPageMdxComponents,
 } from "./replay-page-mdx-components";
+import { pageMdxComponents as reviewPageMdxComponents } from "./review/page-mdx-components";
 
 /** Standard replay children that still resolve the shared placeholder map. */
 const SHARED_REPLAY_CHILD_SLUGS = [
   "goal",
   "subagent",
-  "review",
   "quorum",
   "tts",
 ] as const;
@@ -45,6 +45,17 @@ describe("packaged-factories-index child component maps", () => {
     expect(fusionPageMdxComponents).not.toBe(replayPageMdxComponents);
     expect(fusionPageMdxComponents).not.toBe(deepResearchPageMdxComponents);
     expect(fusionPageMdxComponents).not.toBe(parentPageMdxComponents);
+    expect(fusionPageMdxComponents).not.toBe(reviewPageMdxComponents);
+  });
+
+  test("review-owned map exposes ReviewFactoryReplay and stays distinct from shared maps", () => {
+    expect(Object.keys(reviewPageMdxComponents)).toEqual([
+      "ReviewFactoryReplay",
+    ]);
+    expect(reviewPageMdxComponents).not.toBe(replayPageMdxComponents);
+    expect(reviewPageMdxComponents).not.toBe(deepResearchPageMdxComponents);
+    expect(reviewPageMdxComponents).not.toBe(parentPageMdxComponents);
+    expect(reviewPageMdxComponents).not.toBe(fusionPageMdxComponents);
   });
 
   test("deep-research map is marked non-replay and is distinct from the shared replay map", () => {
@@ -84,6 +95,16 @@ describe("packaged-factories-index nested route-family loader cases", () => {
     expect(Object.keys(loaded)).toEqual(["FusionFactoryReplay"]);
   });
 
+  test("review resolves the review-owned map and never the shared replay map", async () => {
+    const loaded = await loadRouteFamilyPageMdxComponents(
+      "references",
+      "packaged-factories-index/review",
+    );
+    expect(loaded).toBe(reviewPageMdxComponents);
+    expect(loaded).not.toBe(replayPageMdxComponents);
+    expect(Object.keys(loaded)).toEqual(["ReviewFactoryReplay"]);
+  });
+
   test("deep-research resolves the non-replay map and never the shared replay map", async () => {
     const loaded = await loadRouteFamilyPageMdxComponents(
       "references",
@@ -102,5 +123,6 @@ describe("packaged-factories-index nested route-family loader cases", () => {
     expect(loaded).not.toBe(replayPageMdxComponents);
     expect(loaded).not.toBe(deepResearchPageMdxComponents);
     expect(loaded).not.toBe(fusionPageMdxComponents);
+    expect(loaded).not.toBe(reviewPageMdxComponents);
   });
 });

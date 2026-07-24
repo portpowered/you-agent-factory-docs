@@ -183,7 +183,7 @@ export async function loadRouteFamilyPageMdxComponents(
       }
       case "packaged-factories-index/review": {
         const mod = await import(
-          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+          "@/content/docs/references/packaged-factories-index/review/page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }
