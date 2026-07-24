@@ -52,13 +52,23 @@ regeneration, landing composition, dependency pins, or global CSS.
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/references/packaged-factories-index/tts/page.mdx` | Concise nested tts reference route (content only; replay is story 004) |
+| `src/content/docs/references/packaged-factories-index/tts/page.mdx` | Concise nested tts reference route |
 | `src/content/docs/references/packaged-factories-index/tts/messages/en.json` | Canonical name, description, examples labels, resource note, parent link |
 | `src/content/docs/references/packaged-factories-index/tts/assets.json` | Empty local asset config |
-| `src/content/docs/references/packaged-factories-index/tts/tts-page.test.tsx` | Route, registry, concise content, parent-link proofs |
-| `src/content/docs/references/packaged-factories-index/tts/assert-tts-child-reference-browser.ts` | Dev-server HTML probe for concise content markers |
+| `src/content/docs/references/packaged-factories-index/tts/tts-page.test.tsx` | Route, registry, concise content, parent-link, full-mode replay proofs |
 | `src/content/registry/references/packaged-factories-index/tts.json` | Registry id `reference.packaged-factories-index-tts`, slug `packaged-factories-index/tts` |
 | `src/content/docs/references/packaged-factories-index/generated/factories/tts.factory.json` | Read-only source for TTS operation / omnivoice resource facts (no packaged examples) |
+
+## Key files (story 004 — tts-only full-mode replay)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/tts/TtsFactoryReplay.tsx` | Client mount: `ControlledFactoryReplay` `mode="full"` + tts recording only |
+| `src/content/docs/references/packaged-factories-index/tts/page-mdx-components.tsx` | Tts-owned MDX map exporting `TtsFactoryReplay` |
+| `src/lib/content/route-family-local-docs-page-load.ts` | Literal `packaged-factories-index/tts` → tts child map |
+| `src/content/docs/references/packaged-factories-index/generated/tts.factory-recording.v1.json` | Read-only Batch 2 tts recording (imported only from tts child) |
+| `src/content/docs/references/packaged-factories-index/tts/assert-tts-child-reference-browser.ts` | Dev-server HTML probe for content + full-mode replay markers |
+| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum/tts → child maps; remaining siblings stay on shared placeholder |
 
 ## Patterns
 

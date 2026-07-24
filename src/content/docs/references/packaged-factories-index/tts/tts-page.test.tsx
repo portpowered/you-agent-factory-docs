@@ -1,13 +1,14 @@
 /**
  * Page-owned proofs for references/packaged-factories-index/tts.
- * Asserts published nested route, registry alignment, and concise reference
+ * Asserts published nested route, registry alignment, concise reference
  * chrome (canonical name, description, invocation examples, resource note,
- * parent definition link). Full-mode tts-only replay mount belongs to a later
- * story.
+ * parent definition link), and full-mode tts-only replay mount.
+ * Per-route recording isolation import-graph proofs belong to a later story.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES } from "@/features/factory-replay";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
@@ -18,14 +19,30 @@ const REGISTRY_ID = "reference.packaged-factories-index-tts";
 const PARENT_DEFINITION_HREF = "/docs/references/packaged-factories-index#tts";
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
 
+function ensureIntersectionObserverStub(): void {
+  if (typeof globalThis.IntersectionObserver === "function") {
+    return;
+  }
+  globalThis.IntersectionObserver = class {
+    disconnect(): void {}
+    observe(): void {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+    unobserve(): void {}
+  } as unknown as typeof IntersectionObserver;
+}
+
 describe("packaged-factories-index tts child reference page", () => {
   afterEach(() => {
     cleanup();
   });
 
   test(
-    "publishes /docs/references/packaged-factories-index/tts as a concise @you/tts reference",
+    "publishes /docs/references/packaged-factories-index/tts as a concise @you/tts reference with full-mode replay",
     async () => {
+      ensureIntersectionObserverStub();
+
       const fumadocsPage = source.getPage([
         "references",
         "packaged-factories-index",
@@ -53,6 +70,9 @@ describe("packaged-factories-index tts child reference page", () => {
       ).toMatch(
         /capacity-1 local omnivoice model resource \(omnivoice-cache \/ ON_DEMAND local backend\)/i,
       );
+      expect(
+        String(loadedPage.messages.sections?.deterministicReplay?.title ?? ""),
+      ).toBe("Deterministic replay");
       expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
       expect(
         loadedPage.messages.sections?.limitsAndAssumptions,
@@ -61,7 +81,6 @@ describe("packaged-factories-index tts child reference page", () => {
       expect(loadedPage.messages.sections?.tags).toBeUndefined();
       expect(loadedPage.messages.sections?.references).toBeUndefined();
       expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
-      expect(loadedPage.messages.sections?.deterministicReplay).toBeUndefined();
 
       render(
         <main>
@@ -83,6 +102,9 @@ describe("packaged-factories-index tts child reference page", () => {
       ).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Complete definition" }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Deterministic replay" }),
       ).toBeTruthy();
       expect(
         screen.getByText(/converts requested text into speech/i),
@@ -122,12 +144,29 @@ describe("packaged-factories-index tts child reference page", () => {
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
-      expect(
-        screen.queryByRole("heading", { name: "Deterministic replay" }),
-      ).toBeNull();
       expect(document.getElementById("related")).toBeNull();
       expect(screen.queryByText(/"name": "@you\/tts"/)).toBeNull();
       expect(screen.queryByText(/builtin-tts/)).toBeNull();
+
+      const replayRoot = screen.getByRole("region", {
+        name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.chrome.regionLabel,
+      });
+      expect(replayRoot.getAttribute("data-factory-replay-mode")).toBe("full");
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.timeline.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.topology.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.progress.regionLabel,
+        }),
+      ).toBeTruthy();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

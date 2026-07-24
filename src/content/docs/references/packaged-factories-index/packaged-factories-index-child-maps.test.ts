@@ -1,13 +1,14 @@
 /**
  * Focused proofs for packaged-factories-index nested child component-map
- * wiring: remaining standard replay children share one literal replay-page
- * map; goal, subagent, fusion, review, and quorum resolve their child-owned
- * maps; deep-research resolves a distinct non-replay map. Parent import-graph
- * isolation is covered by packaged-factories-index-import-graph.test.ts.
- * Goal/subagent recording isolation is covered by
- * goal-subagent-recording-isolation.test.ts. Fusion/review recording
- * ownership consolidation is covered by
- * fusion-review-ownership-boundaries.test.ts.
+ * wiring: goal, subagent, fusion, review, quorum, and tts resolve their
+ * child-owned maps; deep-research resolves a distinct non-replay map; the
+ * shared replay-page placeholder remains available but unused by nested
+ * children. Parent import-graph isolation is covered by
+ * packaged-factories-index-import-graph.test.ts. Goal/subagent recording
+ * isolation is covered by goal-subagent-recording-isolation.test.ts.
+ * Fusion/review recording ownership consolidation is covered by
+ * fusion-review-ownership-boundaries.test.ts. Quorum/tts per-route recording
+ * isolation is covered by quorum-tts-child-import-graph.test.ts.
  */
 import { describe, expect, test } from "bun:test";
 import { loadRouteFamilyPageMdxComponents } from "@/lib/content/route-family-local-docs-page-load";
@@ -25,9 +26,7 @@ import {
 } from "./replay-page-mdx-components";
 import { pageMdxComponents as reviewPageMdxComponents } from "./review/page-mdx-components";
 import { pageMdxComponents as subagentPageMdxComponents } from "./subagent/page-mdx-components";
-
-/** Standard replay children that still resolve the shared placeholder map. */
-const SHARED_REPLAY_CHILD_SLUGS = ["tts"] as const;
+import { pageMdxComponents as ttsPageMdxComponents } from "./tts/page-mdx-components";
 
 describe("packaged-factories-index child component maps", () => {
   test("shared replay-page map is marked standard-replay and has no MDX mounts yet", () => {
@@ -49,6 +48,7 @@ describe("packaged-factories-index child component maps", () => {
     expect(goalPageMdxComponents).not.toBe(fusionPageMdxComponents);
     expect(goalPageMdxComponents).not.toBe(reviewPageMdxComponents);
     expect(goalPageMdxComponents).not.toBe(quorumPageMdxComponents);
+    expect(goalPageMdxComponents).not.toBe(ttsPageMdxComponents);
   });
 
   test("subagent-owned map exposes SubagentFactoryReplay and stays distinct from shared maps", () => {
@@ -62,6 +62,7 @@ describe("packaged-factories-index child component maps", () => {
     expect(subagentPageMdxComponents).not.toBe(fusionPageMdxComponents);
     expect(subagentPageMdxComponents).not.toBe(reviewPageMdxComponents);
     expect(subagentPageMdxComponents).not.toBe(quorumPageMdxComponents);
+    expect(subagentPageMdxComponents).not.toBe(ttsPageMdxComponents);
   });
 
   test("fusion-owned map exposes FusionFactoryReplay and stays distinct from shared maps", () => {
@@ -75,6 +76,7 @@ describe("packaged-factories-index child component maps", () => {
     expect(fusionPageMdxComponents).not.toBe(goalPageMdxComponents);
     expect(fusionPageMdxComponents).not.toBe(subagentPageMdxComponents);
     expect(fusionPageMdxComponents).not.toBe(quorumPageMdxComponents);
+    expect(fusionPageMdxComponents).not.toBe(ttsPageMdxComponents);
   });
 
   test("review-owned map exposes ReviewFactoryReplay and stays distinct from shared maps", () => {
@@ -88,6 +90,7 @@ describe("packaged-factories-index child component maps", () => {
     expect(reviewPageMdxComponents).not.toBe(goalPageMdxComponents);
     expect(reviewPageMdxComponents).not.toBe(subagentPageMdxComponents);
     expect(reviewPageMdxComponents).not.toBe(quorumPageMdxComponents);
+    expect(reviewPageMdxComponents).not.toBe(ttsPageMdxComponents);
   });
 
   test("quorum-owned map exposes QuorumFactoryReplay and stays distinct from shared maps", () => {
@@ -101,6 +104,19 @@ describe("packaged-factories-index child component maps", () => {
     expect(quorumPageMdxComponents).not.toBe(subagentPageMdxComponents);
     expect(quorumPageMdxComponents).not.toBe(fusionPageMdxComponents);
     expect(quorumPageMdxComponents).not.toBe(reviewPageMdxComponents);
+    expect(quorumPageMdxComponents).not.toBe(ttsPageMdxComponents);
+  });
+
+  test("tts-owned map exposes TtsFactoryReplay and stays distinct from shared maps", () => {
+    expect(Object.keys(ttsPageMdxComponents)).toEqual(["TtsFactoryReplay"]);
+    expect(ttsPageMdxComponents).not.toBe(replayPageMdxComponents);
+    expect(ttsPageMdxComponents).not.toBe(deepResearchPageMdxComponents);
+    expect(ttsPageMdxComponents).not.toBe(parentPageMdxComponents);
+    expect(ttsPageMdxComponents).not.toBe(goalPageMdxComponents);
+    expect(ttsPageMdxComponents).not.toBe(subagentPageMdxComponents);
+    expect(ttsPageMdxComponents).not.toBe(fusionPageMdxComponents);
+    expect(ttsPageMdxComponents).not.toBe(reviewPageMdxComponents);
+    expect(ttsPageMdxComponents).not.toBe(quorumPageMdxComponents);
   });
 
   test("deep-research map is marked non-replay and is distinct from the shared replay map", () => {
@@ -120,16 +136,6 @@ describe("packaged-factories-index child component maps", () => {
 });
 
 describe("packaged-factories-index nested route-family loader cases", () => {
-  test("remaining shared replay children resolve the shared replay-page map by identity", async () => {
-    for (const childSlug of SHARED_REPLAY_CHILD_SLUGS) {
-      const loaded = await loadRouteFamilyPageMdxComponents(
-        "references",
-        `packaged-factories-index/${childSlug}`,
-      );
-      expect(loaded).toBe(replayPageMdxComponents);
-    }
-  });
-
   test("goal resolves the goal-owned map and never the shared replay map", async () => {
     const loaded = await loadRouteFamilyPageMdxComponents(
       "references",
@@ -139,6 +145,7 @@ describe("packaged-factories-index nested route-family loader cases", () => {
     expect(loaded).not.toBe(replayPageMdxComponents);
     expect(loaded).not.toBe(subagentPageMdxComponents);
     expect(loaded).not.toBe(quorumPageMdxComponents);
+    expect(loaded).not.toBe(ttsPageMdxComponents);
     expect(Object.keys(loaded)).toEqual(["GoalFactoryReplay"]);
   });
 
@@ -151,6 +158,7 @@ describe("packaged-factories-index nested route-family loader cases", () => {
     expect(loaded).not.toBe(replayPageMdxComponents);
     expect(loaded).not.toBe(goalPageMdxComponents);
     expect(loaded).not.toBe(quorumPageMdxComponents);
+    expect(loaded).not.toBe(ttsPageMdxComponents);
     expect(Object.keys(loaded)).toEqual(["SubagentFactoryReplay"]);
   });
 
@@ -183,7 +191,21 @@ describe("packaged-factories-index nested route-family loader cases", () => {
     expect(loaded).not.toBe(replayPageMdxComponents);
     expect(loaded).not.toBe(goalPageMdxComponents);
     expect(loaded).not.toBe(subagentPageMdxComponents);
+    expect(loaded).not.toBe(ttsPageMdxComponents);
     expect(Object.keys(loaded)).toEqual(["QuorumFactoryReplay"]);
+  });
+
+  test("tts resolves the tts-owned map and never the shared replay map", async () => {
+    const loaded = await loadRouteFamilyPageMdxComponents(
+      "references",
+      "packaged-factories-index/tts",
+    );
+    expect(loaded).toBe(ttsPageMdxComponents);
+    expect(loaded).not.toBe(replayPageMdxComponents);
+    expect(loaded).not.toBe(goalPageMdxComponents);
+    expect(loaded).not.toBe(subagentPageMdxComponents);
+    expect(loaded).not.toBe(quorumPageMdxComponents);
+    expect(Object.keys(loaded)).toEqual(["TtsFactoryReplay"]);
   });
 
   test("deep-research resolves the non-replay map and never the shared replay map", async () => {
@@ -208,5 +230,6 @@ describe("packaged-factories-index nested route-family loader cases", () => {
     expect(loaded).not.toBe(fusionPageMdxComponents);
     expect(loaded).not.toBe(reviewPageMdxComponents);
     expect(loaded).not.toBe(quorumPageMdxComponents);
+    expect(loaded).not.toBe(ttsPageMdxComponents);
   });
 });

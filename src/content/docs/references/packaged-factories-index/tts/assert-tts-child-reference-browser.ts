@@ -1,14 +1,14 @@
 /**
  * Browser verify for /docs/references/packaged-factories-index/tts concise
- * reference content. Uses webpack in worktrees where Turbopack cannot resolve
- * the hoisted Next package.
+ * reference content plus full-mode replay mount markers. Uses webpack in
+ * worktrees where Turbopack cannot resolve the hoisted Next package.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
 
 import { type ChildProcess, spawn } from "node:child_process";
 
-const PORT = Number(process.env.TTS_CHILD_REFERENCE_PROBE_PORT ?? "3463");
+const PORT = Number(process.env.TTS_CHILD_REFERENCE_PROBE_PORT ?? "3464");
 const PAGE_PATH = "/docs/references/packaged-factories-index/tts";
 const READY_TIMEOUT_MS = 180_000;
 
@@ -92,9 +92,15 @@ try {
     "Invocation examples",
     "Local model resource",
     "Complete definition",
+    "Deterministic replay",
     "omnivoice-cache",
     "ON_DEMAND",
     "/docs/references/packaged-factories-index#tts",
+    'data-factory-replay-mode="full"',
+    "Factory replay",
+    "Timeline scrubber",
+    "Factory topology",
+    "Work progress",
   ];
 
   for (const marker of required) {
@@ -112,12 +118,6 @@ try {
 
   if (normalized.includes('"id": "builtin-tts"')) {
     throw new Error("Child page must not embed unabridged factory.json");
-  }
-
-  if (normalized.includes("Deterministic replay")) {
-    throw new Error(
-      "Story 003 content page must not mount deterministic replay yet",
-    );
   }
 
   if (normalized.includes("quorum.factory-recording.v1.json")) {
