@@ -32,8 +32,8 @@ Batch 3 — keep using that path; do not switch deep-research onto
 | `src/content/registry/references/packaged-factories-index-deep-research.json` | Registry id `reference.packaged-factories-index-deep-research`, leaf slug `deep-research` |
 | `src/content/docs/references/packaged-factories-index/deep-research-page-mdx-components.tsx` | Parent-owned non-replay MDX map (Batch 3); keep empty of replay mounts |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Literal loader case for `packaged-factories-index/deep-research` → non-replay map |
-| `src/content/docs/references/packaged-factories-index/deep-research/deep-research-page.test.tsx` | Nested route, purpose, single usage example, required link hrefs, registry, non-replay map proofs |
-| `src/content/docs/references/packaged-factories-index/deep-research/assert-deep-research-purpose-browser.ts` | Playwright purpose+usage+links browser verify (webpack `next dev`, unique port) |
+| `src/content/docs/references/packaged-factories-index/deep-research/deep-research-page.test.tsx` | Nested route, purpose, single usage example, required link hrefs, registry, non-replay map, and story-004 focused forbidden-expansion absence proofs |
+| `src/content/docs/references/packaged-factories-index/deep-research/assert-deep-research-purpose-browser.ts` | Playwright purpose+usage+links+no-forbidden-expansion browser verify (webpack `next dev`, unique port) |
 | `src/content/docs/references/packaged-factories-index/generated/factories/deep-research.factory.json` | Ground truth for the packaged example topic (read-only; do not edit from this lane) |
 
 ## Patterns
@@ -46,7 +46,14 @@ Batch 3 — keep using that path; do not switch deep-research onto
 - Keep the deep-research body minimal: purpose, one usage example, and the two
   required links. Do not add replay, recordings, visualizers, timelines, event
   history, raw packaged source dumps, AST/stages/workers views, schema
-  expansion, extended operational notes, or teaching sections.
+  expansion, extended operational notes, or teaching sections. Story 004
+  focused proofs assert both the required minimal surface and the absence of
+  those forbidden expansion markers/phrases on the rendered page body
+  (`[data-factory-replay*]`, `[data-factory-visualizer]`,
+  `[data-factory-recording]`, `[data-packaged-factory-*]`,
+  `[data-schema-field-expand]` / schema surface markers, plus body phrases for
+  AST / stages / workers / unabridged factory.json). Scope browser assertions
+  to `#nd-page` so sidebar nav does not create false positives.
 - Title the usage section `Usage` (not `How To Use`). Put exactly one fenced
   `you run --named @you/deep-research "…"` example in MDX, grounded in the
   packaged `positional-topic` example topic from

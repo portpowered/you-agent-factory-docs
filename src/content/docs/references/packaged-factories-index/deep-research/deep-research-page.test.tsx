@@ -5,6 +5,10 @@
  * Story 002: one visible minimal concrete usage example (no walkthrough
  * expansion).
  * Story 003: real anchors to JavaScript Runtime and Dynamic Workflows.
+ * Story 004: focused proofs that the rendered page stays limited to purpose,
+ * one usage example, and the two required links — with no forbidden expansion
+ * surfaces (replay, timeline/event-history, raw source panels, AST,
+ * stages/workers, schema expansion).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -27,6 +31,29 @@ const USAGE_EXAMPLE =
   'you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"';
 const JAVASCRIPT_RUNTIME_HREF = "/docs/references/javascript-runtime";
 const DYNAMIC_WORKFLOWS_HREF = "/docs/factories/dynamic-workflows";
+
+/** DOM markers that would indicate forbidden expansion surfaces on this route. */
+const FORBIDDEN_EXPANSION_SELECTORS = [
+  "[data-factory-replay]",
+  "[data-factory-replay-mode]",
+  "[data-factory-visualizer]",
+  "[data-factory-recording]",
+  "[data-packaged-factory-definition]",
+  "[data-packaged-factory-definition-code]",
+  "[data-packaged-factory-source-kind]",
+  "[data-schema-field-expand]",
+  "[data-schema-status]",
+  "[data-schema-definition-embed]",
+] as const;
+
+/** Rendered-body phrases that would indicate forbidden expansion content. */
+const FORBIDDEN_EXPANSION_BODY_PATTERNS = [
+  /event history|timeline scrubber|playback|recording sample/i,
+  /\bAST\b|abstract syntax|call graph/i,
+  /\bstages\b|\bworkers\b/i,
+  /"id":\s*"builtin-deep-research"|invocationSignature|scripts\/deep-research\.workflow\.js/i,
+  /schema expansion|field expand|definition embed/i,
+] as const;
 
 describe("packaged-factories-index/deep-research nested reference page", () => {
   afterEach(() => {
@@ -190,5 +217,71 @@ describe("packaged-factories-index/deep-research nested reference page", () => {
     expect(deepResearchMapKind).toBe("non-replay");
     expect(loaded).toBe(deepResearchPageMdxComponents);
     expect(loaded).not.toBe(replayPageMdxComponents);
+  });
+
+  test("renders only purpose, one usage example, and the two required links with no forbidden expansion surfaces", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "references",
+      slug: "packaged-factories-index/deep-research",
+    });
+
+    render(
+      <main>
+        <DocsPageProviders
+          assets={loadedPage.assets}
+          messages={loadedPage.messages}
+        >
+          {loadedPage.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: "Purpose" })).toBeTruthy();
+    expect(screen.getByText(PURPOSE_BODY)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Usage" })).toBeTruthy();
+    expect(screen.getByText(USAGE_EXAMPLE)).toBeTruthy();
+    expect(
+      screen.getAllByText(/you run --named @you\/deep-research/),
+    ).toHaveLength(1);
+
+    const javascriptRuntimeLink = screen.getByRole("link", {
+      name: "JavaScript Runtime",
+    });
+    const dynamicWorkflowsLink = screen.getByRole("link", {
+      name: "Dynamic Workflows",
+    });
+    expect(javascriptRuntimeLink.getAttribute("href")).toBe(
+      JAVASCRIPT_RUNTIME_HREF,
+    );
+    expect(dynamicWorkflowsLink.getAttribute("href")).toBe(
+      DYNAMIC_WORKFLOWS_HREF,
+    );
+
+    for (const selector of FORBIDDEN_EXPANSION_SELECTORS) {
+      expect(document.querySelector(selector)).toBeNull();
+    }
+
+    const renderedBody = document.body.textContent ?? "";
+    for (const pattern of FORBIDDEN_EXPANSION_BODY_PATTERNS) {
+      expect(renderedBody).not.toMatch(pattern);
+    }
+
+    expect(
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Event History" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Timeline" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Stages" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Workers" })).toBeNull();
+    expect(screen.queryByRole("button", { name: /play|pause/i })).toBeNull();
+
+    expect(Object.keys(deepResearchPageMdxComponents)).toEqual([]);
   });
 });

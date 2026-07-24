@@ -1,13 +1,14 @@
 /**
  * Browser verify for `/docs/references/packaged-factories-index/deep-research`
  * after publishing the minimal nested purpose + usage + required links page
- * (stories 001–003).
+ * (stories 001–004).
  *
  * Proves: nested route resolves; Purpose heading and purpose body are visible;
  * Usage heading and the single concrete `you run --named @you/deep-research`
  * example are visible without hover/modal/replay; JavaScript Runtime and
  * Dynamic Workflows are real keyboard-reachable anchors; no teaching-chrome
- * headings; no replay/visualizer markers.
+ * headings; no forbidden expansion surfaces (replay/playback, timeline/event
+ * history, raw packaged source panels, AST, stages/workers, schema expansion).
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  *
@@ -32,6 +33,27 @@ const USAGE_EXAMPLE =
   'you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"';
 const JAVASCRIPT_RUNTIME_HREF = "/docs/references/javascript-runtime";
 const DYNAMIC_WORKFLOWS_HREF = "/docs/factories/dynamic-workflows";
+
+const FORBIDDEN_EXPANSION_SELECTORS = [
+  "[data-factory-replay]",
+  "[data-factory-replay-mode]",
+  "[data-factory-visualizer]",
+  "[data-factory-recording]",
+  "[data-packaged-factory-definition]",
+  "[data-packaged-factory-definition-code]",
+  "[data-packaged-factory-source-kind]",
+  "[data-schema-field-expand]",
+  "[data-schema-status]",
+  "[data-schema-definition-embed]",
+] as const;
+
+const FORBIDDEN_EXPANSION_BODY_PATTERNS = [
+  /event history|timeline scrubber|playback|recording sample/i,
+  /\bAST\b|abstract syntax|call graph/i,
+  /\bstages\b|\bworkers\b/i,
+  /"id":\s*"builtin-deep-research"|invocationSignature|scripts\/deep-research\.workflow\.js/i,
+  /schema expansion|field expand|definition embed/i,
+] as const;
 
 let server: ChildProcess | undefined;
 
@@ -215,26 +237,54 @@ async function main() {
       "Limits And Assumptions",
       "Related To",
       "References",
+      "Event History",
+      "Timeline",
+      "Stages",
+      "Workers",
     ];
     for (const name of forbiddenHeadings) {
-      const count = await page.getByRole("heading", { name }).count();
+      const count = await pageRoot.getByRole("heading", { name }).count();
       if (count !== 0) {
         throw new Error(`Unexpected heading present: ${name}`);
       }
     }
 
-    const replayCount = await page.locator("[data-factory-replay]").count();
-    const visualizerCount = await page
-      .locator("[data-factory-visualizer]")
+    for (const selector of FORBIDDEN_EXPANSION_SELECTORS) {
+      const count = await pageRoot.locator(selector).count();
+      if (count !== 0) {
+        throw new Error(
+          `Unexpected forbidden expansion marker on deep-research page: ${selector}`,
+        );
+      }
+    }
+
+    const playPauseCount = await pageRoot
+      .getByRole("button", { name: /play|pause/i })
       .count();
-    if (replayCount !== 0 || visualizerCount !== 0) {
+    if (playPauseCount !== 0) {
       throw new Error(
-        "Unexpected replay/visualizer markers on deep-research page",
+        "Unexpected play/pause replay controls on deep-research page",
       );
     }
 
+    const pageBodyText = (await pageRoot.innerText()).trim();
+    for (const pattern of FORBIDDEN_EXPANSION_BODY_PATTERNS) {
+      if (pattern.test(pageBodyText)) {
+        throw new Error(
+          `Unexpected forbidden expansion body content matching ${pattern}`,
+        );
+      }
+    }
+
+    if (!pageBodyText.includes(PURPOSE_SNIPPET)) {
+      throw new Error("Purpose description missing from #nd-page body");
+    }
+    if (!pageBodyText.includes(USAGE_EXAMPLE)) {
+      throw new Error("Usage example missing from #nd-page body");
+    }
+
     console.log(
-      "deep-research nested purpose+usage+links page browser verify: ok",
+      "deep-research nested purpose+usage+links+no-forbidden-expansion browser verify: ok",
     );
   } finally {
     await browser.close();
