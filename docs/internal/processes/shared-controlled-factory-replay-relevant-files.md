@@ -29,6 +29,24 @@ Rules:
   timeout can hold on the final tick then loop by calling Advance again.
 - Playing is an explicit boolean; Advance does not toggle it.
 
+## Projection preparation + cache (story 002+)
+
+| Concern | Location |
+| --- | --- |
+| Prepare topology / activity / load / work-progress at tick | `projection-cache.ts` → `prepareReplayProjectionAtTick` |
+| Per-recording / per-tick object cache | `createReplayProjectionCache` |
+| Small injectable fixtures | `fixtures.ts` |
+
+Rules:
+
+- Call only public `@you-agent-factory/factory-replay` `*AtTick` helpers (plus
+  `canonicalizeFactoryEvents`). Never import `FactoryRecordingTopologyReplay`.
+- Cache identity is `recording.id` plus the raw `recording.events` reference
+  (canonicalize once per bind — `canonicalizeFactoryEvents` always allocates);
+  switching recordings clears entries so A’s ticks never leak into B.
+- Cache hits return the **same** `PreparedReplayProjection` object reference.
+- Soft cap: `MAX_CACHED_REPLAY_PROJECTIONS` (32), oldest Map key evicted first.
+
 ## Packaged dependencies (consume, do not re-own)
 
 | Package | Use |
@@ -43,6 +61,6 @@ fights host-controlled cadence.
 ## Verification
 
 - Fixture tests under `src/features/factory-replay/**` with small injected tick
-  lists / recordings.
+  lists / recordings (`fixtures.ts`).
 - Quality gate: `make check` (typecheck + lint) and targeted
   `bun test src/features/factory-replay/`.

@@ -1,15 +1,27 @@
 /**
  * Shared host-controlled factory-replay feature.
  *
- * Story 001 freezes pure playback transitions. Later stories add projection
- * cache, autoplay cadence/gates, and full/compact composition.
+ * Stories 001–002 freeze pure playback transitions and public projection
+ * preparation/cache. Later stories add autoplay cadence/gates and composition.
  */
 
+export type {
+  PlaybackAction,
+  PlaybackMode,
+  PlaybackState,
+} from "./playback-transitions";
 export {
   createInitialPlaybackState,
   listRecordedTicks,
-  type PlaybackAction,
-  type PlaybackMode,
-  type PlaybackState,
   reducePlayback,
 } from "./playback-transitions";
+
+export type {
+  PreparedReplayProjection,
+  ReplayProjectionCache,
+} from "./projection-cache";
+export {
+  createReplayProjectionCache,
+  MAX_CACHED_REPLAY_PROJECTIONS,
+  prepareReplayProjectionAtTick,
+} from "./projection-cache";
