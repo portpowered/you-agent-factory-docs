@@ -48,12 +48,28 @@ regeneration, landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/quorum/assert-quorum-child-reference-browser.ts` | Dev-server HTML probe for content + full-mode replay markers |
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum → child map; remaining siblings stay on shared placeholder |
 
+## Key files (story 003 — tts content)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/tts/page.mdx` | Concise nested tts reference route (content only; replay is story 004) |
+| `src/content/docs/references/packaged-factories-index/tts/messages/en.json` | Canonical name, description, examples labels, resource note, parent link |
+| `src/content/docs/references/packaged-factories-index/tts/assets.json` | Empty local asset config |
+| `src/content/docs/references/packaged-factories-index/tts/tts-page.test.tsx` | Route, registry, concise content, parent-link proofs |
+| `src/content/docs/references/packaged-factories-index/tts/assert-tts-child-reference-browser.ts` | Dev-server HTML probe for concise content markers |
+| `src/content/registry/references/packaged-factories-index/tts.json` | Registry id `reference.packaged-factories-index-tts`, slug `packaged-factories-index/tts` |
+| `src/content/docs/references/packaged-factories-index/generated/factories/tts.factory.json` | Read-only source for TTS operation / omnivoice resource facts (no packaged examples) |
+
 ## Patterns
 
 - Nested packaged-factory child pages are ordinary local-docs bundles under the
   parent directory (`packaged-factories-index/<child>/page.mdx`). Fumadocs only
   maps `**/page.mdx`, so the Batch 2 `generated/` corpus alone does not create
   child routes.
+- `@you/tts` ships without packaged `invocationSignature` / `examples` in
+  `tts.factory.json`. Child invocation examples are derived from the MODEL_INVOKE
+  TTS `text` input (positional, stdin, and a text-oriented heredoc) plus the
+  capacity-1 `omnivoice-cache` ON_DEMAND local resource note.
 - Multi-segment reference registry slugs (`packaged-factories-index/quorum`)
   must live at nested registry paths matching
   `registry/references/<slug>.json`. Flat `readdir` cannot see them — registry
