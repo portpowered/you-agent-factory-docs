@@ -1,11 +1,29 @@
 /**
  * Shared host-controlled factory-replay feature.
  *
- * Stories 001–003 freeze pure playback transitions, public projection
- * preparation/cache, and the single chained 2000 ms autoplay scheduler.
- * Later stories add gates and composition.
+ * Stories 001–004 freeze pure playback transitions, public projection
+ * preparation/cache, the single chained 2000 ms autoplay scheduler, and
+ * visibility / intersection / reduced-motion gates. Later stories add
+ * composition.
  */
 
+export type {
+  AutoplayGateDecision,
+  AutoplayGateDocument,
+  AutoplayGateDomBinding,
+  AutoplayGateDomEnvironment,
+  AutoplayGateMediaQueryList,
+  AutoplayGateSession,
+  AutoplayGateSessionOptions,
+  AutoplayGateSignals,
+} from "./autoplay-gates";
+export {
+  bindAutoplayGateDom,
+  createAutoplayGateSession,
+  isAutoplayAllowed,
+  REDUCED_MOTION_MEDIA_QUERY,
+  shouldStartPlaybackPaused,
+} from "./autoplay-gates";
 export type {
   AutoplayScheduler,
   AutoplaySchedulerSyncInput,

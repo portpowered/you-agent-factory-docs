@@ -67,6 +67,29 @@ Rules:
   assertions never depend on wall-clock flakiness. Gates (story 004) only flip
   `allowed`; they do not own a second timer.
 
+## Autoplay gates (story 004+)
+
+| Concern | Location |
+| --- | --- |
+| Pure allowed decision | `autoplay-gates.ts` → `isAutoplayAllowed` |
+| Session + opt-in override | `createAutoplayGateSession` |
+| DOM binding + cleanup | `bindAutoplayGateDom` |
+| Reduced-motion query | `REDUCED_MOTION_MEDIA_QUERY` |
+
+Rules:
+
+- Gates flip scheduler `allowed` only — never schedule a second timeout.
+- `allowed` requires document visible **and** root intersecting.
+- `prefers-reduced-motion: reduce` blocks autoplay until
+  `notifyExplicitPlay()` (user opt-in for that session). `notifyStopped()` on
+  Pause/Reset clears the opt-in.
+- When reduce newly activates, clear opt-in, set `allowed: false`, and fire
+  `onRequestPause` so the host can Pause. Playback starts paused under reduce
+  (`shouldStartPlaybackPaused` / `createInitialPlaybackState`).
+- `bindAutoplayGateDom` must remove visibility / matchMedia / IntersectionObserver
+  listeners on dispose. Fixture tests simulate signals — do not require a route
+  mount.
+
 ## Packaged dependencies (consume, do not re-own)
 
 | Package | Use |
