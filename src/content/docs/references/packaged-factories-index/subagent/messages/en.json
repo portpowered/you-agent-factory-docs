@@ -1,0 +1,22 @@
+{
+  "title": "@you/subagent",
+  "description": "Look up the packaged @you/subagent factory: canonical name, a one-sentence description, concrete named-run examples, and a link to the complete parent definition.",
+  "sections": {
+    "overview": {
+      "title": "Overview",
+      "body": "@you/subagent is the packaged named factory that runs a one-pass subagent request from init until the task reaches a complete or failed terminal state."
+    },
+    "invocationExamples": {
+      "title": "Invocation examples",
+      "body": "Invoke the packaged factory by canonical name with you run --named. Pass the request as a positional argument or on stdin."
+    },
+    "completeDefinition": {
+      "title": "Complete definition",
+      "body": "The parent Packaged Factory Reference keeps the complete packaged definition source and published metadata for this package."
+    }
+  },
+  "links": {
+    "canonicalName": "@you/subagent",
+    "completeDefinition": "Complete @you/subagent definition on Packaged Factory Reference"
+  }
+}

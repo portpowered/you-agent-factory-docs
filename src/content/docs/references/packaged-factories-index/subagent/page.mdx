@@ -1,0 +1,51 @@
+---
+title: "@you/subagent"
+description: "Look up the packaged @you/subagent factory: canonical name, a one-sentence description, concrete named-run examples, and a link to the complete parent definition."
+kind: "reference"
+registryId: "reference.packaged-factories-index-subagent"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "@you/subagent"
+  - "subagent packaged factory"
+  - "you subagent factory"
+updatedAt: "2026-07-24"
+---
+
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+
+<Section id="overview" titleKey="sections.overview.title">
+  <p data-packaged-factory-canonical-name="">
+    <T k="links.canonicalName" />
+  </p>
+  <T k="sections.overview.body" />
+</Section>
+
+<Section id="invocation-examples" titleKey="sections.invocationExamples.title">
+  <T k="sections.invocationExamples.body" />
+  ```bash
+  you run --named @you/subagent "Summarize this release"
+  ```
+  ```bash
+  printf '%s\n' "Summarize this release" | you run --named @you/subagent
+  ```
+  ```bash
+  you run --named @you/subagent --help
+  ```
+</Section>
+
+<Section id="complete-definition" titleKey="sections.completeDefinition.title">
+  <T k="sections.completeDefinition.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index#subagent",
+        labelKey: "links.completeDefinition",
+      },
+    ]}
+  />
+</Section>

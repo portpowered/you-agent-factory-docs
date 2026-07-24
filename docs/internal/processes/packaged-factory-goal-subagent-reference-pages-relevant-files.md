@@ -43,12 +43,26 @@ landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Asserts goal resolves goal-owned map; remaining standard children keep the shared placeholder |
 | `src/content/docs/references/packaged-factories-index/goal/assert-goal-child-reference-browser.ts` | Browser markers for concise content + `data-factory-replay-mode="full"` |
 
+## Key files (story 003 — subagent child reference content)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/subagent/page.mdx` | Concise nested reference: canonical name, one-sentence description, positional + stdin + help invocation examples, parent definition link |
+| `src/content/docs/references/packaged-factories-index/subagent/messages/en.json` | Local messages for the subagent child surface |
+| `src/content/docs/references/packaged-factories-index/subagent/assets.json` | Empty local asset config |
+| `src/content/registry/references/packaged-factories-index/subagent.json` | Registry id `reference.packaged-factories-index-subagent`, slug `packaged-factories-index/subagent` |
+| `src/content/docs/references/packaged-factories-index/subagent/subagent-page.test.tsx` | Route + concise content publish proofs |
+| `src/content/docs/references/packaged-factories-index/subagent/assert-subagent-child-reference-browser.ts` | Browser markers for concise content (replay markers deferred to story 004) |
+
 ## Patterns
 
 - Nested packaged-factory child pages are ordinary local-docs reference bundles
   under the parent directory. Keep copy concise: no workflow teaching, no
   unabridged `factory.json` on the child, no package-specific operational-notes
   section for this lane.
+- Subagent invocation examples should follow the packaged signature/help:
+  positional input, stdin pipe (`printf … | you run --named @you/subagent`),
+  and a third concrete variant such as `--help`. Do not invent unrelated flags.
 - Registry multi-segment slugs map to nested files under the kind directory
   (`references/packaged-factories-index/goal.json` for slug
   `packaged-factories-index/goal`). The registry loader must walk nested kind
@@ -66,3 +80,9 @@ landing composition, dependency pins, or global CSS.
   corpus acquisition modules, or sibling recording JSON files.
 - Worktree browser verify: `bun run dev -- --webpack -p <port>` (Turbopack
   cannot resolve hoisted parent `node_modules/next`).
+- After adding a new nested `page.mdx`, run
+  `bun run prepare:content-runtime && bunx fumadocs-mdx` (or any
+  `pretest`/`pretypecheck` path) so `.source` and the ignored
+  `published-docs-registry.generated.ts` include the new route before
+  `source.getPage([...])` asserts. Do not commit ignored generated runtime
+  outputs or accidental `next-env.d.ts` drift from `bun run dev`.
