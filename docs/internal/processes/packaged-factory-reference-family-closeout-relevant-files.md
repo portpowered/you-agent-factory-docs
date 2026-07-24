@@ -237,6 +237,34 @@ avoidable import leakage over raising budget ceilings.
    `ci`. The closeout executor runs those live Makefile targets; the tip proof
    locks contracts those gates must keep green.
 
+## Key files (story 008 — family browser evidence + reproducible pack)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/packaged-factory-reference-family-closeout-evidence.ts` | Closeout-owned tip proof helpers: browser surface contracts, gate/SHA evidence pack assembly, residual-follow-up vs complete-statement fail-closed rules, ownership fence |
+| `src/lib/verify/packaged-factory-reference-family-closeout-evidence.test.ts` | Pure fail-closed + green pack proofs |
+| `src/lib/verify/assert-packaged-factory-reference-family-closeout-evidence-browser.ts` | Playwright probe against static `out/` (port 3627 / `CLOSEOUT_EVIDENCE_PROBE_BASE_URL`): parent index order + panels/links, goal+subagent full Play/Pause, deep-research purpose/usage/two-link, home Youi compact activation; emits JSON evidence pack |
+| `src/lib/verify/packaged-factory-reference-family-closeout-gates.ts` | Reused story 007 repository gate inventory for evidence pack outcomes |
+
+### Story 008 acceptance mapping
+
+1. **In-app browser family surfaces** — browser probe observes ordered parent
+   index (`data-packaged-factory-entry` allowlist order + definition panels +
+   child links), full-mode Play/Pause on goal + subagent, deep-research
+   purpose/usage/two required links with zero forbidden selectors, and home
+   Youi near-viewport compact goal replay Play/Pause.
+2. **Reproducible evidence pack** —
+   `buildPackagedFactoryCloseoutEvidencePack` records tip commit SHA, PRD
+   gate outcomes (`validate-data` → `ci`), browser observations, and narrow
+   integration fixes. Probe accepts `CLOSEOUT_EVIDENCE_GATE_OUTCOMES_JSON` or
+   `CLOSEOUT_EVIDENCE_ASSUME_GATES_PASS=1` after story 007 is green on tip.
+3. **Residual follow-ups vs complete** — residual follow-ups are required when
+   any gate fails and must be empty when everything is green; complete packs
+   use `PACKAGED_FACTORY_CLOSEOUT_FAMILY_COMPLETE_STATEMENT`.
+4. **Ownership fence** — pack ownership remains
+   `cross-surface-evidence-and-minimal-integration-corrections-only` (no B1–B4
+   redesign).
+
 ## Patterns
 
 - Closeout proofs compose Batch 2 verify/generate helpers; they do not invent a
@@ -287,9 +315,12 @@ avoidable import leakage over raising budget ceilings.
   path-sensitive `@you-agent-factory/*` package.json lookups. Under suite load,
   `launchPlaywrightBrowser` always retries CDP handshake timeouts with a 60s
   local launch budget (do not wait on Playwright’s 180s default).
-- Later closeout stories (browser evidence) should add sibling
-  `packaged-factory-reference-family-closeout-*` modules rather than expanding
-  earlier story modules beyond their ownership.
+- Story 008 owns the cross-surface browser evidence pack (parent index, two
+  standard children, deep-research, home Youi) plus tip SHA / gate outcome /
+  residual-follow-up recording. Serve trusted static `out/` (port 3627 /
+  `CLOSEOUT_EVIDENCE_PROBE_BASE_URL`). Supply gate outcomes via
+  `CLOSEOUT_EVIDENCE_GATE_OUTCOMES_JSON` or
+  `CLOSEOUT_EVIDENCE_ASSUME_GATES_PASS=1` after story 007 gates are green.
 
 ## Reproduce
 
@@ -302,10 +333,12 @@ bun test src/lib/verify/packaged-factory-reference-family-closeout-import-graphs
 bun test src/lib/verify/packaged-factory-reference-family-closeout-a11y.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-export-css.test.ts
 bun test src/lib/verify/packaged-factory-reference-family-closeout-gates.test.ts
+bun test src/lib/verify/packaged-factory-reference-family-closeout-evidence.test.ts
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-a11y-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-export-css-browser.ts
+CLOSEOUT_EVIDENCE_ASSUME_GATES_PASS=1 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-evidence-browser.ts
 make validate-data && make linkcheck && make check && make build && make a11y && make budget && make ci
 ```
