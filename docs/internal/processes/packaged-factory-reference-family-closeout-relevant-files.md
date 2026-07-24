@@ -112,6 +112,39 @@ avoidable import leakage over raising budget ceilings.
    `goal.factory-recording.v1.json` === `YOUI_COMPACT_GOAL_RECORDING` id/title;
    tip mounts prove full vs compact `ControlledFactoryReplay` Play/Pause.
 
+## Key files (story 004 — route-local import graphs + home/index exclusions)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.ts` | Closeout-owned tip proof helpers: six child recording isolation, parent replay-free graphs, Youi home exclusions, positive-control detectors |
+| `src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts` | Pure classifier + live tip Bun.build metafile proofs |
+| `src/content/docs/references/packaged-factories-index/child-recording-import-graph.ts` | Reused owned-/foreign-recording classification + child collector |
+| `src/content/docs/references/packaged-factories-index/parent-import-graph.ts` | Reused parent forbidden markers + collector |
+| `src/features/landing-page/youi-landing-import-graph.ts` | Reused Youi forbidden markers + collector |
+| `src/features/landing-page/youi-landing-import-graph.polluted-fixture.ts` | Deliberate pollution entry so Youi exclusion asserts are not no-ops |
+
+### Story 004 acceptance mapping
+
+1. **Standard child recording isolation** —
+   `provePackagedFactoryCloseoutStandardChildImportGraphs` collects Bun metafile
+   inputs from each `<slug>/page-mdx-components.tsx` and requires the owned
+   `*.factory-recording.v1.json` with zero foreign packaged recordings.
+2. **Parent index replay-free** —
+   `provePackagedFactoryCloseoutParentImportGraphs` proves
+   `page-mdx-components.tsx` + `PackagedFactoriesIndex.tsx` reach
+   `generated/index.json` and hit none of the parent forbidden markers
+   (factory-replay package/feature, factory-visualizers, recordings).
+3. **Home/landing Youi exclusions** —
+   `provePackagedFactoryCloseoutYouiImportGraphs` proves near-viewport + island
+   graphs include the goal recording and `src/features/factory-replay/`, and
+   exclude non-goal recordings, `generated/index.json`, `.source.json`, and
+   `generate-packaged-factories-index`.
+4. **Positive-control detectors** —
+   `provePackagedFactoryCloseoutImportGraphPositiveControls` collects from
+   `src/features/factory-replay/index.ts` (parent detector must fire) and from
+   `youi-landing-import-graph.polluted-fixture.ts` (Youi detector must observe
+   non-goal / index / source markers).
+
 ## Patterns
 
 - Closeout proofs compose Batch 2 verify/generate helpers; they do not invent a
@@ -134,9 +167,13 @@ avoidable import leakage over raising budget ceilings.
   should serve trusted static `out/` (or set `CLOSEOUT_REPLAY_PROBE_BASE_URL`) —
   worktree `next dev` often fails to hydrate client islands when
   `node_modules` is parent-hoisted.
-- Later closeout stories (import graphs, a11y/export/CSS, gates,
-  browser evidence) should add sibling `packaged-factory-reference-family-closeout-*`
-  modules rather than expanding earlier story modules beyond their ownership.
+- Story 004 composes existing child / parent / Youi import-graph collectors and
+  classifiers rather than forking Bun.build policy. Keep positive-control
+  entrypoints (shared factory-replay + polluted Youi fixture) so exclusion
+  asserts cannot silently become no-ops.
+- Later closeout stories (a11y/export/CSS, gates, browser evidence) should add
+  sibling `packaged-factory-reference-family-closeout-*` modules rather than
+  expanding earlier story modules beyond their ownership.
 
 ## Reproduce
 
@@ -145,6 +182,7 @@ bun run prepare:content-runtime
 bun test src/lib/verify/packaged-factory-reference-family-closeout-corpus.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-deep-research.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-replay.test.tsx
+bun test src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts
