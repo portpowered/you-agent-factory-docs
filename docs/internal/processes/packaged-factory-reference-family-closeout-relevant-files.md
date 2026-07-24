@@ -206,6 +206,37 @@ avoidable import leakage over raising budget ceilings.
    proofs (required `--color-*` under factory-dark/light; one components + one
    visualizers import; no standalone `@xyflow/react` stylesheet).
 
+## Key files (story 007 — avoidable import leakage + full repository gates)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/packaged-factory-reference-family-closeout-gates.ts` | Closeout-owned tip proof helpers: PRD gate inventory, locked budget ceilings, leakage-first remediation policy, compose story 004 import graphs + total-site budget evaluation |
+| `src/lib/verify/packaged-factory-reference-family-closeout-gates.test.ts` | Pure fail-closed + tip proofs (ceiling lock, inflated-ceiling reject, import leakage + budget against trusted `out/`) |
+| `src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.ts` | Reused story 004 home/index/child isolation detectors (do not fork) |
+| `src/lib/build/exported-site-budget.ts` | Reused total-site baselines + evaluation (do not raise ceilings for leakage) |
+| `src/lib/ci-required-path.ts` | Reused `MAKE_CI_PREREQUISITES` alignment with `make ci` |
+| `Makefile` | Shared maintainer targets: `validate-data`, `linkcheck`, `check`, `build`, `a11y`, `budget`, `ci` |
+| `src/lib/verify/launch-playwright-browser.ts` | Mergeability hardening used by `make test`: local 60s launch timeout + CDP handshake retries (no 180s single-stall) |
+
+### Story 007 acceptance mapping
+
+1. **Avoidable import leakage over ceiling raises** —
+   `provePackagedFactoryReferenceFamilyCloseoutGates` re-runs story 004
+   import-graph isolation (children / parent / Youi / positive controls) and
+   locks `PACKAGED_FACTORY_CLOSEOUT_LOCKED_BUDGET_BASELINES` equal to live
+   `FACTORY_EXPORTED_SITE_BUDGET_BASELINES`. Inflating live ceilings fails
+   closed with remediation
+   `fix-import-leakage-before-raising-budget-ceilings`.
+2. **Trusted `out/` budget** —
+   `provePackagedFactoryCloseoutBudgetAgainstOut` evaluates total-site budgets
+   against the locked ceilings; on failure, do not raise baselines — isolate
+   packaged-factory / replay / generator imports first.
+3. **Repository gate inventory** —
+   `PACKAGED_FACTORY_CLOSEOUT_REPOSITORY_COMMAND_GATES` catalogues
+   `validate-data` → `linkcheck` → `check` → `build` → `a11y` → `budget` →
+   `ci`. The closeout executor runs those live Makefile targets; the tip proof
+   locks contracts those gates must keep green.
+
 ## Patterns
 
 - Closeout proofs compose Batch 2 verify/generate helpers; they do not invent a
@@ -245,7 +276,18 @@ avoidable import leakage over raising budget ceilings.
   restores unprefixed `make build` so later closeout probes stay compatible.
   Set `CLOSEOUT_SKIP_PAGES_PREFIXED_BUILD=1` only when a trusted Pages-prefixed
   `out/` is already present.
-- Later closeout stories (gates, browser evidence) should add sibling
+- Story 007 catalogues the PRD Makefile gate inventory and locks tip budget
+  ceilings equal to `FACTORY_EXPORTED_SITE_BUDGET_BASELINES`. Prefer fixing
+  avoidable home/index import leakage (compose story 004 detectors) over
+  raising those ceilings. Live `make validate-data` / `linkcheck` / `check` /
+  `build` / `a11y` / `budget` / `ci` remain executor-owned; the tip module
+  proves contracts those gates must keep green against trusted `out/`.
+- Worktree gate runs need a local `node_modules` (`make setup`) plus
+  `bunx playwright install chromium` — parent-hoisted installs break
+  path-sensitive `@you-agent-factory/*` package.json lookups. Under suite load,
+  `launchPlaywrightBrowser` always retries CDP handshake timeouts with a 60s
+  local launch budget (do not wait on Playwright’s 180s default).
+- Later closeout stories (browser evidence) should add sibling
   `packaged-factory-reference-family-closeout-*` modules rather than expanding
   earlier story modules beyond their ownership.
 
@@ -259,9 +301,11 @@ bun test src/lib/verify/packaged-factory-reference-family-closeout-replay.test.t
 bun test src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts
 bun test src/lib/verify/packaged-factory-reference-family-closeout-a11y.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-export-css.test.ts
+bun test src/lib/verify/packaged-factory-reference-family-closeout-gates.test.ts
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-a11y-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-export-css-browser.ts
+make validate-data && make linkcheck && make check && make build && make a11y && make budget && make ci
 ```
