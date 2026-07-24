@@ -133,6 +133,45 @@ Prove with:
 bun test src/lib/packaged-factory-v002/global-css-order.test.ts
 ```
 
+## Key files (story 006 — visualizer theme custom properties)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/packaged-factory-v002/visualizer-theme-tokens.ts` | Pure required property list + usable-color / fail-closed asserts |
+| `src/lib/packaged-factory-v002/visualizer-theme-token-resolution.ts` | Pure `@theme` / palette extraction + `var()` / `rgb(from)` resolution |
+| `src/lib/packaged-factory-v002/visualizer-theme-tokens-proof.ts` | Reads installed components + visualizers CSS; proves factory-dark + factory-light |
+| `src/lib/packaged-factory-v002/visualizer-theme-tokens.test.ts` | Contract: resolution, fail-closed, host light/dark evidence, DOM paint |
+
+### Visualizer theme token contract
+
+Required properties (AC minimum):
+
+- `--color-on-surface`
+- `--color-surface-container-low`
+- `--color-outline`
+- `--color-error` / `--color-success` / `--color-warning` / `--color-info`
+
+Resolution path (no second visualizer palette):
+
+1. Host `globals.css` loads components styles before visualizers styles.
+2. Components `color-palette-presets.css` sets `--color-af-foundation-*` under
+   `data-color-palette="factory-dark"` and `factory-light`.
+3. Components `@theme` role tokens (`color-role-tokens.css` +
+   `text-color-role-tokens.css`) map the required `--color-*` properties onto
+   those foundation keys (including `rgb(from … / alpha)` forms).
+4. Visualizers `styles.css` consumes `var(--color-…)` — prove references exist
+   and resolve to usable computed colors under both palettes.
+
+Fail closed when a required property is missing from the theme maps, still
+contains unresolved `var()`, is empty/invalid, or when dark and light
+`--color-on-surface` collapse to the same value.
+
+Prove with:
+
+```bash
+bun test src/lib/packaged-factory-v002/visualizer-theme-tokens.test.ts
+```
+
 ## Patterns
 
 - Prefer a disposable temporary consumer directory for install/acquisition
@@ -168,6 +207,12 @@ bun test src/lib/packaged-factory-v002/global-css-order.test.ts
   `src/app/globals.css`; never reintroduce a direct `@xyflow/react` stylesheet
   import — prove with `assertPackagedFactoryV002GlobalCssOrder` /
   `provePackagedFactoryV002GlobalCssOrder()`.
+- Visualizer theme tokens: resolve required `--color-*` properties from
+  installed components palette + `@theme` role CSS under `factory-dark` and
+  `factory-light`; assert usable computed colors (hex/rgba), not stylesheet
+  string matching alone. Do **not** add a second hard-coded visualizer palette
+  unless collision evidence appears. Prove with
+  `provePackagedFactoryV002VisualizerThemeTokens()`.
 
 ## Verification
 
