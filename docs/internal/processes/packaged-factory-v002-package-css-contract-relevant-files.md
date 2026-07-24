@@ -72,6 +72,16 @@ landing Youi wiring, or upstream npm publish repairs in this lane.
 Do **not** invent fake export maps or treat nested paths outside the docs-owned
 allowlist as public surfaces.
 
+## Key files (story 003 — host exact pins)
+
+| Path | Role |
+| --- | --- |
+| `package.json` | Exact `"0.0.2"` pins for all five Batch 1 packages |
+| `bun.lock` | Lockfile resolving a single components@0.0.2 (no leftover 0.0.0) |
+| `src/lib/packaged-factory-v002/host-package-pins.ts` | Pure declared-pin + dual-components fail-closed helpers |
+| `src/lib/packaged-factory-v002/host-package-pins-proof.ts` | Reads host package.json + installed versions + walks node_modules for components |
+| `src/lib/packaged-factory-v002/host-package-pins.test.ts` | Observable host pin contract (declared + installed + single components) |
+
 ## Patterns
 
 - Prefer a disposable temporary consumer directory for install/acquisition
@@ -95,6 +105,10 @@ allowlist as public surfaces.
   realpath-bound so symlinks cannot escape the package root.
 - Do **not** wait for a packaged-factories `exports` map republish — direct
   allowlisted filesystem pull is the locked Batch 1 acquisition policy.
+- Host pin proof: assert exact `"0.0.2"` in docs `package.json` dependencies,
+  read each installed `node_modules/@you-agent-factory/*/package.json` version,
+  and walk nested `node_modules` so leftover `components@0.0.0` cannot hide
+  beside `0.0.2`.
 
 ## Verification
 
@@ -106,9 +120,9 @@ bun run typecheck
 
 ## Related
 
-- Prior components host integration:
+- Related components host integration:
   `docs/internal/processes/factory-components-host-integration-relevant-files.md`
-  (still documents host `@0.0.0` until story 003 pins `0.0.2`)
+  (historical `@0.0.0` notes; Batch 1 host pin is exact `0.0.2`)
 - Similar public-export resolver pattern for `@you-agent-factory/api`:
   `src/lib/references/api-package-artifact-resolver.ts`
 - PRD lane: `packaged-factory-v002-package-css-contract`
