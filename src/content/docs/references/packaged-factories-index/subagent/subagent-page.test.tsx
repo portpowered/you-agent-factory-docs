@@ -1,7 +1,8 @@
 /**
  * Page-owned publish proof for references/packaged-factories-index/subagent.
- * Covers concise reference surface plus full-mode subagent-only replay mount.
- * Per-route recording isolation import-graph proofs belong to a later story.
+ * Covers concise reference surface plus full-mode subagent-only replay mount
+ * driven by the subagent recording. Cross-route recording import-graph
+ * isolation lives in goal-subagent-recording-isolation.test.ts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -155,6 +156,10 @@ describe("packaged-factories-index/subagent reference page", () => {
           name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.progress.regionLabel,
         }),
       ).toBeTruthy();
+      expect(replayRoot.getAttribute("data-presentation-status")).toBe("ready");
+      // Distinctive subagent recording topology labels (not goal / siblings).
+      expect(screen.getByText("run-subagent")).toBeTruthy();
+      expect(screen.queryByText("execute-goal")).toBeNull();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

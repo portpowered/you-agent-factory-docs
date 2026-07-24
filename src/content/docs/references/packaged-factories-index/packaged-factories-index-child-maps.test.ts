@@ -3,7 +3,8 @@
  * wiring: remaining standard replay children share one literal replay-page
  * map; goal and subagent resolve their child-owned maps; deep-research
  * resolves a distinct non-replay map. Parent import-graph isolation is covered
- * by packaged-factories-index-import-graph.test.ts.
+ * by packaged-factories-index-import-graph.test.ts. Goal/subagent recording
+ * isolation is covered by goal-subagent-recording-isolation.test.ts.
  */
 import { describe, expect, test } from "bun:test";
 import { loadRouteFamilyPageMdxComponents } from "@/lib/content/route-family-local-docs-page-load";

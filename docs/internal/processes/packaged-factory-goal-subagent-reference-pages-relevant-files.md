@@ -63,6 +63,15 @@ landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Asserts goal and subagent resolve child-owned maps; remaining standard children keep the shared placeholder |
 | `src/content/docs/references/packaged-factories-index/subagent/assert-subagent-child-reference-browser.ts` | Browser markers for concise content + `data-factory-replay-mode="full"` |
 
+## Key files (story 005 — page behavior + recording isolation proofs)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/child-recording-import-graph.ts` | Pure foreign-recording classification + Bun metafile collector for child MDX map entrypoints |
+| `src/content/docs/references/packaged-factories-index/goal-subagent-recording-isolation.test.ts` | Import-graph proofs: goal map cannot reach non-goal packaged recordings; subagent map cannot reach non-subagent packaged recordings |
+| `src/content/docs/references/packaged-factories-index/goal/goal-page.test.tsx` | Route render + concise content + full-mode replay + distinctive goal topology labels |
+| `src/content/docs/references/packaged-factories-index/subagent/subagent-page.test.tsx` | Route render + concise content + full-mode replay + distinctive subagent topology labels |
+
 ## Patterns
 
 - Nested packaged-factory child pages are ordinary local-docs reference bundles
@@ -87,8 +96,16 @@ landing composition, dependency pins, or global CSS.
 - Prefer `ControlledFactoryReplay` with `mode="full"` from
   `@/features/factory-replay`. Do not use `FactoryRecordingTopologyReplay`,
   corpus acquisition modules, or sibling recording JSON files.
+- **Import-graph isolation proofs:** collect Bun metafile inputs from the
+  child-owned `page-mdx-components.tsx` entrypoint, assert the owned
+  `generated/<slug>.factory-recording.v1.json` is reachable, and assert no
+  other packaged `*.factory-recording.v1.json` appears. Keep classification
+  pure; keep bundling I/O in the collector helper. Distinctive topology labels
+  from the injected recording (for example `execute-goal` vs `run-subagent`)
+  prove the rendered full-mode replay is driven by that page’s recording.
 - Worktree browser verify: `bun run dev -- --webpack -p <port>` (Turbopack
-  cannot resolve hoisted parent `node_modules/next`).
+  cannot resolve hoisted parent `node_modules/next`). Revert `next-env.d.ts`
+  `.next/dev/types` drift before commit after browser verify.
 - After adding a new nested `page.mdx`, run
   `bun run prepare:content-runtime && bunx fumadocs-mdx` (or any
   `pretest`/`pretypecheck` path) so `.source` and the ignored
