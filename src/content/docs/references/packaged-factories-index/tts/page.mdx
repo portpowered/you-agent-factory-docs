@@ -1,0 +1,73 @@
+---
+title: "TTS"
+description: "Look up @you/tts invocation examples, the local omnivoice resource, and the parent Packaged Factory Reference definition."
+kind: "reference"
+registryId: "reference.packaged-factories-index-tts"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "@you/tts"
+  - "tts packaged factory"
+updatedAt: "2026-07-24"
+---
+
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+
+<Section id="overview" titleKey="sections.overview.title">
+  <T k="sections.overview.body" />
+</Section>
+
+<Section
+  id="invocation-examples"
+  titleKey="sections.invocationExamples.title"
+>
+  <T k="sections.invocationExamples.body" />
+  <p>
+    <T k="links.positionalExampleLabel" />
+  </p>
+  ```bash
+  you run --named @you/tts "Read this sentence aloud."
+  ```
+  <p>
+    <T k="links.stdinExampleLabel" />
+  </p>
+  ```bash
+  echo "Read this sentence aloud." | you run --named @you/tts
+  ```
+  <p>
+    <T k="links.heredocExampleLabel" />
+  </p>
+  ```bash
+  you run --named @you/tts <<'EOF'
+  Welcome to the release briefing.
+  EOF
+  ```
+</Section>
+
+<Section id="resource" titleKey="sections.resource.title">
+  <T k="sections.resource.body" />
+</Section>
+
+<Section
+  id="parent-definition"
+  titleKey="sections.parentDefinition.title"
+>
+  <T k="sections.parentDefinition.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index#tts",
+        labelKey: "links.parentDefinition",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="deterministic-replay" titleKey="sections.deterministicReplay.title">
+  <T k="sections.deterministicReplay.body" />
+  <TtsFactoryReplay />
+</Section>

@@ -1,0 +1,32 @@
+{
+  "title": "TTS",
+  "description": "Look up @you/tts invocation examples, the local omnivoice resource, and the parent Packaged Factory Reference definition.",
+  "sections": {
+    "overview": {
+      "title": "@you/tts",
+      "body": "Converts requested text into speech with a local omnivoice model worker."
+    },
+    "invocationExamples": {
+      "title": "Invocation examples",
+      "body": "Pass the text to speak as a positional argument, on stdin, or through a text-oriented heredoc. The packaged MODEL_INVOKE TTS operation binds that text input to the local omnivoice worker."
+    },
+    "resource": {
+      "title": "Local model resource",
+      "body": "tts uses a capacity-1 local omnivoice model resource (omnivoice-cache / ON_DEMAND local backend)."
+    },
+    "parentDefinition": {
+      "title": "Complete definition",
+      "body": "The generated Packaged Factory Reference keeps the unabridged factory.json for this package."
+    },
+    "deterministicReplay": {
+      "title": "Deterministic replay",
+      "body": "Inspect a full-mode deterministic work-graph replay for the packaged tts recording: timeline scrubber, topology, and work progress."
+    }
+  },
+  "links": {
+    "positionalExampleLabel": "Positional text",
+    "stdinExampleLabel": "Stdin text",
+    "heredocExampleLabel": "Heredoc text",
+    "parentDefinition": "Complete @you/tts definition"
+  }
+}

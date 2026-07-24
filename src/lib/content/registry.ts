@@ -85,7 +85,9 @@ type ParsedRegistryFile = {
  * as nested files (`…/packaged-factories-index/goal.json`). Skips colocated
  * `messages/` trees (tag locale files), which are not registry records.
  */
-async function listRegistryJsonFiles(directoryPath: string): Promise<string[]> {
+export async function listRegistryJsonFiles(
+  directoryPath: string,
+): Promise<string[]> {
   let dirents: Array<{
     name: string;
     isDirectory(): boolean;

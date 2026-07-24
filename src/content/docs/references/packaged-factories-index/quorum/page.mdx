@@ -1,0 +1,71 @@
+---
+title: "Quorum"
+description: "Look up @you/quorum invocation examples, branch/merge parallelism, and the parent Packaged Factory Reference definition."
+kind: "reference"
+registryId: "reference.packaged-factories-index-quorum"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "@you/quorum"
+  - "quorum packaged factory"
+updatedAt: "2026-07-24"
+---
+
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+
+<Section id="overview" titleKey="sections.overview.title">
+  <T k="sections.overview.body" />
+</Section>
+
+<Section
+  id="invocation-examples"
+  titleKey="sections.invocationExamples.title"
+>
+  <T k="sections.invocationExamples.body" />
+  <p>
+    <T k="links.positionalExampleLabel" />
+  </p>
+  ```bash
+  you run --named @you/quorum "Compare the two proposed release plans."
+  ```
+  <p>
+    <T k="links.stdinExampleLabel" />
+  </p>
+  ```bash
+  echo "Compare the two proposed release plans." | you run --named @you/quorum
+  ```
+  <p>
+    <T k="links.roleSpecificExampleLabel" />
+  </p>
+  ```bash
+  you run --named @you/quorum --branch-provider CODEX --branch-model gpt-5 --merge-provider CLAUDE --merge-model claude-sonnet-4-20250514 "Compare the two proposed release plans."
+  ```
+</Section>
+
+<Section id="parallelism" titleKey="sections.parallelism.title">
+  <T k="sections.parallelism.body" />
+</Section>
+
+<Section
+  id="parent-definition"
+  titleKey="sections.parentDefinition.title"
+>
+  <T k="sections.parentDefinition.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index#quorum",
+        labelKey: "links.parentDefinition",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="deterministic-replay" titleKey="sections.deterministicReplay.title">
+  <T k="sections.deterministicReplay.body" />
+  <QuorumFactoryReplay />
+</Section>

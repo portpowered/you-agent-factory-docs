@@ -190,13 +190,13 @@ export async function loadRouteFamilyPageMdxComponents(
       }
       case "packaged-factories-index/quorum": {
         const mod = await import(
-          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+          "@/content/docs/references/packaged-factories-index/quorum/page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }
       case "packaged-factories-index/tts": {
         const mod = await import(
-          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+          "@/content/docs/references/packaged-factories-index/tts/page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }
