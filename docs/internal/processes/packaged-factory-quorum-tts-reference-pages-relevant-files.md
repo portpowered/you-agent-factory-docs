@@ -11,8 +11,7 @@ This lane owns:
 - child page bundles under
   `src/content/docs/references/packaged-factories-index/quorum/` and
   `.../tts/` (`page.mdx`, `messages/en.json`, `assets.json`, child-owned
-  `page-mdx-components.tsx` / thin replay wrappers in later stories, focused
-  tests)
+  `page-mdx-components.tsx` / thin replay wrappers, focused tests)
 - matching multi-segment reference registry records under
   `src/content/registry/references/packaged-factories-index/{quorum,tts}.json`
 - the two literal loader cases for
@@ -32,11 +31,22 @@ regeneration, landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/quorum/page.mdx` | Concise nested quorum reference route |
 | `src/content/docs/references/packaged-factories-index/quorum/messages/en.json` | Canonical name, description, examples labels, parallelism, parent link |
 | `src/content/docs/references/packaged-factories-index/quorum/assets.json` | Empty local asset config |
-| `src/content/docs/references/packaged-factories-index/quorum/quorum-page.test.tsx` | Route, registry, concise content, parent-link proofs |
+| `src/content/docs/references/packaged-factories-index/quorum/quorum-page.test.tsx` | Route, registry, concise content, parent-link, full-mode replay proofs |
 | `src/content/registry/references/packaged-factories-index/quorum.json` | Registry id `reference.packaged-factories-index-quorum`, slug `packaged-factories-index/quorum` |
 | `src/lib/content/registry.ts` | Recursive registry directory load for multi-segment slug paths |
 | `src/lib/content/validate-registry.ts` | Recursive path walk so nested registry JSON still validates |
 | `src/content/docs/references/packaged-factories-index/generated/factories/quorum.factory.json` | Read-only source for invocation examples / parallelism facts |
+
+## Key files (story 002 — quorum-only full-mode replay)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/quorum/QuorumFactoryReplay.tsx` | Client mount: `ControlledFactoryReplay` `mode="full"` + quorum recording only |
+| `src/content/docs/references/packaged-factories-index/quorum/page-mdx-components.tsx` | Quorum-owned MDX map exporting `QuorumFactoryReplay` |
+| `src/lib/content/route-family-local-docs-page-load.ts` | Literal `packaged-factories-index/quorum` → quorum child map |
+| `src/content/docs/references/packaged-factories-index/generated/quorum.factory-recording.v1.json` | Read-only Batch 2 quorum recording (imported only from quorum child) |
+| `src/content/docs/references/packaged-factories-index/quorum/assert-quorum-child-reference-browser.ts` | Dev-server HTML probe for content + full-mode replay markers |
+| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum → child map; remaining siblings stay on shared placeholder |
 
 ## Patterns
 
@@ -56,7 +66,18 @@ regeneration, landing composition, dependency pins, or global CSS.
   quorum), a short operational note, and a `LocalizedLinkList` link to the
   parent `#<childSlug>` definition anchor. Do not dump unabridged
   `factory.json` or add How To Use / Related / Tags chrome.
-- Story 001 does not mount replay. Shared
-  `replay-page-mdx-components.tsx` stays the loader target until story 002
-  retargets the quorum case to a child-owned map that imports only
-  `generated/quorum.factory-recording.v1.json`.
+- Full-mode replay isolation: each child that mounts replay owns
+  `<Child>FactoryReplay.tsx` (static import of only that child’s
+  `generated/<slug>.factory-recording.v1.json` + `ControlledFactoryReplay`
+  `mode="full"`) and `page-mdx-components.tsx` under the child directory. The
+  route-family loader case must literal-import that child map — do not keep
+  using shared `replay-page-mdx-components.tsx` once the child recording is
+  mounted (the shared placeholder would otherwise risk co-bundling sibling
+  recordings later). Put recording imports in the replay wrapper, not the map
+  module.
+- Browser verify for child replay: prefer
+  `bun src/content/docs/references/packaged-factories-index/<child>/assert-*-browser.ts`
+  with `--webpack` on a unique port (worktree Turbopack often fails on hoisted
+  `node_modules`). Assert `data-factory-replay-mode="full"` plus timeline /
+  topology / work-progress region labels, and that sibling recording filenames
+  do not appear in HTML.

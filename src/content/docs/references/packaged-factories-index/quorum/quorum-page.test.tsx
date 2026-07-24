@@ -2,12 +2,13 @@
  * Page-owned proofs for references/packaged-factories-index/quorum.
  * Asserts published nested route, registry alignment, concise reference
  * chrome (canonical name, description, invocation examples, parallelism
- * note, parent definition link), and absence of workflow/teaching chrome
- * or unabridged factory.json dump. Replay mount belongs to a later story.
+ * note, parent definition link), and full-mode quorum-only replay mount.
+ * Per-route recording isolation import-graph proofs belong to a later story.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES } from "@/features/factory-replay";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
@@ -19,14 +20,30 @@ const PARENT_DEFINITION_HREF =
   "/docs/references/packaged-factories-index#quorum";
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
 
+function ensureIntersectionObserverStub(): void {
+  if (typeof globalThis.IntersectionObserver === "function") {
+    return;
+  }
+  globalThis.IntersectionObserver = class {
+    disconnect(): void {}
+    observe(): void {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+    unobserve(): void {}
+  } as unknown as typeof IntersectionObserver;
+}
+
 describe("packaged-factories-index quorum child reference page", () => {
   afterEach(() => {
     cleanup();
   });
 
   test(
-    "publishes /docs/references/packaged-factories-index/quorum as a concise @you/quorum reference",
+    "publishes /docs/references/packaged-factories-index/quorum as a concise @you/quorum reference with full-mode replay",
     async () => {
+      ensureIntersectionObserverStub();
+
       const fumadocsPage = source.getPage([
         "references",
         "packaged-factories-index",
@@ -52,6 +69,9 @@ describe("packaged-factories-index quorum child reference page", () => {
       expect(
         String(loadedPage.messages.sections?.parallelism?.body ?? ""),
       ).toMatch(/independent assessments before the merge worker synthesizes/i);
+      expect(
+        String(loadedPage.messages.sections?.deterministicReplay?.title ?? ""),
+      ).toBe("Deterministic replay");
       expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
       expect(
         loadedPage.messages.sections?.limitsAndAssumptions,
@@ -79,6 +99,9 @@ describe("packaged-factories-index quorum child reference page", () => {
       expect(screen.getByRole("heading", { name: "Parallelism" })).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Complete definition" }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Deterministic replay" }),
       ).toBeTruthy();
       expect(
         screen.getByText(
@@ -120,9 +143,28 @@ describe("packaged-factories-index quorum child reference page", () => {
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();
-      expect(document.querySelector("[data-factory-replay]")).toBeNull();
       expect(screen.queryByText(/"name": "@you\/quorum"/)).toBeNull();
       expect(screen.queryByText(/builtin-quorum/)).toBeNull();
+
+      const replayRoot = screen.getByRole("region", {
+        name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.chrome.regionLabel,
+      });
+      expect(replayRoot.getAttribute("data-factory-replay-mode")).toBe("full");
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.timeline.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.topology.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.progress.regionLabel,
+        }),
+      ).toBeTruthy();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

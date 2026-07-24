@@ -17,6 +17,10 @@
     "parentDefinition": {
       "title": "Complete definition",
       "body": "The generated Packaged Factory Reference keeps the unabridged factory.json for this package."
+    },
+    "deterministicReplay": {
+      "title": "Deterministic replay",
+      "body": "Inspect a full-mode deterministic work-graph replay for the packaged quorum recording: timeline scrubber, topology, and work progress."
     }
   },
   "links": {
