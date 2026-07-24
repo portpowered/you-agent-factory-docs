@@ -110,6 +110,12 @@ Rules:
   node count.
 - Attach `rootRef` from the hook to the replay root for intersection gating.
   Tests may pass `bindDomGates={false}`.
+- **Strict Mode / remount:** create `createAutoplayScheduler` +
+  `createAutoplayGateSession` inside the mount effect and **null the refs on
+  cleanup**. Do not lazy-init once into refs during render and dispose in an
+  effect — React Strict Mode preserves refs across cleanup→setup, so a disposed
+  instance would permanently kill autoplay in `make dev`. Fixture coverage:
+  `use-controlled-factory-replay.test.tsx` (fake clock + `<StrictMode>`).
 
 ## Compact-mode composition (story 006+)
 

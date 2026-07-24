@@ -2,6 +2,10 @@
  * Host-controlled factory-replay React hook: pure playback transitions,
  * projection cache, single chained autoplay, and visibility/intersection/
  * reduced-motion gates. Full-mode composition owns the selected tick.
+ *
+ * Autoplay IO (scheduler + gate session) is owned inside a mount effect and
+ * nulled on cleanup so React Strict Mode remount creates fresh instances —
+ * never reuse a disposed scheduler/session from a render-time lazy ref.
  */
 
 "use client";
@@ -13,7 +17,10 @@ import {
   createAutoplayGateSession,
   shouldStartPlaybackPaused,
 } from "./autoplay-gates";
-import { createAutoplayScheduler } from "./autoplay-scheduler";
+import {
+  type AutoplaySchedulerTimers,
+  createAutoplayScheduler,
+} from "./autoplay-scheduler";
 import {
   createInitialPlaybackState,
   listRecordedTicks,
@@ -30,6 +37,11 @@ export type UseControlledFactoryReplayOptions = {
   readonly recording: FactoryRecording;
   /** When false, skip DOM gate binding (tests / non-DOM hosts). Default true. */
   readonly bindDomGates?: boolean;
+  /**
+   * Optional timer injection for fixture tests (fake clock). Production
+   * callers omit this and use the real `setTimeout` / `clearTimeout`.
+   */
+  readonly timers?: AutoplaySchedulerTimers;
 };
 
 export type ControlledFactoryReplayController = {
@@ -64,7 +76,7 @@ function readPrefersReducedMotion(): boolean {
 export function useControlledFactoryReplay(
   options: UseControlledFactoryReplayOptions,
 ): ControlledFactoryReplayController {
-  const { recording, bindDomGates = true } = options;
+  const { recording, bindDomGates = true, timers } = options;
   const ticks = useMemo(
     () => listRecordedTicks(recording.events),
     [recording.events],
@@ -99,9 +111,19 @@ export function useControlledFactoryReplay(
   const gateDomRef = useRef<ReturnType<typeof bindAutoplayGateDom> | null>(
     null,
   );
+  const rootNodeRef = useRef<HTMLElement | null>(null);
+  const playbackRef = useRef(playback);
+  playbackRef.current = playback;
+  const gateAllowedRef = useRef(gateAllowed);
+  gateAllowedRef.current = gateAllowed;
+  const timersRef = useRef(timers);
+  timersRef.current = timers;
 
-  if (gateSessionRef.current === null) {
-    gateSessionRef.current = createAutoplayGateSession({
+  // Own scheduler + gate session in the mount effect. Strict Mode runs
+  // cleanup→setup again while preserving refs; nulling on cleanup forces a
+  // fresh pair so Play can schedule after remount.
+  useEffect(() => {
+    const gateSession = createAutoplayGateSession({
       initial: {
         documentVisible: true,
         intersecting: true,
@@ -114,18 +136,14 @@ export function useControlledFactoryReplay(
         setPlayback((current) => reducePlayback(current, { type: "pause" }));
       },
     });
-  }
-
-  if (schedulerRef.current === null) {
-    schedulerRef.current = createAutoplayScheduler(() => {
+    const scheduler = createAutoplayScheduler(() => {
       setPlayback((current) => reducePlayback(current, { type: "advance" }));
-    });
-  }
+    }, timersRef.current);
 
-  const gateSession = gateSessionRef.current;
-  const scheduler = schedulerRef.current;
+    gateSessionRef.current = gateSession;
+    schedulerRef.current = scheduler;
+    setGateAllowed(gateSession.getDecision().allowed);
 
-  useEffect(() => {
     if (
       shouldStartPlaybackPaused(
         gateSession.getDecision().signals.prefersReducedMotion,
@@ -135,29 +153,57 @@ export function useControlledFactoryReplay(
         current.playing ? reducePlayback(current, { type: "pause" }) : current,
       );
     }
-  }, [gateSession]);
 
-  useEffect(() => {
+    if (
+      bindDomGates &&
+      rootNodeRef.current !== null &&
+      typeof window !== "undefined"
+    ) {
+      gateDomRef.current = bindAutoplayGateDom(
+        gateSession,
+        rootNodeRef.current,
+        {
+          IntersectionObserver: window.IntersectionObserver,
+          document,
+          matchMedia: (query) => window.matchMedia(query),
+        },
+      );
+    }
+
     scheduler.sync({
-      allowed: gateAllowed,
-      playing: playback.playing,
+      allowed: gateAllowedRef.current,
+      playing: playbackRef.current.playing,
     });
-  }, [gateAllowed, playback.playing, scheduler]);
 
-  useEffect(() => {
     return () => {
       scheduler.dispose();
       gateDomRef.current?.dispose();
       gateDomRef.current = null;
       gateSession.dispose();
+      gateSessionRef.current = null;
+      schedulerRef.current = null;
     };
-  }, [gateSession, scheduler]);
+  }, [bindDomGates]);
+
+  useEffect(() => {
+    schedulerRef.current?.sync({
+      allowed: gateAllowed,
+      playing: playback.playing,
+    });
+  }, [gateAllowed, playback.playing]);
 
   const bindRootGates = useCallback(
     (node: HTMLElement | null) => {
+      rootNodeRef.current = node;
       gateDomRef.current?.dispose();
       gateDomRef.current = null;
-      if (!bindDomGates || node === null || typeof window === "undefined") {
+      const gateSession = gateSessionRef.current;
+      if (
+        !bindDomGates ||
+        node === null ||
+        gateSession === null ||
+        typeof window === "undefined"
+      ) {
         return;
       }
       gateDomRef.current = bindAutoplayGateDom(gateSession, node, {
@@ -166,23 +212,23 @@ export function useControlledFactoryReplay(
         matchMedia: (query) => window.matchMedia(query),
       });
     },
-    [bindDomGates, gateSession],
+    [bindDomGates],
   );
 
   const play = useCallback(() => {
-    gateSession.notifyExplicitPlay();
+    gateSessionRef.current?.notifyExplicitPlay();
     setPlayback((current) => reducePlayback(current, { type: "play" }));
-  }, [gateSession]);
+  }, []);
 
   const pause = useCallback(() => {
-    gateSession.notifyStopped();
+    gateSessionRef.current?.notifyStopped();
     setPlayback((current) => reducePlayback(current, { type: "pause" }));
-  }, [gateSession]);
+  }, []);
 
   const reset = useCallback(() => {
-    gateSession.notifyStopped();
+    gateSessionRef.current?.notifyStopped();
     setPlayback((current) => reducePlayback(current, { type: "reset" }));
-  }, [gateSession]);
+  }, []);
 
   const selectTick = useCallback((tick: number) => {
     setPlayback((current) =>
