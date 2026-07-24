@@ -46,7 +46,7 @@ regeneration, landing composition, dependency pins, or global CSS.
 | `src/lib/content/route-family-local-docs-page-load.ts` | Literal `packaged-factories-index/quorum` → quorum child map |
 | `src/content/docs/references/packaged-factories-index/generated/quorum.factory-recording.v1.json` | Read-only Batch 2 quorum recording (imported only from quorum child) |
 | `src/content/docs/references/packaged-factories-index/quorum/assert-quorum-child-reference-browser.ts` | Dev-server HTML probe for content + full-mode replay markers |
-| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum → child map; remaining siblings stay on shared placeholder |
+| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum → child map (keep fusion/review/goal/subagent owned-map coverage when rebasing) |
 
 ## Key files (story 003 — tts content)
 
@@ -68,7 +68,7 @@ regeneration, landing composition, dependency pins, or global CSS.
 | `src/lib/content/route-family-local-docs-page-load.ts` | Literal `packaged-factories-index/tts` → tts child map |
 | `src/content/docs/references/packaged-factories-index/generated/tts.factory-recording.v1.json` | Read-only Batch 2 tts recording (imported only from tts child) |
 | `src/content/docs/references/packaged-factories-index/tts/assert-tts-child-reference-browser.ts` | Dev-server HTML probe for content + full-mode replay markers |
-| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum/tts → child maps; remaining siblings stay on shared placeholder |
+| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum/tts → child maps alongside goal/subagent/fusion/review; shared replay-page placeholder unused by nested children |
 
 ## Key files (story 005 — page behavior + recording isolation proofs)
 
@@ -128,3 +128,10 @@ regeneration, landing composition, dependency pins, or global CSS.
   `graphIncludesOwnedPackagedRecording`,
   `collectChildRecordingImportGraphInputs`) — do not reintroduce a parallel
   `allowed*` / parent-wrapper helper surface.
+- When rebasing after sibling packaged-factory child lanes land (goal/subagent,
+  fusion/review), merge `packaged-factories-index-child-maps.test.ts` so every
+  owned child keeps loader-identity coverage and drop emptied
+  `SHARED_REPLAY_CHILD_SLUGS` once no nested child still uses the shared
+  placeholder. Reconcile `exported-site-budget` ceilings to one coherent
+  total (keep modest headroom from the higher of main’s Batch-4 baseline and
+  this lane’s measured export) rather than leaving competing 380/385 values.
