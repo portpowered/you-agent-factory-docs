@@ -82,6 +82,34 @@ allowlist as public surfaces.
 | `src/lib/packaged-factory-v002/host-package-pins-proof.ts` | Reads host package.json + installed versions + walks node_modules for components |
 | `src/lib/packaged-factory-v002/host-package-pins.test.ts` | Observable host pin contract (declared + installed + single components) |
 
+## Key files (story 004 — Next transpilePackages posture)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/packaged-factory-v002/transpile-packages-posture.ts` | Pure empty host membership + fail-closed assertion (none of the five packages) |
+| `src/lib/packaged-factory-v002/transpile-packages-posture.test.ts` | Contract: membership empty; rejects any family package if reintroduced |
+| `next.config.ts` | Spreads `PACKAGED_FACTORY_V002_HOST_TRANSPILE_PACKAGES` (empty after clean static build proved compiled ESM) |
+
+### transpilePackages contract
+
+At exact `0.0.2`, `client` / `components` / `factory-replay` / `factory-visualizers`
+ship compiled ESM under `dist/`; `packaged-factories` is data-only. The docs
+host must **not** list any of the five in `transpilePackages`.
+
+- Final family membership: empty (`PACKAGED_FACTORY_V002_HOST_TRANSPILE_PACKAGES`).
+- Do **not** add `client`, `factory-replay`, `factory-visualizers`, or
+  `packaged-factories` preemptively.
+- If a future pin ships TypeScript source again and `make build` fails without
+  host transpilation, keep `@you-agent-factory/components` only with recorded
+  evidence — never expand the list.
+
+Prove with:
+
+```bash
+bun test src/lib/packaged-factory-v002/transpile-packages-posture.test.ts
+make build
+```
+
 ## Patterns
 
 - Prefer a disposable temporary consumer directory for install/acquisition
@@ -109,6 +137,10 @@ allowlist as public surfaces.
   read each installed `node_modules/@you-agent-factory/*/package.json` version,
   and walk nested `node_modules` so leftover `components@0.0.0` cannot hide
   beside `0.0.2`.
+- transpilePackages posture: keep family membership in
+  `PACKAGED_FACTORY_V002_HOST_TRANSPILE_PACKAGES` (empty at 0.0.2 compiled ESM);
+  `next.config.ts` spreads that constant; fail closed if any of the five
+  packages reappear in the list.
 
 ## Verification
 

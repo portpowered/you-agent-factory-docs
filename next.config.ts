@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
 import { resolveNextConfigForBuildMode } from "./src/lib/build/static-export";
+import { PACKAGED_FACTORY_V002_HOST_TRANSPILE_PACKAGES } from "./src/lib/packaged-factory-v002/transpile-packages-posture";
 import {
   bakeDocsSearchStaticBootstrapFromEnv,
   DOCS_SEARCH_BOOTSTRAP_FROM_ENV,
@@ -55,8 +56,10 @@ const sseSpikeContentAliases = [
 
 const nextConfig: NextConfig = {
   ...resolveNextConfigForBuildMode(),
-  // Package ships TypeScript source through its export map (no dist/); Next must transpile it.
-  transpilePackages: ["@you-agent-factory/components"],
+  // Batch 1 @you-agent-factory/* @0.0.2 ships compiled ESM (dist/) / data-only
+  // packaged-factories — host must not transpile the family. Membership is the
+  // empty constant from transpile-packages-posture (story 004).
+  transpilePackages: [...PACKAGED_FACTORY_V002_HOST_TRANSPILE_PACKAGES],
   // Keep the data-only API package outside the webpack server graph so
   // `require.resolve` / package-export reads stay Node filesystem paths during
   // static export (factories schema embeds call loadSchemaVerificationPackageModel).
