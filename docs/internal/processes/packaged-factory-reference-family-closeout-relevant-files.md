@@ -81,6 +81,37 @@ avoidable import leakage over raising budget ceilings.
    on the child; non-replay MDX map stays empty and never equals the shared
    replay map.
 
+## Key files (story 003 — shared replay cadence / gates / shared goal recording)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/packaged-factory-reference-family-closeout-replay.ts` | Closeout-owned tip proof helpers: 2000 ms cadence, final-tick hold, manual Pause, cleanup, hidden/offscreen/reduced-motion gates, shared goal recording identity |
+| `src/lib/verify/packaged-factory-reference-family-closeout-replay.test.tsx` | Pure fail-closed + tip mounts (`GoalFactoryReplay` full, Youi compact) + hook cadence/cleanup with fake clock |
+| `src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts` | Playwright probe against static `out/` (or `CLOSEOUT_REPLAY_PROBE_BASE_URL`): goal full Play/Pause + home Youi compact Play/Pause sharing `packaged-goal-sample` |
+| `src/features/factory-replay/autoplay-scheduler.ts` | Reused single chained `AUTOPLAY_INTERVAL_MS` (2000) scheduler (do not fork) |
+| `src/features/factory-replay/autoplay-gates.ts` | Reused visibility / intersection / reduced-motion gates (do not fork) |
+| `src/content/docs/references/packaged-factories-index/goal/GoalFactoryReplay.tsx` | Full-mode goal child mount (read-only unless tip regresses) |
+| `src/features/landing-page/components/YouiCompactGoalReplayIsland.tsx` | Compact landing goal mount (read-only unless tip regresses) |
+| `src/content/docs/references/packaged-factories-index/generated/goal.factory-recording.v1.json` | Shared generated goal recording artifact |
+
+### Story 003 acceptance mapping
+
+1. **2000 ms cadence + final hold** —
+   `provePackagedFactoryCloseoutSharedPlaybackCadence` drives
+   `createAutoplayScheduler` + `reducePlayback` on a multi-tick fixture with a
+   fake clock: Advance only after each full cadence; final tick holds one
+   cadence then wraps earliest. Manual Pause clears the pending timeout.
+2. **Visibility gates** —
+   `provePackagedFactoryCloseoutAutoplayGates` proves document-hidden,
+   non-intersecting, and reduced-motion (until `notifyExplicitPlay`) clear
+   scheduling without a second timer.
+3. **Cleanup** — `provePackagedFactoryCloseoutAutoplayCleanup` + hook harness
+   unmount prove `dispose()` / React unmount clear the pending timeout.
+4. **Shared goal recording** —
+   `provePackagedFactoryCloseoutSharedGoalRecording` requires parsed
+   `goal.factory-recording.v1.json` === `YOUI_COMPACT_GOAL_RECORDING` id/title;
+   tip mounts prove full vs compact `ControlledFactoryReplay` Play/Pause.
+
 ## Patterns
 
 - Closeout proofs compose Batch 2 verify/generate helpers; they do not invent a
@@ -96,7 +127,14 @@ avoidable import leakage over raising budget ceilings.
   `factory.json` on the parent index; companion JS is proven via committed
   artifacts + the JavaScript-only CodePanel path using those same bytes — not
   by duplicating raw source onto the child page.
-- Later closeout stories (replay gates, import graphs, a11y/export/CSS, gates,
+- Story 003 composes Batch 3 shared factory-replay cadence/gates rather than
+  forking a second autoplay stack. Use a fake clock for cadence proofs; prove
+  goal-child full + landing compact mounts share `goal.factory-recording.v1.json`
+  and Play/Pause through `ControlledFactoryReplay`. Interactive browser probes
+  should serve trusted static `out/` (or set `CLOSEOUT_REPLAY_PROBE_BASE_URL`) —
+  worktree `next dev` often fails to hydrate client islands when
+  `node_modules` is parent-hoisted.
+- Later closeout stories (import graphs, a11y/export/CSS, gates,
   browser evidence) should add sibling `packaged-factory-reference-family-closeout-*`
   modules rather than expanding earlier story modules beyond their ownership.
 
@@ -106,6 +144,8 @@ avoidable import leakage over raising budget ceilings.
 bun run prepare:content-runtime
 bun test src/lib/verify/packaged-factory-reference-family-closeout-corpus.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-deep-research.test.tsx
+bun test src/lib/verify/packaged-factory-reference-family-closeout-replay.test.tsx
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
+bun src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts
 ```
