@@ -175,6 +175,37 @@ avoidable import leakage over raising budget ceilings.
    pageerror text (`hydration`, `did not match`, server-rendered HTML) and
    requires zero hits on the four family routes.
 
+## Key files (story 006 — no-JS output, base-path export, CSS tokens, one React Flow stylesheet)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/packaged-factory-reference-family-closeout-export-css.ts` | Closeout-owned tip proof helpers: script-stripped no-JS facts, Pages base-path family URLs + prefixed `out/` verify, CSS token + one-React-Flow stylesheet composition |
+| `src/lib/verify/packaged-factory-reference-family-closeout-export-css.test.ts` | Pure fail-closed + tip proofs (fixtures, trusted unprefixed `out/` no-JS, Batch 1 CSS compose) |
+| `src/lib/verify/assert-packaged-factory-reference-family-closeout-export-css-browser.ts` | Playwright/no-JS + Pages-prefixed rebuild probe (port 3625 / `CLOSEOUT_EXPORT_CSS_PROBE_BASE_URL`); restores unprefixed `make build` afterward |
+| `src/lib/packaged-factory-v002/global-css-order-proof.ts` | Reused Batch 1 one-React-Flow stylesheet via visualizers CSS (do not fork) |
+| `src/lib/packaged-factory-v002/visualizer-theme-tokens-proof.ts` | Reused Batch 1 factory-dark / factory-light token resolution (do not fork) |
+| `src/lib/build/verify-project-site-export-consumers.ts` | Reused Pages-prefixed consumer gate on trusted prefixed `out/` |
+| `src/app/globals.css` | Host entry: components styles then visualizers styles; no direct `@xyflow/react` import |
+
+### Story 006 acceptance mapping
+
+1. **No-JS useful output** —
+   `assertPackagedFactoryCloseoutNoJsParentIndex` /
+   `…DeepResearch` / `…Youi` require definition panels, purpose/usage/two
+   links, and `data-youi-showcase-graph-fallback` after `stripScriptsFromHtml`
+   on trusted `out/` HTML (and browser script-stripped setContent).
+2. **Base-path static export** —
+   `assertPackagedFactoryCloseoutBasePathFamilyRouteUrls` locks
+   `/you-agent-factory-docs` family URLs; `provePackagedFactoryCloseoutBasePathExport`
+   requires Pages-prefixed family HTML + project-site consumers. Browser probe
+   runs `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build`, fetches
+   family routes under the prefix, then restores unprefixed `make build`.
+3. **CSS tokens + one React Flow stylesheet** —
+   `provePackagedFactoryCloseoutVisualizerThemeTokens` +
+   `provePackagedFactoryCloseoutOneReactFlowStylesheet` compose Batch 1
+   proofs (required `--color-*` under factory-dark/light; one components + one
+   visualizers import; no standalone `@xyflow/react` stylesheet).
+
 ## Patterns
 
 - Closeout proofs compose Batch 2 verify/generate helpers; they do not invent a
@@ -206,9 +237,17 @@ avoidable import leakage over raising budget ceilings.
   trusted static `out/` (or set `CLOSEOUT_A11Y_PROBE_BASE_URL`); default port
   3624. Treat disabled `Follow latest` on the single-tick goal sample as
   present-but-not-focusable, not a missing control.
-- Later closeout stories (export/CSS, gates, browser evidence) should add
-  sibling `packaged-factory-reference-family-closeout-*` modules rather than
-  expanding earlier story modules beyond their ownership.
+- Story 006 composes Batch 1 global-CSS + visualizer theme proofs and
+  script-stripped export HTML rather than inventing a second stylesheet or
+  token palette. Interactive no-JS + Pages-prefixed proofs should serve trusted
+  static `out/` (port 3625 / `CLOSEOUT_EXPORT_CSS_PROBE_BASE_URL`); the browser
+  probe rebuilds with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` then
+  restores unprefixed `make build` so later closeout probes stay compatible.
+  Set `CLOSEOUT_SKIP_PAGES_PREFIXED_BUILD=1` only when a trusted Pages-prefixed
+  `out/` is already present.
+- Later closeout stories (gates, browser evidence) should add sibling
+  `packaged-factory-reference-family-closeout-*` modules rather than expanding
+  earlier story modules beyond their ownership.
 
 ## Reproduce
 
@@ -219,8 +258,10 @@ bun test src/lib/verify/packaged-factory-reference-family-closeout-deep-research
 bun test src/lib/verify/packaged-factory-reference-family-closeout-replay.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts
 bun test src/lib/verify/packaged-factory-reference-family-closeout-a11y.test.tsx
+bun test src/lib/verify/packaged-factory-reference-family-closeout-export-css.test.ts
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-a11y-browser.ts
+bun src/lib/verify/assert-packaged-factory-reference-family-closeout-export-css-browser.ts
 ```
