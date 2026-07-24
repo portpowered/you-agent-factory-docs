@@ -1,8 +1,8 @@
 /**
  * Focused proofs for packaged-factories-index nested child component-map
- * wiring: standard replay children share one literal replay-page map;
- * deep-research resolves a distinct non-replay map. Does not author child
- * page bodies (Batch 4). Parent import-graph isolation is covered by
+ * wiring: remaining standard replay children share one literal replay-page
+ * map; goal resolves its child-owned map; deep-research resolves a distinct
+ * non-replay map. Parent import-graph isolation is covered by
  * packaged-factories-index-import-graph.test.ts.
  */
 import { describe, expect, test } from "bun:test";
@@ -11,14 +11,15 @@ import {
   packagedFactoriesIndexChildComponentMapKind as deepResearchMapKind,
   pageMdxComponents as deepResearchPageMdxComponents,
 } from "./deep-research-page-mdx-components";
+import { pageMdxComponents as goalPageMdxComponents } from "./goal/page-mdx-components";
 import { pageMdxComponents as parentPageMdxComponents } from "./page-mdx-components";
 import {
   packagedFactoriesIndexChildComponentMapKind as replayMapKind,
   pageMdxComponents as replayPageMdxComponents,
 } from "./replay-page-mdx-components";
 
-const STANDARD_REPLAY_CHILD_SLUGS = [
-  "goal",
+/** Standard replay children that still resolve the shared placeholder map. */
+const SHARED_REPLAY_CHILD_SLUGS = [
   "subagent",
   "fusion",
   "review",
@@ -35,6 +36,13 @@ describe("packaged-factories-index child component maps", () => {
         /recording|visualizer|playback/i.test(key),
       ),
     ).toBe(false);
+  });
+
+  test("goal-owned map exposes GoalFactoryReplay and stays distinct from shared maps", () => {
+    expect(Object.keys(goalPageMdxComponents)).toEqual(["GoalFactoryReplay"]);
+    expect(goalPageMdxComponents).not.toBe(replayPageMdxComponents);
+    expect(goalPageMdxComponents).not.toBe(deepResearchPageMdxComponents);
+    expect(goalPageMdxComponents).not.toBe(parentPageMdxComponents);
   });
 
   test("deep-research map is marked non-replay and is distinct from the shared replay map", () => {
@@ -54,14 +62,24 @@ describe("packaged-factories-index child component maps", () => {
 });
 
 describe("packaged-factories-index nested route-family loader cases", () => {
-  test("standard replay children resolve the shared replay-page map by identity", async () => {
-    for (const childSlug of STANDARD_REPLAY_CHILD_SLUGS) {
+  test("remaining shared replay children resolve the shared replay-page map by identity", async () => {
+    for (const childSlug of SHARED_REPLAY_CHILD_SLUGS) {
       const loaded = await loadRouteFamilyPageMdxComponents(
         "references",
         `packaged-factories-index/${childSlug}`,
       );
       expect(loaded).toBe(replayPageMdxComponents);
     }
+  });
+
+  test("goal resolves the goal-owned map and never the shared replay map", async () => {
+    const loaded = await loadRouteFamilyPageMdxComponents(
+      "references",
+      "packaged-factories-index/goal",
+    );
+    expect(loaded).toBe(goalPageMdxComponents);
+    expect(loaded).not.toBe(replayPageMdxComponents);
+    expect(Object.keys(loaded)).toEqual(["GoalFactoryReplay"]);
   });
 
   test("deep-research resolves the non-replay map and never the shared replay map", async () => {
@@ -81,5 +99,6 @@ describe("packaged-factories-index nested route-family loader cases", () => {
     expect(loaded).toBe(parentPageMdxComponents);
     expect(loaded).not.toBe(replayPageMdxComponents);
     expect(loaded).not.toBe(deepResearchPageMdxComponents);
+    expect(loaded).not.toBe(goalPageMdxComponents);
   });
 });

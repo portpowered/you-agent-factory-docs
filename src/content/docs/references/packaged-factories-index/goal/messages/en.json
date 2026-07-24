@@ -13,6 +13,10 @@
     "completeDefinition": {
       "title": "Complete definition",
       "body": "The parent Packaged Factory Reference keeps the complete packaged definition source and published metadata for this package."
+    },
+    "deterministicReplay": {
+      "title": "Deterministic replay",
+      "body": "Inspect a full-mode deterministic work-graph replay for the packaged goal recording: timeline scrubber, topology, and work progress."
     }
   },
   "links": {

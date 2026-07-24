@@ -1,7 +1,7 @@
 /**
  * Browser verify for /docs/references/packaged-factories-index/goal concise
- * reference content (story 001). Uses webpack in worktrees where Turbopack
- * cannot resolve the hoisted Next package.
+ * reference content plus full-mode replay mount markers. Uses webpack in
+ * worktrees where Turbopack cannot resolve the hoisted Next package.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
@@ -93,6 +93,12 @@ try {
     "/docs/references/packaged-factories-index#goal",
     "Invocation examples",
     "Complete definition",
+    "Deterministic replay",
+    'data-factory-replay-mode="full"',
+    "Factory replay",
+    "Timeline scrubber",
+    "Factory topology",
+    "Work progress",
   ];
 
   for (const marker of required) {
@@ -110,6 +116,12 @@ try {
 
   if (normalized.includes('"id": "builtin-goal"')) {
     throw new Error("Child page must not embed unabridged factory.json");
+  }
+
+  if (normalized.includes("subagent.factory-recording.v1.json")) {
+    throw new Error(
+      "Goal child page HTML must not reference the subagent recording",
+    );
   }
 
   console.log(
