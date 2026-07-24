@@ -13,4 +13,9 @@ export const PRODUCTION_INTEGRATION_TEST_PATHS = [
   "src/tests/content/high-traffic-locales-browser.test.ts",
   "src/lib/verify/theme-code-copy-r00-page.test.ts",
   "src/content/docs/references/cli-mcp-js-static-export-success.test.ts",
+  // Packaged-factory Batch 5 closeout: out/-backed tip proofs + family browser
+  // evidence (contracts job has no out/; these run after `make build`).
+  "src/lib/verify/packaged-factory-reference-family-closeout-gates.test.ts",
+  "src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts",
+  "src/lib/verify/packaged-factory-reference-family-closeout-evidence-browser-verify.test.ts",
 ] as const;

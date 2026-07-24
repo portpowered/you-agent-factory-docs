@@ -13,6 +13,12 @@ import { type Browser, chromium, type LaunchOptions } from "playwright";
 import { isInsideExportIntegrationProbeLock } from "./export-integration-probe-lock";
 
 const CI_PLAYWRIGHT_LAUNCH_TIMEOUT_MS = 120_000;
+/**
+ * Local (non-CI) Chromium launch budget. Playwright's default is 180s; suite
+ * load can hang the CDP handshake after the process starts, so keep attempts
+ * shorter and rely on `launchChromiumWithCiRetries` instead of one long stall.
+ */
+const LOCAL_PLAYWRIGHT_LAUNCH_TIMEOUT_MS = 60_000;
 /** Avoid hanging the full Bun probe timeout when browser teardown stalls under CI load. */
 export const PLAYWRIGHT_BROWSER_CLOSE_TIMEOUT_MS = 15_000;
 /**
@@ -87,15 +93,14 @@ export function resolvePlaywrightChromiumExecutablePath({
 function resolveLaunchOptions(options: LaunchOptions): LaunchOptions {
   const executablePath =
     options.executablePath ?? resolvePlaywrightChromiumExecutablePath();
-
-  if (!shouldSerializePlaywrightLaunch()) {
-    return { headless: true, ...options, executablePath };
-  }
+  const timeout = shouldSerializePlaywrightLaunch()
+    ? (options.timeout ?? CI_PLAYWRIGHT_LAUNCH_TIMEOUT_MS)
+    : (options.timeout ?? LOCAL_PLAYWRIGHT_LAUNCH_TIMEOUT_MS);
 
   return {
     headless: true,
-    timeout: options.timeout ?? CI_PLAYWRIGHT_LAUNCH_TIMEOUT_MS,
     ...options,
+    timeout,
     executablePath,
   };
 }
@@ -304,10 +309,9 @@ export async function launchPlaywrightBrowser(
   options: LaunchOptions = {},
 ): Promise<Browser> {
   const launchOptions = resolveLaunchOptions(options);
-  if (!shouldSerializePlaywrightLaunch()) {
-    return chromium.launch(launchOptions);
-  }
-
+  // Retry TimeoutError / connect flakes under both CI and local suite load.
+  // Local `make test` previously stalled for Playwright's full 180s launch
+  // default when headless-shell started but the CDP pipe never connected.
   return launchChromiumWithCiRetries(launchOptions);
 }
 

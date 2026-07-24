@@ -62,4 +62,16 @@ describe("PRODUCTION_INTEGRATION_TEST_PATHS", () => {
       "src/content/docs/references/cli-mcp-js-static-export-success.test.ts",
     );
   });
+
+  test("includes packaged-factory closeout out-backed tip and browser evidence", () => {
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/lib/verify/packaged-factory-reference-family-closeout-gates.test.ts",
+    );
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts",
+    );
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/lib/verify/packaged-factory-reference-family-closeout-evidence-browser-verify.test.ts",
+    );
+  });
 });
