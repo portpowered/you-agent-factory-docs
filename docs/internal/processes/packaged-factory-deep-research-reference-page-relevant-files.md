@@ -29,7 +29,7 @@ Batch 3 — keep using that path; do not switch deep-research onto
 | `src/content/docs/references/packaged-factories-index/deep-research/page.mdx` | Minimal nested reference: purpose + one usage fenced example + LocalizedLinkList to JS runtime and Dynamic Workflows |
 | `src/content/docs/references/packaged-factories-index/deep-research/messages/en.json` | Concise purpose + Usage title + `links.javascriptRuntime` / `links.dynamicWorkflows`; no teaching/how-to chrome keys |
 | `src/content/docs/references/packaged-factories-index/deep-research/assets.json` | Empty local asset config |
-| `src/content/registry/references/packaged-factories-index-deep-research.json` | Registry id `reference.packaged-factories-index-deep-research`, leaf slug `deep-research` |
+| `src/content/registry/references/deep-research.json` | Registry id `reference.packaged-factories-index-deep-research`, leaf slug `deep-research` (filename must be `{slug}.json` for validate-registry path-kind match) |
 | `src/content/docs/references/packaged-factories-index/deep-research-page-mdx-components.tsx` | Parent-owned non-replay MDX map (Batch 3); keep empty of replay mounts |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Literal loader case for `packaged-factories-index/deep-research` → non-replay map |
 | `src/content/docs/references/packaged-factories-index/deep-research/deep-research-page.test.tsx` | Nested route, purpose, single usage example, required link hrefs, registry, non-replay map, and story-004 focused forbidden-expansion absence proofs |
@@ -70,7 +70,9 @@ Batch 3 — keep using that path; do not switch deep-research onto
 - Registry leaf slug stays `deep-research` (last docsSlug segment). Prefer a
   unique registry id that includes the parent family prefix
   (`reference.packaged-factories-index-deep-research`) so it does not collide
-  with a future top-level `reference.deep-research`.
+  with a future top-level `reference.deep-research`. The registry **filename**
+  must still be `{slug}.json` (`references/deep-research.json`) — validate-data
+  enforces path-kind match on slug, not on the longer id.
 - Browser-verify with webpack `bun ./scripts/run-next.ts dev --webpack` on a
   unique port in 3100–3999 (default `3611`), Playwright via
   `launchPlaywrightBrowser`, and kill the server on exit. Prefer
