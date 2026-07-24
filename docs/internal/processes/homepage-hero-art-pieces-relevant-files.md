@@ -15,7 +15,7 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored).
 | `src/features/landing-page/components/TornEdge.tsx` | Reusable section-edge strip (`placement` / `className` / optional `src`) |
 | `src/features/landing-page/components/HeroPortrait.tsx` | Woman-head portrait with constrained `sizes` (not bare `100vw`) |
 | `src/features/landing-page/components/CapabilityStrip.tsx` | FLOWS / AGENTS / ENTRY / OS label strip from fixture items |
-| `src/features/landing-page/components/YouiShowcase.tsx` | Monkey bg + factory graph UI with explicit sizes |
+| `src/features/landing-page/components/YouiShowcase.tsx` | Monkey bg + fixed content/foreground geometry + semantic static graph fallback (`data-youi-showcase-graph-fallback`); optional `replayIsland` slot for later compact goal replay without dropping SSR fallback |
 | `src/features/landing-page/components/HeroSection.tsx` | Optional static chrome: portrait + `sphere` / `terminal` ReactNode holes |
 
 ## Public exports + harness
@@ -30,6 +30,7 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored).
 
 - Prefer `landingHomeAssets` defaults with optional `src` overrides; land art on plain `<img>` + explicit `sizes` (static export uses `images.unoptimized`).
 - Presentational edges / backgrounds: `aria-hidden="true"`; keep stable `data-*` hooks for harness/unit tests.
+- Youi SSR shell: export `YOUI_SHOWCASE_CONTENT_CLASSNAME` / `YOUI_SHOWCASE_FOREGROUND_CLASSNAME` so clamped min-height + constrained foreground host stay locked; keep `data-youi-showcase-graph-fallback` in delivered HTML until a client `replayIsland` is active; empty optional srcs still keep the content host.
 - Sphere/terminal: pass ReactNode holes into `HeroSection` — never re-implement ParticleSphere Canvas or Terminal chrome in this lane.
 - Match other `(dev)` harnesses: gate with `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"` → `notFound()`.
 - Worktree browser verify: when `node_modules` lives only in the main checkout, prefer `bun ./scripts/run-next.ts dev --webpack -p <unique-port>`; kill the server before exit. Harness URL is `/hero-art-harness`.
