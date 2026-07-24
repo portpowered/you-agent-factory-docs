@@ -1,0 +1,62 @@
+# Packaged Factory Quorum and TTS Reference Pages Relevant Files
+
+Use these files when publishing the nested manually maintained child reference
+pages for `@you/quorum` and `@you/tts` under
+`/docs/references/packaged-factories-index/{quorum,tts}`.
+
+## Ownership fence
+
+This lane owns:
+
+- child page bundles under
+  `src/content/docs/references/packaged-factories-index/quorum/` and
+  `.../tts/` (`page.mdx`, `messages/en.json`, `assets.json`, child-owned
+  `page-mdx-components.tsx` / thin replay wrappers in later stories, focused
+  tests)
+- matching multi-segment reference registry records under
+  `src/content/registry/references/packaged-factories-index/{quorum,tts}.json`
+- the two literal loader cases for
+  `packaged-factories-index/quorum` and `packaged-factories-index/tts` in
+  `route-family-local-docs-page-load.ts` (retargeted to child-owned maps when
+  mounting isolated recordings)
+
+Do **not** modify sibling child page bodies (goal, subagent, fusion, review,
+deep-research), parent index renderer behavior, shared factory-replay feature
+internals beyond consuming the public API, Batch 2 `generated/` corpus
+regeneration, landing composition, dependency pins, or global CSS.
+
+## Key files (story 001 — quorum content)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/quorum/page.mdx` | Concise nested quorum reference route |
+| `src/content/docs/references/packaged-factories-index/quorum/messages/en.json` | Canonical name, description, examples labels, parallelism, parent link |
+| `src/content/docs/references/packaged-factories-index/quorum/assets.json` | Empty local asset config |
+| `src/content/docs/references/packaged-factories-index/quorum/quorum-page.test.tsx` | Route, registry, concise content, parent-link proofs |
+| `src/content/registry/references/packaged-factories-index/quorum.json` | Registry id `reference.packaged-factories-index-quorum`, slug `packaged-factories-index/quorum` |
+| `src/lib/content/registry.ts` | Recursive registry directory load for multi-segment slug paths |
+| `src/lib/content/validate-registry.ts` | Recursive path walk so nested registry JSON still validates |
+| `src/content/docs/references/packaged-factories-index/generated/factories/quorum.factory.json` | Read-only source for invocation examples / parallelism facts |
+
+## Patterns
+
+- Nested packaged-factory child pages are ordinary local-docs bundles under the
+  parent directory (`packaged-factories-index/<child>/page.mdx`). Fumadocs only
+  maps `**/page.mdx`, so the Batch 2 `generated/` corpus alone does not create
+  child routes.
+- Multi-segment reference registry slugs (`packaged-factories-index/quorum`)
+  must live at nested registry paths matching
+  `registry/references/<slug>.json`. Flat `readdir` cannot see them — registry
+  load, validate, and runtime generation must walk recursively while skipping
+  colocated `messages/` locale trees (tag message JSON is not a registry
+  record).
+- Keep child copy concise and reference-oriented: canonical name as the
+  overview heading, one-sentence description, two or three concrete
+  `you run --named` examples (positional/stdin plus branch/merge overrides for
+  quorum), a short operational note, and a `LocalizedLinkList` link to the
+  parent `#<childSlug>` definition anchor. Do not dump unabridged
+  `factory.json` or add How To Use / Related / Tags chrome.
+- Story 001 does not mount replay. Shared
+  `replay-page-mdx-components.tsx` stays the loader target until story 002
+  retargets the quorum case to a child-owned map that imports only
+  `generated/quorum.factory-recording.v1.json`.

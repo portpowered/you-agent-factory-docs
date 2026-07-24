@@ -21,6 +21,7 @@ import {
   PUBLISHED_DOCS_REGISTRY_IDS,
 } from "./published-docs-registry-ids";
 import {
+  listRegistryJsonFiles,
   loadRegistry,
   type RegistryIndexes,
   RegistryLoadError,
@@ -1048,17 +1049,14 @@ async function validateRegistryFiles(
 
     for (const directory of Object.values(registryKindDirectories)) {
       const directoryPath = join(registryRoot, directory);
-      let entries: string[];
+      let jsonFiles: string[];
       try {
-        entries = await readdir(directoryPath);
+        jsonFiles = await listRegistryJsonFiles(directoryPath);
       } catch {
         continue;
       }
 
-      for (const fileName of entries.filter((entry) =>
-        entry.endsWith(".json"),
-      )) {
-        const filePath = join(directoryPath, fileName);
+      for (const filePath of jsonFiles) {
         const raw = await readFile(filePath, "utf8");
         const json = JSON.parse(raw) as RegistryRecord;
         const record = indexes.byId.get(json.id);

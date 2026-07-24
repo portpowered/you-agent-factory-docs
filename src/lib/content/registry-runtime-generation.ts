@@ -146,9 +146,23 @@ function importPathFromOutput(outputPath: string, targetPath: string): string {
 
 function listJsonFiles(directoryPath: string): string[] {
   try {
-    return readdirSync(directoryPath)
-      .filter((entry) => entry.endsWith(".json"))
-      .sort();
+    const dirents = readdirSync(directoryPath, { withFileTypes: true });
+    const files: string[] = [];
+    for (const dirent of dirents) {
+      if (dirent.isDirectory()) {
+        if (dirent.name === "messages") {
+          continue;
+        }
+        for (const nested of listJsonFiles(join(directoryPath, dirent.name))) {
+          files.push(`${dirent.name}/${nested}`.replace(/\\/g, "/"));
+        }
+        continue;
+      }
+      if (dirent.isFile() && dirent.name.endsWith(".json")) {
+        files.push(dirent.name);
+      }
+    }
+    return files.sort();
   } catch (error) {
     const code =
       error && typeof error === "object" && "code" in error

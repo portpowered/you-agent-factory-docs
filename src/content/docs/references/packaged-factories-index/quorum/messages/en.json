@@ -1,0 +1,28 @@
+{
+  "title": "Quorum",
+  "description": "Look up @you/quorum invocation examples, branch/merge parallelism, and the parent Packaged Factory Reference definition.",
+  "sections": {
+    "overview": {
+      "title": "@you/quorum",
+      "body": "Evaluates a text request with two independent branch assessments, then synthesizes them in a merge worker."
+    },
+    "invocationExamples": {
+      "title": "Invocation examples",
+      "body": "Pass the request as a positional argument or on stdin. Override branch and merge providers or models when the default CODEX / gpt-5 roles are not enough."
+    },
+    "parallelism": {
+      "title": "Parallelism",
+      "body": "The two quorum branch workers run as independent assessments before the merge worker synthesizes them."
+    },
+    "parentDefinition": {
+      "title": "Complete definition",
+      "body": "The generated Packaged Factory Reference keeps the unabridged factory.json for this package."
+    }
+  },
+  "links": {
+    "positionalExampleLabel": "Positional input",
+    "stdinExampleLabel": "Stdin input",
+    "roleSpecificExampleLabel": "Role-specific branch and merge models",
+    "parentDefinition": "Complete @you/quorum definition"
+  }
+}
