@@ -1,12 +1,12 @@
 /**
  * Page-owned publish proof for references/packaged-factories-index/fusion.
- * Covers concise reference surface: canonical name, one-sentence description,
- * concrete invocation examples, operational notes, and parent definition link.
- * Replay mount and recording isolation proofs belong to later stories.
+ * Covers concise reference surface plus full-mode fusion-only replay mount.
+ * Broader cross-child isolation proofs for review belong to later stories.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES } from "@/features/factory-replay";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
@@ -15,14 +15,30 @@ const PAGE_RENDER_TIMEOUT_MS = 30_000;
 const REGISTRY_ID = "reference.packaged-factories-index-fusion";
 const ROUTE_SLUG = "packaged-factories-index/fusion";
 
+function ensureIntersectionObserverStub(): void {
+  if (typeof globalThis.IntersectionObserver === "function") {
+    return;
+  }
+  globalThis.IntersectionObserver = class {
+    disconnect(): void {}
+    observe(): void {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+    unobserve(): void {}
+  } as unknown as typeof IntersectionObserver;
+}
+
 describe("packaged-factories-index/fusion reference page", () => {
   afterEach(() => {
     cleanup();
   });
 
   test(
-    "publishes /docs/references/packaged-factories-index/fusion with concise @you/fusion reference content",
+    "publishes /docs/references/packaged-factories-index/fusion with concise @you/fusion reference content and full-mode replay",
     async () => {
+      ensureIntersectionObserverStub();
+
       const fumadocsPage = source.getPage([
         "references",
         "packaged-factories-index",
@@ -72,6 +88,10 @@ describe("packaged-factories-index/fusion reference page", () => {
       expect(notesBody).toMatch(/provider|model|effort/i);
       expect(notesBody).toMatch(/output/i);
 
+      expect(
+        String(loadedPage.messages.sections?.deterministicReplay?.title ?? ""),
+      ).toBe("Deterministic replay");
+
       render(
         <main>
           <DocsPageProviders
@@ -92,6 +112,9 @@ describe("packaged-factories-index/fusion reference page", () => {
       ).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Complete definition" }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Deterministic replay" }),
       ).toBeTruthy();
 
       const canonical = document.querySelector(
@@ -123,8 +146,28 @@ describe("packaged-factories-index/fusion reference page", () => {
       );
 
       expect(document.body.textContent).not.toMatch(
-        /"id":\s*"builtin-fusion"|fusion-drafter|fusion-refiner/i,
+        /"id":\s*"builtin-fusion"|unabridged factory\.json/i,
       );
+
+      const replayRoot = screen.getByRole("region", {
+        name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.chrome.regionLabel,
+      });
+      expect(replayRoot.getAttribute("data-factory-replay-mode")).toBe("full");
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.timeline.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.topology.regionLabel,
+        }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("region", {
+          name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.progress.regionLabel,
+        }),
+      ).toBeTruthy();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
