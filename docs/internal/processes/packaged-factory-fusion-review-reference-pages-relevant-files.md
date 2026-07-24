@@ -116,3 +116,10 @@ landing composition, dependency pins, or global CSS.
   probes stay focused on SSR-stable copy + `data-factory-replay-mode="full"`.
 - Worktree browser verify: `bun run dev -- --webpack -p <port>` (Turbopack
   cannot resolve hoisted parent `node_modules/next`).
+- **Batch 4 mergeability:** when rebasing/merging onto `main` after sibling
+  goal/subagent (or other) child lanes land, reconcile
+  `packaged-factories-index-child-maps.test.ts` by keeping **all** child-owned
+  map proofs already on either side. Shared `SHARED_REPLAY_CHILD_SLUGS` should
+  list only children that still resolve
+  `replay-page-mdx-components` (today: `quorum`, `tts`). Do not drop sibling
+  child-owned cases to “win” the conflict.
