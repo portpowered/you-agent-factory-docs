@@ -1,7 +1,7 @@
 {
   "title": "参考",
-  "description": "you-agent-factory 的契约查阅面：HTTP API、事件、schema、命令行界面（CLI）、Model Context Protocol（MCP）以及 JavaScript 运行时。",
-  "openingSummary": "本系列汇总 you-agent-factory 已发布的契约面。需要查阅 API 操作、事件形状、配置 schema、命令行界面（CLI）命令、Model Context Protocol（MCP）工具或 JavaScript 运行时绑定时使用本页。本着陆页不是操作指南。",
+  "description": "you-agent-factory 的契约查阅面：HTTP API、事件、schema、命令行界面（CLI）、Model Context Protocol（MCP）、JavaScript 运行时以及打包工厂。",
+  "openingSummary": "本系列汇总 you-agent-factory 已发布的契约面。需要查阅 API 操作、事件形状、配置 schema、命令行界面（CLI）命令、Model Context Protocol（MCP）工具、JavaScript 运行时绑定或打包工厂定义时使用本页。本着陆页不是操作指南。",
   "sections": {
     "discoverability": {
       "title": "契约面",
@@ -38,6 +38,10 @@
     "javascript-runtime": {
       "title": "JavaScript 运行时",
       "body": "用于嵌入工厂工作的 JavaScript 运行时绑定与软件包面。"
+    },
+    "packaged-factories-index": {
+      "title": "Packaged Factory Reference",
+      "body": "按序排列的打包工厂定义，含完整源与稳定子链接。"
     }
   }
 }

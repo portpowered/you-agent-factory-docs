@@ -36,6 +36,10 @@ export const REFERENCE_FAMILY_DISCOVERABILITY_ROUTES = [
     id: "javascript-runtime",
     href: "/docs/references/javascript-runtime",
   },
+  {
+    id: "packaged-factories-index",
+    href: "/docs/references/packaged-factories-index",
+  },
 ] as const;
 
 export type ReferenceFamilyDiscoverabilityRoute =

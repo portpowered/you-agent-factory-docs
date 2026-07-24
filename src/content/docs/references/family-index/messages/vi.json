@@ -1,7 +1,7 @@
 {
   "title": "Tham chiếu",
-  "description": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
-  "openingSummary": "Họ trang này tập hợp các bề mặt hợp đồng đã xuất bản của you-agent-factory. Dùng khi bạn cần tra cứu thao tác API, hình dạng sự kiện, schema cấu hình, lệnh giao diện dòng lệnh (CLI), công cụ Model Context Protocol (MCP), hoặc binding JavaScript runtime—không coi trang đích này là hướng dẫn cách làm.",
+  "description": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), JavaScript runtime, và packaged factories.",
+  "openingSummary": "Họ trang này tập hợp các bề mặt hợp đồng đã xuất bản của you-agent-factory. Dùng khi bạn cần tra cứu thao tác API, hình dạng sự kiện, schema cấu hình, lệnh giao diện dòng lệnh (CLI), công cụ Model Context Protocol (MCP), binding JavaScript runtime, hoặc định nghĩa packaged factory—không coi trang đích này là hướng dẫn cách làm.",
   "sections": {
     "discoverability": {
       "title": "Các bề mặt hợp đồng",
@@ -38,6 +38,10 @@
     "javascript-runtime": {
       "title": "JavaScript runtime",
       "body": "Binding JavaScript runtime và bề mặt gói để nhúng công việc factory."
+    },
+    "packaged-factories-index": {
+      "title": "Packaged Factory Reference",
+      "body": "Định nghĩa packaged factory theo thứ tự với nguồn đầy đủ và liên kết con ổn định."
     }
   }
 }

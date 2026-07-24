@@ -1,0 +1,19 @@
+{
+  "id": "reference.packaged-factories-index",
+  "slug": "packaged-factories-index",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "Packaged Factory Reference",
+    "packaged factories index",
+    "packaged factory definitions",
+    "@you-agent-factory/packaged-factories"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-24T00:00:00.000Z",
+  "updatedAt": "2026-07-24T00:00:00.000Z"
+}

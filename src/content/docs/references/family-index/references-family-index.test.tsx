@@ -1,6 +1,6 @@
 /**
  * Page-owned behavioral proof for the `/docs/references` family index.
- * Asserts short openingSummary purpose lead, eight discoverability hrefs,
+ * Asserts short openingSummary purpose lead, nine discoverability hrefs,
  * ownership-path helpers, and absence of leftover introduction chrome — not
  * sibling page bodies, foreign renderer catalogs, or shared inventories.
  */
@@ -168,11 +168,11 @@ describe("references family index", () => {
     expect(screen.queryByText(/Package freshness unavailable/i)).toBeNull();
   });
 
-  test("renders discoverability links for all eight planned reference routes", async () => {
+  test("renders discoverability links for all nine planned reference routes", async () => {
     const loaded = await loadReferencesFamilyIndex();
     const cards = resolveReferenceFamilyDiscoverabilityCards(loaded.messages);
 
-    expect(REFERENCE_FAMILY_DISCOVERABILITY_ROUTES).toHaveLength(8);
+    expect(REFERENCE_FAMILY_DISCOVERABILITY_ROUTES).toHaveLength(9);
     expect(cards.map((card) => card.href)).toEqual([
       "/docs/references/api",
       "/docs/references/events",
@@ -182,12 +182,18 @@ describe("references family index", () => {
       "/docs/references/cli",
       "/docs/references/mcp-reference",
       "/docs/references/javascript-runtime",
+      "/docs/references/packaged-factories-index",
     ]);
     expect(
       cards.find(
         (card) => card.href === "/docs/references/system-config-schema",
       )?.title,
     ).toBe("System configuration schema");
+    expect(
+      cards.find(
+        (card) => card.href === "/docs/references/packaged-factories-index",
+      )?.title,
+    ).toBe("Packaged Factory Reference");
 
     for (const card of cards) {
       expect(card.title.length).toBeGreaterThan(0);
@@ -290,7 +296,7 @@ describe("references family index", () => {
     ).toBe(true);
 
     expect(REFERENCES_FAMILY_INDEX_FORBIDDEN_SIBLING_PAGE_ROOTS).toHaveLength(
-      8,
+      9,
     );
     expect(REFERENCES_FAMILY_INDEX_FORBIDDEN_RENDERER_ROOTS).toContain(
       "src/features/references/api",
@@ -302,6 +308,11 @@ describe("references family index", () => {
     expect(
       isForbiddenReferencesFamilySiblingPagePath(
         "src/content/docs/references/api/page.mdx",
+      ),
+    ).toBe(true);
+    expect(
+      isForbiddenReferencesFamilySiblingPagePath(
+        "src/content/docs/references/packaged-factories-index/page.mdx",
       ),
     ).toBe(true);
     expect(

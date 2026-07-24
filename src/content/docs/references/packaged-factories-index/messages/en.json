@@ -1,0 +1,10 @@
+{
+  "title": "Packaged Factory Reference",
+  "description": "Look up the ordered packaged factory definitions shipped with @you-agent-factory/packaged-factories—canonical names, descriptions, published metadata, and unabridged sources.",
+  "sections": {
+    "indexOverview": {
+      "title": "Packaged factory index",
+      "body": "Each packaged factory appears in allowlist order (goal, subagent, fusion, review, quorum, tts, deep-research). Each entry shows its canonical name, packaged description when present, published and schema metadata, a stable child link, and the complete unabridged definition source."
+    }
+  }
+}

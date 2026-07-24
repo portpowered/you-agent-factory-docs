@@ -1,7 +1,7 @@
 {
   "title": "リファレンス",
-  "description": "you-agent-factory のコントラクト参照面: HTTP API、イベント、スキーマ、コマンドラインインターフェイス（CLI）、Model Context Protocol（MCP）、および JavaScript ランタイム。",
-  "openingSummary": "このファミリーは、you-agent-factory の公開済みコントラクト面をまとめています。API 操作、イベント形状、設定スキーマ、コマンドラインインターフェイス（CLI）コマンド、Model Context Protocol（MCP）ツール、または JavaScript ランタイムのバインディングを調べるときに使います。このランディングはハウツーガイドではありません。",
+  "description": "you-agent-factory のコントラクト参照面: HTTP API、イベント、スキーマ、コマンドラインインターフェイス（CLI）、Model Context Protocol（MCP）、JavaScript ランタイム、およびパッケージ化ファクトリー。",
+  "openingSummary": "このファミリーは、you-agent-factory の公開済みコントラクト面をまとめています。API 操作、イベント形状、設定スキーマ、コマンドラインインターフェイス（CLI）コマンド、Model Context Protocol（MCP）ツール、JavaScript ランタイムのバインディング、またはパッケージ化ファクトリー定義を調べるときに使います。このランディングはハウツーガイドではありません。",
   "sections": {
     "discoverability": {
       "title": "コントラクト面",
@@ -38,6 +38,10 @@
     "javascript-runtime": {
       "title": "JavaScript ランタイム",
       "body": "ファクトリー作業を埋め込むための JavaScript ランタイムバインディングとパッケージ面。"
+    },
+    "packaged-factories-index": {
+      "title": "Packaged Factory リファレンス",
+      "body": "省略なしソースと安定した子リンク付きの順序付きパッケージ化ファクトリー定義。"
     }
   }
 }

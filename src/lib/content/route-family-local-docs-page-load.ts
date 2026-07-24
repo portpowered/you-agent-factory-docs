@@ -60,7 +60,13 @@ function readJsonFile<T>(path: string): T {
  * (bundlers cannot resolve expression-based imports at build time). Keep page
  * mounts out of the shared `mdx-components.tsx` registry.
  */
-async function loadRouteFamilyPageMdxComponents(
+/**
+ * Resolves the page-owned MDX component map for a route-family slug.
+ * Nested packaged-factories-index children use literal shared-map imports
+ * (standard replay vs non-replay deep-research). Exported for focused wiring
+ * tests that assert map identity without authoring child page bodies.
+ */
+export async function loadRouteFamilyPageMdxComponents(
   section: RouteFamilyLocalDocsSection,
   slug: string,
 ): Promise<MDXComponents> {
@@ -148,6 +154,54 @@ async function loadRouteFamilyPageMdxComponents(
       case "events": {
         const mod = await import(
           "@/content/docs/references/events/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index/goal": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index/subagent": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index/fusion": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index/review": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index/quorum": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index/tts": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/replay-page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged-factories-index/deep-research": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/deep-research-page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }
