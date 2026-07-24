@@ -1,0 +1,60 @@
+---
+title: "@you/fusion"
+description: "Look up the packaged @you/fusion factory: canonical name, a one-sentence description, concrete named-run examples, short operational notes, and a link to the complete parent definition."
+kind: "reference"
+registryId: "reference.packaged-factories-index-fusion"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "@you/fusion"
+  - "fusion packaged factory"
+  - "you fusion factory"
+updatedAt: "2026-07-24"
+---
+
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+
+<Section id="overview" titleKey="sections.overview.title">
+  <p data-packaged-factory-canonical-name="">
+    <T k="links.canonicalName" />
+  </p>
+  <T k="sections.overview.body" />
+</Section>
+
+<Section id="invocation-examples" titleKey="sections.invocationExamples.title">
+  <T k="sections.invocationExamples.body" />
+  ```bash
+  you run --named @you/fusion "Draft a release summary" --first-provider CLAUDE --second-provider CODEX --output fusion-summary.md
+  ```
+  ```bash
+  echo "Draft a release summary" | you run --named @you/fusion --first-model claude-sonnet-4-20250514 --second-model gpt-5
+  ```
+  ```bash
+  you run --named @you/fusion "Draft a release summary" --first-effort high --second-effort medium
+  ```
+</Section>
+
+<Section id="operational-notes" titleKey="sections.operationalNotes.title">
+  <T k="sections.operationalNotes.body" />
+</Section>
+
+<Section id="complete-definition" titleKey="sections.completeDefinition.title">
+  <T k="sections.completeDefinition.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index#fusion",
+        labelKey: "links.completeDefinition",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="deterministic-replay" titleKey="sections.deterministicReplay.title">
+  <T k="sections.deterministicReplay.body" />
+  <FusionFactoryReplay />
+</Section>

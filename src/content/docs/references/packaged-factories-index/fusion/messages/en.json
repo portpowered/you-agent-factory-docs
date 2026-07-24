@@ -1,0 +1,30 @@
+{
+  "title": "@you/fusion",
+  "description": "Look up the packaged @you/fusion factory: canonical name, a one-sentence description, concrete named-run examples, short operational notes, and a link to the complete parent definition.",
+  "sections": {
+    "overview": {
+      "title": "Overview",
+      "body": "@you/fusion runs a two-stage draft-then-refine flow on one request so the second pass improves the first draft before return."
+    },
+    "invocationExamples": {
+      "title": "Invocation examples",
+      "body": "Invoke the packaged factory by canonical name with you run --named, using positional or stdin input and optional stage overrides."
+    },
+    "operationalNotes": {
+      "title": "Operational notes",
+      "body": "Draft and refine run sequentially on the same request. Optional first/second provider, model, and effort flags override each stage independently. Optional --output (or -o) supplies a path for file-oriented markdown callers."
+    },
+    "completeDefinition": {
+      "title": "Complete definition",
+      "body": "The parent Packaged Factory Reference keeps the complete definition source and published metadata for this package."
+    },
+    "deterministicReplay": {
+      "title": "Deterministic replay",
+      "body": "Inspect a full-mode deterministic work-graph replay for the packaged fusion recording: timeline scrubber, topology, and work progress."
+    }
+  },
+  "links": {
+    "canonicalName": "@you/fusion",
+    "completeDefinition": "Complete @you/fusion definition on Packaged Factory Reference"
+  }
+}

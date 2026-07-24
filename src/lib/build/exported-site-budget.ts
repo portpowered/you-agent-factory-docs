@@ -88,11 +88,17 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * and docs-root convergence added 14 intentional static routes (four docs
  * roots plus ten linked coming-soon destinations). CI measured ~366.29 MiB
  * total while Next static JS (~13.50 MiB) and search bootstrap (~22.87 MiB)
- * remained below their existing focused ceilings. The total ceiling is now
+ * remained below their existing focused ceilings. The total ceiling was
  * 375 MiB; JS and search ceilings remain unchanged.
+ * Raised total-out again on 2026-07-24 UTC after merging Batch 4 packaged
+ * factory child pages (deep-research, goal/subagent, fusion/review) plus the
+ * landing Youi compact goal replay onto the same head. CI measured
+ * ~377.69 MiB total (377691517 bytes) while Next static JS (~13.97 MiB) and
+ * search bootstrap (~22.93 MiB) stayed under their focused ceilings. The
+ * total ceiling is now 380 MiB; JS and search ceilings remain unchanged.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 375_000_000,
+  maxTotalOutBytes: 380_000_000,
   maxNextStaticJsBytes: 15_000_000,
   maxSearchBootstrapBytes: 32_000_000,
 } as const;

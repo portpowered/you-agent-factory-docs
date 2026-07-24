@@ -1,0 +1,60 @@
+---
+title: "@you/review"
+description: "Look up the packaged @you/review factory: canonical name, a one-sentence description, concrete named-run examples, short operational notes, and a link to the complete parent definition."
+kind: "reference"
+registryId: "reference.packaged-factories-index-review"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "@you/review"
+  - "review packaged factory"
+  - "you review factory"
+updatedAt: "2026-07-24"
+---
+
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+
+<Section id="overview" titleKey="sections.overview.title">
+  <p data-packaged-factory-canonical-name="">
+    <T k="links.canonicalName" />
+  </p>
+  <T k="sections.overview.body" />
+</Section>
+
+<Section id="invocation-examples" titleKey="sections.invocationExamples.title">
+  <T k="sections.invocationExamples.body" />
+  ```bash
+  you run --named @you/review "Draft the release notes"
+  ```
+  ```bash
+  echo "Draft the release notes" | you run --named @you/review
+  ```
+  ```bash
+  you run --named @you/review "Review draft release notes."
+  ```
+</Section>
+
+<Section id="operational-notes" titleKey="sections.operationalNotes.title">
+  <T k="sections.operationalNotes.body" />
+</Section>
+
+<Section id="complete-definition" titleKey="sections.completeDefinition.title">
+  <T k="sections.completeDefinition.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index#review",
+        labelKey: "links.completeDefinition",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="deterministic-replay" titleKey="sections.deterministicReplay.title">
+  <T k="sections.deterministicReplay.body" />
+  <ReviewFactoryReplay />
+</Section>

@@ -76,7 +76,7 @@ describe("W20 budget convergence catalog", () => {
     ]);
     expect(W20_BUDGET_FOCUSED_PAYLOAD_PAGE_BUDGETS.length).toBe(3);
 
-    expect(W20_BUDGET_TOTAL_SITE_BASELINES.maxTotalOutBytes).toBe(375_000_000);
+    expect(W20_BUDGET_TOTAL_SITE_BASELINES.maxTotalOutBytes).toBe(380_000_000);
     expect(W20_BUDGET_TOTAL_SITE_BASELINES.maxNextStaticJsBytes).toBe(
       15_000_000,
     );

@@ -131,9 +131,13 @@ in every locale Orama catalog; layout meta omits item rows; local combined
 `make build` measured ~225.54 MiB total / ~29.69 MiB search / ~2.87 MiB Next
 static JS — total stays under the W17 ceiling; search raised):
 
-- `maxTotalOutBytes`: 235_000_000
-- `maxNextStaticJsBytes`: 3_500_000
+- `maxTotalOutBytes`: 380_000_000
+- `maxNextStaticJsBytes`: 15_000_000
 - `maxSearchBootstrapBytes`: 32_000_000
+
+(Recalibrated 2026-07-24 UTC from CI `totalOutBytes` 377691517 after Batch 4
+packaged-factory child pages + landing Youi compact goal replay merged onto
+the same head; JS/search ceilings unchanged.)
 
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
