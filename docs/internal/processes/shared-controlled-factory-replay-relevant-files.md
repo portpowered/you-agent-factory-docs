@@ -130,6 +130,28 @@ Rules:
   region present in full and absent in compact for the same recording.
 - Tests may pass `bindDomGates={false}`.
 
+## Frozen public client API (story 007+)
+
+| Concern | Location |
+| --- | --- |
+| Public mode entry (`recording` + `mode`) | `controlled-factory-replay.tsx` → `ControlledFactoryReplay` |
+| Mode union | `ControlledFactoryReplayMode` (`"full"` \| `"compact"`) |
+| Barrel re-exports | `index.ts` |
+| Injectable fixtures | `fixtures.ts` |
+
+Rules:
+
+- Prefer `ControlledFactoryReplay` for route / landing callers: inject **one**
+  serializable recording and set `mode`. Do not import generated packaged-factory
+  corpus, reference pages, landing modules, route loaders, dependency manifests,
+  or global CSS from this feature.
+- Full and compact compositions remain available for direct mounts; the public
+  entry only dispatches on `mode` over the same controller contracts.
+- Fixture suite under `src/features/factory-replay/**` covers transitions,
+  projection cache, 2000 ms cadence (hold/loop), gates, cleanup, and full vs
+  compact region differences — no route mount required.
+- Ownership for this lane stays inside `src/features/factory-replay/**`.
+
 ## Packaged dependencies (consume, do not re-own)
 
 | Package | Use |

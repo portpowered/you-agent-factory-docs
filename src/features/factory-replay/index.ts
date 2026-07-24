@@ -1,11 +1,11 @@
 /**
  * Shared host-controlled factory-replay feature.
  *
- * Stories 001–006 freeze pure playback transitions, public projection
- * preparation/cache, the single chained 2000 ms autoplay scheduler,
- * visibility / intersection / reduced-motion gates, full-mode composition,
- * and compact-mode composition with host-controlled selected tick. Later
- * stories freeze the public mode entry.
+ * Frozen public client entry: `ControlledFactoryReplay` accepts one injected
+ * serializable recording plus `mode: "full" | "compact"`. Callers own
+ * route-level recording imports; this feature owns pure transitions, projection
+ * cache, 2000 ms autoplay, gates, and full/compact composition — without
+ * FactoryRecordingTopologyReplay or generated packaged-factory corpus modules.
  */
 
 export type {
@@ -41,6 +41,11 @@ export type {
   CompactModePresentationStatus,
 } from "./compact-mode-composition";
 export { deriveCompactModeComposition } from "./compact-mode-composition";
+export type {
+  ControlledFactoryReplayMode,
+  ControlledFactoryReplayProps,
+} from "./controlled-factory-replay";
+export { ControlledFactoryReplay } from "./controlled-factory-replay";
 export type { ControlledFactoryReplayCompactProps } from "./controlled-factory-replay-compact";
 export { ControlledFactoryReplayCompact } from "./controlled-factory-replay-compact";
 export type { ControlledFactoryReplayFullProps } from "./controlled-factory-replay-full";
