@@ -40,19 +40,24 @@ Republish `@you-agent-factory/packaged-factories` so the installed
 or replace the broken `0.0.2` artifact so Batch 1 can pin one exact version
 that proves clean.
 
-## Upstream status (re-checked 2026-07-24 UTC)
+## Upstream status (re-checked 2026-07-24 02:21 UTC)
 
 - Source of truth already lands the exports map in
-  `packages/packaged-factories/package.json` on both
-  `portpowered/you-agent-factory` and `portpowered/infinite-you` (`./manifest`,
-  `./factories/*.json`, `./factories/*.yaml` → `generated/`).
+  `packages/packaged-factories/package.json` on
+  `portpowered/you-agent-factory` (`./manifest`, `./schemas/*`,
+  `./factories/*.json` / `./factories/*.yaml` → `generated/` + `schemas/`).
+  Default-branch package `version` there is still `0.0.0`.
 - [you-agent-factory#1258](https://github.com/portpowered/you-agent-factory/pull/1258)
   (`packaged-factories-npm-publication`) **merged** 2026-07-23 after the broken
   npm `0.0.2` tarball publish (~00:42Z that day). Registry was not republished.
+- [you-agent-factory#1260](https://github.com/portpowered/you-agent-factory/pull/1260)
+  (website manifest consumption) **merged** 2026-07-24; it assumes the public
+  data exports but does not republish npm.
 - [you-agent-factory#1239](https://github.com/portpowered/you-agent-factory/pull/1239)
-  (`Fix public package releases`) remains an open draft that mentions publishing
-  `packaged-factories@0.0.2` with verified export targets.
-- npm still only has `0.0.0` and `0.0.2`; latest `0.0.2` has no `exports`.
+  (`Fix public package releases`) remains an open draft.
+- npm still only has `0.0.0` and `0.0.2`; downloaded `0.0.2` tarball has
+  `files: ["factories"]` and **no** `exports` (modified
+  `2026-07-23T00:42:41.715Z`).
 
 ## Evidence in this repo
 
