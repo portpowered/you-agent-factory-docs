@@ -78,3 +78,49 @@ workers, or companion JavaScript.
 - Batch 1 filesystem pull still lists the companion as optional at the
   allowlist layer; **this corpus lane treats it as required** and fails closed
   when absent — never invent substitute JavaScript.
+
+## Key files (story 003 — deterministic generated artifacts + manifest)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/packaged-factory-generated-source-corpus/generated-artifacts-model.ts` | Pure artifact builders: `index.json` model (corpus + companion), per-slug definition paths, companion JSON, `manifest.json` (package version, artifact paths, source hashes), deterministic JSON serialization |
+| `src/lib/packaged-factory-generated-source-corpus/generate-packaged-factories-index.ts` | Build-only IO: acquire corpus + companion → write artifacts under the generated tree via `writeFileIfChangedSync` |
+| `src/lib/packaged-factory-generated-source-corpus/generated-artifacts-model.test.ts` | Pure order / manifest / byte-stability / fail-closed proofs |
+| `src/lib/packaged-factory-generated-source-corpus/generate-packaged-factories-index.test.ts` | Live host generate + re-run byte-stability proofs |
+| `scripts/generate-packaged-factories-index.ts` | CLI entrypoint (`bun ./scripts/generate-packaged-factories-index.ts`) |
+| `src/content/docs/references/packaged-factories-index/generated/` | Committed generated outputs (`index.json`, `manifest.json`, `factories/<slug>.factory.json`, `deep-research.source.json`) |
+
+### Generated tree layout
+
+```
+src/content/docs/references/packaged-factories-index/generated/
+  index.json                      # ordered corpus + companionSource
+  manifest.json                   # packageVersion, artifacts[], sourceHashes[]
+  deep-research.source.json       # raw companion JS + straightforward metadata
+  factories/
+    goal.factory.json             # exact acquired factory.json UTF-8 bytes
+    subagent.factory.json
+    fusion.factory.json
+    review.factory.json
+    quorum.factory.json
+    tts.factory.json
+    deep-research.factory.json
+```
+
+### Determinism rule
+
+- JSON artifacts (`index.json`, `manifest.json`, `deep-research.source.json`)
+  use `${JSON.stringify(value, null, 2)}\n`.
+- Per-factory definition files preserve exact acquired `factory.json` UTF-8
+  bytes (do not re-serialize).
+- Re-running the generator with the same installed package inputs must leave
+  file bytes unchanged (`writeFileIfChangedSync` → `changed: false`).
+
+### Biome ignore for generated tree
+
+`biome.json` excludes
+`src/content/docs/references/packaged-factories-index/generated` from
+format/lint. Generated `factories/<slug>.factory.json` files preserve exact
+acquired package UTF-8 bytes (and `index.json` embeds unabridged parsed
+definitions); Biome's JSON formatter would otherwise rewrite those bytes and
+break hash/drift stability.

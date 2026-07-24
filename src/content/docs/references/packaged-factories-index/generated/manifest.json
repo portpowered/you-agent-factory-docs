@@ -1,0 +1,112 @@
+{
+  "formatVersion": "1",
+  "packageName": "@you-agent-factory/packaged-factories",
+  "packageVersion": "0.0.2",
+  "exportsMapAbsent": true,
+  "generatedRelativeRoot": "src/content/docs/references/packaged-factories-index/generated",
+  "artifacts": [
+    {
+      "path": "index.json",
+      "kind": "index",
+      "artifactSha256": "de0908ae0d5cd782171a21baae6c199f11f692ff177a78892a23a0c6b814015f"
+    },
+    {
+      "path": "factories/goal.factory.json",
+      "kind": "factory-definition",
+      "artifactSha256": "382cf4e415ce0ed68384f698221060a7bfd816a87f83ba85af45db124c0f6d2e",
+      "childSlug": "goal",
+      "sourceRelativePath": "factories/goal/factory.json",
+      "sourceSha256": "382cf4e415ce0ed68384f698221060a7bfd816a87f83ba85af45db124c0f6d2e"
+    },
+    {
+      "path": "factories/subagent.factory.json",
+      "kind": "factory-definition",
+      "artifactSha256": "d80315f40326db1fdab536bbbead5ca6ddf83f86eded86750d3914d553eac52d",
+      "childSlug": "subagent",
+      "sourceRelativePath": "factories/subagent/factory.json",
+      "sourceSha256": "d80315f40326db1fdab536bbbead5ca6ddf83f86eded86750d3914d553eac52d"
+    },
+    {
+      "path": "factories/fusion.factory.json",
+      "kind": "factory-definition",
+      "artifactSha256": "ffced05cae1ebe978ade5777304a62f72ddbafc338e138328bacfa3a33bfbf55",
+      "childSlug": "fusion",
+      "sourceRelativePath": "factories/fusion/factory.json",
+      "sourceSha256": "ffced05cae1ebe978ade5777304a62f72ddbafc338e138328bacfa3a33bfbf55"
+    },
+    {
+      "path": "factories/review.factory.json",
+      "kind": "factory-definition",
+      "artifactSha256": "c87c7ed284a0da158def1634024fddcb68967cb936fb1f9006f08d7968cfed5b",
+      "childSlug": "review",
+      "sourceRelativePath": "factories/review/factory.json",
+      "sourceSha256": "c87c7ed284a0da158def1634024fddcb68967cb936fb1f9006f08d7968cfed5b"
+    },
+    {
+      "path": "factories/quorum.factory.json",
+      "kind": "factory-definition",
+      "artifactSha256": "bdeb877e96f77fd5c9c51bfe9af827f8f63ead4d7ba14d0b0fa22c3e540e43b1",
+      "childSlug": "quorum",
+      "sourceRelativePath": "factories/quorum/factory.json",
+      "sourceSha256": "bdeb877e96f77fd5c9c51bfe9af827f8f63ead4d7ba14d0b0fa22c3e540e43b1"
+    },
+    {
+      "path": "factories/tts.factory.json",
+      "kind": "factory-definition",
+      "artifactSha256": "e33f7549f1434df1c371379c1914fac95703017821341983ac55ebd8fce6dec7",
+      "childSlug": "tts",
+      "sourceRelativePath": "factories/tts/factory.json",
+      "sourceSha256": "e33f7549f1434df1c371379c1914fac95703017821341983ac55ebd8fce6dec7"
+    },
+    {
+      "path": "factories/deep-research.factory.json",
+      "kind": "factory-definition",
+      "artifactSha256": "4bb5a22e99ddb059097bea21fde7f6ce6d8d60b00947e927b765d22e6ffa99af",
+      "childSlug": "deep-research",
+      "sourceRelativePath": "factories/deep-research/factory.json",
+      "sourceSha256": "4bb5a22e99ddb059097bea21fde7f6ce6d8d60b00947e927b765d22e6ffa99af"
+    },
+    {
+      "path": "deep-research.source.json",
+      "kind": "companion-javascript",
+      "artifactSha256": "32f63e87c2fa89ac7caf23a9752fc991691280e8bf0bb9d3dd1cb0236b9541c2",
+      "childSlug": "deep-research",
+      "sourceRelativePath": "factories/deep-research/scripts/deep-research.workflow.js",
+      "sourceSha256": "34eced10c33ec0cc2d37fec2d15193ebc6e9df1b6829190aba66b550287e2f8d"
+    }
+  ],
+  "sourceHashes": [
+    {
+      "relativePath": "factories/goal/factory.json",
+      "sha256": "382cf4e415ce0ed68384f698221060a7bfd816a87f83ba85af45db124c0f6d2e"
+    },
+    {
+      "relativePath": "factories/subagent/factory.json",
+      "sha256": "d80315f40326db1fdab536bbbead5ca6ddf83f86eded86750d3914d553eac52d"
+    },
+    {
+      "relativePath": "factories/fusion/factory.json",
+      "sha256": "ffced05cae1ebe978ade5777304a62f72ddbafc338e138328bacfa3a33bfbf55"
+    },
+    {
+      "relativePath": "factories/review/factory.json",
+      "sha256": "c87c7ed284a0da158def1634024fddcb68967cb936fb1f9006f08d7968cfed5b"
+    },
+    {
+      "relativePath": "factories/quorum/factory.json",
+      "sha256": "bdeb877e96f77fd5c9c51bfe9af827f8f63ead4d7ba14d0b0fa22c3e540e43b1"
+    },
+    {
+      "relativePath": "factories/tts/factory.json",
+      "sha256": "e33f7549f1434df1c371379c1914fac95703017821341983ac55ebd8fce6dec7"
+    },
+    {
+      "relativePath": "factories/deep-research/factory.json",
+      "sha256": "4bb5a22e99ddb059097bea21fde7f6ce6d8d60b00947e927b765d22e6ffa99af"
+    },
+    {
+      "relativePath": "factories/deep-research/scripts/deep-research.workflow.js",
+      "sha256": "34eced10c33ec0cc2d37fec2d15193ebc6e9df1b6829190aba66b550287e2f8d"
+    }
+  ]
+}

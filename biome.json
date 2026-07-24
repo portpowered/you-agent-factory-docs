@@ -11,6 +11,7 @@
       "**/*.ts",
       "**/*.tsx",
       "**/*.json",
+      "!src/content/docs/references/packaged-factories-index/generated",
       "biome.json",
       "next.config.ts"
     ]
