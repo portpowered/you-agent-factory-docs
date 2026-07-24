@@ -1,7 +1,10 @@
 /**
  * Page-owned publish proof for references/packaged-factories-index/fusion.
  * Covers concise reference surface plus full-mode fusion-only replay mount.
- * Broader cross-child isolation proofs for review belong to later stories.
+ * Distinctive topology labels prove the injected fusion recording (not review).
+ * Import-graph isolation lives in fusion-import-graph.test.ts and the
+ * consolidated fusion-review-ownership-boundaries.test.ts.
+ * Browser verify: `bun src/content/docs/references/packaged-factories-index/fusion/assert-fusion-child-reference-browser.ts`
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -168,6 +171,12 @@ describe("packaged-factories-index/fusion reference page", () => {
           name: DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES.progress.regionLabel,
         }),
       ).toBeTruthy();
+      expect(replayRoot.getAttribute("data-presentation-status")).toBe("ready");
+      // Distinctive fusion recording topology labels (not review / siblings).
+      expect(screen.getByText("draft-fusion")).toBeTruthy();
+      expect(screen.getByText("refine-fusion")).toBeTruthy();
+      expect(screen.queryByText("execute-review-work")).toBeNull();
+      expect(screen.queryByText("review-review-work")).toBeNull();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

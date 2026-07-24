@@ -67,6 +67,17 @@ landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Asserts fusion/review resolve child-owned maps; remaining standard children keep the shared placeholder |
 | `src/content/docs/references/packaged-factories-index/review/assert-review-child-reference-browser.ts` | Browser markers for concise content + `data-factory-replay-mode="full"` |
 
+## Key files (story 005 — page behavior + ownership boundaries)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/fusion/fusion-page.test.tsx` | Route render + concise content + full-mode replay + distinctive fusion topology labels (`draft-fusion` / `refine-fusion`) |
+| `src/content/docs/references/packaged-factories-index/review/review-page.test.tsx` | Route render + concise content + full-mode replay + distinctive review topology labels (`execute-review-work` / `review-review-work`) |
+| `src/content/docs/references/packaged-factories-index/fusion/fusion-import-graph.test.ts` | Per-child Bun.build reachability for the fusion ownership surface |
+| `src/content/docs/references/packaged-factories-index/review/review-import-graph.test.ts` | Per-child Bun.build reachability for the review ownership surface |
+| `src/content/docs/references/packaged-factories-index/fusion-review-ownership-boundaries.test.ts` | Consolidated story-005 fence: both children reach only their recording; shared `replay-page-mdx-components` reaches none |
+| `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: fusion/review resolve child-owned maps; remaining standard children keep the shared placeholder |
+
 ## Patterns
 
 - Nested packaged-factory child pages are ordinary local-docs reference bundles
@@ -95,6 +106,13 @@ landing composition, dependency pins, or global CSS.
 - Fusion/review ownership import-graph proofs live under the child directories
   and reuse `collectParentImportGraphInputs` from `parent-import-graph.ts` for
   Bun.build metafile collection only — keep child-specific forbidden markers
-  local.
+  local. Story 005 consolidates both surfaces in
+  `fusion-review-ownership-boundaries.test.ts` and proves the shared
+  placeholder reaches no packaged recordings.
+- Distinctive topology labels from the injected recording (for example
+  `draft-fusion` / `refine-fusion` vs `execute-review-work` /
+  `review-review-work`) prove the rendered full-mode replay is driven by that
+  page’s recording. Prefer page-test assertions for those labels; browser HTML
+  probes stay focused on SSR-stable copy + `data-factory-replay-mode="full"`.
 - Worktree browser verify: `bun run dev -- --webpack -p <port>` (Turbopack
   cannot resolve hoisted parent `node_modules/next`).

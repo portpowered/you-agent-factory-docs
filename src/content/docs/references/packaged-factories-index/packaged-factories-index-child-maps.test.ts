@@ -3,7 +3,9 @@
  * wiring: remaining standard replay children share one literal replay-page
  * map; fusion and review resolve child-owned maps; deep-research resolves a
  * distinct non-replay map. Parent import-graph isolation is covered by
- * packaged-factories-index-import-graph.test.ts.
+ * packaged-factories-index-import-graph.test.ts. Fusion/review recording
+ * ownership consolidation is covered by
+ * fusion-review-ownership-boundaries.test.ts.
  */
 import { describe, expect, test } from "bun:test";
 import { loadRouteFamilyPageMdxComponents } from "@/lib/content/route-family-local-docs-page-load";
