@@ -24,6 +24,7 @@ import {
   YouiShowcase,
 } from "@/features/landing-page";
 import { ParticleSphere } from "@/features/landing-page/components/ParticleSphere";
+import { YouiCompactGoalReplayIsland } from "@/features/landing-page/components/YouiCompactGoalReplayIsland";
 import type {
   LandingPageProps,
   LandingPageSlots,
@@ -238,6 +239,8 @@ export function composeProductionCapabilitySlot(
 /**
  * Youi showcase from fixture youi fields. Maps `imageSrc` → `backgroundSrc`;
  * graph uses YouiShowcase public defaults when not present on fixture.
+ * Wires the landing-owned compact goal replay island as `replayIsland` while
+ * keeping the semantic/static graph fallback in delivered HTML.
  */
 export function composeProductionYouiSlot(
   youi: LandingYouiData = fixtureLandingPageData.youi,
@@ -247,6 +250,7 @@ export function composeProductionYouiSlot(
     <YouiShowcase
       backgroundSrc={youi.imageSrc}
       graphSrc={graphSrc}
+      replayIsland={<YouiCompactGoalReplayIsland />}
       title={youi.title}
     />
   );

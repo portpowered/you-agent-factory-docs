@@ -103,6 +103,12 @@ export {
   whaleEaseToCss,
 } from "./components/whale-plate.theme";
 export {
+  YOUI_COMPACT_GOAL_RECORDING,
+  YOUI_COMPACT_GOAL_REPLAY_MESSAGES,
+  YouiCompactGoalReplayIsland,
+  type YouiCompactGoalReplayIslandProps,
+} from "./components/YouiCompactGoalReplayIsland";
+export {
   YOUI_SHOWCASE_BACKGROUND_SIZES,
   YOUI_SHOWCASE_CONTENT_CLASSNAME,
   YOUI_SHOWCASE_DEFAULT_BACKGROUND_SRC,

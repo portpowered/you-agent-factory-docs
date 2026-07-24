@@ -140,6 +140,21 @@ describe("composeProductionYouiSlot", () => {
     expect(html).toContain(fixtureLandingPageData.youi.title);
     expect(html).toContain(`src="${fixtureLandingPageData.youi.imageSrc}"`);
   });
+
+  test("wires compact goal replay island while keeping static graph fallback", () => {
+    const html = renderToStaticMarkup(
+      composeProductionYouiSlot() as ReactElement,
+    );
+
+    expect(html).toContain('data-youi-showcase-graph-fallback=""');
+    expect(html).toContain('data-youi-showcase-replay-slot=""');
+    expect(html).toContain('data-youi-compact-goal-replay-island=""');
+    expect(html).toContain(
+      'data-youi-compact-goal-recording-id="packaged-goal-sample"',
+    );
+    expect(html).toContain('data-factory-replay-mode="compact"');
+    expect(html).toContain('data-progress-visible="false"');
+  });
 });
 
 describe("composeProductionCarouselSlot", () => {
