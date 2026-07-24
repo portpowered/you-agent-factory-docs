@@ -145,6 +145,36 @@ avoidable import leakage over raising budget ceilings.
    `youi-landing-import-graph.polluted-fixture.ts` (Youi detector must observe
    non-goal / index / source markers).
 
+## Key files (story 005 — keyboard/touch a11y, graph containment, hydration)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/packaged-factory-reference-family-closeout-a11y.ts` | Closeout-owned tip proof helpers: keyboard-focusable Play/Pause (+ full Reset/timeline), page-overflow containment, hydration-mismatch classifier, family route/viewport contracts |
+| `src/lib/verify/packaged-factory-reference-family-closeout-a11y.test.tsx` | Pure fail-closed + tip mounts (`GoalFactoryReplay` full, Youi compact) for keyboard activation |
+| `src/lib/verify/assert-packaged-factory-reference-family-closeout-a11y-browser.ts` | Playwright probe against static `out/` (or `CLOSEOUT_A11Y_PROBE_BASE_URL`): family-route hydration, keyboard + mobile touch Play/Pause, mobile/wide page containment |
+| `src/lib/verify/a11y-page-structure.ts` | Reused `listKeyboardFocusableControls` (do not fork) |
+| `src/lib/verify/a11y-responsive-probes.ts` | Reused `measurePageLevelOverflow` (do not fork) |
+| `src/lib/verify/a11y-responsive-contract.ts` | Reused `CRITICAL_VIEWPORTS` + `PAGE_OVERFLOW_TOLERANCE_PX` |
+
+### Story 005 acceptance mapping
+
+1. **Keyboard-operable Play/Pause (+ timeline on full)** —
+   `assertPackagedFactoryCloseoutKeyboardFocusableControls` requires enabled
+   Play/Pause (and full-mode Reset + `Select recorded tick` slider) via
+   `listKeyboardFocusableControls`. Tip mounts prove Enter/Space + click
+   toggle `data-playing`. `Follow latest` must remain present in full chrome;
+   it may be disabled (not focusable) when already on the latest tick (goal
+   sample is a single tick).
+2. **Touch + graph containment** — browser probe taps Play/Pause at mobile
+   (390) on goal full + home compact; `assertPackagedFactoryCloseoutPageContained`
+   requires zero unintended page overflow at mobile (390) and wide (1440) on
+   parent index, goal, deep-research, and home Youi after replay hosts are in
+   view.
+3. **No hydration mismatches** —
+   `assertPackagedFactoryCloseoutNoHydrationMismatches` classifies console /
+   pageerror text (`hydration`, `did not match`, server-rendered HTML) and
+   requires zero hits on the four family routes.
+
 ## Patterns
 
 - Closeout proofs compose Batch 2 verify/generate helpers; they do not invent a
@@ -171,7 +201,12 @@ avoidable import leakage over raising budget ceilings.
   classifiers rather than forking Bun.build policy. Keep positive-control
   entrypoints (shared factory-replay + polluted Youi fixture) so exclusion
   asserts cannot silently become no-ops.
-- Later closeout stories (a11y/export/CSS, gates, browser evidence) should add
+- Story 005 composes a11y keyboard/overflow probes + tip mounts rather than a
+  second axe matrix. Interactive keyboard/touch + hydration probes should serve
+  trusted static `out/` (or set `CLOSEOUT_A11Y_PROBE_BASE_URL`); default port
+  3624. Treat disabled `Follow latest` on the single-tick goal sample as
+  present-but-not-focusable, not a missing control.
+- Later closeout stories (export/CSS, gates, browser evidence) should add
   sibling `packaged-factory-reference-family-closeout-*` modules rather than
   expanding earlier story modules beyond their ownership.
 
@@ -183,7 +218,9 @@ bun test src/lib/verify/packaged-factory-reference-family-closeout-corpus.test.t
 bun test src/lib/verify/packaged-factory-reference-family-closeout-deep-research.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-replay.test.tsx
 bun test src/lib/verify/packaged-factory-reference-family-closeout-import-graphs.test.ts
+bun test src/lib/verify/packaged-factory-reference-family-closeout-a11y.test.tsx
 bun test src/lib/packaged-factory-generated-source-corpus/corpus-drift.test.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-deep-research-browser.ts
 bun src/lib/verify/assert-packaged-factory-reference-family-closeout-replay-browser.ts
+bun src/lib/verify/assert-packaged-factory-reference-family-closeout-a11y-browser.ts
 ```
