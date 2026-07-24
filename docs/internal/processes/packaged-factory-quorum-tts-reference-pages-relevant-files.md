@@ -70,6 +70,17 @@ regeneration, landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/tts/assert-tts-child-reference-browser.ts` | Dev-server HTML probe for content + full-mode replay markers |
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Loader identity: quorum/tts → child maps; remaining siblings stay on shared placeholder |
 
+## Key files (story 005 — page behavior + recording isolation proofs)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/child-recording-import-graph.ts` | Shared child helper on main (`ownedPackagedFactoryRecordingFilename` / `graphIncludesOwnedPackagedRecording` / local Bun collector) — do not land a parallel `allowed*` API |
+| `src/content/docs/references/packaged-factories-index/quorum-tts-child-import-graph.test.ts` | Quorum/tts child map reaches only its own `*.factory-recording.v1.json` via the shared owned-* helper |
+| `src/content/docs/references/packaged-factories-index/quorum/quorum-page.test.tsx` | Concise content + full-mode replay region proofs |
+| `src/content/docs/references/packaged-factories-index/tts/tts-page.test.tsx` | Concise content + full-mode replay region proofs |
+| `src/content/docs/references/packaged-factories-index/quorum/assert-quorum-child-reference-browser.ts` | Browser HTML probe (content + full-mode + no sibling recording filenames) |
+| `src/content/docs/references/packaged-factories-index/tts/assert-tts-child-reference-browser.ts` | Browser HTML probe (content + full-mode + no sibling recording filenames) |
+
 ## Patterns
 
 - Nested packaged-factory child pages are ordinary local-docs bundles under the
@@ -107,3 +118,13 @@ regeneration, landing composition, dependency pins, or global CSS.
   `node_modules`). Assert `data-factory-replay-mode="full"` plus timeline /
   topology / work-progress region labels, and that sibling recording filenames
   do not appear in HTML.
+- Per-route recording isolation: prove each child `page-mdx-components.tsx`
+  Bun metafile graph includes only that child’s
+  `generated/<slug>.factory-recording.v1.json` and hits none of the other
+  packaged recording filenames. Use the shared
+  `child-recording-import-graph.ts` already on main
+  (`ownedPackagedFactoryRecordingFilename`,
+  `findForeignPackagedRecordingHits`,
+  `graphIncludesOwnedPackagedRecording`,
+  `collectChildRecordingImportGraphInputs`) — do not reintroduce a parallel
+  `allowed*` / parent-wrapper helper surface.

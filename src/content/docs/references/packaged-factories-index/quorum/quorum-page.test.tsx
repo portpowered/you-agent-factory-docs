@@ -3,7 +3,8 @@
  * Asserts published nested route, registry alignment, concise reference
  * chrome (canonical name, description, invocation examples, parallelism
  * note, parent definition link), and full-mode quorum-only replay mount.
- * Per-route recording isolation import-graph proofs belong to a later story.
+ * Per-route recording isolation import-graph proofs live in
+ * quorum-tts-child-import-graph.test.ts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
