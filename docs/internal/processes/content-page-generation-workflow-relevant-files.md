@@ -2145,7 +2145,13 @@ Run with plain `bun` from repo cwd; do not leave the probe server running.
   `buildRegistryGraphLegend`.
 * `src/content/registry/`
   Registry JSON records that connect published pages to taxonomy, graphs, and
-  runtime loaders.
+  runtime loaders. Multi-segment registry slugs (for example
+  `packaged-factories-index/goal`) live as nested files under the kind
+  directory (`references/packaged-factories-index/goal.json`).
+  `src/lib/content/registry.ts` walks nested kind directories and skips
+  colocated `messages/` trees so tag locale files are never parsed as records.
+  See
+  [packaged-factory-goal-subagent-reference-pages-relevant-files.md](./packaged-factory-goal-subagent-reference-pages-relevant-files.md).
 * `scripts/validate-registry.ts`
   Maintainer and CI entrypoint for registry validation after adding records.
 

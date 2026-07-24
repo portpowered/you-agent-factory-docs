@@ -99,4 +99,46 @@ describe("loadRegistry build-scoped cache", () => {
     await loadRegistry({ registryRoot });
     expect(getRegistryParseCountForTests()).toBe(1);
   });
+
+  test("loads multi-segment registry slugs from nested kind directories", async () => {
+    const root = mkdtempSync(join(tmpdir(), "registry-nested-slug-"));
+    cleanupPaths.push(root);
+    const nestedDir = join(root, "references", "packaged-factories-index");
+    mkdirSync(nestedDir, { recursive: true });
+    mkdirSync(join(root, "tags", "messages"), { recursive: true });
+    writeFileSync(
+      join(nestedDir, "goal.json"),
+      `${JSON.stringify(
+        {
+          id: "reference.packaged-factories-index-goal",
+          slug: "packaged-factories-index/goal",
+          kind: "reference",
+          defaultTitleKey: "title",
+          defaultSummaryKey: "description",
+          aliases: [],
+          tags: [],
+          relatedIds: [],
+          citationIds: [],
+          status: "published",
+          createdAt: "2026-07-24T00:00:00.000Z",
+          updatedAt: "2026-07-24T00:00:00.000Z",
+        },
+        null,
+        2,
+      )}\n`,
+      "utf8",
+    );
+    writeFileSync(
+      join(root, "tags", "messages", "ignored.json"),
+      `${JSON.stringify({ not: "a-tag-record" })}\n`,
+      "utf8",
+    );
+
+    const indexes = await loadRegistry({ registryRoot: root });
+    const record = indexes.byId.get("reference.packaged-factories-index-goal");
+    expect(record?.slug).toBe("packaged-factories-index/goal");
+    expect(indexes.bySlug.get("packaged-factories-index/goal")?.id).toBe(
+      "reference.packaged-factories-index-goal",
+    );
+  });
 });
