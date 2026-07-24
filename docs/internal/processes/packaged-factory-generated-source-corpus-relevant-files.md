@@ -88,15 +88,53 @@ workers, or companion JavaScript.
 | `src/lib/packaged-factory-generated-source-corpus/generated-artifacts-model.test.ts` | Pure order / manifest / byte-stability / fail-closed proofs |
 | `src/lib/packaged-factory-generated-source-corpus/generate-packaged-factories-index.test.ts` | Live host generate + re-run byte-stability proofs |
 | `scripts/generate-packaged-factories-index.ts` | CLI entrypoint (`bun ./scripts/generate-packaged-factories-index.ts`) |
-| `src/content/docs/references/packaged-factories-index/generated/` | Committed generated outputs (`index.json`, `manifest.json`, `factories/<slug>.factory.json`, `deep-research.source.json`) |
+| `src/content/docs/references/packaged-factories-index/generated/` | Committed generated outputs (`index.json`, `manifest.json`, `factories/<slug>.factory.json`, `deep-research.source.json`, six `*.factory-recording.v1.json`) |
 
-### Generated tree layout
+## Key files (story 004 — six distinctive factory-recording/v1 samples)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/packaged-factory-generated-source-corpus/recording-samples-model.ts` | Pure builders: project acquired factory.json into recording-safe topology, emit six `factory-recording/v1` samples, validate via public client parser + factory-replay projections |
+| `src/lib/packaged-factory-generated-source-corpus/recording-samples-model.test.ts` | Pure projection / fail-closed proofs + live host six-recording distinctiveness proofs |
+| `src/lib/packaged-factory-generated-source-corpus/generated-artifacts-model.ts` | Bundle includes `*.factory-recording.v1.json` + `factory-recording` manifest kind |
+| `src/lib/packaged-factory-generated-source-corpus/generate-packaged-factories-index.ts` | Writes validated recordings beside index / definitions / companion / manifest |
+
+### Recording sample rule
+
+- Emit exactly six recordings for `goal`, `subagent`, `fusion`, `review`,
+  `quorum`, and `tts`. **Never** emit a deep-research recording.
+- Paths under the generated root:
+  `{slug}.factory-recording.v1.json`.
+- Packaged `@you/...` factory names and package-only worker fields (for example
+  `promptFile`, some `modelProvider` enums) are **not** recording-schema-valid.
+  Project a recording-safe Factory definition that:
+  - uses the docs-owned child slug as `factory.name`
+  - preserves work-type + workstation IO topology identity from the acquired
+    definition
+  - keeps only schema-safe worker identity fields (`name`, `type`, `stopToken`)
+- Each sample includes a deterministic `INITIAL_STRUCTURE_REQUEST` topology
+  bootstrap event.
+- Before write, validate with
+  `@you-agent-factory/client` `parseFactoryRecording` /
+  `safeParseFactoryRecording` and project every tick with
+  `@you-agent-factory/factory-replay`
+  `projectFactoryTopologyAtTick` + `projectFactoryWorkProgressAtTick`.
+- Fail closed on parser failure, topology `ok: false`, thrown progress
+  projection, missing corpus entry, or duplicated topology fingerprints.
+
+## Generated tree layout
 
 ```
 src/content/docs/references/packaged-factories-index/generated/
   index.json                      # ordered corpus + companionSource
   manifest.json                   # packageVersion, artifacts[], sourceHashes[]
   deep-research.source.json       # raw companion JS + straightforward metadata
+  goal.factory-recording.v1.json  # validated factory-recording/v1 samples
+  subagent.factory-recording.v1.json
+  fusion.factory-recording.v1.json
+  review.factory-recording.v1.json
+  quorum.factory-recording.v1.json
+  tts.factory-recording.v1.json
   factories/
     goal.factory.json             # exact acquired factory.json UTF-8 bytes
     subagent.factory.json

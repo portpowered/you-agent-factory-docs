@@ -21,6 +21,10 @@ import {
   hashPackagedFactorySourceText,
   type PackagedFactoryIndexCorpus,
 } from "./index-corpus-model";
+import {
+  PACKAGED_FACTORY_RECORDING_SLUGS,
+  packagedFactoryRecordingArtifactPath,
+} from "./recording-samples-model";
 
 function sampleFactoryJson(name: string): string {
   return `${JSON.stringify({ name, version: "1.0.0" }, null, 2)}\n`;
@@ -96,7 +100,13 @@ describe("packaged-factories index generated artifacts (pure)", () => {
         packagedFactoriesIndexFactoryDefinitionArtifactPath(slug),
       ),
       PACKAGED_FACTORIES_INDEX_COMPANION_ARTIFACT_PATH,
+      ...PACKAGED_FACTORY_RECORDING_SLUGS.map((slug) =>
+        packagedFactoryRecordingArtifactPath(slug),
+      ),
       PACKAGED_FACTORIES_INDEX_MANIFEST_PATH,
+    ]);
+    expect(bundle.recordings.map((recording) => recording.childSlug)).toEqual([
+      ...PACKAGED_FACTORY_RECORDING_SLUGS,
     ]);
 
     const goalDefinition = bundle.files.find(
@@ -132,7 +142,15 @@ describe("packaged-factories index generated artifacts (pure)", () => {
         (slug) => `factories/${slug}.factory.json`,
       ),
       "deep-research.source.json",
+      ...PACKAGED_FACTORY_RECORDING_SLUGS.map(
+        (slug) => `${slug}.factory-recording.v1.json`,
+      ),
     ]);
+    expect(
+      bundle.manifest.artifacts.filter(
+        (artifact) => artifact.kind === "factory-recording",
+      ),
+    ).toHaveLength(PACKAGED_FACTORY_RECORDING_SLUGS.length);
   });
 
   test("rebuilding the same inputs yields byte-identical file contents", () => {

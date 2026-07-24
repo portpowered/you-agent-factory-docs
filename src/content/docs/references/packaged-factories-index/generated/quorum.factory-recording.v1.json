@@ -1,0 +1,430 @@
+{
+  "schemaVersion": "factory-recording/v1",
+  "id": "packaged-quorum-sample",
+  "title": "quorum packaged factory sample",
+  "summary": "Distinctive factory-recording/v1 sample for packaged-factories quorum.",
+  "factory": {
+    "name": "quorum",
+    "workTypes": [
+      {
+        "name": "task",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "quorum-context",
+            "type": "PROCESSING"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ],
+        "handlingBehavior": [
+          "DEFAULT"
+        ]
+      },
+      {
+        "name": "quorum-branch-a",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ]
+      },
+      {
+        "name": "quorum-branch-b",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ]
+      },
+      {
+        "name": "quorum-merge",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ]
+      }
+    ],
+    "workstations": [
+      {
+        "name": "split-quorum",
+        "worker": "",
+        "inputs": [
+          {
+            "workType": "task",
+            "state": "init"
+          }
+        ],
+        "type": "LOGICAL_MOVE",
+        "outputs": [
+          {
+            "workType": "task",
+            "state": "quorum-context"
+          },
+          {
+            "workType": "quorum-branch-a",
+            "state": "init"
+          },
+          {
+            "workType": "quorum-branch-b",
+            "state": "init"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "task",
+            "state": "failed"
+          }
+        ]
+      },
+      {
+        "name": "run-quorum-branch-a",
+        "worker": "quorum-branch-a",
+        "inputs": [
+          {
+            "workType": "quorum-branch-a",
+            "state": "init"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "quorum-branch-a",
+            "state": "complete"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "quorum-branch-a",
+            "state": "failed"
+          }
+        ]
+      },
+      {
+        "name": "run-quorum-branch-b",
+        "worker": "quorum-branch-b",
+        "inputs": [
+          {
+            "workType": "quorum-branch-b",
+            "state": "init"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "quorum-branch-b",
+            "state": "complete"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "quorum-branch-b",
+            "state": "failed"
+          }
+        ]
+      },
+      {
+        "name": "merge-quorum",
+        "worker": "quorum-merge",
+        "inputs": [
+          {
+            "workType": "task",
+            "state": "quorum-context"
+          },
+          {
+            "workType": "quorum-branch-a",
+            "state": "complete"
+          },
+          {
+            "workType": "quorum-branch-b",
+            "state": "complete"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "quorum-merge",
+            "state": "complete"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "quorum-merge",
+            "state": "failed"
+          }
+        ]
+      }
+    ],
+    "workers": [
+      {
+        "name": "quorum-branch-a",
+        "type": "AGENT_WORKER"
+      },
+      {
+        "name": "quorum-branch-b",
+        "type": "AGENT_WORKER"
+      },
+      {
+        "name": "quorum-merge",
+        "type": "AGENT_WORKER"
+      }
+    ]
+  },
+  "events": [
+    {
+      "schemaVersion": "agent-factory.event.v1",
+      "id": "evt-quorum-topology-001",
+      "type": "INITIAL_STRUCTURE_REQUEST",
+      "context": {
+        "sequence": 1,
+        "tick": 0,
+        "eventTime": "2026-07-23T00:00:00.000Z",
+        "sessionId": "session-packaged-quorum",
+        "sessionSequence": 1
+      },
+      "payload": {
+        "factory": {
+          "name": "quorum",
+          "workTypes": [
+            {
+              "name": "task",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "quorum-context",
+                  "type": "PROCESSING"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ],
+              "handlingBehavior": [
+                "DEFAULT"
+              ]
+            },
+            {
+              "name": "quorum-branch-a",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ]
+            },
+            {
+              "name": "quorum-branch-b",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ]
+            },
+            {
+              "name": "quorum-merge",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ]
+            }
+          ],
+          "workstations": [
+            {
+              "name": "split-quorum",
+              "worker": "",
+              "inputs": [
+                {
+                  "workType": "task",
+                  "state": "init"
+                }
+              ],
+              "type": "LOGICAL_MOVE",
+              "outputs": [
+                {
+                  "workType": "task",
+                  "state": "quorum-context"
+                },
+                {
+                  "workType": "quorum-branch-a",
+                  "state": "init"
+                },
+                {
+                  "workType": "quorum-branch-b",
+                  "state": "init"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "task",
+                  "state": "failed"
+                }
+              ]
+            },
+            {
+              "name": "run-quorum-branch-a",
+              "worker": "quorum-branch-a",
+              "inputs": [
+                {
+                  "workType": "quorum-branch-a",
+                  "state": "init"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "quorum-branch-a",
+                  "state": "complete"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "quorum-branch-a",
+                  "state": "failed"
+                }
+              ]
+            },
+            {
+              "name": "run-quorum-branch-b",
+              "worker": "quorum-branch-b",
+              "inputs": [
+                {
+                  "workType": "quorum-branch-b",
+                  "state": "init"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "quorum-branch-b",
+                  "state": "complete"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "quorum-branch-b",
+                  "state": "failed"
+                }
+              ]
+            },
+            {
+              "name": "merge-quorum",
+              "worker": "quorum-merge",
+              "inputs": [
+                {
+                  "workType": "task",
+                  "state": "quorum-context"
+                },
+                {
+                  "workType": "quorum-branch-a",
+                  "state": "complete"
+                },
+                {
+                  "workType": "quorum-branch-b",
+                  "state": "complete"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "quorum-merge",
+                  "state": "complete"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "quorum-merge",
+                  "state": "failed"
+                }
+              ]
+            }
+          ],
+          "workers": [
+            {
+              "name": "quorum-branch-a",
+              "type": "AGENT_WORKER"
+            },
+            {
+              "name": "quorum-branch-b",
+              "type": "AGENT_WORKER"
+            },
+            {
+              "name": "quorum-merge",
+              "type": "AGENT_WORKER"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "factory-recording/v1",
+  "id": "packaged-subagent-sample",
+  "title": "subagent packaged factory sample",
+  "summary": "Distinctive factory-recording/v1 sample for packaged-factories subagent.",
+  "factory": {
+    "name": "subagent",
+    "workTypes": [
+      {
+        "name": "task",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ],
+        "handlingBehavior": [
+          "DEFAULT"
+        ]
+      }
+    ],
+    "workstations": [
+      {
+        "name": "run-subagent",
+        "worker": "subagent-worker",
+        "inputs": [
+          {
+            "workType": "task",
+            "state": "init"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "outputs": [
+          {
+            "workType": "task",
+            "state": "complete"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "task",
+            "state": "failed"
+          }
+        ]
+      }
+    ],
+    "workers": [
+      {
+        "name": "subagent-worker",
+        "type": "AGENT_WORKER"
+      }
+    ]
+  },
+  "events": [
+    {
+      "schemaVersion": "agent-factory.event.v1",
+      "id": "evt-subagent-topology-001",
+      "type": "INITIAL_STRUCTURE_REQUEST",
+      "context": {
+        "sequence": 1,
+        "tick": 0,
+        "eventTime": "2026-07-23T00:00:00.000Z",
+        "sessionId": "session-packaged-subagent",
+        "sessionSequence": 1
+      },
+      "payload": {
+        "factory": {
+          "name": "subagent",
+          "workTypes": [
+            {
+              "name": "task",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ],
+              "handlingBehavior": [
+                "DEFAULT"
+              ]
+            }
+          ],
+          "workstations": [
+            {
+              "name": "run-subagent",
+              "worker": "subagent-worker",
+              "inputs": [
+                {
+                  "workType": "task",
+                  "state": "init"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "outputs": [
+                {
+                  "workType": "task",
+                  "state": "complete"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "task",
+                  "state": "failed"
+                }
+              ]
+            }
+          ],
+          "workers": [
+            {
+              "name": "subagent-worker",
+              "type": "AGENT_WORKER"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

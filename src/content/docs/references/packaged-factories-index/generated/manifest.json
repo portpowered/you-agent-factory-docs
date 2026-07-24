@@ -73,6 +73,42 @@
       "childSlug": "deep-research",
       "sourceRelativePath": "factories/deep-research/scripts/deep-research.workflow.js",
       "sourceSha256": "34eced10c33ec0cc2d37fec2d15193ebc6e9df1b6829190aba66b550287e2f8d"
+    },
+    {
+      "path": "goal.factory-recording.v1.json",
+      "kind": "factory-recording",
+      "artifactSha256": "5a4262d8b73405388bf6e297794bf0843bfee4c02036d05fbd31f8c8a59f1d01",
+      "childSlug": "goal"
+    },
+    {
+      "path": "subagent.factory-recording.v1.json",
+      "kind": "factory-recording",
+      "artifactSha256": "ddbcd501ca7afb316c548aeeb8948d9882c1234cfadfb33fcbea208d12e592a7",
+      "childSlug": "subagent"
+    },
+    {
+      "path": "fusion.factory-recording.v1.json",
+      "kind": "factory-recording",
+      "artifactSha256": "64486cafa2d724211e6b1bc7bd73db856fb8d240cbe8214145d86d5d5316f046",
+      "childSlug": "fusion"
+    },
+    {
+      "path": "review.factory-recording.v1.json",
+      "kind": "factory-recording",
+      "artifactSha256": "bf50b3908d69cc95474b08e18de26ce9dbffc9d1cee2b4225bdacb095f2cee75",
+      "childSlug": "review"
+    },
+    {
+      "path": "quorum.factory-recording.v1.json",
+      "kind": "factory-recording",
+      "artifactSha256": "d70a9dcf5a0456012c1d1f30256eb11ed25ecb0092ffdd871ea968eed07befe3",
+      "childSlug": "quorum"
+    },
+    {
+      "path": "tts.factory-recording.v1.json",
+      "kind": "factory-recording",
+      "artifactSha256": "9aa800f8746068e2a3dcdc090a56de2df6cb6eeb3ed213ea9bb5822bc8b90acf",
+      "childSlug": "tts"
     }
   ],
   "sourceHashes": [

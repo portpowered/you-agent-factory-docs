@@ -2,6 +2,14 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import {
+  parseFactoryRecording,
+  safeParseFactoryRecording,
+} from "@you-agent-factory/client";
+import {
+  projectFactoryTopologyAtTick,
+  projectFactoryWorkProgressAtTick,
+} from "@you-agent-factory/factory-replay";
 import { getProjectRoot } from "@/lib/content/content-paths";
 import { PACKAGED_FACTORIES_ALLOWLIST_SLUGS } from "@/lib/packaged-factory-v002/packaged-factories-allowlist";
 import {
@@ -15,6 +23,10 @@ import {
   PACKAGED_FACTORIES_INDEX_MANIFEST_PATH,
   packagedFactoriesIndexFactoryDefinitionArtifactPath,
 } from "./generated-artifacts-model";
+import {
+  PACKAGED_FACTORY_RECORDING_SLUGS,
+  packagedFactoryRecordingArtifactPath,
+} from "./recording-samples-model";
 
 const tempDirs: string[] = [];
 
@@ -106,6 +118,38 @@ describe("generate packaged-factories index artifacts (IO)", () => {
     expect(JSON.parse(companionOnDisk)).toEqual(
       first.bundle.index.companionSource,
     );
+
+    expect(
+      first.bundle.recordings.map((recording) => recording.childSlug),
+    ).toEqual([...PACKAGED_FACTORY_RECORDING_SLUGS]);
+    for (const slug of PACKAGED_FACTORY_RECORDING_SLUGS) {
+      const relativePath = packagedFactoryRecordingArtifactPath(slug);
+      const onDisk = JSON.parse(
+        readFileSync(join(outputDir, relativePath), "utf8"),
+      ) as unknown;
+      const safe = safeParseFactoryRecording(onDisk);
+      expect(safe.success).toBe(true);
+      const parsed = parseFactoryRecording(onDisk);
+      expect(parsed.schemaVersion).toBe("factory-recording/v1");
+      expect(parsed.factory?.name).toBe(slug);
+      const ticks = [
+        ...new Set(parsed.events.map((event) => event.context.tick)),
+      ].sort((a, b) => a - b);
+      for (const tick of ticks) {
+        expect(
+          projectFactoryTopologyAtTick({ events: parsed.events, tick }).ok,
+        ).toBe(true);
+        expect(
+          projectFactoryWorkProgressAtTick({ events: parsed.events, tick })
+            .selectedTick,
+        ).toBe(tick);
+      }
+    }
+    expect(
+      first.bundle.files.some((file) =>
+        file.relativePath.includes("deep-research.factory-recording"),
+      ),
+    ).toBe(false);
 
     const second = generatePackagedFactoriesIndex({
       consumerDir: getProjectRoot(),

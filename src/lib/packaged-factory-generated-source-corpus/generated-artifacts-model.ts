@@ -16,6 +16,10 @@ import {
   hashPackagedFactorySourceText,
   type PackagedFactoryIndexCorpus,
 } from "./index-corpus-model";
+import {
+  buildPackagedFactoryRecordingSamples,
+  type PackagedFactoryRecordingSampleArtifact,
+} from "./recording-samples-model";
 
 /** Repo-relative generated tree owned by this lane. */
 export const PACKAGED_FACTORIES_INDEX_GENERATED_RELATIVE_ROOT =
@@ -51,7 +55,8 @@ export type PackagedFactoriesIndexManifestArtifactKind =
   | "index"
   | "manifest"
   | "factory-definition"
-  | "companion-javascript";
+  | "companion-javascript"
+  | "factory-recording";
 
 export type PackagedFactoriesIndexManifestArtifact = {
   path: string;
@@ -94,6 +99,7 @@ export type PackagedFactoriesIndexGeneratedArtifactFile = {
 export type PackagedFactoriesIndexGeneratedBundle = {
   index: PackagedFactoriesIndexGeneratedIndex;
   manifest: PackagedFactoriesIndexManifest;
+  recordings: PackagedFactoryRecordingSampleArtifact[];
   files: PackagedFactoriesIndexGeneratedArtifactFile[];
 };
 
@@ -190,11 +196,16 @@ export function buildPackagedFactoriesIndexGeneratedIndex(
 
 /**
  * Build the full deterministic generated file bundle (index, definitions,
- * companion, manifest) without writing to disk.
+ * companion, six factory-recording/v1 samples, manifest) without writing to
+ * disk. Recording samples are validated through the public client parser and
+ * factory-replay projections before they are included.
  */
 export function buildPackagedFactoriesIndexGeneratedBundle(
   corpus: PackagedFactoryIndexCorpus,
   companionSource: PackagedFactoryCompanionSource,
+  recordings: PackagedFactoryRecordingSampleArtifact[] = buildPackagedFactoryRecordingSamples(
+    corpus,
+  ),
 ): PackagedFactoriesIndexGeneratedBundle {
   const index = buildPackagedFactoriesIndexGeneratedIndex(
     corpus,
@@ -225,6 +236,18 @@ export function buildPackagedFactoriesIndexGeneratedBundle(
     relativePath: PACKAGED_FACTORIES_INDEX_COMPANION_ARTIFACT_PATH,
     contents: companionContents,
   });
+
+  const recordingContentsByPath = new Map<string, string>();
+  for (const recordingArtifact of recordings) {
+    const contents = serializePackagedFactoriesIndexGeneratedJson(
+      recordingArtifact.recording,
+    );
+    recordingContentsByPath.set(recordingArtifact.relativePath, contents);
+    files.push({
+      relativePath: recordingArtifact.relativePath,
+      contents,
+    });
+  }
 
   const sourceHashes: PackagedFactoriesIndexManifestSourceHash[] = [
     ...index.entries.map((entry) => ({
@@ -264,6 +287,23 @@ export function buildPackagedFactoriesIndexGeneratedBundle(
       sourceRelativePath: companionSource.relativePath,
       sourceSha256: companionSource.sourceSha256,
     },
+    ...recordings.map((recordingArtifact) => {
+      const contents = recordingContentsByPath.get(
+        recordingArtifact.relativePath,
+      );
+      if (contents === undefined) {
+        throw new PackagedFactoriesIndexGeneratedArtifactsError(
+          "missing-factory-entry",
+          `Missing serialized recording contents for ${recordingArtifact.relativePath}.`,
+        );
+      }
+      return {
+        path: recordingArtifact.relativePath,
+        kind: "factory-recording" as const,
+        artifactSha256: hashPackagedFactorySourceText(contents),
+        childSlug: recordingArtifact.childSlug,
+      };
+    }),
   ];
 
   const manifest: PackagedFactoriesIndexManifest = {
@@ -286,6 +326,7 @@ export function buildPackagedFactoriesIndexGeneratedBundle(
   return {
     index,
     manifest,
+    recordings,
     files,
   };
 }

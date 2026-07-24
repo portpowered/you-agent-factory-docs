@@ -66,8 +66,9 @@ export function getPackagedFactoriesIndexGeneratedRoot(
 /**
  * Acquire packaged-factories@0.0.2 corpus + companion and write deterministic
  * generated artifacts (index.json, per-factory definitions, companion source,
- * manifest.json). Re-running with identical package inputs leaves file bytes
- * unchanged.
+ * six factory-recording/v1 samples, manifest.json). Re-running with identical
+ * package inputs leaves file bytes unchanged. Recording samples are validated
+ * through the public client parser and factory-replay projections before write.
  */
 export function generatePackagedFactoriesIndex(
   options: GeneratePackagedFactoriesIndexOptions = {},

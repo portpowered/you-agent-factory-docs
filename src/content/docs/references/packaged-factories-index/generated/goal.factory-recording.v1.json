@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "factory-recording/v1",
+  "id": "packaged-goal-sample",
+  "title": "goal packaged factory sample",
+  "summary": "Distinctive factory-recording/v1 sample for packaged-factories goal.",
+  "factory": {
+    "name": "goal",
+    "workTypes": [
+      {
+        "name": "goal",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "execute",
+            "type": "PROCESSING"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ],
+        "handlingBehavior": [
+          "DEFAULT"
+        ]
+      }
+    ],
+    "workstations": [
+      {
+        "name": "execute-goal",
+        "worker": "goal-executor",
+        "inputs": [
+          {
+            "workType": "goal",
+            "state": "init"
+          }
+        ],
+        "type": "AGENT_RUN",
+        "behavior": "REPEATER",
+        "outputs": [
+          {
+            "workType": "goal",
+            "state": "complete"
+          }
+        ],
+        "onContinue": [
+          {
+            "workType": "goal",
+            "state": "init"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "goal",
+            "state": "failed"
+          }
+        ],
+        "onRejection": [
+          {
+            "workType": "goal",
+            "state": "init"
+          }
+        ]
+      }
+    ],
+    "workers": [
+      {
+        "name": "goal-executor",
+        "type": "AGENT_WORKER",
+        "stopToken": "<COMPLETE>"
+      }
+    ]
+  },
+  "events": [
+    {
+      "schemaVersion": "agent-factory.event.v1",
+      "id": "evt-goal-topology-001",
+      "type": "INITIAL_STRUCTURE_REQUEST",
+      "context": {
+        "sequence": 1,
+        "tick": 0,
+        "eventTime": "2026-07-23T00:00:00.000Z",
+        "sessionId": "session-packaged-goal",
+        "sessionSequence": 1
+      },
+      "payload": {
+        "factory": {
+          "name": "goal",
+          "workTypes": [
+            {
+              "name": "goal",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "execute",
+                  "type": "PROCESSING"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ],
+              "handlingBehavior": [
+                "DEFAULT"
+              ]
+            }
+          ],
+          "workstations": [
+            {
+              "name": "execute-goal",
+              "worker": "goal-executor",
+              "inputs": [
+                {
+                  "workType": "goal",
+                  "state": "init"
+                }
+              ],
+              "type": "AGENT_RUN",
+              "behavior": "REPEATER",
+              "outputs": [
+                {
+                  "workType": "goal",
+                  "state": "complete"
+                }
+              ],
+              "onContinue": [
+                {
+                  "workType": "goal",
+                  "state": "init"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "goal",
+                  "state": "failed"
+                }
+              ],
+              "onRejection": [
+                {
+                  "workType": "goal",
+                  "state": "init"
+                }
+              ]
+            }
+          ],
+          "workers": [
+            {
+              "name": "goal-executor",
+              "type": "AGENT_WORKER",
+              "stopToken": "<COMPLETE>"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

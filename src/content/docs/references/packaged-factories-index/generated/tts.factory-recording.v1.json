@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "factory-recording/v1",
+  "id": "packaged-tts-sample",
+  "title": "tts packaged factory sample",
+  "summary": "Distinctive factory-recording/v1 sample for packaged-factories tts.",
+  "factory": {
+    "name": "tts",
+    "workTypes": [
+      {
+        "name": "task",
+        "states": [
+          {
+            "name": "init",
+            "type": "INITIAL"
+          },
+          {
+            "name": "complete",
+            "type": "TERMINAL"
+          },
+          {
+            "name": "failed",
+            "type": "FAILED"
+          }
+        ],
+        "handlingBehavior": [
+          "DEFAULT"
+        ]
+      }
+    ],
+    "workstations": [
+      {
+        "name": "execute-tts",
+        "worker": "tts-executor",
+        "inputs": [
+          {
+            "workType": "task",
+            "state": "init"
+          }
+        ],
+        "type": "MODEL_INVOKE",
+        "outputs": [
+          {
+            "workType": "task",
+            "state": "complete"
+          }
+        ],
+        "onFailure": [
+          {
+            "workType": "task",
+            "state": "failed"
+          }
+        ]
+      }
+    ],
+    "workers": [
+      {
+        "name": "tts-executor",
+        "type": "MODEL_WORKER"
+      }
+    ]
+  },
+  "events": [
+    {
+      "schemaVersion": "agent-factory.event.v1",
+      "id": "evt-tts-topology-001",
+      "type": "INITIAL_STRUCTURE_REQUEST",
+      "context": {
+        "sequence": 1,
+        "tick": 0,
+        "eventTime": "2026-07-23T00:00:00.000Z",
+        "sessionId": "session-packaged-tts",
+        "sessionSequence": 1
+      },
+      "payload": {
+        "factory": {
+          "name": "tts",
+          "workTypes": [
+            {
+              "name": "task",
+              "states": [
+                {
+                  "name": "init",
+                  "type": "INITIAL"
+                },
+                {
+                  "name": "complete",
+                  "type": "TERMINAL"
+                },
+                {
+                  "name": "failed",
+                  "type": "FAILED"
+                }
+              ],
+              "handlingBehavior": [
+                "DEFAULT"
+              ]
+            }
+          ],
+          "workstations": [
+            {
+              "name": "execute-tts",
+              "worker": "tts-executor",
+              "inputs": [
+                {
+                  "workType": "task",
+                  "state": "init"
+                }
+              ],
+              "type": "MODEL_INVOKE",
+              "outputs": [
+                {
+                  "workType": "task",
+                  "state": "complete"
+                }
+              ],
+              "onFailure": [
+                {
+                  "workType": "task",
+                  "state": "failed"
+                }
+              ]
+            }
+          ],
+          "workers": [
+            {
+              "name": "tts-executor",
+              "type": "MODEL_WORKER"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
