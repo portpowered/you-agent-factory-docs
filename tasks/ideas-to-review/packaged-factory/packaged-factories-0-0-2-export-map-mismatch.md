@@ -40,7 +40,7 @@ Republish `@you-agent-factory/packaged-factories` so the installed
 or replace the broken `0.0.2` artifact so Batch 1 can pin one exact version
 that proves clean.
 
-## Upstream status (re-checked 2026-07-24 03:05 UTC)
+## Upstream status (re-checked 2026-07-24 03:08 UTC)
 
 - Source of truth already lands the exports map in
   `packages/packaged-factories/package.json` on
@@ -49,6 +49,9 @@ that proves clean.
   Default-branch package `version` there is still `0.0.0`; `files` points at
   `generated/manifest.json`, `generated/factories`, and schemas — not the
   authored nested `factories/` tree npm still ships.
+- Docs-side coverage helper already accepts the upstream pattern
+  `./factories/*.json` → `./generated/factories/*/factory.json` for flattened
+  public specifiers such as `./factories/deep-research.json` (unit-tested).
 - [you-agent-factory#1258](https://github.com/portpowered/you-agent-factory/pull/1258)
   (`packaged-factories-npm-publication`) **merged** 2026-07-23 after the broken
   npm `0.0.2` tarball publish (~00:42Z that day). Registry was not republished.
