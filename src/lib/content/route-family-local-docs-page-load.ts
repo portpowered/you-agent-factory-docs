@@ -151,6 +151,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "packaged-factories-index": {
+        const mod = await import(
+          "@/content/docs/references/packaged-factories-index/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }
