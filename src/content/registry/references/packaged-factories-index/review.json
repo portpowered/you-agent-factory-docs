@@ -1,0 +1,14 @@
+{
+  "id": "reference.packaged-factories-index-review",
+  "slug": "packaged-factories-index/review",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["@you/review", "review packaged factory", "you review factory"],
+  "tags": [],
+  "relatedIds": ["reference.packaged-factories-index"],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-24T00:00:00.000Z",
+  "updatedAt": "2026-07-24T00:00:00.000Z"
+}

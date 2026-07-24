@@ -45,6 +45,18 @@ landing composition, dependency pins, or global CSS.
 | `src/content/docs/references/packaged-factories-index/packaged-factories-index-child-maps.test.ts` | Asserts fusion resolves fusion-owned map; remaining standard children keep the shared placeholder |
 | `src/content/docs/references/packaged-factories-index/fusion/assert-fusion-child-reference-browser.ts` | Browser markers for concise content + `data-factory-replay-mode="full"` |
 
+## Key files (story 003 — review child reference content)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/packaged-factories-index/review/page.mdx` | Concise nested reference: canonical name, one-sentence description, invocation examples, operational notes, parent definition link (no replay yet) |
+| `src/content/docs/references/packaged-factories-index/review/messages/en.json` | Local messages for the review child surface |
+| `src/content/docs/references/packaged-factories-index/review/assets.json` | Empty local asset config |
+| `src/content/registry/references/packaged-factories-index/review.json` | Registry id `reference.packaged-factories-index-review`, slug `packaged-factories-index/review` |
+| `src/content/docs/references/packaged-factories-index/review/review-page.test.tsx` | Route + concise content publish proofs |
+| `src/content/docs/references/packaged-factories-index/review/assert-review-child-reference-browser.ts` | Browser markers for concise content (story 003; no replay markers yet) |
+| `src/lib/content/route-family-local-docs-page-load.ts` | `packaged-factories-index/review` still resolves shared empty `replay-page-mdx-components` until story 004 |
+
 ## Patterns
 
 - Nested packaged-factory child pages are ordinary local-docs reference bundles
@@ -52,6 +64,9 @@ landing composition, dependency pins, or global CSS.
   unabridged `factory.json` on the child. Fusion/review lanes include a short
   package-specific operational-notes section; goal/subagent lanes intentionally
   omit that section.
+- Story 003 is content-only for review: leave the shared
+  `replay-page-mdx-components` loader case until story 004 adds a child-owned
+  map + replay mount.
 - Put the visible canonical name under `links.canonicalName` (and
   `<T k="links.canonicalName" />`). Top-level custom message keys are stripped
   by `pageMessagesSchema`.

@@ -1,0 +1,26 @@
+{
+  "title": "@you/review",
+  "description": "Look up the packaged @you/review factory: canonical name, a one-sentence description, concrete named-run examples, short operational notes, and a link to the complete parent definition.",
+  "sections": {
+    "overview": {
+      "title": "Overview",
+      "body": "@you/review executes a work request and then independently reviews it before return so only approved outcomes leave the factory."
+    },
+    "invocationExamples": {
+      "title": "Invocation examples",
+      "body": "Invoke the packaged factory by canonical name with you run --named, using positional or stdin input."
+    },
+    "operationalNotes": {
+      "title": "Operational notes",
+      "body": "Execute runs first, then an independent reviewer checks the result. Rejection returns work to init for another execute pass. Successful review ends in the terminal approved outcome."
+    },
+    "completeDefinition": {
+      "title": "Complete definition",
+      "body": "The parent Packaged Factory Reference keeps the complete definition source and published metadata for this package."
+    }
+  },
+  "links": {
+    "canonicalName": "@you/review",
+    "completeDefinition": "Complete @you/review definition on Packaged Factory Reference"
+  }
+}
