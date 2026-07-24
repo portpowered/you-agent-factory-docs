@@ -3,7 +3,8 @@
  * Story 001: published nested route, purpose description, and non-replay
  * component-map resolution.
  * Story 002: one visible minimal concrete usage example (no walkthrough
- * expansion). Later stories extend links and forbidden-surface proofs.
+ * expansion).
+ * Story 003: real anchors to JavaScript Runtime and Dynamic Workflows.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -24,6 +25,8 @@ const PURPOSE_BODY =
   "@you/deep-research investigates a research topic with a lead research pass. When the topic needs more breadth, it can call specialist investigators and then synthesize the findings into one result.";
 const USAGE_EXAMPLE =
   'you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"';
+const JAVASCRIPT_RUNTIME_HREF = "/docs/references/javascript-runtime";
+const DYNAMIC_WORKFLOWS_HREF = "/docs/factories/dynamic-workflows";
 
 describe("packaged-factories-index/deep-research nested reference page", () => {
   afterEach(() => {
@@ -120,6 +123,50 @@ describe("packaged-factories-index/deep-research nested reference page", () => {
     ).toBeNull();
     expect(document.querySelector("[data-factory-replay]")).toBeNull();
     expect(document.querySelector("[data-factory-visualizer]")).toBeNull();
+  });
+
+  test("links to JavaScript Runtime and Dynamic Workflows with real anchors", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "references",
+      slug: "packaged-factories-index/deep-research",
+    });
+
+    expect(loadedPage.messages.links?.javascriptRuntime).toBe(
+      "JavaScript Runtime",
+    );
+    expect(loadedPage.messages.links?.dynamicWorkflows).toBe(
+      "Dynamic Workflows",
+    );
+
+    render(
+      <main>
+        <DocsPageProviders
+          assets={loadedPage.assets}
+          messages={loadedPage.messages}
+        >
+          {loadedPage.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    const javascriptRuntimeLink = screen.getByRole("link", {
+      name: "JavaScript Runtime",
+    });
+    const dynamicWorkflowsLink = screen.getByRole("link", {
+      name: "Dynamic Workflows",
+    });
+
+    expect(javascriptRuntimeLink.tagName).toBe("A");
+    expect(javascriptRuntimeLink.getAttribute("href")).toBe(
+      JAVASCRIPT_RUNTIME_HREF,
+    );
+    expect(dynamicWorkflowsLink.tagName).toBe("A");
+    expect(dynamicWorkflowsLink.getAttribute("href")).toBe(
+      DYNAMIC_WORKFLOWS_HREF,
+    );
+
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
   });
 
   test("exposes a published registry record for the nested deep-research page", async () => {

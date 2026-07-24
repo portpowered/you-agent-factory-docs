@@ -14,6 +14,7 @@ aliases:
 updatedAt: "2026-07-24"
 ---
 
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 
@@ -26,3 +27,16 @@ import { T } from "@/features/docs/components/T";
   you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"
   ```
 </Section>
+
+<LocalizedLinkList
+  items={[
+    {
+      href: "/docs/references/javascript-runtime",
+      labelKey: "links.javascriptRuntime",
+    },
+    {
+      href: "/docs/factories/dynamic-workflows",
+      labelKey: "links.dynamicWorkflows",
+    },
+  ]}
+/>

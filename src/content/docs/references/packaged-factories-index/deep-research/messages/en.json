@@ -9,5 +9,9 @@
     "usage": {
       "title": "Usage"
     }
+  },
+  "links": {
+    "javascriptRuntime": "JavaScript Runtime",
+    "dynamicWorkflows": "Dynamic Workflows"
   }
 }

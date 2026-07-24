@@ -1,11 +1,13 @@
 /**
  * Browser verify for `/docs/references/packaged-factories-index/deep-research`
- * after publishing the minimal nested purpose + usage page (stories 001–002).
+ * after publishing the minimal nested purpose + usage + required links page
+ * (stories 001–003).
  *
  * Proves: nested route resolves; Purpose heading and purpose body are visible;
  * Usage heading and the single concrete `you run --named @you/deep-research`
- * example are visible without hover/modal/replay; no teaching-chrome headings;
- * no replay/visualizer markers.
+ * example are visible without hover/modal/replay; JavaScript Runtime and
+ * Dynamic Workflows are real keyboard-reachable anchors; no teaching-chrome
+ * headings; no replay/visualizer markers.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  *
@@ -28,6 +30,8 @@ const PURPOSE_SNIPPET =
   "@you/deep-research investigates a research topic with a lead research pass";
 const USAGE_EXAMPLE =
   'you run --named @you/deep-research "Compare event sourcing and state machines for workflow orchestration"';
+const JAVASCRIPT_RUNTIME_HREF = "/docs/references/javascript-runtime";
+const DYNAMIC_WORKFLOWS_HREF = "/docs/factories/dynamic-workflows";
 
 let server: ChildProcess | undefined;
 
@@ -84,7 +88,9 @@ async function warmPage(baseUrl: string): Promise<void> {
           html.includes("Purpose") &&
           html.includes(PURPOSE_SNIPPET) &&
           html.includes("Usage") &&
-          html.includes("@you/deep-research")
+          html.includes("@you/deep-research") &&
+          html.includes(JAVASCRIPT_RUNTIME_HREF) &&
+          html.includes(DYNAMIC_WORKFLOWS_HREF)
         ) {
           return;
         }
@@ -157,6 +163,51 @@ async function main() {
       );
     }
 
+    const pageRoot = page.locator("#nd-page");
+    const javascriptRuntimeLink = pageRoot.getByRole("link", {
+      name: "JavaScript Runtime",
+    });
+    await javascriptRuntimeLink.waitFor({ state: "visible", timeout: 30_000 });
+    const javascriptRuntimeHref =
+      await javascriptRuntimeLink.getAttribute("href");
+    if (javascriptRuntimeHref !== JAVASCRIPT_RUNTIME_HREF) {
+      throw new Error(
+        `Expected JavaScript Runtime href ${JAVASCRIPT_RUNTIME_HREF}, got ${javascriptRuntimeHref}`,
+      );
+    }
+
+    const dynamicWorkflowsLink = pageRoot.getByRole("link", {
+      name: "Dynamic Workflows",
+    });
+    await dynamicWorkflowsLink.waitFor({ state: "visible", timeout: 30_000 });
+    const dynamicWorkflowsHref =
+      await dynamicWorkflowsLink.getAttribute("href");
+    if (dynamicWorkflowsHref !== DYNAMIC_WORKFLOWS_HREF) {
+      throw new Error(
+        `Expected Dynamic Workflows href ${DYNAMIC_WORKFLOWS_HREF}, got ${dynamicWorkflowsHref}`,
+      );
+    }
+
+    await javascriptRuntimeLink.focus();
+    const focusedJavascriptRuntime = await page.evaluate(
+      () => document.activeElement?.getAttribute("href") ?? null,
+    );
+    if (focusedJavascriptRuntime !== JAVASCRIPT_RUNTIME_HREF) {
+      throw new Error(
+        `Expected keyboard focus on JavaScript Runtime link, got ${focusedJavascriptRuntime}`,
+      );
+    }
+
+    await dynamicWorkflowsLink.focus();
+    const focusedDynamicWorkflows = await page.evaluate(
+      () => document.activeElement?.getAttribute("href") ?? null,
+    );
+    if (focusedDynamicWorkflows !== DYNAMIC_WORKFLOWS_HREF) {
+      throw new Error(
+        `Expected keyboard focus on Dynamic Workflows link, got ${focusedDynamicWorkflows}`,
+      );
+    }
+
     const forbiddenHeadings = [
       "What It Covers",
       "Key Concepts",
@@ -182,7 +233,9 @@ async function main() {
       );
     }
 
-    console.log("deep-research nested purpose+usage page browser verify: ok");
+    console.log(
+      "deep-research nested purpose+usage+links page browser verify: ok",
+    );
   } finally {
     await browser.close();
   }
