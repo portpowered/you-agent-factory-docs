@@ -90,6 +90,27 @@ Rules:
   listeners on dispose. Fixture tests simulate signals — do not require a route
   mount.
 
+## Full-mode composition (story 005+)
+
+| Concern | Location |
+| --- | --- |
+| Pure scrubber / topology / progress mapping | `full-mode-composition.ts` → `deriveFullModeComposition` |
+| Host playback + cache + autoplay + gates hook | `use-controlled-factory-replay.ts` |
+| Full-mode React composition | `controlled-factory-replay-full.tsx` |
+| Default visualizer message contracts | `default-messages.ts` |
+
+Rules:
+
+- Compose `FactoryTimelineScrubber`, `FactoryTopologyReplay`, and
+  `WorkProgressVisualizer` only — never `FactoryRecordingTopologyReplay`.
+- Host owns selected tick via `reducePlayback`; visualizers receive prepared
+  projections / scrubber state only.
+- `presentationStatus` `loading` / `failed` → scrubber `unavailable` + matching
+  topology status; `ready` → available scrubber and topology empty/ready from
+  node count.
+- Attach `rootRef` from the hook to the replay root for intersection gating.
+  Tests may pass `bindDomGates={false}`.
+
 ## Packaged dependencies (consume, do not re-own)
 
 | Package | Use |

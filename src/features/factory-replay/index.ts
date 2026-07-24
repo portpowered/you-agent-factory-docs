@@ -1,10 +1,11 @@
 /**
  * Shared host-controlled factory-replay feature.
  *
- * Stories 001–004 freeze pure playback transitions, public projection
- * preparation/cache, the single chained 2000 ms autoplay scheduler, and
- * visibility / intersection / reduced-motion gates. Later stories add
- * composition.
+ * Stories 001–005 freeze pure playback transitions, public projection
+ * preparation/cache, the single chained 2000 ms autoplay scheduler,
+ * visibility / intersection / reduced-motion gates, and full-mode composition
+ * with host-controlled selected tick. Later stories add compact mode and the
+ * frozen public entry.
  */
 
 export type {
@@ -34,6 +35,19 @@ export {
   AUTOPLAY_INTERVAL_MS,
   createAutoplayScheduler,
 } from "./autoplay-scheduler";
+export type { ControlledFactoryReplayFullProps } from "./controlled-factory-replay-full";
+export { ControlledFactoryReplayFull } from "./controlled-factory-replay-full";
+export type {
+  ControlledFactoryReplayChromeMessages,
+  ControlledFactoryReplayMessages,
+} from "./default-messages";
+export { DEFAULT_CONTROLLED_FACTORY_REPLAY_MESSAGES } from "./default-messages";
+export type {
+  FullModeComposition,
+  FullModeCompositionInput,
+  FullModePresentationStatus,
+} from "./full-mode-composition";
+export { deriveFullModeComposition } from "./full-mode-composition";
 export type {
   PlaybackAction,
   PlaybackMode,
@@ -53,3 +67,8 @@ export {
   MAX_CACHED_REPLAY_PROJECTIONS,
   prepareReplayProjectionAtTick,
 } from "./projection-cache";
+export type {
+  ControlledFactoryReplayController,
+  UseControlledFactoryReplayOptions,
+} from "./use-controlled-factory-replay";
+export { useControlledFactoryReplay } from "./use-controlled-factory-replay";
