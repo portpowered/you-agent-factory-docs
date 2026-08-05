@@ -1,38 +1,24 @@
-import { SchemaVariantReference } from "@/features/references/schema";
+import { createFactoryVariantSchemaEmbed } from "@/features/docs/components/FactoryVariantSchemaEmbed";
 import { createProductionWorkstationBehaviorOverlay } from "@/lib/references/overlays/production-workstation-overlays";
-import { factoryVariantOverlayToSchemaVariantPresentation } from "../factory-variant-overlay-presentation";
 import { loadWorkstationBaseSchemaEmbedModel } from "../load-workstation-base-schema";
-
-export const POLLER_BEHAVIOR_PAGE_PATH = "/docs/workstations/poller" as const;
-export const POLLER_BEHAVIOR_OVERLAY_ID = "behavior:POLLER" as const;
 
 /**
  * Embeds the validated `behavior:POLLER` overlay via W07
  * SchemaVariantReference. Authored minimal/misuse examples live in the page
  * Examples section (overlay carries exampleId refs only).
+ *
+ * Markup and `data-*` attributes come from the shared
+ * {@link createFactoryVariantSchemaEmbed} factory; only the values below vary
+ * between variant pages.
  */
-export function PollerBehaviorVariantSchemaEmbed() {
-  const model = loadWorkstationBaseSchemaEmbedModel();
-  const overlay = createProductionWorkstationBehaviorOverlay("POLLER");
-  const presentation =
-    factoryVariantOverlayToSchemaVariantPresentation(overlay);
+const embed = createFactoryVariantSchemaEmbed({
+  id: "poller-behavior",
+  pagePath: "/docs/workstations/poller",
+  overlayId: "behavior:POLLER",
+  loadDefinition: () => loadWorkstationBaseSchemaEmbedModel().definition,
+  loadOverlay: () => createProductionWorkstationBehaviorOverlay("POLLER"),
+});
 
-  return (
-    <div
-      className="min-w-0 space-y-3"
-      data-poller-behavior-schema-embed=""
-      data-overlay-id={POLLER_BEHAVIOR_OVERLAY_ID}
-      data-discriminator={overlay.discriminator.value}
-    >
-      <SchemaVariantReference
-        definition={model.definition}
-        overlay={presentation}
-        pagePath={POLLER_BEHAVIOR_PAGE_PATH}
-        showEmptyExamples={false}
-        showPointerBreadcrumb={false}
-        showVariantHeading={false}
-        data-testid="poller-behavior-variant-schema"
-      />
-    </div>
-  );
-}
+export const POLLER_BEHAVIOR_PAGE_PATH = embed.pagePath;
+export const POLLER_BEHAVIOR_OVERLAY_ID = embed.overlayId;
+export const PollerBehaviorVariantSchemaEmbed = embed.Embed;

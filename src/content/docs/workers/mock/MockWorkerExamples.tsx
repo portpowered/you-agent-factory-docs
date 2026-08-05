@@ -1,39 +1,19 @@
-import { T } from "@/features/docs/components/T";
+import { createFactoryVariantExamples } from "@/features/docs/components/FactoryVariantExamples";
 import {
   MOCK_WORKER_MINIMAL_EXAMPLE,
   MOCK_WORKER_MISUSE_WORKER_TYPE_EXAMPLE,
 } from "./mock-worker-examples";
 
-function formatExample(value: unknown): string {
-  return `${JSON.stringify(value, null, 2)}\n`;
-}
-
 /**
  * Authored minimal and misuse examples for mock workers.
- * JSON payloads stay outside message auto-link so field names remain literal.
+ *
+ * Markup and `data-*` attributes come from the shared
+ * {@link createFactoryVariantExamples} factory; only the payloads and the
+ * misuse identifier vary between variant pages.
  */
-export function MockWorkerExamples() {
-  return (
-    <div className="min-w-0 space-y-4" data-mock-worker-examples="">
-      <div data-mock-worker-example="minimal">
-        <p>
-          <T k="links.minimalExampleLabel" />
-        </p>
-        <pre>
-          <code>{formatExample(MOCK_WORKER_MINIMAL_EXAMPLE)}</code>
-        </pre>
-      </div>
-      <div data-mock-worker-example="misuse-worker-type">
-        <p>
-          <T k="links.misuseExampleLabel" />
-        </p>
-        <pre>
-          <code>{formatExample(MOCK_WORKER_MISUSE_WORKER_TYPE_EXAMPLE)}</code>
-        </pre>
-        <p>
-          <T k="links.misuseNote" />
-        </p>
-      </div>
-    </div>
-  );
-}
+export const MockWorkerExamples = createFactoryVariantExamples({
+  id: "mock-worker",
+  minimalExample: MOCK_WORKER_MINIMAL_EXAMPLE,
+  misuseExample: MOCK_WORKER_MISUSE_WORKER_TYPE_EXAMPLE,
+  misuseKind: "misuse-worker-type",
+});

@@ -1,38 +1,24 @@
-import { SchemaVariantReference } from "@/features/references/schema";
+import { createFactoryVariantSchemaEmbed } from "@/features/docs/components/FactoryVariantSchemaEmbed";
 import { createProductionWorkstationBehaviorOverlay } from "@/lib/references/overlays/production-workstation-overlays";
-import { factoryVariantOverlayToSchemaVariantPresentation } from "../factory-variant-overlay-presentation";
 import { loadWorkstationBaseSchemaEmbedModel } from "../load-workstation-base-schema";
-
-export const CRON_BEHAVIOR_PAGE_PATH = "/docs/workstations/cron" as const;
-export const CRON_BEHAVIOR_OVERLAY_ID = "behavior:CRON" as const;
 
 /**
  * Embeds the validated `behavior:CRON` overlay via W07
  * SchemaVariantReference. Authored minimal/misuse examples live in the page
  * Examples section (overlay carries exampleId refs only).
+ *
+ * Markup and `data-*` attributes come from the shared
+ * {@link createFactoryVariantSchemaEmbed} factory; only the values below vary
+ * between variant pages.
  */
-export function CronBehaviorVariantSchemaEmbed() {
-  const model = loadWorkstationBaseSchemaEmbedModel();
-  const overlay = createProductionWorkstationBehaviorOverlay("CRON");
-  const presentation =
-    factoryVariantOverlayToSchemaVariantPresentation(overlay);
+const embed = createFactoryVariantSchemaEmbed({
+  id: "cron-behavior",
+  pagePath: "/docs/workstations/cron",
+  overlayId: "behavior:CRON",
+  loadDefinition: () => loadWorkstationBaseSchemaEmbedModel().definition,
+  loadOverlay: () => createProductionWorkstationBehaviorOverlay("CRON"),
+});
 
-  return (
-    <div
-      className="min-w-0 space-y-3"
-      data-cron-behavior-schema-embed=""
-      data-overlay-id={CRON_BEHAVIOR_OVERLAY_ID}
-      data-discriminator={overlay.discriminator.value}
-    >
-      <SchemaVariantReference
-        definition={model.definition}
-        overlay={presentation}
-        pagePath={CRON_BEHAVIOR_PAGE_PATH}
-        showEmptyExamples={false}
-        showPointerBreadcrumb={false}
-        showVariantHeading={false}
-        data-testid="cron-behavior-variant-schema"
-      />
-    </div>
-  );
-}
+export const CRON_BEHAVIOR_PAGE_PATH = embed.pagePath;
+export const CRON_BEHAVIOR_OVERLAY_ID = embed.overlayId;
+export const CronBehaviorVariantSchemaEmbed = embed.Embed;

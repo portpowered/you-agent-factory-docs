@@ -1,38 +1,24 @@
-import { SchemaVariantReference } from "@/features/references/schema";
+import { createFactoryVariantSchemaEmbed } from "@/features/docs/components/FactoryVariantSchemaEmbed";
 import { createProductionWorkerOverlay } from "@/lib/references/overlays/production-worker-overlays";
-import { factoryVariantOverlayToSchemaVariantPresentation } from "../factory-variant-overlay-presentation";
 import { loadWorkerBaseSchemaEmbedModel } from "../load-worker-base-schema";
-
-export const MODEL_WORKER_PAGE_PATH = "/docs/workers/model" as const;
-export const MODEL_WORKER_OVERLAY_ID = "worker:MODEL_WORKER" as const;
 
 /**
  * Embeds the validated `worker:MODEL_WORKER` overlay via W07
  * SchemaVariantReference. Authored minimal/misuse examples live in the page
  * Examples section (overlay carries exampleId refs only).
+ *
+ * Markup and `data-*` attributes come from the shared
+ * {@link createFactoryVariantSchemaEmbed} factory; only the values below vary
+ * between variant pages.
  */
-export function ModelWorkerVariantSchemaEmbed() {
-  const model = loadWorkerBaseSchemaEmbedModel();
-  const overlay = createProductionWorkerOverlay("MODEL_WORKER");
-  const presentation =
-    factoryVariantOverlayToSchemaVariantPresentation(overlay);
+const embed = createFactoryVariantSchemaEmbed({
+  id: "model-worker",
+  pagePath: "/docs/workers/model",
+  overlayId: "worker:MODEL_WORKER",
+  loadDefinition: () => loadWorkerBaseSchemaEmbedModel().definition,
+  loadOverlay: () => createProductionWorkerOverlay("MODEL_WORKER"),
+});
 
-  return (
-    <div
-      className="min-w-0 space-y-3"
-      data-model-worker-schema-embed=""
-      data-overlay-id={MODEL_WORKER_OVERLAY_ID}
-      data-discriminator={overlay.discriminator.value}
-    >
-      <SchemaVariantReference
-        definition={model.definition}
-        overlay={presentation}
-        pagePath={MODEL_WORKER_PAGE_PATH}
-        showEmptyExamples={false}
-        showPointerBreadcrumb={false}
-        showVariantHeading={false}
-        data-testid="model-worker-variant-schema"
-      />
-    </div>
-  );
-}
+export const MODEL_WORKER_PAGE_PATH = embed.pagePath;
+export const MODEL_WORKER_OVERLAY_ID = embed.overlayId;
+export const ModelWorkerVariantSchemaEmbed = embed.Embed;
