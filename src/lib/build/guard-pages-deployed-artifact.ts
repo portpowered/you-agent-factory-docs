@@ -1,8 +1,8 @@
 import {
   type AcquireTrustedProjectSiteExportResult,
   acquireTrustedProjectSiteExport,
+  detectTrustedExportBasePath,
 } from "@/lib/build/acquire-trusted-project-site-export";
-import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import { DEFAULT_EXPORT_OUT_DIR } from "@/lib/build/export-out-directory";
 import { normalizeGitHubPagesBasePath } from "@/lib/build/static-export";
 import {
@@ -162,9 +162,16 @@ export function evaluatePagesDeployedArtifactProbes(options: {
   const hasBareApiSearchLiteral =
     exportContentReferencesUnprefixedSearchBootstrap(jsChunkContent);
 
+  const hasRootLevelNextAssets = exportHtmlReferencesRootLevelNextAssets(html);
+
   return {
-    hasPrefixedNextAssets: exportHtmlReferencesBasePathAssets(html, basePath),
-    hasRootLevelNextAssets: exportHtmlReferencesRootLevelNextAssets(html),
+    // For an apex export the root-level assets ARE the correct assets, so the
+    // two asset flags converge rather than opposing each other.
+    hasPrefixedNextAssets:
+      basePath === ""
+        ? hasRootLevelNextAssets
+        : exportHtmlReferencesBasePathAssets(html, basePath),
+    hasRootLevelNextAssets,
     hasPrefixedNavigation: exportHtmlReferencesPrefixedNavigationHrefs(
       html,
       basePath,
@@ -172,7 +179,9 @@ export function evaluatePagesDeployedArtifactProbes(options: {
     ),
     hasPrefixedSearchBootstrap,
     hasUnprefixedSearchBootstrap:
-      !hasPrefixedSearchBootstrap && hasBareApiSearchLiteral,
+      basePath === ""
+        ? false
+        : !hasPrefixedSearchBootstrap && hasBareApiSearchLiteral,
     hasCssAssetUrl: cssAssetUrl?.startsWith(`${basePath}/_next/`) === true,
     hasJsChunkUrl: jsChunkUrl?.startsWith(`${basePath}/_next/`) === true,
   };
@@ -182,23 +191,27 @@ function evaluationFailureReason(
   evaluation: PagesDeployedArtifactProbeEvaluation,
   basePath: string,
 ): string | null {
+  const isApex = basePath === "";
+  const assetRoot = isApex ? "" : basePath;
+
   if (!evaluation.hasPrefixedNextAssets) {
-    return `probed HTML missing ${basePath}/_next asset references`;
+    return `probed HTML missing ${assetRoot}/_next asset references`;
   }
-  if (evaluation.hasRootLevelNextAssets) {
+  // A project-site export must not leak bare /_next; an apex export requires it.
+  if (!isApex && evaluation.hasRootLevelNextAssets) {
     return "probed HTML references root-level /_next assets";
   }
   if (!evaluation.hasPrefixedNavigation) {
-    return `probed HTML missing representative home/getting-started/comparing-agent-factories hrefs under ${basePath}`;
+    return `probed HTML missing representative home/getting-started/comparing-agent-factories hrefs under ${isApex ? "/" : basePath}`;
   }
   if (!evaluation.hasCssAssetUrl) {
-    return `probed HTML missing a CSS asset URL under ${basePath}/_next`;
+    return `probed HTML missing a CSS asset URL under ${assetRoot}/_next`;
   }
   if (!evaluation.hasJsChunkUrl) {
-    return `probed HTML missing a JS chunk URL under ${basePath}/_next`;
+    return `probed HTML missing a JS chunk URL under ${assetRoot}/_next`;
   }
   if (!evaluation.hasPrefixedSearchBootstrap) {
-    return `JS chunks missing prefixed search bootstrap ${basePath}/api/search`;
+    return `JS chunks missing search bootstrap ${assetRoot}/api/search`;
   }
   if (evaluation.hasUnprefixedSearchBootstrap) {
     return "JS chunks reference unprefixed /api/search bootstrap";
@@ -217,18 +230,11 @@ export async function probePagesDeployedArtifact(
 ): Promise<PagesDeployedArtifactProbeResult> {
   const cwd = options.cwd ?? process.cwd();
   const outDir = options.outDir ?? DEFAULT_EXPORT_OUT_DIR;
+  const detected = detectTrustedExportBasePath({ cwd, outDir });
   const basePath = normalizeGitHubPagesBasePath(
-    options.basePath ?? BUILT_APP_GITHUB_PAGES_BASE_PATH,
+    options.basePath ?? (detected.ok ? detected.basePath : ""),
   );
   const fetchTimeoutMs = options.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
-
-  if (basePath === "") {
-    return {
-      ok: false,
-      reason: "pages deployed-artifact guard requires a non-empty base path",
-      evaluation: EMPTY_EVALUATION,
-    };
-  }
 
   const lifecycle = await runStaticExportServerLifecycle({
     outDir,

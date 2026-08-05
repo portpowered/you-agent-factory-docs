@@ -1,6 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isAbsolute, join } from "node:path";
-import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   DEFAULT_EXPORT_OUT_DIR,
   verifyExportOutDirectory,
@@ -11,6 +10,7 @@ import {
 } from "@/lib/build/run-static-export-build";
 import { normalizeGitHubPagesBasePath } from "@/lib/build/static-export";
 import {
+  detectExportBasePathFromHtml,
   exportHtmlReferencesBasePathAssets,
   exportHtmlReferencesRootLevelNextAssets,
 } from "@/lib/build/verify-export-base-path";
@@ -46,9 +46,48 @@ function resolveAbsoluteOutDir(outDir: string, cwd: string): string {
 }
 
 /**
- * True when `out/` exists and its home HTML already references the project-site
- * asset prefix (and not bare `/_next`). Used to reuse a validate-job or prior
- * trusted export without paying for another full static export.
+ * Reads `out/index.html` and infers the base path it was built with, so the
+ * deploy guard can verify an apex export (`""`) or a project-site export
+ * without the caller passing the base path out of band.
+ */
+export function detectTrustedExportBasePath(options: {
+  cwd?: string;
+  outDir?: string;
+}): { ok: true; basePath: string } | { ok: false; reason: string } {
+  const cwd = options.cwd ?? process.cwd();
+  const outDir = options.outDir ?? DEFAULT_EXPORT_OUT_DIR;
+
+  const directory = verifyExportOutDirectory(outDir, cwd);
+  if (!directory.ok) {
+    return { ok: false, reason: directory.reason };
+  }
+
+  const indexPath = join(resolveAbsoluteOutDir(outDir, cwd), "index.html");
+  if (!existsSync(indexPath)) {
+    return {
+      ok: false,
+      reason: `Missing ${join(outDir, "index.html")} — export directory is incomplete.`,
+    };
+  }
+
+  const detected = detectExportBasePathFromHtml(
+    readFileSync(indexPath, "utf8"),
+  );
+  if (detected === null) {
+    return {
+      ok: false,
+      reason: "export index.html has no _next asset references",
+    };
+  }
+
+  return { ok: true, basePath: normalizeGitHubPagesBasePath(detected) };
+}
+
+/**
+ * True when `out/` exists and its home HTML references assets at the expected
+ * base path — the project-site prefix when one is configured, or bare `/_next`
+ * for an apex export. Used to reuse a validate-job or prior trusted export
+ * without paying for another full static export.
  */
 export function projectSiteExportMatchesTrustedPrefix(options: {
   cwd?: string;
@@ -57,16 +96,6 @@ export function projectSiteExportMatchesTrustedPrefix(options: {
 }): TrustedProjectSiteExportMatch {
   const cwd = options.cwd ?? process.cwd();
   const outDir = options.outDir ?? DEFAULT_EXPORT_OUT_DIR;
-  const basePath = normalizeGitHubPagesBasePath(
-    options.basePath ?? BUILT_APP_GITHUB_PAGES_BASE_PATH,
-  );
-
-  if (basePath === "") {
-    return {
-      matches: false,
-      reason: "trusted project-site export requires a non-empty base path",
-    };
-  }
 
   const directory = verifyExportOutDirectory(outDir, cwd);
   if (!directory.ok) {
@@ -83,6 +112,22 @@ export function projectSiteExportMatchesTrustedPrefix(options: {
   }
 
   const html = readFileSync(indexPath, "utf8");
+  const basePath = normalizeGitHubPagesBasePath(
+    options.basePath ?? detectExportBasePathFromHtml(html) ?? "",
+  );
+
+  if (basePath === "") {
+    // Apex export: assets must be root-level, with no project-site prefix left
+    // over from a differently-configured build.
+    if (!exportHtmlReferencesRootLevelNextAssets(html)) {
+      return {
+        matches: false,
+        reason: "export index.html missing root-level /_next asset references",
+      };
+    }
+    return { matches: true };
+  }
+
   if (!exportHtmlReferencesBasePathAssets(html, basePath)) {
     return {
       matches: false,
@@ -100,17 +145,22 @@ export function projectSiteExportMatchesTrustedPrefix(options: {
 }
 
 /**
- * Obtains one trusted project-site `out/` for `/you-agent-factory-docs`:
- * reuse when the existing export already matches the prefix; otherwise build
- * once (unless `allowBuild: false`).
+ * Obtains one trusted `out/` to verify: reuse when the existing export already
+ * matches the expected base path; otherwise build once (unless
+ * `allowBuild: false`).
+ *
+ * When no `basePath` is given the base path is inferred from the artifact, so
+ * both the apex deploy (`""`) and the `/you-agent-factory-docs` project-site
+ * lane are verifiable without the caller knowing which one produced `out/`.
  */
 export function acquireTrustedProjectSiteExport(
   options: AcquireTrustedProjectSiteExportOptions = {},
 ): AcquireTrustedProjectSiteExportResult {
   const cwd = options.cwd ?? process.cwd();
   const outDir = options.outDir ?? DEFAULT_EXPORT_OUT_DIR;
+  const detected = detectTrustedExportBasePath({ cwd, outDir });
   const basePath = normalizeGitHubPagesBasePath(
-    options.basePath ?? BUILT_APP_GITHUB_PAGES_BASE_PATH,
+    options.basePath ?? (detected.ok ? detected.basePath : ""),
   );
   const allowBuild = options.allowBuild ?? true;
   const runBuild = options.runBuild ?? runStaticExportBuild;

@@ -6,7 +6,10 @@ import {
   GA_MEASUREMENT_ID_ENV,
   GA_MEASUREMENT_ID_FALLBACK,
 } from "@/lib/analytics/ga-measurement-id";
-import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import {
+  PRODUCTION_SITE_ORIGIN,
+  SITE_ORIGIN_ENV,
+} from "@/lib/seo/production-metadata-base";
 
 const repoRoot = join(import.meta.dir, "../../..");
 const deployPagesWorkflowPath = join(
@@ -20,16 +23,22 @@ const retiredDeployWorkflowPath = join(
 
 /**
  * Live Pages deploy contract for the focused build-contract gate.
+ *
+ * The site deploys to the apex custom domain `youagentfactory.com`, so the
+ * build step must NOT set a project-site base path — doing so 404s every asset
+ * and every Next `<Link>` on the custom domain. The prefixed lane lives in
+ * `make test-w20-pages-prefixed-export`, not here.
+ *
  * Do not revive retired `.github/workflows/deploy.yml` /
  * `ai-model-reference` inventory expectations as this gate.
  */
-describe("deploy-pages.yml project-site build contract", () => {
+describe("deploy-pages.yml apex build contract", () => {
   test("live deploy-pages workflow exists and retired deploy.yml is not the Pages gate", () => {
     expect(existsSync(deployPagesWorkflowPath)).toBe(true);
     expect(existsSync(retiredDeployWorkflowPath)).toBe(false);
   });
 
-  test("Build static export sets GITHUB_PAGES_BASE_PATH and GA Measurement ID for make build", () => {
+  test("Build static export sets no base path and bakes the apex origin plus GA Measurement ID", () => {
     const workflow = readFileSync(deployPagesWorkflowPath, "utf8");
 
     const buildStepMatch = workflow.match(
@@ -39,18 +48,30 @@ describe("deploy-pages.yml project-site build contract", () => {
 
     const buildStep = buildStepMatch?.[1] ?? "";
     expect(buildStep).toMatch(/run:\s*make build\b/);
+
+    // The apex deploy must leave GITHUB_PAGES_BASE_PATH unset. Comments
+    // explaining the prefixed lane are fine; an actual assignment is not.
+    const basePathAssignments = buildStep
+      .split("\n")
+      .filter((line) => !line.trimStart().startsWith("#"))
+      .filter((line) => /GITHUB_PAGES_BASE_PATH\s*:/.test(line));
+    expect(basePathAssignments).toEqual([]);
+
     expect(buildStep).toMatch(
-      new RegExp(
-        `GITHUB_PAGES_BASE_PATH:\\s*${BUILT_APP_GITHUB_PAGES_BASE_PATH.replaceAll("/", "\\/")}\\b`,
-      ),
-    );
-    expect(buildStep).not.toMatch(
-      /GITHUB_PAGES_BASE_PATH:\s*\/?ai-model-reference\b/,
+      new RegExp(`${SITE_ORIGIN_ENV}:\\s*${PRODUCTION_SITE_ORIGIN}\\b`),
     );
     expect(buildStep).toMatch(
       new RegExp(
         `${GA_MEASUREMENT_ID_ENV}:\\s*${GA_MEASUREMENT_ID_FALLBACK}\\b`,
       ),
+    );
+  });
+
+  test("public/CNAME carries the custom domain into the exported artifact", () => {
+    const cnamePath = join(repoRoot, "public/CNAME");
+    expect(existsSync(cnamePath)).toBe(true);
+    expect(readFileSync(cnamePath, "utf8").trim()).toBe(
+      new URL(PRODUCTION_SITE_ORIGIN).hostname,
     );
   });
 

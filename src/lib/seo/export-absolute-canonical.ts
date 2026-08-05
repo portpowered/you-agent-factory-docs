@@ -6,6 +6,7 @@ import {
 } from "@/lib/build/export-out-directory";
 import {
   type BuildModeEnv,
+  PROJECT_SITE_BASE_PATH,
   resolveGitHubPagesBasePath,
 } from "@/lib/build/static-export";
 import {
@@ -15,8 +16,8 @@ import {
 } from "@/lib/search/factory-search-deleted-records";
 import { isDocumentationRouteMigrationOldPath } from "@/lib/seo/documentation-route-migration";
 import {
-  PRODUCTION_SITE_ORIGIN,
   resolveProductionMetadataHref,
+  resolveProductionSiteOrigin,
 } from "@/lib/seo/production-metadata-base";
 
 /**
@@ -62,19 +63,20 @@ export function isAbsoluteProductionCanonicalHref(
   href: string,
   env: BuildModeEnv = process.env,
 ): boolean {
-  if (!href.startsWith(`${PRODUCTION_SITE_ORIGIN}/`)) {
+  const origin = resolveProductionSiteOrigin(env);
+  if (!href.startsWith(`${origin}/`)) {
     return false;
   }
 
   const basePath = resolveGitHubPagesBasePath(env);
   if (basePath === "") {
-    // Root / unset-base-path: origin-qualified, no forced project-site prefix.
-    return !href.startsWith(`${PRODUCTION_SITE_ORIGIN}/you-agent-factory-docs`);
+    // Apex / unset-base-path: origin-qualified, with no project-site prefix
+    // leaking in from a differently-configured build.
+    return !href.startsWith(`${origin}${PROJECT_SITE_BASE_PATH}`);
   }
 
   return (
-    href === `${PRODUCTION_SITE_ORIGIN}${basePath}/` ||
-    href.startsWith(`${PRODUCTION_SITE_ORIGIN}${basePath}/`)
+    href === `${origin}${basePath}/` || href.startsWith(`${origin}${basePath}/`)
   );
 }
 

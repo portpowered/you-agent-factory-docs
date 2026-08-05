@@ -23,9 +23,10 @@ failing workflow stage with the same `make <target>` locally (see
 | Trigger | `push` to `main` |
 | Install | `make setup` (`bun install --frozen-lockfile`) |
 | Validate stages | `make check`, `make test`, `make build`, `make guard-pages-deployed-artifact`, `make budget` (same targets as local/CI) |
-| Build entrypoint | `make build` → `bun run build:export` (`NEXT_STATIC_EXPORT=1`) with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` |
+| Build entrypoint | `make build` → `bun run build:export` (`NEXT_STATIC_EXPORT=1`) with **no** `GITHUB_PAGES_BASE_PATH` |
 | Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
-| Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
+| Custom domain | `youagentfactory.com` (apex). `public/CNAME` carries it into `out/`; base path stays empty |
+| Production origin | `NEXT_PUBLIC_SITE_ORIGIN=https://youagentfactory.com` on the validate job build step (canonical / hreflang / OG / sitemap) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
 | Quality gates | `.github/workflows/ci.yml` runs the Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate **ci-gate**; membership/edges live in `src/lib/ci-required-path.ts`. Wave CI-2: `static-export` uploads trusted Actions artifact `static-export-out` (`out/`); `integration` / `budget` download it and must not run a second `make build`. Wave CI-3: Playwright Chromium install (`bunx playwright install --with-deps chromium`) runs only on browser-backed jobs `unit-tests`, `a11y`, and `integration` (`CI_BROWSER_INSTALL_OWNERSHIP`); non-browser peers must not install Chromium. `unit-tests` keeps install because `make test` still launches Chromium. Local full reproduction stays sequential (`make ci`) and does not use Actions artifacts; local browser suite targets still install/use Chromium when needed. Deploy-pages validate remains a separate Pages-focused subset and does not replace CI. CI-4 shards are not part of this wave. |
 
@@ -40,20 +41,35 @@ Atlas/Phase-1 export route verifiers and `make build-export` were retired with
 
 ### Project-site export base path
 
-The live site is a GitHub Pages **project site** at
-`https://portpowered.github.io/you-agent-factory-docs`. Deploy-pages sets
-`GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the build step so exported
-HTML references `/you-agent-factory-docs/_next` assets rather than bare `/_next`.
+The live site serves from the **apex custom domain**
+`https://youagentfactory.com`, so the deploy build leaves
+`GITHUB_PAGES_BASE_PATH` unset and exported HTML references bare `/_next`
+assets. `public/CNAME` ships the domain inside `out/` so it survives Pages
+re-provisioning.
 
-Reproduce that artifact locally with the same env:
+Reproduce the deployed artifact locally with plain:
+
+```sh
+make build
+```
+
+**Do not set a base path for the apex deploy.** Next applies `basePath` /
+`assetPrefix` to every `_next` asset, `next/image` source, and `next/link`
+href. On a custom domain those prefixed URLs have no directory to resolve
+against, which 404s all CSS, JS, and images and breaks every docs sidebar
+link — while raw `<a href>` links keep working, producing a confusing
+half-broken page.
+
+The prefixed **project-site** lane (`https://portpowered.github.io/you-agent-factory-docs`)
+is still supported and exercised by `make test-w20-pages-prefixed-export`:
 
 ```sh
 GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
 ```
 
-When `GITHUB_PAGES_BASE_PATH` is unset, export builds keep `/` as the base for
-local preview and user/org root Pages sites. The project site requires the
-repository prefix.
+`make guard-pages-deployed-artifact` infers which lane produced `out/` by
+reading the `_next` prefix out of `out/index.html`, so it verifies either shape
+without being told which one to expect.
 
 ### Why GitHub Pages works for this repository
 
@@ -75,6 +91,7 @@ Maintainers must confirm these settings under the repository **Settings** tab
 | Setting | Location | Phase 1 expectation |
 | --- | --- | --- |
 | Pages source | **Settings → Pages → Build and deployment → Source** | **GitHub Actions** (not “Deploy from a branch”) |
+| Custom domain | **Settings → Pages → Custom domain** | `youagentfactory.com`, with **Enforce HTTPS** enabled. `public/CNAME` keeps this set across deploys; DNS needs apex `A`/`ALIAS` records pointing at the GitHub Pages IPs |
 | Workflow permissions | **Settings → Actions → General → Workflow permissions** | **Read and write permissions** enabled so the deploy workflow can request `pages: write` and `id-token: write` |
 | Pages environment | **Settings → Environments → `github-pages`** | Created automatically on first successful deploy; confirm it exists and review protection rules if the org requires approvals |
 | Deploy workflow permissions | `.github/workflows/deploy-pages.yml` | `contents: read`, `pages: write`, `id-token: write` at workflow scope |
@@ -189,7 +206,7 @@ If maintainers later add a PR preview path, update this section to
 mapping row to **Implemented**, and keep
 [Deployment status expectations](#deployment-status-expectations) aligned so PR
 checks document the new preview job. Until then, production remains the only
-hosted surface (`https://portpowered.github.io/you-agent-factory-docs` after a
+hosted surface (`https://youagentfactory.com` after a
 green **Deploy to GitHub Pages** on `main`).
 
 ## Branch protection
@@ -581,7 +598,7 @@ Prefer restoring healthy source on `main`, then letting deploy run on the new ti
 4. **Confirm publish** with [Commit-SHA traceability](#commit-sha-traceability)
    for the new tip, then run the
    [read-only post-deploy checks](#read-only-post-deploy-checks) against
-   `https://portpowered.github.io/you-agent-factory-docs`.
+   `https://youagentfactory.com`.
 5. **Update the incident record** with the recovery merge SHA and its
    `ci_run_id` / `deploy_pages_run_id`.
 
@@ -596,7 +613,7 @@ source control — and this section must be updated to name the new trigger.
 ## Read-only post-deploy checks
 
 After a green **Deploy to GitHub Pages** run on `main`, maintainers confirm the
-live project site at `https://portpowered.github.io/you-agent-factory-docs`
+live project site at `https://youagentfactory.com`
 with **GET-only** operator curls (or equivalent browser loads). Pair these
 checks with [Commit-SHA traceability](#commit-sha-traceability) so you know
 which SHA you are smoking.
@@ -618,7 +635,7 @@ separate from this runbook.
 
 ### Check inventory
 
-| Surface | URL under `https://portpowered.github.io/you-agent-factory-docs` | What a 200 proves |
+| Surface | URL under `https://youagentfactory.com` | What a 200 proves |
 | --- | --- | --- |
 | Home | `/` | Project-site root HTML is reachable |
 | Docs page | `/docs/guides/getting-started` | A representative docs route is live |
@@ -631,7 +648,7 @@ separate from this runbook.
 Use short timeouts so a hung host fails fast:
 
 ```sh
-SITE=https://portpowered.github.io/you-agent-factory-docs
+SITE=https://youagentfactory.com
 
 # Home
 curl --fail --silent --show-error --max-time 10 "$SITE/" >/dev/null
@@ -658,8 +675,8 @@ already include `/you-agent-factory-docs`), so fetch them from the Pages host
 origin — do not append them to `$SITE` or the path doubles.
 
 ```sh
-SITE=https://portpowered.github.io/you-agent-factory-docs
-ORIGIN=https://portpowered.github.io
+SITE=https://youagentfactory.com
+ORIGIN=https://youagentfactory.com
 html="$(curl --fail --silent --show-error --max-time 10 "$SITE/")"
 printf '%s' "$html" | grep -q '/you-agent-factory-docs/_next/'
 ! printf '%s' "$html" | grep -q 'src="/_next/'
@@ -681,7 +698,7 @@ deploy from a local test harness.
 ## Commit-SHA traceability
 
 Maintainers must prove which source commit is live on the project site
-(`https://portpowered.github.io/you-agent-factory-docs`) by tying the merge
+(`https://youagentfactory.com`) by tying the merge
 commit on `main` to the Actions runs that verified and published it.
 
 Do **not** claim the public site was updated for a SHA until the **Deploy to
@@ -698,7 +715,7 @@ not publish proof.
 
 Both workflows run against `${{ github.sha }}` for the `main` push (the merge
 commit). The project site URL after a successful deploy is
-`https://portpowered.github.io/you-agent-factory-docs`.
+`https://youagentfactory.com`.
 
 ### SHAs in CI and deploy
 
@@ -747,7 +764,7 @@ record / environment URL when available.
    deployment URL when present).
 5. Only after step 3 is green, treat the public site as updated for that SHA.
    Optionally run the [read-only post-deploy checks](#read-only-post-deploy-checks)
-   against `https://portpowered.github.io/you-agent-factory-docs` (deploy
+   against `https://youagentfactory.com` (deploy
    propagation can take a short time).
 6. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on an up-to-date
    `main` must match the SHA recorded in CI and deploy for that release.
@@ -755,7 +772,7 @@ record / environment URL when available.
 ## Incident diagnosis
 
 Use this section when the live project site at
-`https://portpowered.github.io/you-agent-factory-docs` looks wrong after a
+`https://youagentfactory.com` looks wrong after a
 deploy (or after a suspected bad publish). Diagnose first; do not invent a
 second recovery path.
 

@@ -3,6 +3,16 @@ import type { NextConfig } from "next";
 export const STATIC_EXPORT_ENV = "NEXT_STATIC_EXPORT";
 export const GITHUB_PAGES_BASE_PATH_ENV = "GITHUB_PAGES_BASE_PATH";
 
+/**
+ * The GitHub Pages project-site prefix for this repo.
+ *
+ * Not the deploy default — the site deploys to the apex custom domain with an
+ * empty base path. This names the prefixed lane that
+ * `make test-w20-pages-prefixed-export` still exercises, so callers assert
+ * against a named constant rather than an inline string literal.
+ */
+export const PROJECT_SITE_BASE_PATH = "/you-agent-factory-docs";
+
 export type BuildModeEnv = Record<string, string | undefined>;
 
 export function isStaticExportBuild(env: BuildModeEnv = process.env): boolean {
