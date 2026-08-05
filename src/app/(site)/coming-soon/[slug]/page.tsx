@@ -1,61 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-
-const COMING_SOON_PAGES = {
-  "system-configuration": {
-    title: "System configuration",
-    summary: "System-wide defaults and runtime configuration for YOU.",
-  },
-  "event-stream": {
-    title: "Event Stream",
-    summary: "How factory events are recorded, inspected, and resumed.",
-  },
-  "installation-and-running": {
-    title: "Installation and running",
-    summary: "Install YOU on macOS, Linux, or Windows and start a factory.",
-  },
-  "writing-your-first-factory": {
-    title: "Writing your first factory",
-    summary: "Build a small durable workflow from the first node onward.",
-  },
-  "operating-the-factory": {
-    title: "Operating the factory",
-    summary: "Run, observe, pause, and resume long-lived factory work.",
-  },
-  "configuring-your-factory": {
-    title: "Configuring your factory",
-    summary: "Connect workers, workstations, resources, and defaults.",
-  },
-  "why-you-over-x": {
-    title: "Why YOU over X",
-    summary: "Where YOU fits alongside agent harnesses and orchestrators.",
-  },
-  "you-manifesto": {
-    title: "YOU manifesto",
-    summary: "The principles behind local, durable agent factories.",
-  },
-  "save-money-with-more-agents": {
-    title: "How to save money with more agents",
-    summary: "Match models, workflows, and concurrency to the work at hand.",
-  },
-  about: {
-    title: "About",
-    summary: "The people and ideas behind you-agent-factory.",
-  },
-} as const;
-
-type ComingSoonSlug = keyof typeof COMING_SOON_PAGES;
+import {
+  COMING_SOON_SLUGS,
+  findComingSoonPage,
+} from "@/lib/site/coming-soon-pages";
 
 type ComingSoonPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-function resolvePage(slug: string) {
-  return COMING_SOON_PAGES[slug as ComingSoonSlug];
-}
+const resolvePage = findComingSoonPage;
 
 export function generateStaticParams() {
-  return Object.keys(COMING_SOON_PAGES).map((slug) => ({ slug }));
+  return COMING_SOON_SLUGS.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

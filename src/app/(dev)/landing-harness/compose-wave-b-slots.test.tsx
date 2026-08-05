@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { expectFaqAnswerRendered } from "@/features/landing-page/components/faq-answer-test-helpers";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import {
   composeWaveBCarouselSlot,
@@ -159,7 +160,7 @@ describe("composeWaveBFaqSlot", () => {
 
     for (const item of fixtureLandingPageData.faq.items) {
       expect(html).toContain(item.question);
-      expect(html).toContain(item.answer);
+      expectFaqAnswerRendered(html, item.answer);
       expect(html).toContain(`data-landing-faq-item-id="${item.id}"`);
     }
   });

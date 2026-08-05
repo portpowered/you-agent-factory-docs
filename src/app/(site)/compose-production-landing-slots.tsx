@@ -83,7 +83,10 @@ export type ProductionLandingSlots = Pick<
   LandingPageSlots,
   WiredProductionLandingSlot
 > &
-  Pick<LandingPageProps, "midSceneBackgroundSrc" | "midSceneTransitionSrc">;
+  Pick<
+    LandingPageProps,
+    "midSceneBackgroundSrc" | "midSceneTransitionSrc" | "monkeyParadeSrc"
+  >;
 
 /**
  * Map fixture header onto the public LandingHeader contract.
@@ -508,5 +511,6 @@ export function composeProductionLandingSlots(
     ),
     midSceneBackgroundSrc: assets.midEndWhale,
     midSceneTransitionSrc: assets.youYouYouBackground,
+    monkeyParadeSrc: assets.monkey,
   };
 }

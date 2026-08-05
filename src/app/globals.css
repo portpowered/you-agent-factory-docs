@@ -283,12 +283,13 @@ button[data-search] {
     display: none;
   }
 
+  /* Left-aligned to match the desktop poster copy and the hero left edge. */
   .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__copy {
     position: absolute;
     inset: 4rem 0 auto;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
-    text-align: center;
+    text-align: left;
   }
 
   .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__title {

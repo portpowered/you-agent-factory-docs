@@ -26,6 +26,60 @@ const QUESTION_BUTTON_CLASS = cn(
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 );
 
+const ANSWER_LINK_CLASS = cn(
+  "rounded-sm underline underline-offset-2 transition-colors",
+  "hover:text-[#191f2b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+);
+
+/**
+ * One piece of a parsed answer. `offset` is the segment's start index in the
+ * source string, which gives each segment a stable React key without falling
+ * back to the array index.
+ */
+export type FaqAnswerSegment =
+  | { kind: "text"; text: string; offset: number }
+  | { kind: "link"; text: string; href: string; offset: number };
+
+/** Matches a markdown-style inline link: `[label](/href)`. */
+const ANSWER_LINK_PATTERN = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
+/**
+ * Splits an FAQ answer into plain-text and link segments.
+ *
+ * Answers are authored as plain strings, so a markdown link written in one used
+ * to ship as literal `[label](href)` text. This understands that one inline
+ * form and nothing else — an empty or whitespace-only target stays literal text
+ * rather than becoming a dead anchor.
+ */
+export function parseFaqAnswerSegments(answer: string): FaqAnswerSegment[] {
+  const segments: FaqAnswerSegment[] = [];
+  let cursor = 0;
+
+  for (const match of answer.matchAll(ANSWER_LINK_PATTERN)) {
+    const [raw, label = "", href = ""] = match;
+    const start = match.index ?? 0;
+
+    if (href.trim() === "") {
+      continue;
+    }
+    if (start > cursor) {
+      segments.push({
+        kind: "text",
+        text: answer.slice(cursor, start),
+        offset: cursor,
+      });
+    }
+    segments.push({ kind: "link", text: label, href, offset: start });
+    cursor = start + raw.length;
+  }
+
+  if (cursor < answer.length) {
+    segments.push({ kind: "text", text: answer.slice(cursor), offset: cursor });
+  }
+
+  return segments;
+}
+
 /**
  * Landing-page FAQ panel: parchment list with keyboard-reachable question
  * disclosures. Owned by W-faq-cta — not docs FAQ chrome (`features/faq`).
@@ -132,7 +186,21 @@ export function FaqPanel({
                     className="mt-3 px-1 text-base leading-relaxed whitespace-pre-line text-[#4a4034] sm:text-lg"
                     data-landing-faq-answer=""
                   >
-                    {item.answer}
+                    {parseFaqAnswerSegments(item.answer).map((segment) =>
+                      segment.kind === "link" ? (
+                        <a
+                          className={ANSWER_LINK_CLASS}
+                          href={segment.href}
+                          key={`${item.id}-${segment.offset}`}
+                        >
+                          {segment.text}
+                        </a>
+                      ) : (
+                        <span key={`${item.id}-${segment.offset}`}>
+                          {segment.text}
+                        </span>
+                      ),
+                    )}
                   </section>
                 </li>
               );

@@ -244,7 +244,7 @@ export const fixtureLandingPageData: LandingPageData = {
         id: "faq-support",
         question: "Does YOU support my usecase|agent harness|bespoke problem?",
         answer:
-          "Maybe!\n\nThe supported harness index is located [here]().\nWe have a list of random features that we support here. If you can’t find it.\nPlease feel free to file a ticket or ping me at dre@youagentfactory.com",
+          "Maybe!\n\nThe supported harness index is [here](/coming-soon/harness-support), and the full feature list lives in [the documentation](/docs/documentation).\n\nIf you can’t find what you need, please [file a ticket](https://github.com/portpowered/you-agent-factory/issues/new) or ping me at dre@youagentfactory.com",
       },
       {
         id: "faq-why",
@@ -373,7 +373,7 @@ export const fixtureLandingPageData: LandingPageData = {
         links: [
           {
             label: "factory configuration",
-            href: "/docs/documentation/configuration",
+            href: "/docs/factories/configuration",
           },
           {
             label: "system configuration",

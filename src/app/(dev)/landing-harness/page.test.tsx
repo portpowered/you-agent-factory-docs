@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { expectFaqAnswerRendered } from "@/features/landing-page/components/faq-answer-test-helpers";
 import { LANDING_SLOT_ORDER } from "@/features/landing-page/LandingPage";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { landingThemeToCssVars } from "@/features/landing-page/landing-page.theme";
@@ -96,7 +97,7 @@ describe("LandingHarnessPage", () => {
     expect(html).not.toContain('data-landing-placeholder="faq"');
     for (const item of fixtureLandingPageData.faq.items) {
       expect(html).toContain(item.question);
-      expect(html).toContain(item.answer);
+      expectFaqAnswerRendered(html, item.answer);
     }
 
     // Wave B: wired cta (CtaBand) from fixture + faq-cta-harness defaults

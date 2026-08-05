@@ -60,7 +60,10 @@ export const landingPageTheme: LandingPageTheme = {
     neighborOpacity: 0.55,
     farScale: 0.72,
     farOpacity: 0.28,
-    transitionMs: 1200,
+    // Slide-to-slide travel. Kept in the 500–700ms band: long enough to read
+    // as travel between positions, short enough that repeated presses feel
+    // responsive rather than queued.
+    transitionMs: 620,
     dragThresholdPx: 48,
   },
   sphere: {
