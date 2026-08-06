@@ -68,7 +68,13 @@
    * src/lib/theme/docs-chrome-highlighting-tokens.ts — consume these vars
    * from shared chrome CSS instead of scattering one-off hex values.
    */
-  --docs-chrome-surrounding-background: var(--background);
+  /*
+   * The globe and GitHub controls sit on this. `--background` is the page
+   * canvas (#050b10), which is near-black — against the header the two buttons
+   * read as black holes rather than as site chrome. This is the same navy the
+   * landing page is built on, so they read blue like the rest of the site.
+   */
+  --docs-chrome-surrounding-background: #191f2b;
   --docs-chrome-primary-yellow: var(--primary);
   --docs-chrome-secondary-blue: var(--secondary);
   --docs-chrome-white: var(--foreground);

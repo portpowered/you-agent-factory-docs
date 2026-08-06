@@ -194,7 +194,9 @@ export function getCarouselTrackPlacement(
     height: CAROUSEL_RAIL_HEIGHT,
     // Beyond the second ring a slide is off-frame; parked and fully transparent
     // so it neither paints nor catches a pointer.
-    opacity: distance === 1 ? 1 : distance === 2 ? 0.72 : 0,
+    // Well under 1: at full opacity the white cards competed with the focused
+    // plate for attention instead of receding behind it.
+    opacity: distance === 1 ? 0.55 : distance === 2 ? 0.22 : 0,
     zIndex: distance === 1 ? 20 : 12,
   };
 }
@@ -224,6 +226,16 @@ type DragSession = {
  * Below 1 so the collage feels weighted rather than loose, and so a long drag
  * cannot fling cards past the frame edge.
  */
+/**
+ * Horizontal fade at both ends of the track, so slides dissolve out instead of
+ * meeting a hard clip. Prefixed for WebKit, which still needs
+ * `-webkit-mask-image` for gradient masks.
+ */
+const TRACK_EDGE_FEATHER_CLASS = [
+  "[mask-image:linear-gradient(90deg,transparent_0%,black_14%,black_86%,transparent_100%)]",
+  "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,black_14%,black_86%,transparent_100%)]",
+].join(" ");
+
 const DRAG_FOLLOW_RATIO = 0.45;
 
 /**
@@ -538,7 +550,13 @@ export function FactoryCarousel({
       ) : null}
 
       <div
-        className="factory-carousel__track relative mx-auto min-h-[clamp(24rem,46vw,46rem)] w-full max-w-[100rem] touch-pan-y"
+        className={cn(
+          "factory-carousel__track relative mx-auto min-h-[clamp(24rem,46vw,46rem)] w-full max-w-[100rem] touch-pan-y",
+          // Feather both ends. The frame used to clip the outermost cards on a
+          // hard vertical line, which read as a rendering error rather than as
+          // more content continuing past the edge.
+          TRACK_EDGE_FEATHER_CLASS,
+        )}
         data-carousel-track=""
         data-carousel-dragging={dragOffsetPx !== 0 ? "true" : undefined}
         onPointerCancel={onPointerCancel}
