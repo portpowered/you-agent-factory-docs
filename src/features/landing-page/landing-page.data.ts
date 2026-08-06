@@ -181,6 +181,7 @@ export const fixtureLandingPageData: LandingPageData = {
     slides: [
       {
         id: "slide-ralph",
+        artSrc: "/home/factories/owl.webp",
         title: "ralph",
         blurb:
           "have one agent write a plan, then let another execute and review it",
@@ -188,6 +189,7 @@ export const fixtureLandingPageData: LandingPageData = {
       },
       {
         id: "slide-loop",
+        artSrc: "/home/factories/octopus.webp",
         title: "LOOP",
         blurb: "run an agent every 1 hour to do something",
         command:
@@ -195,18 +197,21 @@ export const fixtureLandingPageData: LandingPageData = {
       },
       {
         id: "slide-review",
+        artSrc: "/home/factories/eel.webp",
         title: "review",
         blurb: "have one agent write while another reviews",
         command: 'you run -a "review" --to "write and verify the change"',
       },
       {
         id: "slide-goal",
+        artSrc: "/home/factories/seastar.webp",
         title: "goal",
         blurb: "Run agent until\nit completes\nits goal",
         command: 'you run -a "goal" --to "finish the requested outcome"',
       },
       {
         id: "slide-custom",
+        artSrc: "/home/factories/seaangel.webp",
         title: "custom",
         blurb:
           "write your own\nagent workflow\nor have your\nagent write\none for you",
@@ -214,6 +219,7 @@ export const fixtureLandingPageData: LandingPageData = {
       },
       {
         id: "slide-deep-research",
+        artSrc: "/home/factories/seadragon.webp",
         title: "deep-research",
         blurb:
           "spawn many agents, compare their findings, and merge the strongest result",
@@ -221,6 +227,7 @@ export const fixtureLandingPageData: LandingPageData = {
       },
       {
         id: "slide-one-shot",
+        artSrc: "/home/factories/monkey.webp",
         title: "one-shot",
         blurb:
           "create a worktree, write a plan, iterate through it, review, and merge",
@@ -228,6 +235,7 @@ export const fixtureLandingPageData: LandingPageData = {
       },
       {
         id: "slide-classify",
+        artSrc: "/home/factories/octopus.webp",
         title: "classify",
         blurb:
           "use a small model to choose the cheapest capable model, then run it",

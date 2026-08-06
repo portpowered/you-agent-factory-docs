@@ -9,7 +9,7 @@ import {
 import userEvent from "@testing-library/user-event";
 import { landingPageTheme } from "@/features/landing-page/landing-page.theme";
 import {
-  CAROUSEL_SLIDE_WIDTH,
+  CAROUSEL_FEATURE_WIDTH_PERCENT,
   FactoryCarousel,
   getCarouselSignedOffset,
   getCarouselSlideDepth,
@@ -122,15 +122,17 @@ describe("getCarouselSignedOffset", () => {
 });
 
 describe("getCarouselTrackPlacement", () => {
-  test("travels by a fixed step and never resizes the box", () => {
+  test("focused slide is wide and centred; neighbours are narrow and offset", () => {
     const active = getCarouselTrackPlacement(2, 2, 8);
     const next = getCarouselTrackPlacement(3, 2, 8);
     const previous = getCarouselTrackPlacement(1, 2, 8);
 
-    expect(active.translatePercent).toBe(0);
-    expect(next.translatePercent).toBe(78);
-    expect(previous.translatePercent).toBe(-78);
-    expect(active.scale).toBeGreaterThan(next.scale);
+    expect(active.centerPercent).toBe(50);
+    expect(active.widthPercent).toBe(CAROUSEL_FEATURE_WIDTH_PERCENT);
+    expect(next.centerPercent).toBeGreaterThan(50);
+    expect(previous.centerPercent).toBeLessThan(50);
+    // Entering focus widens the plate; leaving it shrinks again.
+    expect(active.widthPercent).toBeGreaterThan(next.widthPercent);
     expect(active.zIndex).toBeGreaterThan(next.zIndex);
   });
 
@@ -225,11 +227,12 @@ describe("FactoryCarousel", () => {
      * resizing between a rail slot and a feature slot.
      */
     expect(active.style.left).toBe("50%");
-    expect(active.style.width).toBe(CAROUSEL_SLIDE_WIDTH);
-    expect(neighborLeft.style.width).toBe(CAROUSEL_SLIDE_WIDTH);
-    expect(active.style.transform).toContain("translateX(0%)");
-    expect(neighborLeft.style.transform).toContain("translateX(-78%)");
-    expect(neighborRight.style.transform).toContain("translateX(78%)");
+    expect(active.style.width).toBe(`${CAROUSEL_FEATURE_WIDTH_PERCENT}%`);
+    expect(Number.parseFloat(neighborLeft.style.left)).toBeLessThan(50);
+    expect(Number.parseFloat(neighborRight.style.left)).toBeGreaterThan(50);
+    expect(Number.parseFloat(neighborLeft.style.width)).toBeLessThan(
+      CAROUSEL_FEATURE_WIDTH_PERCENT,
+    );
     expect(active.getAttribute("data-carousel-slide-offset")).toBe("0");
     expect(neighborLeft.getAttribute("data-carousel-slide-offset")).toBe("-1");
     expect(neighborRight.getAttribute("data-carousel-slide-offset")).toBe("1");
@@ -391,10 +394,10 @@ describe("FactoryCarousel", () => {
 
     expect(selectorHost?.className).toContain("md:flex");
     expect(worktreeSelector.getAttribute("aria-pressed")).toBe("false");
-    expect(slideEl("slide-loop").style.transform).toContain("translateX(0%)");
-    expect(slideEl("slide-worktree").style.transform).toContain(
-      "translateX(78%)",
-    );
+    expect(slideEl("slide-loop").style.left).toBe("50%");
+    expect(
+      Number.parseFloat(slideEl("slide-worktree").style.left),
+    ).toBeGreaterThan(50);
 
     await user.click(worktreeSelector);
 
@@ -403,12 +406,16 @@ describe("FactoryCarousel", () => {
     expect(slideEl("slide-worktree").getAttribute("data-active")).toBe("true");
     // The clicked card travels to the centre and the previous active card
     // travels one step left — neither changes size.
-    expect(slideEl("slide-worktree").style.transform).toContain(
-      "translateX(0%)",
+    expect(slideEl("slide-worktree").style.left).toBe("50%");
+    expect(Number.parseFloat(slideEl("slide-loop").style.left)).toBeLessThan(
+      50,
     );
-    expect(slideEl("slide-loop").style.transform).toContain("translateX(-78%)");
-    expect(slideEl("slide-worktree").style.width).toBe(CAROUSEL_SLIDE_WIDTH);
-    expect(slideEl("slide-loop").style.width).toBe(CAROUSEL_SLIDE_WIDTH);
+    expect(slideEl("slide-worktree").style.width).toBe(
+      `${CAROUSEL_FEATURE_WIDTH_PERCENT}%`,
+    );
+    expect(Number.parseFloat(slideEl("slide-loop").style.width)).toBeLessThan(
+      CAROUSEL_FEATURE_WIDTH_PERCENT,
+    );
   });
 
   test("ArrowLeft and ArrowRight on the focused carousel change the active slide", async () => {

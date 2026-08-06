@@ -58,6 +58,12 @@
     "openingSummary": "开篇摘要"
   },
   "explorer": {
+    "topLevelGroups": {
+      "quick-starts": "快速上手",
+      "how-tos": "操作指南",
+      "references": "参考",
+      "information": "资料"
+    },
     "folders": {
       "guides": "指南",
       "concepts": "概念",
@@ -85,6 +91,7 @@
     "referenceGroups": {
       "contracts": "合约",
       "schemas": "模式",
+      "packaged-factories": "预置工厂",
       "limits": "限制"
     },
     "virtualFolders": {

@@ -58,6 +58,12 @@
     "openingSummary": "Tóm tắt mở đầu"
   },
   "explorer": {
+    "topLevelGroups": {
+      "quick-starts": "Bắt đầu nhanh",
+      "how-tos": "Hướng dẫn thao tác",
+      "references": "Tham chiếu",
+      "information": "Thông tin"
+    },
     "folders": {
       "guides": "Hướng dẫn",
       "concepts": "Khái niệm",
@@ -85,6 +91,7 @@
     "referenceGroups": {
       "contracts": "Hợp đồng",
       "schemas": "Lược đồ",
+      "packaged-factories": "Nhà máy đóng gói",
       "limits": "Giới hạn"
     },
     "virtualFolders": {

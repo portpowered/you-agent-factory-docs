@@ -7,14 +7,15 @@ import { type SiteLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 import { localizePageTree } from "@/lib/i18n/localize-page-tree";
 import {
   buildExplorerTreeSignature,
+  collectionFolderNames,
   type ExplorerTreeSignature,
   folderSignatureByName,
+  groupedPageEntries,
   pageEntriesInFolder,
   pageEntriesInSecondaryFolderUnderSeparator,
   pageEntriesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
-  topLevelPageEntries,
 } from "@/lib/navigation/explorer-tree-signature";
 import { source } from "@/lib/source";
 import {
@@ -85,14 +86,23 @@ async function localizedExplorerSignature(locale: SiteLocale): Promise<{
   return { messages, signature: buildExplorerTreeSignature(tree) };
 }
 
+/**
+ * Collection folders are nested inside the four reader-facing groups, so the
+ * groups have to be opened before their folders exist in the DOM.
+ */
 async function openCollectionFolders(
   container: HTMLElement,
   folderNames: readonly string[],
+  groupNames: readonly string[] = [],
 ): Promise<void> {
-  for (const folderName of folderNames) {
-    const folders = within(container).getAllByRole("button", {
+  for (const folderName of [...groupNames, ...folderNames]) {
+    const folders = within(container).queryAllByRole("button", {
       name: folderName,
     });
+    if (folders.length === 0) {
+      // A locale may legitimately omit a folder it has no pages for.
+      continue;
+    }
     // Top-level explorer folders follow Program documentation in DOM order.
     // Prefer the last match when names collide with other chrome controls.
     const folder = folders.at(-1);
@@ -172,19 +182,30 @@ describe("desktop/mobile explorer tree parity", () => {
   test("localized constructed trees share FAQ placement, folder order, and subgroup membership for every locale", async () => {
     for (const locale of supportedLocales) {
       const { messages, signature } = await localizedExplorerSignature(locale);
-      const folderNames = topLevelFolderNames(signature);
+      // Collection folders sit one level below the four reader-facing groups.
+      const folderNames = collectionFolderNames(signature);
+      // Declared order across the four groups. Reference is inlined into its
+      // group, so its nested route families surface in its place. A locale may
+      // omit folders it has no pages for, but never reorder them.
       const declaredCollectionFolders = [
         messages.explorer.folders.guides,
+        messages.explorer.folders.factories,
+        messages.explorer.folders.workers,
+        messages.explorer.folders.workstations,
         messages.explorer.folders.documentation,
         messages.explorer.folders.concepts,
         messages.explorer.folders.techniques,
-        messages.explorer.folders.references,
       ];
 
       expect(signature.rootName).toBe("You Agent Factory");
-      expect(folderNames.slice(0, declaredCollectionFolders.length)).toEqual(
-        declaredCollectionFolders,
-      );
+      // Reference is inlined into its group, so its own folder is not emitted.
+      expect(folderNames).not.toContain(messages.explorer.folders.references);
+      expect(topLevelFolderNames(signature)).toEqual([
+        messages.explorer.topLevelGroups["quick-starts"],
+        messages.explorer.topLevelGroups["how-tos"],
+        messages.explorer.topLevelGroups.references,
+        messages.explorer.topLevelGroups.information,
+      ]);
       expect(
         isSubsequence(folderNames, [
           ...declaredCollectionFolders,
@@ -192,15 +213,20 @@ describe("desktop/mobile explorer tree parity", () => {
           messages.explorer.virtualFolders.miscellanea,
         ]),
       ).toBe(true);
-      expect(folderNames).not.toContain(messages.explorer.folders.factories);
-      expect(folderNames).not.toContain(messages.explorer.folders.workers);
-      expect(folderNames).not.toContain(messages.explorer.folders.workstations);
       expect(folderNames).not.toContain("Glossary");
 
-      const faqEntries = topLevelPageEntries(signature);
+      const faqEntries = groupedPageEntries(signature).filter((entry) =>
+        entry.url.endsWith("/documentation/faq"),
+      );
       expect(faqEntries).toHaveLength(1);
       expect(faqEntries[0]?.url).toMatch(/\/docs\/documentation\/faq$/);
-      expect(signature.children.at(-1)).toMatchObject({
+      // FAQ is last inside the Information group, which is itself last.
+      const informationGroup = signature.children.at(-1);
+      expect(informationGroup?.type).toBe("folder");
+      if (informationGroup?.type !== "folder") {
+        throw new Error(`expected a trailing group folder for ${locale}`);
+      }
+      expect(informationGroup.children.at(-1)).toMatchObject({
         type: "page",
         url: faqEntries[0]?.url,
       });
@@ -323,8 +349,10 @@ describe("desktop/mobile explorer tree parity", () => {
     for (const locale of supportedLocales) {
       const context = await loadAppTestContext(locale);
       const { signature } = await localizedExplorerSignature(locale);
-      const folderNames = topLevelFolderNames(signature);
-      const faq = topLevelPageEntries(signature)[0];
+      const folderNames = collectionFolderNames(signature);
+      const faq = groupedPageEntries(signature).find((entry) =>
+        entry.url.endsWith("/documentation/faq"),
+      );
       expect(faq).toBeTruthy();
 
       await act(async () => {
@@ -342,7 +370,11 @@ describe("desktop/mobile explorer tree parity", () => {
         throw new Error(`expected desktop sidebar for ${locale}`);
       }
 
-      await openCollectionFolders(sidebar, folderNames);
+      await openCollectionFolders(
+        sidebar,
+        folderNames,
+        topLevelFolderNames(signature),
+      );
       await openNestedProgramDocumentationSecondaries(
         sidebar,
         context.messages,
@@ -351,10 +383,11 @@ describe("desktop/mobile explorer tree parity", () => {
       expect(
         within(sidebar).queryByRole("button", { name: "Glossary" }),
       ).toBeNull();
-      const desktopFaq = within(sidebar).getByRole("link", {
-        name: faq?.name,
-      });
-      expect(desktopFaq.getAttribute("href")).toBe(faq?.url);
+      if (!faq) {
+        throw new Error(`expected an FAQ entry for ${locale}`);
+      }
+      const desktopFaq = within(sidebar).getByRole("link", { name: faq.name });
+      expect(desktopFaq.getAttribute("href")).toBe(faq.url);
 
       const conceptsFolder = folderSignatureByName(
         signature,
@@ -417,7 +450,11 @@ describe("desktop/mobile explorer tree parity", () => {
         context.messages.shell.sidebarTitle,
       );
 
-      await openCollectionFolders(drawer, folderNames);
+      await openCollectionFolders(
+        drawer,
+        folderNames,
+        topLevelFolderNames(signature),
+      );
       await openNestedProgramDocumentationSecondaries(drawer, context.messages);
 
       expect(

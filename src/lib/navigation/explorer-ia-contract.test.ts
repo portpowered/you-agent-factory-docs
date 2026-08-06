@@ -1038,6 +1038,7 @@ describe("explorer IA fail-closed locale contract", () => {
   test("assertExplorerMessages rejects incomplete documentation group catalogs", async () => {
     const messages = await loadUiMessages("vi");
     const incomplete = {
+      topLevelGroups: messages.explorer.topLevelGroups,
       folders: messages.explorer.folders,
       conceptsGroups: messages.explorer.conceptsGroups,
       documentationGroups: {
@@ -1057,6 +1058,7 @@ describe("explorer IA fail-closed locale contract", () => {
   test("assertExplorerMessages rejects incomplete documentation secondary catalogs", async () => {
     const messages = await loadUiMessages("ja");
     const incomplete = {
+      topLevelGroups: messages.explorer.topLevelGroups,
       folders: messages.explorer.folders,
       conceptsGroups: messages.explorer.conceptsGroups,
       documentationGroups: messages.explorer.documentationGroups,
@@ -1076,6 +1078,7 @@ describe("explorer IA fail-closed locale contract", () => {
   test("assertExplorerMessages rejects incomplete Reference group catalogs", async () => {
     const messages = await loadUiMessages("en");
     const incomplete = {
+      topLevelGroups: messages.explorer.topLevelGroups,
       folders: messages.explorer.folders,
       conceptsGroups: messages.explorer.conceptsGroups,
       documentationGroups: messages.explorer.documentationGroups,
@@ -1095,6 +1098,7 @@ describe("explorer IA fail-closed locale contract", () => {
   test("assertExplorerMessages rejects incomplete virtual folder catalogs", async () => {
     const messages = await loadUiMessages("zh-CN");
     const incomplete = {
+      topLevelGroups: messages.explorer.topLevelGroups,
       folders: messages.explorer.folders,
       conceptsGroups: messages.explorer.conceptsGroups,
       documentationGroups: messages.explorer.documentationGroups,

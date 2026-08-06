@@ -79,10 +79,21 @@ describe("factories index", () => {
           node.closest('a[href="/docs/factories/configuration"]'),
         ),
     ).toBe(true);
-    expect(screen.getByText("Global Configuration")).toBeTruthy();
-    expect(screen.getByText("Packaged Factories")).toBeTruthy();
-    expect(screen.getByText("Dynamic Workflows")).toBeTruthy();
-    expect(screen.getByText("Factory Sessions")).toBeTruthy();
+    // Assert by destination, not by label. Several of these titles also exist
+    // under Program documentation, so a bare text lookup matches more than the
+    // family child it is checking for.
+    for (const [label, href] of [
+      ["Global Configuration", "/docs/factories/global-configuration"],
+      ["Packaged Factories", "/docs/factories/packaged"],
+      ["Dynamic Workflows", "/docs/factories/dynamic-workflows"],
+      ["Factory Sessions", "/docs/factories/sessions"],
+    ] as const) {
+      expect(
+        screen
+          .getAllByText(label)
+          .some((node) => node.closest(`a[href="${href}"]`)),
+      ).toBe(true);
+    }
 
     const configurationLink = screen
       .getAllByRole("link", { name: /^Configuration\b/ })

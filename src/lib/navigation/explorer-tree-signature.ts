@@ -81,14 +81,63 @@ export function topLevelPageEntries(
     .map((node) => ({ name: node.name, url: node.url }));
 }
 
-export function folderSignatureByName(
+/**
+ * Names of the folders one level below the four top-level groups.
+ *
+ * This is the collection level — Guides, Techniques, Program documentation,
+ * Concepts, and the virtual folders — which is what most IA order contracts are
+ * written against. It was the tree's top level before the reader-facing groups
+ * were introduced above it.
+ */
+export function collectionFolderNames(
   signature: ExplorerTreeSignature,
+): string[] {
+  return signature.children
+    .filter((node) => node.type === "folder")
+    .flatMap((group) =>
+      group.children
+        .filter((node) => node.type === "folder")
+        .map((node) => node.name),
+    );
+}
+
+/** Page entries listed directly inside any top-level group. */
+export function groupedPageEntries(
+  signature: ExplorerTreeSignature,
+): Array<{ name: string; url: string }> {
+  return signature.children
+    .filter((node) => node.type === "folder")
+    .flatMap((group) =>
+      group.children
+        .filter((node) => node.type === "page")
+        .map((node) => ({ name: node.name, url: node.url })),
+    );
+}
+
+/**
+ * Finds a folder by name at any depth.
+ *
+ * Recursive because collection folders no longer sit at the tree's top level —
+ * they are nested inside the reader-facing groups. Callers ask for "Program
+ * documentation" because they care what it contains, not how deep it is.
+ */
+export function folderSignatureByName(
+  signature: { children: readonly ExplorerNodeSignature[] },
   folderName: string,
 ): Extract<ExplorerNodeSignature, { type: "folder" }> | undefined {
-  return signature.children.find(
-    (node): node is Extract<ExplorerNodeSignature, { type: "folder" }> =>
-      node.type === "folder" && node.name === folderName,
-  );
+  for (const node of signature.children) {
+    if (node.type !== "folder") {
+      continue;
+    }
+    if (node.name === folderName) {
+      return node;
+    }
+    const nested = folderSignatureByName(node, folderName);
+    if (nested) {
+      return nested;
+    }
+  }
+  return undefined;
 }
 
 export function separatorNamesInFolder(

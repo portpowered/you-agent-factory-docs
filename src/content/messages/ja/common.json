@@ -58,6 +58,12 @@
     "openingSummary": "要約を開く"
   },
   "explorer": {
+    "topLevelGroups": {
+      "quick-starts": "クイックスタート",
+      "how-tos": "ハウツー",
+      "references": "リファレンス",
+      "information": "情報"
+    },
     "folders": {
       "guides": "ガイド",
       "concepts": "概念",
@@ -85,6 +91,7 @@
     "referenceGroups": {
       "contracts": "コントラクト",
       "schemas": "スキーマ",
+      "packaged-factories": "パッケージファクトリ",
       "limits": "制限"
     },
     "virtualFolders": {

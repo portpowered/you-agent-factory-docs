@@ -93,6 +93,7 @@ export type ExplorerDocumentationSecondaryMessages = {
 export type ExplorerReferenceGroupMessages = {
   contracts: string;
   schemas: string;
+  "packaged-factories": string;
   limits: string;
 };
 
@@ -105,7 +106,19 @@ export type ExplorerVirtualFolderMessages = {
   miscellanea: string;
 };
 
+/**
+ * The four reader-facing top-level explorer groups. These sit above the
+ * collection folders, which keep their own labels one level down.
+ */
+export type ExplorerTopLevelGroupMessages = {
+  "quick-starts": string;
+  "how-tos": string;
+  references: string;
+  information: string;
+};
+
 export type ExplorerMessages = {
+  topLevelGroups: ExplorerTopLevelGroupMessages;
   folders: ExplorerFolderMessages;
   conceptsGroups: ExplorerConceptsGroupMessages;
   documentationGroups: ExplorerDocumentationGroupMessages;

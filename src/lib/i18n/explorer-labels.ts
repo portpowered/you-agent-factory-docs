@@ -1,5 +1,6 @@
 import {
   FACTORY_EXPLORER_FOLDER_LABELS,
+  FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS,
   FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import {
@@ -49,7 +50,13 @@ export function assertExplorerMessages(
   const documentationSecondaries = record.documentationSecondaries;
   const referenceGroups = record.referenceGroups;
   const virtualFolders = record.virtualFolders;
+  const topLevelGroups = record.topLevelGroups;
 
+  if (!topLevelGroups || typeof topLevelGroups !== "object") {
+    throw new ExplorerLabelsError(
+      "Explorer top-level group messages are missing; localized explorer chrome fails closed without English fallback.",
+    );
+  }
   if (!folders || typeof folders !== "object") {
     throw new ExplorerLabelsError(
       "Explorer folder messages are missing; localized explorer chrome fails closed without English fallback.",
@@ -137,6 +144,33 @@ export function assertExplorerMessages(
       (virtualFolders as Record<string, unknown>)[id],
     );
   }
+
+  for (const id of Object.keys(
+    FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS,
+  ) as Array<keyof typeof FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS>) {
+    assertNonEmptyLabel(
+      `explorer.topLevelGroups.${id}`,
+      (topLevelGroups as Record<string, unknown>)[id],
+    );
+  }
+}
+
+/**
+ * Default-locale English group label → localized label, for the four
+ * reader-facing groups the explorer opens on.
+ */
+export function buildDefaultTopLevelGroupLabelLocalizer(
+  explorer: ExplorerMessages,
+): Map<string, string> {
+  const localized = new Map<string, string>();
+
+  for (const [id, defaultLabel] of Object.entries(
+    FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS,
+  ) as Array<[keyof ExplorerMessages["topLevelGroups"], string]>) {
+    localized.set(defaultLabel, explorer.topLevelGroups[id]);
+  }
+
+  return localized;
 }
 
 export function resolveExplorerMessages(

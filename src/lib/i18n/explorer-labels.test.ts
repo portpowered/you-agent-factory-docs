@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   FACTORY_EXPLORER_FOLDER_LABELS,
+  FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS,
   FACTORY_EXPLORER_VIRTUAL_FOLDER_LABELS,
   FACTORY_SIDEBAR_FOLDER_LABELS,
 } from "@/lib/content/factory-breadcrumb-sidebar";
@@ -17,6 +18,7 @@ import {
 import { supportedLocales } from "@/lib/i18n/locale-routing";
 
 const COMPLETE_ENGLISH_EXPLORER = {
+  topLevelGroups: { ...FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS },
   folders: {
     guides: "Guides",
     concepts: "Concepts",
@@ -82,6 +84,7 @@ describe("explorer labels", () => {
     expect(Object.keys(explorer.referenceGroups).sort()).toEqual([
       "contracts",
       "limits",
+      "packaged-factories",
       "schemas",
     ]);
     expect(Object.keys(explorer.virtualFolders).sort()).toEqual([
@@ -241,6 +244,7 @@ describe("explorer labels", () => {
     ).toThrow(/virtualFolders\.miscellanea/);
     expect(() =>
       assertExplorerMessages({
+        topLevelGroups: COMPLETE_ENGLISH_EXPLORER.topLevelGroups,
         folders: COMPLETE_ENGLISH_EXPLORER.folders,
         conceptsGroups: COMPLETE_ENGLISH_EXPLORER.conceptsGroups,
         documentationGroups: COMPLETE_ENGLISH_EXPLORER.documentationGroups,
@@ -249,5 +253,23 @@ describe("explorer labels", () => {
         referenceGroups: COMPLETE_ENGLISH_EXPLORER.referenceGroups,
       }),
     ).toThrow(/virtual folder/);
+  });
+
+  test("assertExplorerMessages fails closed for missing top-level group catalogs", () => {
+    const { topLevelGroups: _omitted, ...withoutGroups } =
+      COMPLETE_ENGLISH_EXPLORER;
+
+    expect(() => assertExplorerMessages(withoutGroups)).toThrow(
+      /top-level group/,
+    );
+    expect(() =>
+      assertExplorerMessages({
+        ...COMPLETE_ENGLISH_EXPLORER,
+        topLevelGroups: {
+          ...FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS,
+          information: "   ",
+        },
+      }),
+    ).toThrow(/topLevelGroups\.information/);
   });
 });

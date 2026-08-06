@@ -50,13 +50,11 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     next: "/docs/techniques/worker-adviser",
   },
   {
-    // First Program documentation page under Orientation (locked PS-100 IA).
-    // Previous neighbor is the last Guides page because top-level order is
-    // Guides → Program documentation → …
-    // Next is the first Capabilities page in constructed explorer order
-    // (PS-300 membership finish inserts Mode A overviews under Capabilities).
+    // First Program documentation page under Orientation. Program
+    // documentation opens the Information group, and the group before it is
+    // References, so the previous neighbour is the last workstation page.
     href: "/docs/documentation/what-is-you-agent-factory",
-    previous: "/docs/guides/write-review-loops",
+    previous: "/docs/workstations/standard",
     next: "/docs/documentation/dynamic-workflows",
   },
 ] as const;
