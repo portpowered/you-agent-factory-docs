@@ -120,6 +120,14 @@ describe("deploy-pages.yml apex build contract", () => {
     expect(workflow).toMatch(/^\s*deploy:\s*$/m);
     expect(workflow).toMatch(/needs:\s*validate/);
     expect(workflow).toMatch(/actions\/deploy-pages@v4/);
+    /**
+     * The deploy action polls for Pages to finish processing and defaults to
+     * giving up after 10 minutes. At ~390 MB the export stopped fitting in that
+     * window, so a fully green build stopped reaching the live site — the
+     * failure read as a deploy problem rather than a size one. Pinned so the
+     * default cannot silently come back.
+     */
+    expect(workflow).toMatch(/timeout:\s*1800000/);
     expect(workflow).toMatch(/environment:[\s\S]*name:\s*github-pages/);
     expect(workflow).not.toMatch(/ai-model-reference/);
   });

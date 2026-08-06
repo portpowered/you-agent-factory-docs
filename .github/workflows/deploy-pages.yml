@@ -97,3 +97,12 @@ jobs:
       - name: Deploy static export to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # The action polls for Pages to finish processing the upload and
+          # defaults to giving up after 10 minutes. The export is ~390 MB across
+          # ~4,000 files, and processing scales with both, so a deploy that was
+          # succeeding at ~380 MB started timing out on the nose at 10:00 — a
+          # fully green build that never reached the live site. 30 minutes
+          # leaves room for the artifact to keep growing without silently
+          # reintroducing this.
+          timeout: 1800000
