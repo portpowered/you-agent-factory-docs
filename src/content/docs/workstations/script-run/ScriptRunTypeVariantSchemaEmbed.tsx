@@ -1,39 +1,24 @@
-import { SchemaVariantReference } from "@/features/references/schema";
+import { createFactoryVariantSchemaEmbed } from "@/features/docs/components/FactoryVariantSchemaEmbed";
 import { createProductionWorkstationTypeOverlay } from "@/lib/references/overlays/production-workstation-overlays";
-import { factoryVariantOverlayToSchemaVariantPresentation } from "../factory-variant-overlay-presentation";
 import { loadWorkstationBaseSchemaEmbedModel } from "../load-workstation-base-schema";
-
-export const SCRIPT_RUN_TYPE_PAGE_PATH =
-  "/docs/workstations/script-run" as const;
-export const SCRIPT_RUN_TYPE_OVERLAY_ID = "workstation:SCRIPT_RUN" as const;
 
 /**
  * Embeds the validated `workstation:SCRIPT_RUN` overlay via W07
  * SchemaVariantReference. Authored minimal/misuse examples live in the page
  * Examples section (overlay carries exampleId refs only).
+ *
+ * Markup and `data-*` attributes come from the shared
+ * {@link createFactoryVariantSchemaEmbed} factory; only the values below vary
+ * between variant pages.
  */
-export function ScriptRunTypeVariantSchemaEmbed() {
-  const model = loadWorkstationBaseSchemaEmbedModel();
-  const overlay = createProductionWorkstationTypeOverlay("SCRIPT_RUN");
-  const presentation =
-    factoryVariantOverlayToSchemaVariantPresentation(overlay);
+const embed = createFactoryVariantSchemaEmbed({
+  id: "script-run-type",
+  pagePath: "/docs/workstations/script-run",
+  overlayId: "workstation:SCRIPT_RUN",
+  loadDefinition: () => loadWorkstationBaseSchemaEmbedModel().definition,
+  loadOverlay: () => createProductionWorkstationTypeOverlay("SCRIPT_RUN"),
+});
 
-  return (
-    <div
-      className="min-w-0 space-y-3"
-      data-script-run-type-schema-embed=""
-      data-overlay-id={SCRIPT_RUN_TYPE_OVERLAY_ID}
-      data-discriminator={overlay.discriminator.value}
-    >
-      <SchemaVariantReference
-        definition={model.definition}
-        overlay={presentation}
-        pagePath={SCRIPT_RUN_TYPE_PAGE_PATH}
-        showEmptyExamples={false}
-        showPointerBreadcrumb={false}
-        showVariantHeading={false}
-        data-testid="script-run-type-variant-schema"
-      />
-    </div>
-  );
-}
+export const SCRIPT_RUN_TYPE_PAGE_PATH = embed.pagePath;
+export const SCRIPT_RUN_TYPE_OVERLAY_ID = embed.overlayId;
+export const ScriptRunTypeVariantSchemaEmbed = embed.Embed;

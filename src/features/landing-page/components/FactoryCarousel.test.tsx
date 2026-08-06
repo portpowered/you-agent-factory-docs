@@ -430,6 +430,104 @@ describe("FactoryCarousel", () => {
   });
 });
 
+describe("carousel travel and autoplay", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  test("track follows the pointer while dragging, then eases back on release", () => {
+    mockPrefersReducedMotion(false);
+    render(<FactoryCarousel slides={fixtureSlides} />);
+
+    const track = document.querySelector(
+      "[data-carousel-track]",
+    ) as HTMLElement;
+    expect(track.style.transform).toBe("");
+
+    fireEvent.pointerDown(track, { button: 0, pointerId: 1, clientX: 300 });
+    fireEvent.pointerMove(track, { pointerId: 1, clientX: 200 });
+
+    // Follows the gesture rather than sitting still until release.
+    expect(track.style.transform).toContain("translateX(");
+    expect(track.getAttribute("data-carousel-dragging")).toBe("true");
+    expect(track.style.transition).toBe("none");
+
+    fireEvent.pointerUp(track, { pointerId: 1, clientX: 200 });
+
+    expect(track.style.transform).toBe("");
+    expect(track.getAttribute("data-carousel-dragging")).toBeNull();
+    expect(track.style.transition).toContain(
+      `${landingPageTheme.carousel.transitionMs}ms`,
+    );
+  });
+
+  test("autoplay runs by default and pauses on hover and focus", () => {
+    mockPrefersReducedMotion(false);
+    render(<FactoryCarousel slides={fixtureSlides} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    expect(root.getAttribute("data-carousel-autoplay")).toBe("running");
+
+    fireEvent.mouseEnter(root);
+    expect(root.getAttribute("data-carousel-autoplay")).toBe("paused");
+
+    fireEvent.mouseLeave(root);
+    expect(root.getAttribute("data-carousel-autoplay")).toBe("running");
+
+    fireEvent.focus(root);
+    expect(root.getAttribute("data-carousel-autoplay")).toBe("paused");
+  });
+
+  test("autoplay advances the active slide after the dwell time", async () => {
+    mockPrefersReducedMotion(false);
+    render(<FactoryCarousel autoPlayMs={30} slides={fixtureSlides} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    expect(root.getAttribute("data-carousel-active-index")).toBe("0");
+
+    await waitFor(
+      () => {
+        expect(root.getAttribute("data-carousel-active-index")).not.toBe("0");
+      },
+      { timeout: 2000 },
+    );
+  });
+
+  test("autoplay never runs under reduced motion", () => {
+    mockPrefersReducedMotion(true);
+    render(<FactoryCarousel slides={fixtureSlides} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    expect(root.getAttribute("data-carousel-autoplay")).toBe("paused");
+  });
+
+  test("autoPlayMs=0 disables autoplay without disabling manual controls", async () => {
+    mockPrefersReducedMotion(false);
+    const user = userEvent.setup();
+    render(<FactoryCarousel autoPlayMs={0} slides={fixtureSlides} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    expect(root.getAttribute("data-carousel-autoplay")).toBe("paused");
+
+    await user.click(screen.getByRole("button", { name: "Next slide" }));
+    expect(root.getAttribute("data-carousel-active-index")).toBe("1");
+  });
+
+  test("live region is silent while auto-rotating and polite once the reader takes over", () => {
+    mockPrefersReducedMotion(false);
+    render(<FactoryCarousel slides={fixtureSlides} />);
+
+    const root = screen.getByRole("region", { name: "Factory carousel" });
+    const status = document.querySelector(
+      "[data-carousel-status]",
+    ) as HTMLElement;
+    expect(status.getAttribute("aria-live")).toBe("off");
+
+    fireEvent.mouseEnter(root);
+    expect(status.getAttribute("aria-live")).toBe("polite");
+  });
+});
+
 describe("wrapCarouselIndex", () => {
   test("wraps forward and backward across ends", () => {
     expect(wrapCarouselIndex(0, 4, -1)).toBe(3);

@@ -102,10 +102,10 @@ export function CtaBand({
 
       <div
         className={cn(
-          "relative mx-auto flex max-w-6xl flex-col gap-5",
-          surface === "fog"
-            ? "items-start"
-            : "items-center text-center text-[#191f2b]",
+          // Left-aligned on every surface so the CTA headline shares the left
+          // edge with the hero and capability copy above it.
+          "relative mx-auto flex max-w-6xl flex-col items-start gap-5",
+          surface !== "fog" && "text-left text-[#191f2b]",
         )}
       >
         <h2

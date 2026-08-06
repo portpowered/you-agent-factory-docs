@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { FaqPanel } from "./FaqPanel";
+import { FaqPanel, parseFaqAnswerSegments } from "./FaqPanel";
 
 const FIXTURE_ITEMS = [
   {
@@ -18,9 +18,56 @@ const FIXTURE_ITEMS = [
   },
 ] as const;
 
+describe("parseFaqAnswerSegments", () => {
+  test("splits inline markdown links out of surrounding prose", () => {
+    expect(
+      parseFaqAnswerSegments("See [the docs](/docs/documentation) for more."),
+    ).toEqual([
+      { kind: "text", text: "See ", offset: 0 },
+      {
+        kind: "link",
+        text: "the docs",
+        href: "/docs/documentation",
+        offset: 4,
+      },
+      { kind: "text", text: " for more.", offset: 35 },
+    ]);
+  });
+
+  test("leaves an empty link target as literal text rather than a dead anchor", () => {
+    expect(parseFaqAnswerSegments("The index is [here]().")).toEqual([
+      { kind: "text", text: "The index is [here]().", offset: 0 },
+    ]);
+  });
+
+  test("returns plain answers as a single text segment", () => {
+    expect(parseFaqAnswerSegments("No.\n\nNothing is recorded.")).toEqual([
+      { kind: "text", text: "No.\n\nNothing is recorded.", offset: 0 },
+    ]);
+  });
+});
+
 describe("FaqPanel", () => {
   afterEach(() => {
     cleanup();
+  });
+
+  test("renders an inline answer link as a real anchor", () => {
+    render(
+      <FaqPanel
+        heading="FAQ"
+        items={[
+          {
+            id: "faq-support",
+            question: "Is my harness supported?",
+            answer: "The index is [here](/coming-soon/harness-support).",
+          },
+        ]}
+      />,
+    );
+
+    const link = screen.getByRole("link", { name: "here" });
+    expect(link.getAttribute("href")).toBe("/coming-soon/harness-support");
   });
 
   test("renders fixture questions with accessible heading controls", () => {

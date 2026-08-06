@@ -1,5 +1,8 @@
 import { withBasePath } from "@/lib/navigation/site-path";
-import { PRODUCTION_SITE_ORIGIN } from "@/lib/seo/production-metadata-base";
+import {
+  PROJECT_SITE_ORIGIN,
+  resolveProductionSiteOrigin,
+} from "@/lib/seo/production-metadata-base";
 
 /** True when exported HTML references bundled assets under the configured base path. */
 export function exportHtmlReferencesBasePathAssets(
@@ -21,13 +24,38 @@ export function exportHtmlReferencesRootLevelNextAssets(html: string): boolean {
   return /(?:src|href)=["']\/_next\//.test(html);
 }
 
+/**
+ * Infers the base path an export was built with by reading its first `_next`
+ * asset reference: `""` for an apex/root export, `/you-agent-factory-docs` for
+ * a project-site export. Returns `null` when the HTML has no `_next` reference
+ * at all (an incomplete or non-Next artifact).
+ *
+ * This lets the deploy guard verify whichever artifact it is handed without the
+ * caller having to pass the base path out of band.
+ */
+export function detectExportBasePathFromHtml(html: string): string | null {
+  const match = html.match(/(?:src|href)=["']([^"']*)\/_next\//);
+  if (!match) {
+    return null;
+  }
+  return match[1] ?? "";
+}
+
+/**
+ * Candidate hrefs for one metadata path: the base-path-relative form plus an
+ * absolute form per recognized production origin.
+ *
+ * Both the apex custom domain and the legacy GitHub Pages project-site origin
+ * are accepted so prefixed-lane fixtures and apex exports both verify against
+ * the same helper.
+ */
 function metadataHrefCandidates(path: string, basePath: string): string[] {
   const prefixed = withBasePath(path, basePath);
-  const absolute =
-    basePath === ""
-      ? `${PRODUCTION_SITE_ORIGIN}${prefixed === "/" ? "/" : prefixed}`
-      : `${PRODUCTION_SITE_ORIGIN}${prefixed}`;
-  return prefixed === absolute ? [prefixed] : [prefixed, absolute];
+  const candidates = new Set([prefixed]);
+  for (const origin of [resolveProductionSiteOrigin(), PROJECT_SITE_ORIGIN]) {
+    candidates.add(`${origin}${prefixed}`);
+  }
+  return [...candidates];
 }
 
 function htmlIncludesMetadataHref(html: string, href: string): boolean {

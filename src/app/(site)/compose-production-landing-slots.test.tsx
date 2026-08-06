@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { expectFaqAnswerRendered } from "@/features/landing-page/components/faq-answer-test-helpers";
 import { LandingPage } from "@/features/landing-page/LandingPage";
 import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
@@ -291,7 +292,7 @@ describe("composeProductionFaqSlot", () => {
 
     for (const item of fixtureLandingPageData.faq.items) {
       expect(html).toContain(item.question);
-      expect(html).toContain(item.answer);
+      expectFaqAnswerRendered(html, item.answer);
       expect(html).toContain(`data-landing-faq-item-id="${item.id}"`);
     }
   });
@@ -421,6 +422,7 @@ describe("composeProductionLandingSlots", () => {
         ...WIRED_PRODUCTION_LANDING_SLOTS,
         "midSceneBackgroundSrc",
         "midSceneTransitionSrc",
+        "monkeyParadeSrc",
       ].sort(),
     );
     expect(slots).toHaveProperty("header");
@@ -434,6 +436,7 @@ describe("composeProductionLandingSlots", () => {
     expect(slots).toHaveProperty("footer");
     expect(slots).toHaveProperty("midSceneBackgroundSrc");
     expect(slots).toHaveProperty("midSceneTransitionSrc");
+    expect(slots).toHaveProperty("monkeyParadeSrc");
   });
 
   test("LandingPage mounts wired fills including carousel, faq, and cta", () => {
@@ -476,7 +479,7 @@ describe("composeProductionLandingSlots", () => {
 
     for (const item of fixtureLandingPageData.faq.items) {
       expect(html).toContain(item.question);
-      expect(html).toContain(item.answer);
+      expectFaqAnswerRendered(html, item.answer);
     }
 
     expect(html).toContain(fixtureLandingPageData.cta.headline);

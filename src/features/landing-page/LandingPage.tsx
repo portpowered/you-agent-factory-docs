@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { LandingPlaceholder } from "@/features/landing-page/components/LandingPlaceholder";
+import { MidSceneWhale } from "@/features/landing-page/components/MidSceneWhale";
+import { MonkeyParade } from "@/features/landing-page/components/MonkeyParade";
 import {
   type LandingPageTheme,
   landingPageTheme,
@@ -26,6 +28,11 @@ export type LandingPageProps = LandingPageSlots & {
   midSceneBackgroundSrc?: string;
   /** Painted transition layered over the whale at the top of the middle scene. */
   midSceneTransitionSrc?: string;
+  /**
+   * Monkey artwork for the decorative troop that travels left to right between
+   * the carousel and the YOUI showcase. Omit to leave the band out entirely.
+   */
+  monkeyParadeSrc?: string;
 };
 
 /** Mock min-heights approximating vertical rhythm proportions. */
@@ -88,6 +95,7 @@ export function LandingPage({
   className,
   midSceneBackgroundSrc,
   midSceneTransitionSrc,
+  monkeyParadeSrc,
 }: LandingPageProps) {
   const cssVars = {
     ...landingThemeToCssVars(theme),
@@ -112,14 +120,7 @@ export function LandingPage({
           data-landing-mid-scene=""
         >
           {midSceneBackgroundSrc ? (
-            <img
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute top-0 left-1/2 z-0 h-full w-[500%] max-w-none -translate-x-1/2 object-fill object-center opacity-95"
-              data-landing-mid-scene-whale=""
-              decoding="async"
-              src={midSceneBackgroundSrc}
-            />
+            <MidSceneWhale src={midSceneBackgroundSrc} />
           ) : null}
           {midSceneTransitionSrc ? (
             <img
@@ -137,6 +138,11 @@ export function LandingPage({
           <div className="relative z-10">
             {slotOrPlaceholder("carousel", carousel)}
           </div>
+          {monkeyParadeSrc ? (
+            <div className="relative z-20">
+              <MonkeyParade src={monkeyParadeSrc} />
+            </div>
+          ) : null}
           <div className="relative z-10">{slotOrPlaceholder("youi", youi)}</div>
           <div className="relative z-20 mx-auto w-full max-w-5xl px-5 pt-20 sm:px-8 sm:pt-28">
             {slotOrPlaceholder("faq", faq)}

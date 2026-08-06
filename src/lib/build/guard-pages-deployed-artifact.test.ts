@@ -367,3 +367,102 @@ describe("guardPagesDeployedArtifact", () => {
     expect(result.acquired).toBeUndefined();
   });
 });
+
+/**
+ * Apex custom-domain deploy (`youagentfactory.com`) — the deploy default.
+ * `out/` has no base path, so root-level `/_next` assets and unprefixed
+ * navigation are correct rather than a failure. The same fixtures that fail
+ * the project-site lane must pass here.
+ */
+describe("apex (empty base path) deploys", () => {
+  test("evaluation treats root-level assets and bare bootstrap as correct", () => {
+    const evaluation = evaluatePagesDeployedArtifactProbes({
+      html: unprefixedPageHtml("home"),
+      jsChunkContent: 'from:"/api/search",type:"static"',
+      basePath: "",
+      cssAssetUrl: "/_next/static/css/app.css",
+      jsChunkUrl: "/_next/static/chunks/main.js",
+    });
+
+    expect(evaluation).toEqual({
+      hasPrefixedNextAssets: true,
+      hasRootLevelNextAssets: true,
+      hasPrefixedNavigation: true,
+      hasPrefixedSearchBootstrap: true,
+      hasUnprefixedSearchBootstrap: false,
+      hasCssAssetUrl: true,
+      hasJsChunkUrl: true,
+    });
+  });
+
+  test("evaluation still fails an apex export whose assets kept a stale prefix", () => {
+    const evaluation = evaluatePagesDeployedArtifactProbes({
+      html: prefixedPageHtml("home"),
+      jsChunkContent: `from:"${BOOTSTRAP}",type:"static"`,
+      basePath: "",
+      cssAssetUrl: CSS_PATH,
+      jsChunkUrl: JS_PATH,
+    });
+
+    expect(evaluation.hasPrefixedNextAssets).toBe(false);
+    expect(evaluation.hasRootLevelNextAssets).toBe(false);
+    expect(evaluation.hasPrefixedNavigation).toBe(false);
+  });
+
+  test("probe passes against an apex export fixture", async () => {
+    const root = makeTempRoot("pages-guard-apex-");
+    const outDir = join(root, "out");
+    writeUnprefixedExport(outDir);
+
+    const result = await probePagesDeployedArtifact({
+      cwd: root,
+      outDir: "out",
+      basePath: "",
+      port: 3214,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.cssAssetUrl).toBe("/_next/static/css/app.css");
+    expect(result.jsChunkUrl).toBe("/_next/static/chunks/main.js");
+    expect(result.evaluation.hasRootLevelNextAssets).toBe(true);
+    expect(result.evaluation.hasPrefixedSearchBootstrap).toBe(true);
+  });
+
+  test("guard infers the empty base path from the artifact when none is passed", async () => {
+    const root = makeTempRoot("pages-guard-apex-detect-");
+    writeUnprefixedExport(join(root, "out"));
+
+    const result = await guardPagesDeployedArtifact({
+      cwd: root,
+      outDir: "out",
+      port: 3215,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.acquired.source).toBe("reused");
+    expect(result.acquired.basePath).toBe("");
+  });
+
+  test("guard infers the project-site prefix from a prefixed artifact", async () => {
+    const root = makeTempRoot("pages-guard-prefixed-detect-");
+    writeRepairedExport(join(root, "out"));
+
+    const result = await guardPagesDeployedArtifact({
+      cwd: root,
+      outDir: "out",
+      port: 3216,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.acquired.basePath).toBe(BASE);
+  });
+});

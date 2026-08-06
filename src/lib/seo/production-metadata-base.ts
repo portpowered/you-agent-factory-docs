@@ -8,20 +8,52 @@ import {
   stripBasePathFromHref,
 } from "@/lib/navigation/site-path";
 
+/** Build env key for an optional production origin override. */
+export const SITE_ORIGIN_ENV = "NEXT_PUBLIC_SITE_ORIGIN";
+
 /**
- * Production GitHub Pages origin for the you-agent-factory docs site.
- * Project-site exports live under this origin plus `/you-agent-factory-docs`.
+ * Production origin for the you-agent-factory docs site.
+ *
+ * The site deploys to the apex custom domain, so root-relative exports live
+ * directly under this origin. GitHub Pages project-site exports (the
+ * `GITHUB_PAGES_BASE_PATH` lane) join their prefix onto it instead.
  */
-export const PRODUCTION_SITE_ORIGIN = "https://portpowered.github.io" as const;
+export const PRODUCTION_SITE_ORIGIN = "https://youagentfactory.com" as const;
+
+/**
+ * Legacy GitHub Pages project-site origin, kept for the prefixed export lane
+ * and for recognizing pre-custom-domain URLs. Not the deploy target.
+ */
+export const PROJECT_SITE_ORIGIN = "https://portpowered.github.io" as const;
+
+/**
+ * Resolves the production origin for metadata composition.
+ *
+ * Resolution order mirrors {@link resolveGaMeasurementId}: a non-empty trimmed
+ * `NEXT_PUBLIC_SITE_ORIGIN` wins, anything else falls back to
+ * {@link PRODUCTION_SITE_ORIGIN}. Trailing slashes are stripped so callers can
+ * concatenate a base path without doubling separators. Never throws — an unset
+ * env must not hard-fail local or dev builds.
+ */
+export function resolveProductionSiteOrigin(
+  env: BuildModeEnv = process.env,
+): string {
+  const raw = env[SITE_ORIGIN_ENV];
+  if (raw === undefined) {
+    return PRODUCTION_SITE_ORIGIN;
+  }
+
+  const trimmed = raw.trim().replace(/\/+$/, "");
+  return trimmed === "" ? PRODUCTION_SITE_ORIGIN : trimmed;
+}
 
 /**
  * Resolves the production `metadataBase` for Next.js Metadata composition.
  *
+ * - Apex custom-domain export (the deploy default, no base path):
+ *   `https://youagentfactory.com`
  * - Project-site static export (`NEXT_STATIC_EXPORT=1` +
- *   `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`):
- *   `https://portpowered.github.io/you-agent-factory-docs`
- * - Root / unset-base-path / non-export builds: origin only
- *   (`https://portpowered.github.io`) — never forces the project-site prefix.
+ *   `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`): origin plus that prefix
  *
  * Metadata field hrefs must stay app-relative (unprefixed). Next.js joins them
  * onto `metadataBase.pathname` (same as `path.posix.join`). Passing a
@@ -31,11 +63,12 @@ export const PRODUCTION_SITE_ORIGIN = "https://portpowered.github.io" as const;
 export function resolveProductionMetadataBase(
   env: BuildModeEnv = process.env,
 ): URL {
+  const origin = resolveProductionSiteOrigin(env);
   const basePath = resolveGitHubPagesBasePath(env);
   if (basePath === "") {
-    return new URL(PRODUCTION_SITE_ORIGIN);
+    return new URL(origin);
   }
-  return new URL(`${PRODUCTION_SITE_ORIGIN}${basePath}`);
+  return new URL(`${origin}${basePath}`);
 }
 
 /**

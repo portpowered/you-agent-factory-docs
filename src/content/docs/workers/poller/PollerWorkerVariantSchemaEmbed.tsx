@@ -1,38 +1,24 @@
-import { SchemaVariantReference } from "@/features/references/schema";
+import { createFactoryVariantSchemaEmbed } from "@/features/docs/components/FactoryVariantSchemaEmbed";
 import { createProductionWorkerOverlay } from "@/lib/references/overlays/production-worker-overlays";
-import { factoryVariantOverlayToSchemaVariantPresentation } from "../factory-variant-overlay-presentation";
 import { loadWorkerBaseSchemaEmbedModel } from "../load-worker-base-schema";
-
-export const POLLER_WORKER_PAGE_PATH = "/docs/workers/poller" as const;
-export const POLLER_WORKER_OVERLAY_ID = "worker:POLLER_WORKER" as const;
 
 /**
  * Embeds the validated `worker:POLLER_WORKER` overlay via W07
  * SchemaVariantReference. Authored minimal/misuse examples live in the page
  * Examples section (overlay carries exampleId refs only).
+ *
+ * Markup and `data-*` attributes come from the shared
+ * {@link createFactoryVariantSchemaEmbed} factory; only the values below vary
+ * between variant pages.
  */
-export function PollerWorkerVariantSchemaEmbed() {
-  const model = loadWorkerBaseSchemaEmbedModel();
-  const overlay = createProductionWorkerOverlay("POLLER_WORKER");
-  const presentation =
-    factoryVariantOverlayToSchemaVariantPresentation(overlay);
+const embed = createFactoryVariantSchemaEmbed({
+  id: "poller-worker",
+  pagePath: "/docs/workers/poller",
+  overlayId: "worker:POLLER_WORKER",
+  loadDefinition: () => loadWorkerBaseSchemaEmbedModel().definition,
+  loadOverlay: () => createProductionWorkerOverlay("POLLER_WORKER"),
+});
 
-  return (
-    <div
-      className="min-w-0 space-y-3"
-      data-poller-worker-schema-embed=""
-      data-overlay-id={POLLER_WORKER_OVERLAY_ID}
-      data-discriminator={overlay.discriminator.value}
-    >
-      <SchemaVariantReference
-        definition={model.definition}
-        overlay={presentation}
-        pagePath={POLLER_WORKER_PAGE_PATH}
-        showEmptyExamples={false}
-        showPointerBreadcrumb={false}
-        showVariantHeading={false}
-        data-testid="poller-worker-variant-schema"
-      />
-    </div>
-  );
-}
+export const POLLER_WORKER_PAGE_PATH = embed.pagePath;
+export const POLLER_WORKER_OVERLAY_ID = embed.overlayId;
+export const PollerWorkerVariantSchemaEmbed = embed.Embed;

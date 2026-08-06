@@ -38,7 +38,17 @@ export type FactoryCarouselProps = {
   onActiveIndexChange?: (index: number) => void;
   /** Optional theme override; defaults to landing-page carousel knobs. */
   theme?: LandingCarouselTheme;
+  /**
+   * Milliseconds between automatic advances. `0` disables autoplay.
+   *
+   * Autoplay is suspended while the reader is hovering, focused inside, or
+   * dragging, when the tab is hidden, and always under reduced motion.
+   */
+  autoPlayMs?: number;
 };
+
+/** Default dwell time on each slide before the carousel advances itself. */
+export const CAROUSEL_DEFAULT_AUTOPLAY_MS = 6000;
 
 export type CarouselSlideDepthRole = "active" | "neighbor" | "far";
 
@@ -177,6 +187,14 @@ type DragSession = {
 };
 
 /**
+ * How far the track follows the finger, as a fraction of the raw drag distance.
+ *
+ * Below 1 so the collage feels weighted rather than loose, and so a long drag
+ * cannot fling cards past the frame edge.
+ */
+const DRAG_FOLLOW_RATIO = 0.45;
+
+/**
  * Factory depth carousel: active slide in the foreground, neighbors recessed
  * via scale/opacity/z. Prev/next buttons, keyboard arrows, and pointer drag
  * change the active slide (wrapping). When prefers-reduced-motion: reduce is
@@ -191,12 +209,15 @@ export function FactoryCarousel({
   initialIndex = 0,
   onActiveIndexChange,
   theme = landingPageTheme.carousel,
+  autoPlayMs = CAROUSEL_DEFAULT_AUTOPLAY_MS,
 }: FactoryCarouselProps) {
   const isControlled = controlledActiveIndex !== undefined;
   const [uncontrolledIndex, setUncontrolledIndex] = useState(() =>
     clampIndex(initialIndex, slides.length),
   );
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [dragOffsetPx, setDragOffsetPx] = useState(0);
+  const [autoPlaySuspended, setAutoPlaySuspended] = useState(false);
   const dragRef = useRef<DragSession | null>(null);
 
   useEffect(() => {
@@ -208,6 +229,14 @@ export function FactoryCarousel({
   }, []);
 
   const motionMode: CarouselMotionMode = reduceMotion ? "static" : "depth";
+
+  /**
+   * Autoplay never runs under reduced motion, while the reader is interacting,
+   * or while the tab is hidden. `setInterval` rather than rAF keeps this off
+   * the animation-frame path the reduced-motion contracts assert on.
+   */
+  const autoPlaying =
+    !reduceMotion && autoPlayMs > 0 && slides.length > 1 && !autoPlaySuspended;
 
   const resolvedIndex =
     slides.length === 0
@@ -237,6 +266,17 @@ export function FactoryCarousel({
     [resolvedIndex, setActiveIndex, slides.length],
   );
 
+  useEffect(() => {
+    if (!autoPlaying) return;
+
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "hidden") return;
+      step(1);
+    }, autoPlayMs);
+
+    return () => window.clearInterval(timer);
+  }, [autoPlaying, autoPlayMs, step]);
+
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLElement>) => {
       if (slides.length === 0) return;
@@ -254,7 +294,19 @@ export function FactoryCarousel({
   const onPointerDown = useCallback((event: PointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
     dragRef.current = { pointerId: event.pointerId, startX: event.clientX };
+    setAutoPlaySuspended(true);
     event.currentTarget.setPointerCapture(event.pointerId);
+  }, []);
+
+  /**
+   * Track the finger while dragging so the collage moves with the gesture
+   * instead of sitting still until release. This is what makes the surface read
+   * as a carousel rather than a set of buttons that swap positions.
+   */
+  const onPointerMove = useCallback((event: PointerEvent<HTMLElement>) => {
+    const session = dragRef.current;
+    if (!session || session.pointerId !== event.pointerId) return;
+    setDragOffsetPx((event.clientX - session.startX) * DRAG_FOLLOW_RATIO);
   }, []);
 
   const onPointerUp = useCallback(
@@ -262,6 +314,8 @@ export function FactoryCarousel({
       const session = dragRef.current;
       if (!session || session.pointerId !== event.pointerId) return;
       dragRef.current = null;
+      setDragOffsetPx(0);
+      setAutoPlaySuspended(false);
       if (event.currentTarget.hasPointerCapture(event.pointerId)) {
         event.currentTarget.releasePointerCapture(event.pointerId);
       }
@@ -280,6 +334,8 @@ export function FactoryCarousel({
     const session = dragRef.current;
     if (!session || session.pointerId !== event.pointerId) return;
     dragRef.current = null;
+    setDragOffsetPx(0);
+    setAutoPlaySuspended(false);
   }, []);
 
   if (slides.length === 0) {
@@ -377,7 +433,20 @@ export function FactoryCarousel({
       data-factory-carousel=""
       data-carousel-active-index={String(resolvedIndex)}
       data-carousel-motion={motionMode}
+      data-carousel-autoplay={autoPlaying ? "running" : "paused"}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setAutoPlaySuspended(false);
+        }
+      }}
+      onFocus={() => setAutoPlaySuspended(true)}
       onKeyDown={onKeyDown}
+      onMouseEnter={() => setAutoPlaySuspended(true)}
+      onMouseLeave={() => {
+        if (!dragRef.current) {
+          setAutoPlaySuspended(false);
+        }
+      }}
       style={
         {
           "--landing-carousel-transition-ms": `${theme.transitionMs}ms`,
@@ -386,9 +455,15 @@ export function FactoryCarousel({
       // biome-ignore lint/a11y/noNoninteractiveTabindex: WAI-ARIA carousel keyboard surface for ArrowLeft/ArrowRight
       tabIndex={0}
     >
+      {/*
+        While auto-rotating, announcing every slide would spam screen readers
+        with changes the reader did not ask for. WAI-ARIA carousel practice is
+        to silence the live region during autoplay and restore it as soon as
+        the reader takes control (hover, focus, drag, or a control press).
+      */}
       <div
         aria-atomic="true"
-        aria-live="polite"
+        aria-live={autoPlaying ? "off" : "polite"}
         className="sr-only"
         data-carousel-status=""
       >
@@ -398,9 +473,21 @@ export function FactoryCarousel({
       <div
         className="factory-carousel__track relative mx-auto min-h-[clamp(25rem,58vw,58rem)] w-full max-w-[100rem] touch-pan-y"
         data-carousel-track=""
+        data-carousel-dragging={dragOffsetPx !== 0 ? "true" : undefined}
         onPointerCancel={onPointerCancel}
         onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
+        style={{
+          transform:
+            dragOffsetPx === 0 ? undefined : `translateX(${dragOffsetPx}px)`,
+          // No transition while the finger is down: the track must track the
+          // gesture 1:1, then ease back when released.
+          transition:
+            dragOffsetPx === 0 && !reduceMotion
+              ? `transform ${theme.transitionMs}ms cubic-bezier(0.16, 0.84, 0.22, 1)`
+              : "none",
+        }}
       >
         {eyebrow ? (
           <p className="pointer-events-none absolute top-[clamp(0.65rem,1.5vw,1.5rem)] left-[14%] z-30 font-sans text-[clamp(2rem,5.6vw,5.6rem)] leading-none font-normal tracking-[-0.055em] text-[#191f2b] lowercase">

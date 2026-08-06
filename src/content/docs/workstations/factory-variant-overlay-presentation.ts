@@ -1,37 +1,8 @@
 /**
- * Maps a validated W06 Factory variant overlay onto W07
- * SchemaVariantOverlayPresentation (display-only applicability badges).
+ * Re-export of the shared overlay→presentation mapper.
  *
- * Lives under workstations content ownership so variant pages can embed
- * overlays without rewriting shared validator or schema-renderer cores.
+ * Kept as a family-local module so workstations variant pages and their tests can
+ * continue importing it relatively, while the implementation lives once in
+ * `src/lib/references/overlays`.
  */
-
-import type { SchemaVariantOverlayPresentation } from "@/features/references/schema";
-import type { FactoryVariantOverlaySchema } from "@/lib/references/overlays/factory-variant-overlay-schema";
-
-/**
- * Project overlay field slots into SchemaVariantReference presentation.
- * Shared paths stay unannotated (base schema prose remains authoritative).
- * Conditional `conditionId` values are identities, not reader-facing hints.
- */
-export function factoryVariantOverlayToSchemaVariantPresentation(
-  overlay: FactoryVariantOverlaySchema,
-): SchemaVariantOverlayPresentation {
-  return {
-    variantLabel: String(overlay.discriminator.value),
-    fields: [
-      ...overlay.fields.selected.map((path) => ({
-        path,
-        applicability: "selected" as const,
-      })),
-      ...overlay.fields.excluded.map((path) => ({
-        path,
-        applicability: "excluded" as const,
-      })),
-      ...overlay.fields.conditional.map((entry) => ({
-        path: entry.path,
-        applicability: "conditional" as const,
-      })),
-    ],
-  };
-}
+export { factoryVariantOverlayToSchemaVariantPresentation } from "@/lib/references/overlays/factory-variant-overlay-presentation";

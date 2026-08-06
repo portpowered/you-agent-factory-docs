@@ -53,9 +53,19 @@ jobs:
       - name: Build static export
         run: make build
         env:
-          # Project-site prefix for https://portpowered.github.io/you-agent-factory-docs
-          # so exported HTML references /you-agent-factory-docs/_next (not bare /_next).
-          GITHUB_PAGES_BASE_PATH: /you-agent-factory-docs
+          # The site serves from the apex custom domain https://youagentfactory.com,
+          # so GITHUB_PAGES_BASE_PATH stays unset and exported HTML references
+          # root-level /_next. Setting a project-site prefix here 404s every
+          # asset and every Next <Link> on the custom domain.
+          # public/CNAME carries the domain into out/.
+          # The prefixed lane is still exercised by:
+          #   GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+          # via make test-w20-pages-prefixed-export.
+          #
+          # Bake the production origin into canonical / hreflang / OG / sitemap
+          # (code falls back to the same value when unset — see
+          # resolveProductionSiteOrigin).
+          NEXT_PUBLIC_SITE_ORIGIN: https://youagentfactory.com
           # Bake GA4 Measurement ID into the static export (code also falls back
           # to the same ID when this env is unset — see resolveGaMeasurementId).
           NEXT_PUBLIC_GA_MEASUREMENT_ID: G-80P18Q3LWQ

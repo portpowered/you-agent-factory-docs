@@ -2,9 +2,12 @@ import { describe, expect, test } from "bun:test";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   PRODUCTION_SITE_ORIGIN,
+  PROJECT_SITE_ORIGIN,
   resolveProductionMetadataBase,
   resolveProductionMetadataHref,
   resolveProductionSitemapLocHref,
+  resolveProductionSiteOrigin,
+  SITE_ORIGIN_ENV,
 } from "./production-metadata-base";
 
 const PROJECT_SITE_BASE_PATH = BUILT_APP_GITHUB_PAGES_BASE_PATH;
@@ -16,6 +19,43 @@ const ROOT_EXPORT_ENV = {
   NEXT_STATIC_EXPORT: "1",
   GITHUB_PAGES_BASE_PATH: "",
 } as const;
+
+describe("resolveProductionSiteOrigin", () => {
+  test("defaults to the apex custom domain", () => {
+    expect(PRODUCTION_SITE_ORIGIN).toBe("https://youagentfactory.com");
+    expect(resolveProductionSiteOrigin({})).toBe(PRODUCTION_SITE_ORIGIN);
+  });
+
+  test("honours a non-empty env override and strips trailing slashes", () => {
+    expect(
+      resolveProductionSiteOrigin({ [SITE_ORIGIN_ENV]: PROJECT_SITE_ORIGIN }),
+    ).toBe(PROJECT_SITE_ORIGIN);
+    expect(
+      resolveProductionSiteOrigin({
+        [SITE_ORIGIN_ENV]: `${PROJECT_SITE_ORIGIN}//`,
+      }),
+    ).toBe(PROJECT_SITE_ORIGIN);
+  });
+
+  test("falls back for empty or whitespace-only overrides", () => {
+    expect(resolveProductionSiteOrigin({ [SITE_ORIGIN_ENV]: "" })).toBe(
+      PRODUCTION_SITE_ORIGIN,
+    );
+    expect(resolveProductionSiteOrigin({ [SITE_ORIGIN_ENV]: "   " })).toBe(
+      PRODUCTION_SITE_ORIGIN,
+    );
+  });
+
+  test("metadataBase follows the override so the prefixed lane keeps its origin", () => {
+    expect(
+      resolveProductionMetadataBase({
+        NEXT_STATIC_EXPORT: "1",
+        GITHUB_PAGES_BASE_PATH: PROJECT_SITE_BASE_PATH,
+        [SITE_ORIGIN_ENV]: PROJECT_SITE_ORIGIN,
+      }).href,
+    ).toBe(`${PROJECT_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}`);
+  });
+});
 
 describe("resolveProductionMetadataBase", () => {
   test("uses production origin only for root / unset-base-path builds", () => {
