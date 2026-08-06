@@ -40,8 +40,11 @@ describe("docs sidebar navigation accessibility", () => {
   async function openTopLevelGroups(
     container: HTMLElement,
     messages: Awaited<ReturnType<typeof loadUiMessages>>,
+    groupNames: readonly string[] = Object.values(
+      messages.explorer.topLevelGroups,
+    ),
   ): Promise<void> {
-    for (const groupName of Object.values(messages.explorer.topLevelGroups)) {
+    for (const groupName of groupNames) {
       const group = within(container)
         .queryAllByRole("button", { name: groupName })
         .at(-1);
@@ -158,6 +161,54 @@ describe("docs sidebar navigation accessibility", () => {
     expect(document.activeElement).toBe(ralphLink);
   });
 
+  test("References group exposes reference contracts and the nested route families", async () => {
+    captureOriginalFetch();
+    await installDocsSearchFetchMock();
+    const context = await loadAppTestContext();
+
+    await act(async () => {
+      await renderWithAppProviders(
+        <CanonicalDocsLayout messages={context.messages}>
+          <p>Fixture article</p>
+        </CanonicalDocsLayout>,
+        { context },
+      );
+    });
+
+    const sidebar = document.getElementById("nd-sidebar");
+    expect(sidebar).toBeTruthy();
+    if (!sidebar) {
+      throw new Error("expected Fumadocs docs sidebar");
+    }
+
+    await openTopLevelGroups(sidebar, context.messages, [
+      context.messages.explorer.topLevelGroups.references,
+    ]);
+    for (const folderName of [
+      context.messages.explorer.folders.factories,
+      context.messages.explorer.folders.workers,
+      context.messages.explorer.folders.workstations,
+    ] as const) {
+      await openExplorerFolder(sidebar, folderName);
+    }
+
+    expect(
+      within(sidebar)
+        .getAllByRole("link", { name: "API" })
+        .some((link) => link.getAttribute("href") === "/docs/references/api"),
+    ).toBe(true);
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Agent worker" })
+        .getAttribute("href"),
+    ).toBe("/docs/workers/agent");
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Inference-run workstation" })
+        .getAttribute("href"),
+    ).toBe("/docs/workstations/inference-run");
+  });
+
   test("rendered docs sidebar shows factory collection folders and representative pages", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
@@ -178,20 +229,20 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
-    await openTopLevelGroups(sidebar, context.messages);
+    // Only the two groups this test asserts on. Opening References as well
+    // renders every reference page at once — the group inlines them rather
+    // than nesting them behind a folder — and the combined DOM is large enough
+    // to take the accessibility runtime down.
+    await openTopLevelGroups(sidebar, context.messages, [
+      context.messages.explorer.topLevelGroups["how-tos"],
+      context.messages.explorer.topLevelGroups.information,
+    ]);
 
     for (const folderName of [
       context.messages.explorer.folders.guides,
       context.messages.explorer.folders.concepts,
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
-    ] as const) {
-      await openExplorerFolder(sidebar, folderName);
-    }
-    for (const folderName of [
-      context.messages.explorer.folders.factories,
-      context.messages.explorer.folders.workers,
-      context.messages.explorer.folders.workstations,
     ] as const) {
       await openExplorerFolder(sidebar, folderName);
     }
@@ -210,11 +261,9 @@ describe("docs sidebar navigation accessibility", () => {
         .getAttribute("href"),
     ).toBe(GETTING_STARTED_GUIDE_URL);
 
-    expect(
-      within(sidebar)
-        .getAllByRole("link", { name: "API" })
-        .some((link) => link.getAttribute("href") === "/docs/references/api"),
-    ).toBe(true);
+    // Configuration keeps its /docs/factories route but is placed under
+    // Program documentation -> Operations -> Configuring, so it is asserted
+    // here rather than with the Reference route families.
     expect(
       within(sidebar)
         .getAllByRole("link", { name: "Configuration" })
@@ -223,16 +272,6 @@ describe("docs sidebar navigation accessibility", () => {
             link.getAttribute("href") === "/docs/factories/configuration",
         ),
     ).toBe(true);
-    expect(
-      within(sidebar)
-        .getByRole("link", { name: "Agent worker" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers/agent");
-    expect(
-      within(sidebar)
-        .getByRole("link", { name: "Inference-run workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/inference-run");
     expect(
       within(sidebar).queryByRole("link", {
         name: "submitWorkBySessionId",

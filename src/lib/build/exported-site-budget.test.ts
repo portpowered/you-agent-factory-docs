@@ -116,7 +116,7 @@ describe("exported-site-budget evaluation", () => {
       "Exported-site budget gate: PASS",
     );
     expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
-      "limit 385.00 MB",
+      "limit 396.00 MB",
     );
     expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
       "limit 32.00 MB",
