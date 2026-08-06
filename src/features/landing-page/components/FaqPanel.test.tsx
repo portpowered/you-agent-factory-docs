@@ -106,7 +106,21 @@ describe("FaqPanel", () => {
     expect(answerPanelId).toBeTruthy();
     const answerPanel = document.getElementById(answerPanelId as string);
     expect(answerPanel).toBeTruthy();
-    expect(answerPanel?.hidden).toBe(false);
+
+    /**
+     * Collapsed answers stay in the layout so the height change can be
+     * animated, so "hidden" is `inert` plus a zero-height row rather than
+     * `display: none`. `inert` still removes the panel from the accessibility
+     * tree and the focus order.
+     */
+    const collapsed = () => ({
+      inert: answerPanel?.hasAttribute("inert") ?? false,
+      shellOpen: answerPanel?.parentElement?.getAttribute(
+        "data-landing-faq-answer-open",
+      ),
+    });
+
+    expect(collapsed()).toEqual({ inert: false, shellOpen: "true" });
     expect(answerPanel?.textContent).toContain(first.answer);
 
     expect(control.getAttribute("aria-expanded")).toBe("true");
@@ -116,11 +130,11 @@ describe("FaqPanel", () => {
 
     await user.click(control);
     expect(control.getAttribute("aria-expanded")).toBe("false");
-    expect(answerPanel?.hidden).toBe(true);
+    expect(collapsed()).toEqual({ inert: true, shellOpen: "false" });
 
     await user.click(control);
     expect(control.getAttribute("aria-expanded")).toBe("true");
-    expect(answerPanel?.hidden).toBe(false);
+    expect(collapsed()).toEqual({ inert: false, shellOpen: "true" });
   });
 
   test("empty items render a stable empty panel without throwing", () => {

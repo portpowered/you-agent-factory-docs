@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
 import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { cn } from "@/lib/utils";
+import { YouiMonkeyBackdrop } from "./YouiMonkeyBackdrop";
 
 export type YouiShowcaseProps = {
   /**
@@ -84,16 +85,6 @@ export const YOUI_SHOWCASE_FOREGROUND_CLASSNAME =
 export const YOUI_SHOWCASE_GRAPH_FALLBACK_CLASSNAME =
   "block h-auto w-full border-2 border-[#ecece4]/20 shadow-[0_28px_80px_rgba(0,0,0,0.52)]";
 
-const YOUI_MONKEY_INSTANCES = [
-  "far-left",
-  "left",
-  "center-left",
-  "center",
-  "center-right",
-  "right",
-  "far-right",
-] as const;
-
 /**
  * Youi showcase: monkey background + factory graph UI foreground.
  *
@@ -123,36 +114,23 @@ export function YouiShowcase({
     <section
       aria-label={hasTitle ? undefined : "Youi showcase"}
       className={cn(
-        "relative isolate w-full overflow-hidden bg-transparent text-[#ecece4]",
+        // overflow-visible: the backdrop troop is deliberately wider than the
+        // section and should bleed into the scene around it. The landing root
+        // carries `overflow-x-clip`, so nothing here can produce a horizontal
+        // scrollbar.
+        "relative isolate w-full overflow-visible bg-transparent text-[#ecece4]",
         className,
       )}
       data-youi-showcase=""
       style={style}
     >
       {hasBackground ? (
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-[-8%] bottom-0 z-0 flex h-[70%] select-none items-end justify-center overflow-hidden opacity-95 mix-blend-multiply"
-          data-youi-showcase-background=""
-        >
-          {YOUI_MONKEY_INSTANCES.map((instance, index) => (
-            <img
-              key={instance}
-              alt=""
-              className={cn(
-                "h-full w-[22%] min-w-[10rem] object-contain object-bottom grayscale",
-                index % 2 === 1 && "-scale-x-100",
-              )}
-              data-youi-showcase-background-image=""
-              decoding="async"
-              draggable={false}
-              height={YOUI_SHOWCASE_MONKEY_INTRINSIC_HEIGHT}
-              sizes={YOUI_SHOWCASE_BACKGROUND_SIZES}
-              src={backgroundSrc}
-              width={YOUI_SHOWCASE_MONKEY_INTRINSIC_WIDTH}
-            />
-          ))}
-        </div>
+        <YouiMonkeyBackdrop
+          height={YOUI_SHOWCASE_MONKEY_INTRINSIC_HEIGHT}
+          sizes={YOUI_SHOWCASE_BACKGROUND_SIZES}
+          src={backgroundSrc}
+          width={YOUI_SHOWCASE_MONKEY_INTRINSIC_WIDTH}
+        />
       ) : null}
 
       <div

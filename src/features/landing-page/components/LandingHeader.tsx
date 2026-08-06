@@ -34,6 +34,11 @@ const NAV_LINK_CLASS = cn(
   "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 );
 
+/** True for nav destinations that leave the site (absolute or protocol-relative). */
+export function isExternalNavHref(href: string): boolean {
+  return /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(href) || href.startsWith("//");
+}
+
 /**
  * Landing-page top chrome: brand + resolving nav links + optional search slot.
  * Owned by W-faq-cta — not docs header chrome.
@@ -50,17 +55,25 @@ export function LandingHeader({
   const rightItems = items.slice(splitAt);
 
   const renderItems = (navItems: LandingHeaderNavItem[]) =>
-    navItems.map((item) => (
-      <li key={item.id ?? `${item.href}:${item.label}`}>
-        <a
-          href={item.href}
-          className={NAV_LINK_CLASS}
-          data-landing-header-nav-link=""
-        >
-          {item.label}
-        </a>
-      </li>
-    ));
+    navItems.map((item) => {
+      // Off-site destinations open in a new tab so the reader does not lose
+      // their place on the page; `noreferrer` also implies `noopener`.
+      const external = isExternalNavHref(item.href);
+      return (
+        <li key={item.id ?? `${item.href}:${item.label}`}>
+          <a
+            href={item.href}
+            className={NAV_LINK_CLASS}
+            data-landing-header-nav-link=""
+            data-landing-header-nav-external={external ? "" : undefined}
+            rel={external ? "noreferrer" : undefined}
+            target={external ? "_blank" : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      );
+    });
 
   return (
     <header
@@ -70,7 +83,13 @@ export function LandingHeader({
       )}
       data-landing-header=""
     >
-      <div className="mx-auto grid min-h-16 w-full max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:min-h-20 sm:px-8">
+      {/*
+       * Width and inset deliberately mirror HeroSection's container so the
+       * first nav item lands on the same left edge as the YOU wordmark below
+       * it. A narrower max-width here would centre the header on a different
+       * axis and read as a misaligned nav on wide viewports.
+       */}
+      <div className="mx-auto grid min-h-16 w-full max-w-[100rem] grid-cols-[1fr_auto_1fr] items-center gap-4 px-[clamp(1rem,4vw,4rem)] sm:min-h-20 sm:px-8">
         <nav
           aria-label="Landing"
           className="hidden min-w-0 justify-self-start sm:block"

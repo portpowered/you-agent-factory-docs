@@ -55,9 +55,15 @@ export function FactorySlide({
       data-factory-slide-presentation={presentation}
       className={cn(
         "factory-slide relative h-full w-full overflow-hidden",
+        // Every slide is the same box on the carousel track, so the feature
+        // card lays its parts out in flow rather than pinning them to fixed
+        // percentages of a much wider card.
         isFeature
-          ? "bg-[#f1eee6] text-[#191f2b]"
-          : "bg-[#191f2b] px-[clamp(0.45rem,1.25vw,1.25rem)] py-[clamp(0.7rem,1.5vw,1.5rem)] text-[#f1eee6]",
+          ? "flex flex-col bg-[#f1eee6] px-[clamp(1rem,2vw,2rem)] py-[clamp(1rem,2vw,2rem)] text-[#191f2b]"
+          : // Lifted off the page navy with a border: at exactly #191f2b the
+            // rail cards were invisible against the background and read as
+            // loose text floating beside the active card.
+            "border border-[#f1eee6]/15 bg-[#222b3b] px-[clamp(0.45rem,1.25vw,1.25rem)] py-[clamp(0.7rem,1.5vw,1.5rem)] text-[#f1eee6]",
         className,
       )}
     >
@@ -66,16 +72,14 @@ export function FactorySlide({
           aria-hidden={backgroundArtSrc != null ? "true" : undefined}
           className={cn(
             "factory-slide__art pointer-events-none",
-            isFeature
-              ? "absolute top-[-6%] right-0 left-[5%] z-0 h-[82%] origin-top-left scale-[1.3]"
-              : "sr-only",
+            isFeature ? "relative z-0 min-h-0 flex-1" : "sr-only",
           )}
           data-factory-slide-art=""
         >
           {backgroundArtSrc != null ? (
             <img
               alt=""
-              className="h-full w-full object-contain object-left-top mix-blend-multiply"
+              className="h-full w-full object-contain object-center mix-blend-multiply"
               decoding="async"
               src={backgroundArtSrc}
             />
@@ -88,7 +92,7 @@ export function FactorySlide({
         className={cn(
           "factory-slide__copy relative z-10 flex flex-col",
           isFeature
-            ? "absolute bottom-[25%] left-[11%] gap-0"
+            ? "shrink-0 gap-1 pb-[clamp(0.6rem,1.2vw,1.2rem)]"
             : "h-full gap-[clamp(0.35rem,0.8vw,0.75rem)]",
         )}
       >
@@ -119,16 +123,18 @@ export function FactorySlide({
       <div
         className={cn(
           "factory-slide__command",
-          isFeature
-            ? "absolute right-[45%] bottom-[13%] left-[11%] z-20"
-            : "sr-only",
+          // Full card width: every slide now shares one uniform box, so the
+          // command no longer has a wide feature card to sit in half of.
+          isFeature ? "relative z-20 shrink-0" : "sr-only",
         )}
         data-factory-slide-command=""
       >
         <Terminal
           activeChip={isFeature ? activeProvider : undefined}
           chips={isFeature ? providers : undefined}
-          className="rounded-[0.35rem] border-0 shadow-none [&_[data-terminal-body]]:px-4 [&_[data-terminal-body]]:py-3 [&_[data-terminal-body]]:text-[clamp(0.45rem,0.72vw,0.78rem)] [&_[data-terminal-body]]:!text-[#f3bd3d] [&_[data-terminal-body]_code]:!text-[#f3bd3d] [&_[data-terminal-chips]]:gap-4 [&_[data-terminal-chrome]]:border-0 [&_[data-terminal-chrome]]:px-4 [&_[data-terminal-chrome]]:py-2 [&_[data-terminal-copy]]:rounded-sm [&_[data-terminal-copy]]:border [&_[data-terminal-copy]]:border-transparent [&_[data-terminal-copy]]:bg-transparent [&_[data-terminal-copy]:hover]:border-zinc-600 [&_[data-terminal-traffic-lights]]:hidden"
+          // Layout only. The navy/yellow palette now comes from the shared
+          // dark shell, so this no longer has to re-tint every part by hand.
+          className="rounded-[0.35rem] shadow-none [&_[data-terminal-body]]:px-3 [&_[data-terminal-body]]:py-2.5 [&_[data-terminal-body]]:text-[clamp(0.4rem,0.62vw,0.7rem)] [&_[data-terminal-body]]:whitespace-pre-wrap [&_[data-terminal-body]_code]:whitespace-pre-wrap [&_[data-terminal-chips]]:gap-2 [&_[data-terminal-chrome]]:px-3 [&_[data-terminal-chrome]]:py-1.5 [&_[data-terminal-traffic-lights]]:hidden"
           lines={terminalLines}
           onChipChange={isFeature ? setActiveProvider : undefined}
           variant="dark"

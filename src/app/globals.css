@@ -112,6 +112,78 @@ body {
   font-family: Inter, system-ui, sans-serif;
 }
 
+/*
+ * Stylized scrollbars, site-wide.
+ *
+ * The page scrollbar is the one piece of chrome every route shares, and the
+ * platform default reads as a seam against the dark foundation. These tokens
+ * derive from the semantic theme rather than hardcoding a colour so docs and
+ * landing stay consistent, and so a theme change carries the scrollbar with it.
+ *
+ * Two mechanisms are declared because they are not interchangeable: Firefox
+ * honours `scrollbar-width` / `scrollbar-color`, while Chromium and WebKit
+ * honour `::-webkit-scrollbar`. Both are applied to every scroll container, not
+ * just the document, so code blocks, the sidebar, and overflowing tables match.
+ */
+:root {
+  --site-scrollbar-size: 10px;
+  --site-scrollbar-track: rgb(from var(--background) r g b / 0.5);
+  --site-scrollbar-thumb: rgb(from var(--foreground) r g b / 0.22);
+  --site-scrollbar-thumb-hover: rgb(from var(--ring) r g b / 0.85);
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Reserve the gutter so route changes cannot shift layout horizontally. */
+  scrollbar-gutter: stable;
+}
+
+html,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--site-scrollbar-thumb) var(--site-scrollbar-track);
+}
+
+::-webkit-scrollbar {
+  width: var(--site-scrollbar-size);
+  height: var(--site-scrollbar-size);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--site-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--site-scrollbar-thumb);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  /* Padding-box keeps the transparent border as breathing room, not fill. */
+  background-clip: padding-box;
+  transition: background-color 160ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--site-scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/*
+ * The landing page paints its own foundation (#191f2b) rather than the docs
+ * theme tokens, so it names its own scrollbar colours. These land on the
+ * element itself and on `html` — the document scrollbar resolves against the
+ * root element, so the landing root alone would never reach it.
+ */
+:root:has([data-landing-page]),
+[data-landing-page] {
+  --site-scrollbar-track: #111722;
+  --site-scrollbar-thumb: rgb(236 236 228 / 0.24);
+  --site-scrollbar-thumb-hover: #f3bd3d;
+}
+
 article[data-registry-id] > section:first-of-type {
   margin-top: 1rem;
 }
@@ -240,38 +312,42 @@ button[data-search] {
   }
 }
 
+/*
+ * Rail cards on the carousel track are partly tucked behind the active card,
+ * so their copy is pushed to whichever edge stays visible: left-hand rails keep
+ * their text at the left, right-hand rails at the right. Without this the copy
+ * sits against the card's inner edge and disappears under the active card,
+ * leaving a stray line of text apparently floating in the scene.
+ */
+.factory-carousel__slide[data-carousel-rail-side="right"] .factory-slide__copy {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.factory-carousel__slide[data-carousel-slot="rail"] .factory-slide__blurb {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  max-width: 62%;
+  overflow: hidden;
+}
+
 /* Mobile factory carousel: the active workflow becomes the content while the
- * previous and next workflows remain visible as draggable/clickable edges. */
+ * previous and next workflows remain visible as draggable/clickable edges.
+ *
+ * Geometry is inherited from the desktop track — every slide shares one box and
+ * differs only by transform — so this block widens the box and leaves the
+ * travel alone. Overriding `left`/`width` here would fight the inline transform
+ * and break the rotation. */
 @media (max-width: 767px) {
   .factory-carousel__track {
-    min-height: 25rem !important;
+    min-height: 27rem !important;
   }
 
-  .factory-carousel__slide[data-carousel-rail-side="active"] {
-    left: 10% !important;
-    top: 1.5rem !important;
-    width: 80% !important;
+  .factory-carousel__slide {
+    width: 74% !important;
     height: 21rem !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="left"],
-  .factory-carousel__slide[data-carousel-rail-side="right"] {
-    display: block;
-    top: 5rem !important;
-    width: 13% !important;
-    height: 14rem !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="left"] {
-    left: -2% !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="right"] {
-    left: 89% !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="far"] {
-    display: none;
   }
 
   .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide {

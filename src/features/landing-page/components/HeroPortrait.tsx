@@ -1,5 +1,8 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { type CSSProperties, useRef } from "react";
 import { landingHomeAssets } from "@/features/landing-page/landing-page.assets";
+import { useGsapMotion } from "@/features/landing-page/motion/use-gsap-motion";
 import { cn } from "@/lib/utils";
 
 export type HeroPortraitProps = {
@@ -39,11 +42,25 @@ export const HERO_PORTRAIT_SIZES = "(max-width: 768px) 78vw, 480px";
 export const HERO_PORTRAIT_DEFAULT_ALT = "Portrait";
 
 /**
+ * How far the portrait sinks, as a percentage of its own height, by the time
+ * the hero has left the viewport. Far enough to carry the head fully under the
+ * middle-scene transition art — a shorter travel leaves it half-submerged with
+ * the top of the head still showing above the painted edge.
+ */
+export const HERO_PORTRAIT_SINK_PERCENT = 92;
+
+/**
  * Hero woman-head portrait with layout-appropriate responsive sizes.
  *
  * Uses the project’s established landing-art image host (`<img>`) with an
  * explicit `sizes` attribute so responsive loading matches the constrained
  * portrait width rather than a bare missing/100vw default.
+ *
+ * Scroll behaviour: the portrait sinks as the hero leaves the viewport, so it
+ * passes under the painted transition at the top of the middle scene and fades
+ * out rather than sitting on top of it. Motion is scrubbed against scroll
+ * position — the reader drives it — and is skipped entirely under reduced
+ * motion, where the portrait stays at rest and fully opaque.
  */
 export function HeroPortrait({
   src = HERO_PORTRAIT_DEFAULT_SRC,
@@ -53,6 +70,31 @@ export function HeroPortrait({
 }: HeroPortraitProps) {
   const hasSrc = typeof src === "string" && src.length > 0;
   const isDecorative = alt === "";
+  const ref = useRef<HTMLDivElement>(null);
+
+  const { reduced } = useGsapMotion(ref, (element, { gsap }) => {
+    // Anchor to the hero so the sink is timed to that section leaving the
+    // viewport, not to the portrait's own much shorter box.
+    const trigger = element.closest("[data-hero-section]") ?? element;
+
+    // Travel only — no fade. The portrait has to still be fully painted when
+    // it reaches the transition art, otherwise it reads as vanishing into flat
+    // navy before anything covers it.
+    gsap.fromTo(
+      element,
+      { yPercent: 0 },
+      {
+        yPercent: HERO_PORTRAIT_SINK_PERCENT,
+        ease: "none",
+        scrollTrigger: {
+          trigger,
+          start: "bottom 95%",
+          end: "bottom 15%",
+          scrub: 0.5,
+        },
+      },
+    );
+  });
 
   return (
     <div
@@ -62,6 +104,8 @@ export function HeroPortrait({
         className,
       )}
       data-hero-portrait=""
+      data-hero-portrait-motion={reduced ? "static" : "sink"}
+      ref={ref}
       style={style}
     >
       {hasSrc ? (

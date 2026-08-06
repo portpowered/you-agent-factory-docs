@@ -27,6 +27,16 @@ export type CtaBandProps = {
   showAction?: boolean;
 };
 
+/**
+ * Vertical fade applied to the fog plate so it has no hard top or bottom edge.
+ * `mask-image` is prefixed for WebKit, which still needs `-webkit-mask-image`
+ * for gradient masks.
+ */
+const FOG_PLATE_FEATHER_CLASS = cn(
+  "[mask-image:linear-gradient(180deg,transparent_0%,black_22%,black_78%,transparent_100%)]",
+  "[-webkit-mask-image:linear-gradient(180deg,transparent_0%,black_22%,black_78%,transparent_100%)]",
+);
+
 const CTA_CONTROL_CLASS = cn(
   "inline-flex items-center justify-center border-2 border-[#191f2b] px-6 py-3",
   "bg-[#f3bd3d] font-mono text-sm font-black tracking-[0.08em] text-[#191f2b] uppercase",
@@ -69,10 +79,17 @@ export function CtaBand({
         className="pointer-events-none absolute inset-0"
         data-landing-cta-fog=""
       >
+        {/*
+         * The plate is taller than the band and feathered at both ends. Clipped
+         * to the section it ended on two hard horizontal seams, which read as
+         * the background being cut off rather than as mist sitting in the
+         * scene. The mask lets it dissolve into the artwork above and below.
+         */}
         <div
           className={cn(
-            "absolute inset-y-0 left-1/2 w-[120%] -translate-x-1/2 bg-center bg-no-repeat opacity-95 mix-blend-screen",
+            "absolute inset-y-[-18%] left-1/2 w-[120%] -translate-x-1/2 bg-center bg-no-repeat opacity-95 mix-blend-screen",
             "bg-cover",
+            FOG_PLATE_FEATHER_CLASS,
           )}
           style={{ backgroundImage: `url(${fogSrc})` }}
           data-landing-cta-fog-image=""

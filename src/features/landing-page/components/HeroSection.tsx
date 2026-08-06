@@ -96,6 +96,9 @@ export function HeroSection({
     <section
       aria-label={hasTitle ? undefined : "Hero"}
       className={cn(
+        // z-20 sits between the middle scene's background layers (z-10 and
+        // below) and its painted transition (z-30), so the portrait overhang
+        // is covered by the transition art alone.
         "relative z-20 mx-auto grid min-h-[50rem] w-full max-w-[100rem] grid-cols-1 items-center gap-2 overflow-visible px-[clamp(1rem,4vw,4rem)] pt-0 pb-0 sm:px-8 md:grid-cols-[minmax(0,1.16fr)_minmax(22rem,0.84fr)] lg:gap-4",
         className,
       )}
@@ -144,7 +147,15 @@ export function HeroSection({
                       <span className="block">
                         {highlighted ? (
                           <>
-                            <span className="mr-[0.08em] inline-block bg-[#ecece4] px-[0.08em] text-[1.12em] text-[#191f2b]">
+                            {/*
+                             * Padded on the right only. Left padding would
+                             * indent the Y past the F of the line below while
+                             * the plate itself sat flush, so the wordmark read
+                             * as misaligned whichever edge the eye picked. With
+                             * no left padding the plate edge, the Y, and the F
+                             * all start on the section's left inset.
+                             */}
+                            <span className="mr-[0.08em] inline-block bg-[#ecece4] pr-[0.08em] text-[1.12em] text-[#191f2b]">
                               YOU
                             </span>{" "}
                             {line.slice(4)}

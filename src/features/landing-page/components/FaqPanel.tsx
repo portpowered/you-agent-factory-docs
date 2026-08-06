@@ -26,6 +26,30 @@ const QUESTION_BUTTON_CLASS = cn(
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
 );
 
+/**
+ * Duration of the answer open/close transition, in milliseconds.
+ *
+ * Exported so tests can wait out the animation rather than guessing at it.
+ * Kept in step with the `duration-[…]` utility in {@link FAQ_ANSWER_SHELL_CLASS}
+ * — Tailwind only sees statically written class names, so the two cannot be
+ * derived from one another.
+ */
+export const FAQ_ANSWER_TRANSITION_MS = 420;
+
+/**
+ * Animating shell around each answer.
+ *
+ * Collapsing is a `grid-template-rows: 1fr → 0fr` transition rather than a
+ * `hidden` toggle: toggling `display` resizes the panel in a single frame, and
+ * everything below it — the whale scene, the CTA, the footer — snaps to the new
+ * position. The row transition gives that height change a duration, so the
+ * page settles instead of jumping.
+ */
+const FAQ_ANSWER_SHELL_CLASS = cn(
+  "grid transition-[grid-template-rows,opacity] duration-[420ms]",
+  "ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+);
+
 const ANSWER_LINK_CLASS = cn(
   "rounded-sm underline underline-offset-2 transition-colors",
   "hover:text-[#191f2b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -179,29 +203,54 @@ export function FaqPanel({
                     </button>
                   </h3>
 
-                  <section
-                    id={panelId}
-                    aria-labelledby={headingId}
-                    hidden={!isOpen}
-                    className="mt-3 px-1 text-base leading-relaxed whitespace-pre-line text-[#4a4034] sm:text-lg"
-                    data-landing-faq-answer=""
-                  >
-                    {parseFaqAnswerSegments(item.answer).map((segment) =>
-                      segment.kind === "link" ? (
-                        <a
-                          className={ANSWER_LINK_CLASS}
-                          href={segment.href}
-                          key={`${item.id}-${segment.offset}`}
-                        >
-                          {segment.text}
-                        </a>
-                      ) : (
-                        <span key={`${item.id}-${segment.offset}`}>
-                          {segment.text}
-                        </span>
-                      ),
+                  <div
+                    className={cn(
+                      FAQ_ANSWER_SHELL_CLASS,
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0",
                     )}
-                  </section>
+                    data-landing-faq-answer-shell=""
+                    data-landing-faq-answer-open={isOpen ? "true" : "false"}
+                  >
+                    <section
+                      id={panelId}
+                      aria-labelledby={headingId}
+                      // `inert` (not `hidden`) so the panel keeps a box to
+                      // animate. It still leaves the accessibility tree and the
+                      // focus order while collapsed, which `display: none`
+                      // would also have done — but instantly, which is the
+                      // layout jump this is fixing.
+                      inert={!isOpen}
+                      className="min-h-0 overflow-hidden"
+                      data-landing-faq-answer=""
+                    >
+                      {/*
+                       * Spacing and type live on this inner element rather than
+                       * on the clipping section above it. Padding on the
+                       * clipping box is not itself clippable, so a closed
+                       * answer would keep its top padding as a stray gap under
+                       * the question instead of collapsing to nothing.
+                       */}
+                      <div className="px-1 pt-3 text-base leading-relaxed whitespace-pre-line text-[#4a4034] sm:text-lg">
+                        {parseFaqAnswerSegments(item.answer).map((segment) =>
+                          segment.kind === "link" ? (
+                            <a
+                              className={ANSWER_LINK_CLASS}
+                              href={segment.href}
+                              key={`${item.id}-${segment.offset}`}
+                            >
+                              {segment.text}
+                            </a>
+                          ) : (
+                            <span key={`${item.id}-${segment.offset}`}>
+                              {segment.text}
+                            </span>
+                          ),
+                        )}
+                      </div>
+                    </section>
+                  </div>
                 </li>
               );
             })}
