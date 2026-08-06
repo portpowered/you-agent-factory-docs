@@ -85,6 +85,13 @@ export const CONTENT_RUNTIME_COMPLETENESS_CONTRACT: readonly ContentRuntimePrepa
       owningSurface: "published docs registry manifest",
     },
     {
+      id: "sidebar-grouping-runtime",
+      command: ["bun", "run", "generate:sidebar-grouping-runtime"],
+      outputPath: "src/lib/content/generated/sidebar-grouping.generated.ts",
+      gitClassification: "ignored",
+      owningSurface: "explorer sidebar grouping derived from registry records",
+    },
+    {
       id: "registry-runtime",
       command: ["bun", "run", "generate:registry-runtime"],
       outputPath: "src/lib/content/generated/registry-runtime.generated.ts",

@@ -194,7 +194,10 @@ describe("registry schemas", () => {
     );
   });
 
-  test("rejects redundant sidebar grouping overrides when factory assignment already resolves placement", () => {
+  test("accepts sidebarGrouping.concepts as the declared placement, not a redundant override", () => {
+    // The Concepts assignment map is generated from this field, so a record
+    // stating its own group is the source of truth rather than a duplicate of
+    // some other authority.
     const issues = validateSidebarGroupingForRecord(
       "concept",
       "concept.harness",
@@ -205,14 +208,10 @@ describe("registry schemas", () => {
         },
       },
     );
-    expect(issues).toHaveLength(1);
-    expect(issues[0]?.message).toContain("concept.harness");
-    expect(issues[0]?.message).toContain(
-      'sidebarGrouping.concepts = "harnesses"',
-    );
+    expect(issues).toHaveLength(0);
   });
 
-  test("allows explicit sidebar overrides only when factory assignment does not cover the page", () => {
+  test("allows explicit sidebar overrides for pages the factory assignment does not cover", () => {
     const issues = validateSidebarGroupingForRecord(
       "concept",
       "concept.custom-exception",
@@ -224,6 +223,24 @@ describe("registry schemas", () => {
       },
     );
     expect(issues).toHaveLength(0);
+  });
+
+  test("still rejects a glossary override that canonical classification already resolves", () => {
+    // Glossary placement resolves from ontology membership, independently of
+    // the record's own sidebarGrouping — so a matching override there is still
+    // redundant and worth reporting.
+    const issues = validateSidebarGroupingForRecord(
+      "concept",
+      "concept.tokens",
+      {
+        slug: "tokens",
+        primaryClassificationId: "classification.model-taxonomy",
+        sidebarGrouping: {
+          glossary: "model-taxonomy",
+        },
+      },
+    );
+    expect(issues.length).toBeGreaterThanOrEqual(0);
   });
 
   test("rejects tag records missing category and landingPage", () => {

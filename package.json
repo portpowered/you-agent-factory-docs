@@ -114,7 +114,8 @@
     "verify:content-runtime-completeness": "bun ./scripts/verify-content-runtime-completeness.ts",
     "build:search-index": "bun ./scripts/build-search-index.ts",
     "component-examples": "bun ./scripts/component-examples.ts",
-    "verify:architectural-checklist-mechanism-status": "bun ./scripts/verify-architectural-checklist-mechanism-status.ts"
+    "verify:architectural-checklist-mechanism-status": "bun ./scripts/verify-architectural-checklist-mechanism-status.ts",
+    "generate:sidebar-grouping-runtime": "bun ./scripts/generate-sidebar-grouping-runtime.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

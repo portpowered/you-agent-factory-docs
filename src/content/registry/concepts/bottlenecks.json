@@ -13,5 +13,8 @@
   "updatedAt": "2026-07-10T02:35:28.000Z",
   "conceptType": "systems",
   "prerequisiteIds": [],
-  "explainsIds": []
+  "explainsIds": [],
+  "sidebarGrouping": {
+    "concepts": "industrial-engineering"
+  }
 }

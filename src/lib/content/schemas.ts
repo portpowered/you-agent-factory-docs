@@ -33,11 +33,23 @@ const releaseMetadataShape = {
   sourceId: z.string().min(1).optional(),
 };
 
+/**
+ * Editorial sidebar placement declared on the record itself.
+ *
+ * This is the source of truth for explorer grouping: the generated grouping
+ * index is derived from these fields, replacing the hand-maintained per-slug
+ * assignment maps that used to live in `sidebar-grouping.ts`.
+ *
+ * `documentationSecondary` nests a Program page one level deeper (for example
+ * Operations → Configuring); it is only meaningful alongside `documentation`.
+ */
 const sidebarGroupingSchema = z
   .object({
     glossary: z.string().optional(),
     concepts: z.string().optional(),
     documentation: z.string().optional(),
+    documentationSecondary: z.string().optional(),
+    references: z.string().optional(),
   })
   .strict()
   .optional() as z.ZodType<SidebarGrouping | undefined>;

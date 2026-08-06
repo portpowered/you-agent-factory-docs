@@ -31,7 +31,11 @@ describe("tool-calling concept page", () => {
       expect(resolveConceptsSidebarGroup(toolCallingRecord)).toBe(
         "model-inference",
       );
-      expect(toolCallingRecord.sidebarGrouping?.concepts).toBeUndefined();
+      // The record declares its own explorer placement; the Concepts
+      // assignment map is generated from this field.
+      expect(toolCallingRecord.sidebarGrouping?.concepts).toBe(
+        "model-inference",
+      );
       expect(toolCallingRecord.aliases).toContain("tool use");
       expect(toolCallingRecord.aliases).toContain("function calling");
       expect(toolCallingRecord.aliases).toContain("agentTools");

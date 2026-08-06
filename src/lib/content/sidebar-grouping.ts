@@ -1,3 +1,9 @@
+import {
+  GENERATED_CONCEPTS_SIDEBAR_GROUP_BY_SLUG,
+  GENERATED_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
+  GENERATED_REFERENCE_SIDEBAR_GROUP_BY_SLUG,
+} from "@/lib/content/generated/sidebar-grouping.generated";
+
 export const SIDEBAR_GROUPING_PRECEDENCE = [
   "derived-taxonomy",
   "editorial-sidebar-grouping",
@@ -56,29 +62,17 @@ export const DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS = {
 } as const;
 
 /**
- * Explicit factory Concepts explorer membership by page slug.
- * Slugs for sibling-authored pages (skills, mcp, tool-calling) are declared
- * so they land in the correct group when published; empty groups are omitted.
+ * Factory Concepts explorer membership by page slug.
+ *
+ * Generated from each concept record's `sidebarGrouping.concepts` field — edit
+ * the registry record, not this module. Regenerate with
+ * `bun run generate:sidebar-grouping-runtime`.
  */
-export const FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG = {
-  compaction: "harnesses",
-  loop: "harnesses",
-  worktree: "harnesses",
-  harness: "harnesses",
-  skills: "harnesses",
-  mcp: "harnesses",
-  "statistical-process-control-graphs": "industrial-engineering",
-  "task-queue": "industrial-engineering",
-  bottlenecks: "industrial-engineering",
-  checklist: "industrial-engineering",
-  tokens: "model-inference",
-  thinking: "model-inference",
-  tool: "model-inference",
-  "tool-calling": "model-inference",
-} as const satisfies Record<
-  string,
-  keyof (typeof SIDEBAR_GROUP_LABELS)["concepts"]
->;
+export const FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG =
+  GENERATED_CONCEPTS_SIDEBAR_GROUP_BY_SLUG satisfies Record<
+    string,
+    keyof (typeof SIDEBAR_GROUP_LABELS)["concepts"]
+  >;
 
 export type FactoryConceptsSidebarSlug =
   keyof typeof FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG;
@@ -194,32 +188,16 @@ export function isDeferredDocumentationExplorerMembershipSlug(
  *
  * Groups with declared secondaries assign exactly one secondary per slug;
  * other groups place pages directly under the top group.
+ *
+ * Generated from each record's `sidebarGrouping.documentation` /
+ * `sidebarGrouping.documentationSecondary` fields — edit the registry record,
+ * not this module.
  */
-export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
-  "what-is-you-agent-factory": { group: "orientation" },
-  "harness-support": { group: "capabilities" },
-  "submitting-work": { group: "capabilities" },
-  "replays-records": { group: "capabilities" },
-  "packaged-documents": { group: "capabilities" },
-  "factory-session": { group: "capabilities" },
-  "dynamic-workflows": { group: "capabilities" },
-  "packaged-factories": { group: "capabilities" },
-  cli: { group: "interfaces" },
-  mcp: { group: "interfaces" },
-  api: { group: "interfaces" },
-  logs: { group: "operations" },
-  metrics: { group: "operations" },
-  "dashboard-ui-overview": { group: "operations" },
-  resources: { group: "operations", secondary: "configuring" },
-  "factories/configuration": {
-    group: "operations",
-    secondary: "configuring",
-  },
-  "factories/global-configuration": {
-    group: "operations",
-    secondary: "configuring",
-  },
-} as const satisfies Record<string, DocumentationSidebarMembership>;
+export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG =
+  GENERATED_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG satisfies Record<
+    string,
+    DocumentationSidebarMembership
+  >;
 
 /**
  * Published documentation slugs intentionally demoted from Program explorer
@@ -250,18 +228,18 @@ type ReferenceSidebarGroupId =
  * Limits membership keeps the full docsSlug (`documentation/throttling-and-limits`)
  * so tree placement can move throttling under Reference without a route change.
  */
-export const FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG = {
-  api: "contracts",
-  cli: "contracts",
-  // Published Mode B catalog slug is `mcp-reference` (not Program how-to `mcp`).
-  "mcp-reference": "contracts",
-  events: "contracts",
-  "javascript-runtime": "contracts",
-  "factory-schema": "schemas",
-  "system-config-schema": "schemas",
-  "mock-workers-schema": "schemas",
-  "documentation/throttling-and-limits": "limits",
-} as const satisfies Record<string, ReferenceSidebarGroupId>;
+/**
+ * Reference explorer subgroup membership by page slug.
+ *
+ * Generated from each record's `sidebarGrouping.references` field — edit the
+ * registry record, not this module. Cross-collection placements (a Program page
+ * surfaced under Reference → Limits) are declared on that page's own record.
+ */
+export const FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG =
+  GENERATED_REFERENCE_SIDEBAR_GROUP_BY_SLUG satisfies Record<
+    string,
+    ReferenceSidebarGroupId
+  >;
 
 export type FactoryReferenceSidebarSlug =
   keyof typeof FACTORY_REFERENCE_SIDEBAR_GROUP_BY_SLUG;
@@ -293,9 +271,19 @@ export type SidebarGroupIdBySection = {
   [Section in SidebarGroupingSection]: keyof SidebarGroupLabelMap[Section];
 };
 
+/**
+ * Explorer placement declared on a registry record.
+ *
+ * Records are the source of truth for grouping; the per-slug assignment maps
+ * below are generated from these fields rather than hand-maintained.
+ * `documentationSecondary` nests a Program page under a secondary folder and is
+ * only meaningful alongside `documentation`.
+ */
 export type SidebarGrouping = Partial<{
   [Section in SidebarGroupingSection]: SidebarGroupIdBySection[Section];
-}>;
+}> & {
+  documentationSecondary?: DocumentationSidebarSecondaryId;
+};
 
 export const SIDEBAR_GROUPING_SECTIONS_BY_KIND = {
   concept: ["glossary", "concepts"],
@@ -744,21 +732,11 @@ function sectionHasRedundantConceptSidebarGrouping(
       ontologyGroup: string;
     }
   | undefined {
-  const conceptsEditorialGroup = sidebarGrouping.concepts;
-  if (conceptsEditorialGroup) {
-    const ontologyGroup = resolveConceptsSidebarGroupWithSource({
-      ...record,
-      sidebarGrouping: undefined,
-    });
-    if (ontologyGroup?.groupId === conceptsEditorialGroup) {
-      return {
-        section: "concepts",
-        editorialGroup: conceptsEditorialGroup,
-        ontologyGroup: ontologyGroup.groupId,
-      };
-    }
-  }
-
+  // `sidebarGrouping.concepts` is no longer checked for redundancy: the Concepts
+  // assignment map is generated *from* this field, so comparing the two would
+  // always report a match. Glossary placement still resolves independently from
+  // canonical classification membership, so a redundant override there is a real
+  // finding worth reporting.
   const glossaryEditorialGroup = sidebarGrouping.glossary;
   if (glossaryEditorialGroup) {
     const ontologyGroup = resolveGlossarySidebarGroupWithSource({
