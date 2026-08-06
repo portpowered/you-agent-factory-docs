@@ -23,6 +23,10 @@ import {
   findSidebarPageLink,
 } from "@/lib/navigation/docs-sidebar-contract";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
+import {
+  findFolderChildren,
+  listCollectionFolderNames,
+} from "@/lib/navigation/explorer-tree-test-helpers";
 
 const SETTLED_NESTED_FAMILY_PAGE_PROOFS = [
   {
@@ -43,23 +47,12 @@ const SETTLED_NESTED_FAMILY_PAGE_PROOFS = [
 ] as const;
 
 function getTopLevelFolderNames(pageTree: { children: Node[] }): string[] {
-  return pageTree.children
-    .filter((node) => node.type === "folder")
-    .map((folder) => String(folder.name));
+  return listCollectionFolderNames(pageTree);
 }
 
-function getFolderChildren(
-  pageTree: { children: Node[] },
-  folderName: string,
-): Node[] {
-  const folder = pageTree.children.find(
-    (node) => node.type === "folder" && node.name === folderName,
-  );
-  expect(folder?.type).toBe("folder");
-  if (folder?.type !== "folder") {
-    throw new Error(`expected ${folderName} folder in docs sidebar`);
-  }
-  return folder.children;
+function getFolderChildren(pageTree: { children: Node[] },
+  folderName: string,): Node[] {
+  return findFolderChildren(pageTree, folderName);
 }
 
 function getNestedFolderChildren(

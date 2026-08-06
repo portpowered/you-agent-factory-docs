@@ -85,6 +85,7 @@
     "referenceGroups": {
       "contracts": "コントラクト",
       "schemas": "スキーマ",
+      "packaged-factories": "パッケージファクトリ",
       "limits": "制限"
     },
     "virtualFolders": {

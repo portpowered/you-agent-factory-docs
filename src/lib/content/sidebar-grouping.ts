@@ -34,6 +34,13 @@ export const SIDEBAR_GROUP_LABELS = {
   references: {
     contracts: "Contracts",
     schemas: "Schemas",
+    /**
+     * The `@you/*` packaged factory pages and their index. They previously
+     * carried no grouping at all, so the tree emitted them as ungrouped
+     * leftovers trailing the Limits subgroup, which read as if they belonged
+     * to it.
+     */
+    "packaged-factories": "Packaged factories",
     limits: "Limits",
   },
 } as const;

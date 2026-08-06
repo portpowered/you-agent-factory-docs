@@ -85,6 +85,7 @@
     "referenceGroups": {
       "contracts": "合约",
       "schemas": "模式",
+      "packaged-factories": "预置工厂",
       "limits": "限制"
     },
     "virtualFolders": {

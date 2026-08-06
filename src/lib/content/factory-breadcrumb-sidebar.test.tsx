@@ -40,7 +40,7 @@ import {
   collectSidebarPageLinks,
   findSidebarPageLink,
 } from "@/lib/navigation/docs-sidebar-contract";
-import { DOCS_SIDEBAR_SECTION_ORDER } from "@/lib/navigation/docs-sidebar-sections";
+import { DOCS_SIDEBAR_TOP_LEVEL_GROUPS } from "@/lib/navigation/docs-sidebar-sections";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
 import { source } from "@/lib/source";
 
@@ -261,13 +261,17 @@ describe("factory breadcrumbs and sidebar collections", () => {
   });
 
   test("docs sidebar folders and page links stay factory-only", () => {
-    expect(DOCS_SIDEBAR_SECTION_ORDER).toEqual([
-      ...FACTORY_EXPLORER_SECTION_ORDER,
-    ]);
-    assertFactoryExplorerSectionOrder([...DOCS_SIDEBAR_SECTION_ORDER]);
+    const sections = DOCS_SIDEBAR_TOP_LEVEL_GROUPS.flatMap(
+      (group) => group.sections,
+    );
+
+    expect(sections).toEqual([...FACTORY_EXPLORER_SECTION_ORDER]);
+    assertFactoryExplorerSectionOrder(sections);
     assertFactorySidebarSectionOrder(
-      DOCS_SIDEBAR_SECTION_ORDER.flatMap((section) =>
-        section.kind === "collection" ? [section.id] : [],
+      sections.flatMap((section) =>
+        section.kind === "collection" || section.kind === "inlined-collection"
+          ? [section.id]
+          : [],
       ),
     );
 

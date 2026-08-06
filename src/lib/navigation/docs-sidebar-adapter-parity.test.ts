@@ -11,33 +11,25 @@ import {
 } from "@/lib/navigation/docs-sidebar-contract";
 import {
   buildDocsSidebarSectionNodes,
-  DOCS_SIDEBAR_SECTION_ORDER,
+  DOCS_SIDEBAR_TOP_LEVEL_GROUPS,
 } from "@/lib/navigation/docs-sidebar-sections";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
 import {
   buildNonAiShellFixturePageTree,
   listNonAiShellFixtureCollectionDefinitions,
 } from "@/tests/fixtures/non-ai-shell/fixture";
+import {
+  findFolderChildren,
+  listCollectionFolderNames,
+} from "@/lib/navigation/explorer-tree-test-helpers";
 
 function getTopLevelFolderNames(pageTree: { children: Node[] }): string[] {
-  return pageTree.children
-    .filter((node) => node.type === "folder")
-    .map((folder) => String(folder.name));
+  return listCollectionFolderNames(pageTree);
 }
 
-function getFolderChildren(
-  pageTree: { children: Node[] },
-  folderName: string,
-): Node[] {
-  const folder = pageTree.children.find(
-    (node) => node.type === "folder" && node.name === folderName,
-  );
-  expect(folder?.type).toBe("folder");
-  if (folder?.type !== "folder") {
-    throw new Error(`expected ${folderName} folder in docs sidebar`);
-  }
-
-  return folder.children;
+function getFolderChildren(pageTree: { children: Node[] },
+  folderName: string,): Node[] {
+  return findFolderChildren(pageTree, folderName);
 }
 
 function getSeparatorLabels(nodes: Node[]): string[] {
@@ -113,26 +105,41 @@ describe("docs sidebar adapter extraction parity", () => {
     expect(getTopLevelFolderNames(adapterTree)).toEqual([
       ...factoryFolderNames,
     ]);
+    const sections = DOCS_SIDEBAR_TOP_LEVEL_GROUPS.flatMap(
+      (group) => group.sections,
+    );
+
+    // Collections are now grouped: How-tos owns guides + techniques,
+    // References inlines the reference collection, Information owns program
+    // documentation + concepts.
     expect(
-      DOCS_SIDEBAR_SECTION_ORDER.flatMap((section) =>
-        section.kind === "collection" ? [section.id] : [],
+      sections.flatMap((section) =>
+        section.kind === "collection" || section.kind === "inlined-collection"
+          ? [section.id]
+          : [],
       ),
     ).toEqual([
       "guides",
-      "documentation",
-      "concepts",
       "techniques",
       "references",
+      "documentation",
+      "concepts",
     ]);
     expect(
-      DOCS_SIDEBAR_SECTION_ORDER.filter(
-        (section) => section.kind === "virtual-folder",
-      ).map((section) => section.id),
+      sections
+        .filter((section) => section.kind === "virtual-folder")
+        .map((section) => section.id),
     ).toEqual(["internal-architecture", "miscellanea"]);
-    expect(DOCS_SIDEBAR_SECTION_ORDER.at(-1)).toEqual({
+    expect(sections.at(-1)).toEqual({
       kind: "page",
       docsSlug: "documentation/faq",
     });
+    expect(DOCS_SIDEBAR_TOP_LEVEL_GROUPS.map((group) => group.label)).toEqual([
+      "Quick starts",
+      "How-tos",
+      "References",
+      "Information",
+    ]);
     expect(getTopLevelFolderNames(generatedTree)).not.toContain("Glossary");
     expect(getTopLevelFolderNames(generatedTree)).not.toContain("Factories");
     expect(generatedTree.name).toBe("You Agent Factory");

@@ -85,6 +85,7 @@
     "referenceGroups": {
       "contracts": "Contracts",
       "schemas": "Schemas",
+      "packaged-factories": "Packaged factories",
       "limits": "Limits"
     },
     "virtualFolders": {

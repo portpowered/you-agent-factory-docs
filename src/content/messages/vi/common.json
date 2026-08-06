@@ -85,6 +85,7 @@
     "referenceGroups": {
       "contracts": "Hợp đồng",
       "schemas": "Lược đồ",
+      "packaged-factories": "Nhà máy đóng gói",
       "limits": "Giới hạn"
     },
     "virtualFolders": {

@@ -3,9 +3,10 @@ import {
   assertFactoryExplorerSectionOrder,
   assertFactorySidebarFolderLabels,
   assertFactorySidebarPageUrls,
-  FACTORY_EXPLORER_SECTION_ORDER,
+  FACTORY_EXPLORER_TOP_LEVEL_GROUPS,
   FACTORY_REFERENCE_NESTED_COLLECTION_IDS,
   type FactoryExplorerSectionRef,
+  type FactoryExplorerTopLevelGroup,
   type FactoryExplorerVirtualFolderId,
   type FactoryReferenceNestedCollectionId,
   isDocsExplorerTopLevelFaqPage,
@@ -29,12 +30,12 @@ import {
 import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 
 /**
- * Reader-visible explorer top-level order under locked PS-100: Guides →
- * Program documentation → Concepts → Techniques → Reference → Internal
- * architecture → Miscellanea → FAQ. Factories / Workers / Workstations nest
- * under Reference. Glossary is omitted.
+ * Reader-visible explorer top level: Quick starts → How-tos → References →
+ * Information. The authoring-shaped collection folders (Guides, Program
+ * documentation, Concepts, Techniques, Reference, and the virtual folders) now
+ * sit one level down inside those groups. Glossary is omitted.
  */
-export const DOCS_SIDEBAR_SECTION_ORDER = FACTORY_EXPLORER_SECTION_ORDER;
+export const DOCS_SIDEBAR_TOP_LEVEL_GROUPS = FACTORY_EXPLORER_TOP_LEVEL_GROUPS;
 
 function collectSidebarPageUrls(nodes: Node[]): string[] {
   const urls: string[] = [];
@@ -188,7 +189,7 @@ export function buildDocsSidebarSectionNodes({
   pages,
   definitions,
   groupingResolvers,
-  sectionOrder = DOCS_SIDEBAR_SECTION_ORDER,
+  groups = DOCS_SIDEBAR_TOP_LEVEL_GROUPS,
 }: {
   pages: readonly DocsPageSource[];
   definitions: readonly ShellCollectionSidebarDefinition[];
@@ -196,9 +197,9 @@ export function buildDocsSidebarSectionNodes({
     string,
     (pages: readonly DocsPageSource[]) => Node[]
   >;
-  sectionOrder?: readonly FactoryExplorerSectionRef[];
+  groups?: readonly FactoryExplorerTopLevelGroup[];
 }): Node[] {
-  assertFactoryExplorerSectionOrder([...sectionOrder]);
+  assertFactoryExplorerSectionOrder(groups.flatMap((group) => group.sections));
 
   const definitionsById = new Map(
     definitions.map((definition) => [definition.id, definition]),
@@ -256,8 +257,9 @@ export function buildDocsSidebarSectionNodes({
     pagesByCollection.get(collectionId)?.push(page);
   }
 
-  const nodes = sectionOrder.map((sectionRef) => {
-    if (sectionRef.kind === "page") {
+  /** Builds the node(s) a single section ref contributes to its parent. */
+  const buildSectionNodes = (sectionRef: FactoryExplorerSectionRef): Node[] => {
+    if (sectionRef.kind === "page" || sectionRef.kind === "curated-page") {
       const page = pagesByDocsSlug.get(sectionRef.docsSlug);
       if (!page) {
         throw new Error(
@@ -265,14 +267,11 @@ export function buildDocsSidebarSectionNodes({
         );
       }
 
-      return createShellCollectionPageNode(page);
+      return [createShellCollectionPageNode(page)];
     }
 
     if (sectionRef.kind === "virtual-folder") {
-      return buildVirtualFolderNode({
-        id: sectionRef.id,
-        pagesByDocsSlug,
-      });
+      return [buildVirtualFolderNode({ id: sectionRef.id, pagesByDocsSlug })];
     }
 
     const definition = definitionsById.get(sectionRef.id);
@@ -283,13 +282,20 @@ export function buildDocsSidebarSectionNodes({
     }
 
     if (sectionRef.id === "references") {
-      return buildReferenceFolderNode({
+      const referenceFolder = buildReferenceFolderNode({
         definition,
         referencePages: pagesByCollection.get("references") ?? [],
         nestedPagesByCollection: pagesByCollection,
         definitionsById,
         groupingResolvers,
       });
+
+      // Inlined: the group already carries the "References" name, so the
+      // collection folder itself would only add a redundant level.
+      return sectionRef.kind === "inlined-collection" &&
+        referenceFolder.type === "folder"
+        ? [...referenceFolder.children]
+        : [referenceFolder];
     }
 
     if (isReferenceNestedCollectionId(sectionRef.id)) {
@@ -298,12 +304,26 @@ export function buildDocsSidebarSectionNodes({
       );
     }
 
-    return buildCollectionFolderNode({
+    const collectionFolder = buildCollectionFolderNode({
       definition,
       collectionPages: pagesByCollection.get(sectionRef.id) ?? [],
       groupingResolvers,
     });
-  });
+
+    return sectionRef.kind === "inlined-collection" &&
+      collectionFolder.type === "folder"
+      ? [...collectionFolder.children]
+      : [collectionFolder];
+  };
+
+  const nodes = groups.map(
+    (group) =>
+      ({
+        type: "folder",
+        name: group.label,
+        children: group.sections.flatMap(buildSectionNodes),
+      }) satisfies Node,
+  );
 
   assertFactorySidebarFolderLabels(
     nodes

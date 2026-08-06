@@ -4,11 +4,19 @@
   "kind": "reference",
   "defaultTitleKey": "title",
   "defaultSummaryKey": "description",
-  "aliases": ["@you/quorum", "quorum packaged factory"],
+  "aliases": [
+    "@you/quorum",
+    "quorum packaged factory"
+  ],
   "tags": [],
-  "relatedIds": ["reference.packaged-factories-index"],
+  "relatedIds": [
+    "reference.packaged-factories-index"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-24T00:00:00.000Z",
-  "updatedAt": "2026-07-24T00:00:00.000Z"
+  "updatedAt": "2026-07-24T00:00:00.000Z",
+  "sidebarGrouping": {
+    "references": "packaged-factories"
+  }
 }

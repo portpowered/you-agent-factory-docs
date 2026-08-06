@@ -6,6 +6,10 @@ import {
   type SidebarGroupingSection,
 } from "@/lib/content/sidebar-grouping";
 import { source } from "@/lib/source";
+import {
+  findFolderChildren,
+  listCollectionFolderNames,
+} from "@/lib/navigation/explorer-tree-test-helpers";
 
 const REQUIRED_SUBGROUP_LABELS = {
   Concepts: ["Harnesses", "Industrial engineering", "Model inference"],
@@ -98,15 +102,7 @@ const GROUPED_SECTION_BY_FOLDER = {
 >;
 
 function getFolderChildren(folderName: string): Node[] {
-  const folder = source.pageTree.children.find(
-    (node) => node.type === "folder" && node.name === folderName,
-  );
-  expect(folder?.type).toBe("folder");
-  if (folder?.type !== "folder") {
-    throw new Error(`expected ${folderName} folder in docs sidebar`);
-  }
-
-  return folder.children;
+  return findFolderChildren(source.pageTree, folderName);
 }
 
 function getSeparatorLabels(nodes: Node[]): string[] {
