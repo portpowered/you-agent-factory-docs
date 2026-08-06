@@ -115,8 +115,13 @@ export function LandingPage({
       {slotOrPlaceholder("header", header)}
       <main className="flex w-full flex-1 flex-col" data-landing-main="">
         {slotOrPlaceholder("hero", hero)}
+        {/*
+         * z-20, above the hero: the hero's portrait overhangs into the top of
+         * this scene, and the painted transition here has to cover it as the
+         * reader scrolls rather than being covered by it.
+         */}
         <section
-          className="relative z-10 isolate overflow-visible bg-[#191f2b] text-[#191f2b]"
+          className="relative z-20 isolate overflow-visible bg-[#191f2b] text-[#191f2b]"
           data-landing-mid-scene=""
         >
           {midSceneBackgroundSrc ? (
@@ -150,7 +155,12 @@ export function LandingPage({
           <div className="relative z-10">
             {slotOrPlaceholder("whaleBubbles", whaleBubbles)}
           </div>
-          <div className="relative z-20 -mt-24 sm:-mt-40">
+          {/*
+           * The CTA used to be pulled up hard enough to sit on top of the
+           * bubble cluster above it. It now clears the bubbles and only
+           * overlaps the empty tail of that section.
+           */}
+          <div className="relative z-20 -mt-6 sm:-mt-10">
             {slotOrPlaceholder("cta", cta)}
           </div>
           <div

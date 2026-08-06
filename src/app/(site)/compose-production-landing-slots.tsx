@@ -293,7 +293,7 @@ export function composeProductionCarouselSlot(
 ): ReactNode {
   return (
     <section
-      className="relative isolate overflow-hidden bg-transparent pb-24 text-[#191f2b] [--foreground:#191f2b] [--muted-foreground:#46505f]"
+      className="relative isolate overflow-visible bg-transparent pb-24 text-[#191f2b] [--foreground:#191f2b] [--muted-foreground:#46505f]"
       data-factory-scene=""
     >
       <div className="relative mx-auto max-w-[100rem]">

@@ -103,7 +103,8 @@ describe("CapabilityStrip", () => {
     const html = renderToStaticMarkup(<CapabilityStrip />);
 
     expect(html).toContain("flex-col");
-    expect(html).toContain("justify-start");
+    // The YOU / CLI / MCP·API·SSE display rows are one centred poster block.
+    expect(html).toContain("justify-center");
     expect(html).toContain('data-capability-copy-position="transition"');
     expect(html).toContain("pt-0");
     expect(html).toContain("text-[#191f2b]");

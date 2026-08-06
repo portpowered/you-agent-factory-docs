@@ -49,7 +49,9 @@ export function WhaleBubblesSection({
   return (
     <section
       className={cn(
-        "relative min-h-[clamp(64rem,125vw,110rem)] w-full overflow-hidden",
+        // overflow-visible so the whale plate and bubble cluster blend into the
+        // sections above and below instead of ending on a hard cut line.
+        "relative min-h-[clamp(64rem,125vw,110rem)] w-full overflow-visible",
         className,
       )}
       data-whale-bubbles-section=""

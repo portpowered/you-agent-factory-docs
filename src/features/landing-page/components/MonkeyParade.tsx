@@ -81,7 +81,10 @@ export function MonkeyParade({
     <div
       aria-hidden="true"
       className={cn(
-        "pointer-events-none relative h-[clamp(4rem,9vw,9rem)] w-full overflow-hidden",
+        // overflow-visible: the troop enters and leaves past the band edges,
+        // which a clip would cut into a hard pop-in. Horizontal spill is
+        // contained by `overflow-x-clip` on the landing root.
+        "pointer-events-none relative h-[clamp(4rem,9vw,9rem)] w-full overflow-visible",
         className,
       )}
       data-monkey-parade=""

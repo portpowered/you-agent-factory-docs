@@ -117,14 +117,15 @@ export function CapabilityStrip({
             index >= 3 ? item.label.split(" : ", 2) : [undefined, undefined];
           const displayClass = cn(
             "inline-flex w-full font-mono font-black leading-[0.78] tracking-[-0.08em] uppercase",
-            // Display rows are left-aligned so the poster copy shares the
-            // hero's left edge instead of drifting to a centered axis.
+            // The three display rows (YOU / CLI / MCP·API·SSE) are one stacked
+            // poster block and stay centred on their shared axis. Only the
+            // label:value rows below them read as left-aligned copy.
             index === 0
-              ? "justify-start text-[clamp(7rem,14vw,17rem)] text-[#f1eee6]"
+              ? "justify-center text-[clamp(7rem,14vw,17rem)] text-[#f1eee6]"
               : index === 1
-                ? "-mt-[0.16em] justify-start text-[clamp(5.5rem,11vw,13rem)]"
+                ? "-mt-[0.16em] justify-center text-[clamp(5.5rem,11vw,13rem)]"
                 : index === 2
-                  ? "-mt-[0.14em] justify-start whitespace-nowrap text-left text-[clamp(5.5rem,11vw,13rem)] tracking-[-0.09em]"
+                  ? "-mt-[0.14em] justify-center whitespace-nowrap text-center text-[clamp(5.5rem,11vw,13rem)] tracking-[-0.09em]"
                   : "grid grid-cols-[minmax(5rem,0.62fr)_auto_minmax(0,1.9fr)] items-baseline gap-x-[clamp(0.5rem,1.8vw,2rem)] text-[clamp(1.5rem,4vw,4.4rem)] leading-[0.88] tracking-[-0.075em]",
           );
 

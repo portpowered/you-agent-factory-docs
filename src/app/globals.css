@@ -112,6 +112,78 @@ body {
   font-family: Inter, system-ui, sans-serif;
 }
 
+/*
+ * Stylized scrollbars, site-wide.
+ *
+ * The page scrollbar is the one piece of chrome every route shares, and the
+ * platform default reads as a seam against the dark foundation. These tokens
+ * derive from the semantic theme rather than hardcoding a colour so docs and
+ * landing stay consistent, and so a theme change carries the scrollbar with it.
+ *
+ * Two mechanisms are declared because they are not interchangeable: Firefox
+ * honours `scrollbar-width` / `scrollbar-color`, while Chromium and WebKit
+ * honour `::-webkit-scrollbar`. Both are applied to every scroll container, not
+ * just the document, so code blocks, the sidebar, and overflowing tables match.
+ */
+:root {
+  --site-scrollbar-size: 10px;
+  --site-scrollbar-track: rgb(from var(--background) r g b / 0.5);
+  --site-scrollbar-thumb: rgb(from var(--foreground) r g b / 0.22);
+  --site-scrollbar-thumb-hover: rgb(from var(--ring) r g b / 0.85);
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Reserve the gutter so route changes cannot shift layout horizontally. */
+  scrollbar-gutter: stable;
+}
+
+html,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--site-scrollbar-thumb) var(--site-scrollbar-track);
+}
+
+::-webkit-scrollbar {
+  width: var(--site-scrollbar-size);
+  height: var(--site-scrollbar-size);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--site-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--site-scrollbar-thumb);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  /* Padding-box keeps the transparent border as breathing room, not fill. */
+  background-clip: padding-box;
+  transition: background-color 160ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--site-scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/*
+ * The landing page paints its own foundation (#191f2b) rather than the docs
+ * theme tokens, so it names its own scrollbar colours. These land on the
+ * element itself and on `html` — the document scrollbar resolves against the
+ * root element, so the landing root alone would never reach it.
+ */
+:root:has([data-landing-page]),
+[data-landing-page] {
+  --site-scrollbar-track: #111722;
+  --site-scrollbar-thumb: rgb(236 236 228 / 0.24);
+  --site-scrollbar-thumb-hover: #f3bd3d;
+}
+
 article[data-registry-id] > section:first-of-type {
   margin-top: 1rem;
 }
