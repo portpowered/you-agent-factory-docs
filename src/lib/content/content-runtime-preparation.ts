@@ -88,7 +88,10 @@ export const CONTENT_RUNTIME_COMPLETENESS_CONTRACT: readonly ContentRuntimePrepa
       id: "sidebar-grouping-runtime",
       command: ["bun", "run", "generate:sidebar-grouping-runtime"],
       outputPath: "src/lib/content/generated/sidebar-grouping.generated.ts",
-      gitClassification: "ignored",
+      // Committed, not ignored: registry-runtime generation imports
+      // sidebar-grouping.ts, which imports this module. On a clean checkout the
+      // file must already exist or that step cannot bootstrap.
+      gitClassification: "committed",
       owningSurface: "explorer sidebar grouping derived from registry records",
     },
     {
