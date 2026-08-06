@@ -134,12 +134,12 @@ describe("docs sidebar page-tree contract", () => {
     if (quickStarts?.type !== "folder") {
       throw new Error("expected a Quick starts group in the explorer");
     }
-    expect(
-      collectSidebarPageLinks(quickStarts.children)[0]?.url,
-    ).toBe(INSTALL_DOCS_URL);
-    expect(
-      links.filter((link) => link.url === INSTALL_DOCS_URL),
-    ).toHaveLength(1);
+    expect(collectSidebarPageLinks(quickStarts.children)[0]?.url).toBe(
+      INSTALL_DOCS_URL,
+    );
+    expect(links.filter((link) => link.url === INSTALL_DOCS_URL)).toHaveLength(
+      1,
+    );
   });
 
   test("FAQ closes the Information group outside Program documentation", () => {
