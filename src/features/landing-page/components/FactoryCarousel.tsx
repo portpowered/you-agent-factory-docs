@@ -117,55 +117,75 @@ function clampIndex(index: number, length: number): number {
   return index;
 }
 
-type CarouselVisualSlot = {
-  height: string;
-  left: string;
-  top: string;
-  width: string;
+/**
+ * Signed distance from the active slide, taking the shorter way around.
+ *
+ * This is what makes the carousel rotate rather than rewind: stepping from the
+ * last slide to the first is `+1`, so the track keeps travelling in the same
+ * direction instead of unwinding all the way back across the frame.
+ */
+export function getCarouselSignedOffset(
+  index: number,
+  activeIndex: number,
+  length: number,
+): number {
+  if (length <= 0) return 0;
+  const forward = (((index - activeIndex) % length) + length) % length;
+  return forward > length / 2 ? forward - length : forward;
+}
+
+export type CarouselTrackPlacement = {
+  /** Horizontal travel as a percentage of the slide's own width. */
+  translatePercent: number;
+  scale: number;
+  opacity: number;
   zIndex: number;
 };
 
 /**
- * The reference composition always keeps one wide feature card, the previous
- * card clipped at the left edge, and the next three cards overlapping its
- * right half. Rotating the index preserves that exact silhouette.
+ * Travel per step, as a percentage of one slide's width.
+ *
+ * Under 100 so adjacent slides stay partly on screen — the peek is what tells
+ * the reader there is more to turn to, and gives the click target something to
+ * aim at.
  */
-function getCarouselVisualSlot(
+const TRACK_STEP_PERCENT = 78;
+
+/**
+ * Where a slide sits on the rotating track.
+ *
+ * Every slide is laid out in the *same* box and differs only by transform, so
+ * changing the active index moves cards along the track instead of resizing
+ * them in place. That distinction is the whole point: animating `width` and
+ * `height` between a small rail slot and a wide feature slot made cards appear
+ * to stretch open, which does not read as a carousel turning.
+ */
+export function getCarouselTrackPlacement(
   index: number,
   activeIndex: number,
   length: number,
-): CarouselVisualSlot {
-  const forward = (((index - activeIndex) % length) + length) % length;
+): CarouselTrackPlacement {
+  const offset = getCarouselSignedOffset(index, activeIndex, length);
+  const distance = Math.abs(offset);
+  const translatePercent = offset * TRACK_STEP_PERCENT;
 
-  if (forward === 0) {
-    return {
-      height: "clamp(24rem, 52vw, 52rem)",
-      left: "9%",
-      top: "0",
-      width: "82%",
-      zIndex: 10,
-    };
+  if (distance === 0) {
+    return { translatePercent, scale: 1.16, opacity: 1, zIndex: 30 };
   }
-
-  if (forward === length - 1) {
-    return {
-      height: "clamp(11rem, 21vw, 21rem)",
-      left: "0.5%",
-      top: "clamp(8.5rem, 19vw, 19rem)",
-      width: "14.5%",
-      zIndex: 20,
-    };
+  if (distance === 1) {
+    return { translatePercent, scale: 0.9, opacity: 1, zIndex: 20 };
   }
-
-  const rightSlot = Math.min(forward - 1, 2);
-  return {
-    height: "clamp(11rem, 21vw, 21rem)",
-    left: `${55 + rightSlot * 15}%`,
-    top: "clamp(8.5rem, 19vw, 19rem)",
-    width: "14.5%",
-    zIndex: 20 + rightSlot,
-  };
+  if (distance === 2) {
+    return { translatePercent, scale: 0.76, opacity: 0.5, zIndex: 12 };
+  }
+  // Beyond the second ring a slide is off-frame; parked and fully transparent
+  // so it neither paints nor catches a pointer.
+  return { translatePercent, scale: 0.66, opacity: 0, zIndex: 5 };
 }
+
+/** Uniform slide box. Identical for every slide — only the transform differs. */
+export const CAROUSEL_SLIDE_WIDTH = "34%";
+export const CAROUSEL_SLIDE_HEIGHT = "clamp(20rem, 38vw, 38rem)";
 
 /**
  * Wrap active index by `delta` steps. Empty length stays at 0.
@@ -358,28 +378,25 @@ export function FactoryCarousel({
   const collageSlides = slides.map((slide, index) => {
     const depth = getCarouselSlideDepth(index, resolvedIndex, theme);
     const isActive = index === resolvedIndex;
-    const visualSlot = getCarouselVisualSlot(
+    const placement = getCarouselTrackPlacement(
       index,
       resolvedIndex,
       slides.length,
     );
-    const forward =
-      (((index - resolvedIndex) % slides.length) + slides.length) %
-      slides.length;
-    const railSide = isActive
-      ? "active"
-      : forward === slides.length - 1
-        ? "left"
-        : forward === 1
-          ? "right"
-          : "far";
+    const offset = getCarouselSignedOffset(index, resolvedIndex, slides.length);
+    const railSide = isActive ? "active" : offset < 0 ? "left" : "right";
     const slideStyle: CSSProperties = {
-      height: visualSlot.height,
-      left: visualSlot.left,
-      top: visualSlot.top,
-      width: visualSlot.width,
-      zIndex: visualSlot.zIndex,
-      transitionProperty: "left, top, width, height, transform, opacity",
+      height: CAROUSEL_SLIDE_HEIGHT,
+      left: "50%",
+      top: "50%",
+      width: CAROUSEL_SLIDE_WIDTH,
+      opacity: placement.opacity,
+      zIndex: placement.zIndex,
+      // Centre first, then travel, then scale. Only the transform changes
+      // between states, so the browser animates one composited property and
+      // the cards glide rather than stretch.
+      transform: `translate(-50%, -50%) translateX(${placement.translatePercent}%) scale(${placement.scale})`,
+      transitionProperty: "transform, opacity",
       transitionDuration: reduceMotion ? "0ms" : `${theme.transitionMs}ms`,
       transitionTimingFunction: "cubic-bezier(0.16, 0.84, 0.22, 1)",
     };
@@ -388,12 +405,16 @@ export function FactoryCarousel({
       <div
         key={slide.id}
         className={cn(
-          "factory-carousel__slide pointer-events-auto absolute select-none",
+          "factory-carousel__slide absolute select-none",
+          placement.opacity === 0
+            ? "pointer-events-none"
+            : "pointer-events-auto",
         )}
         data-active={isActive ? "true" : undefined}
         data-carousel-depth={depth.role}
         data-carousel-slide={slide.id}
         data-carousel-slide-index={String(index)}
+        data-carousel-slide-offset={String(offset)}
         data-carousel-slot={isActive ? "feature" : "rail"}
         data-carousel-rail-side={railSide}
         style={slideStyle}
@@ -470,8 +491,22 @@ export function FactoryCarousel({
         Slide {resolvedIndex + 1} of {slides.length}: {activeSlide.title}
       </div>
 
+      {/*
+        In flow above the track, not layered over it. As an absolutely
+        positioned overlay it sat underneath the active card, which is now
+        centred and opaque, so the heading was half-swallowed by it.
+      */}
+      {eyebrow ? (
+        <p
+          className="pointer-events-none mx-auto w-full max-w-[100rem] px-[clamp(1rem,4vw,4rem)] pb-[clamp(0.5rem,1.5vw,1.5rem)] font-sans text-[clamp(2rem,5.6vw,5.6rem)] leading-none font-normal tracking-[-0.055em] text-[#191f2b] lowercase"
+          data-carousel-eyebrow=""
+        >
+          {eyebrow}
+        </p>
+      ) : null}
+
       <div
-        className="factory-carousel__track relative mx-auto min-h-[clamp(25rem,58vw,58rem)] w-full max-w-[100rem] touch-pan-y"
+        className="factory-carousel__track relative mx-auto min-h-[clamp(24rem,46vw,46rem)] w-full max-w-[100rem] touch-pan-y"
         data-carousel-track=""
         data-carousel-dragging={dragOffsetPx !== 0 ? "true" : undefined}
         onPointerCancel={onPointerCancel}
@@ -489,16 +524,11 @@ export function FactoryCarousel({
               : "none",
         }}
       >
-        {eyebrow ? (
-          <p className="pointer-events-none absolute top-[clamp(0.65rem,1.5vw,1.5rem)] left-[14%] z-30 font-sans text-[clamp(2rem,5.6vw,5.6rem)] leading-none font-normal tracking-[-0.055em] text-[#191f2b] lowercase">
-            {eyebrow}
-          </p>
-        ) : null}
         {collageSlides}
       </div>
 
       <fieldset
-        className="relative z-50 mx-auto -mt-[clamp(3rem,6vw,6rem)] hidden w-[min(92%,80rem)] flex-wrap justify-center gap-x-5 gap-y-2 border-0 pb-12 md:flex"
+        className="relative z-50 mx-auto mt-[clamp(0.5rem,1.5vw,1.5rem)] hidden w-[min(92%,80rem)] flex-wrap justify-center gap-x-5 gap-y-2 border-0 pb-12 md:flex"
         data-carousel-factory-selectors=""
       >
         <legend className="sr-only">Choose a factory</legend>

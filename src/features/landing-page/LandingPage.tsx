@@ -116,12 +116,21 @@ export function LandingPage({
       <main className="flex w-full flex-1 flex-col" data-landing-main="">
         {slotOrPlaceholder("hero", hero)}
         {/*
-         * z-20, above the hero: the hero's portrait overhangs into the top of
-         * this scene, and the painted transition here has to cover it as the
-         * reader scrolls rather than being covered by it.
+         * Deliberately unpositioned in the stacking order: no `z-index`, no
+         * `isolate`, no opaque fill of its own (the page root already paints
+         * the same navy).
+         *
+         * The hero's portrait overhangs into the top of this scene and must be
+         * covered by the painted transition *and nothing else*. Giving this
+         * section a z-index would trap its children in a local stacking
+         * context, so the whole scene — navy fill, whale, everything — would
+         * sit either wholly above the hero (clipping the portrait against flat
+         * navy) or wholly below it (leaving the portrait on top of the art).
+         * Leaving it at `auto` lets each layer below choose its own side: the
+         * whale stays under the hero, the transition rises above it.
          */}
         <section
-          className="relative z-20 isolate overflow-visible bg-[#191f2b] text-[#191f2b]"
+          className="relative overflow-visible text-[#191f2b]"
           data-landing-mid-scene=""
         >
           {midSceneBackgroundSrc ? (
@@ -131,25 +140,33 @@ export function LandingPage({
             <img
               alt=""
               aria-hidden="true"
-              className="pointer-events-none absolute inset-x-0 top-0 z-[15] h-[clamp(48rem,110vw,110rem)] w-full object-fill object-top opacity-100"
+              // z-30: above the hero (z-20), so the sinking portrait passes
+              // behind this art rather than in front of it.
+              className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[clamp(48rem,110vw,110rem)] w-full object-fill object-top opacity-100"
               data-landing-mid-scene-transition=""
               decoding="async"
               src={midSceneTransitionSrc}
             />
           ) : null}
-          <div className="relative z-20">
+          {/*
+           * Scene layers above the painted transition sit at z-40, below it at
+           * z-10. The gap is where the transition (z-30) and the hero (z-20)
+           * live, so this preserves the scene's own front-to-back order while
+           * letting the transition rise above the hero.
+           */}
+          <div className="relative z-40">
             {slotOrPlaceholder("capability", capability)}
           </div>
           <div className="relative z-10">
             {slotOrPlaceholder("carousel", carousel)}
           </div>
           {monkeyParadeSrc ? (
-            <div className="relative z-20">
+            <div className="relative z-40">
               <MonkeyParade src={monkeyParadeSrc} />
             </div>
           ) : null}
           <div className="relative z-10">{slotOrPlaceholder("youi", youi)}</div>
-          <div className="relative z-20 mx-auto w-full max-w-5xl px-5 pt-20 sm:px-8 sm:pt-28">
+          <div className="relative z-40 mx-auto w-full max-w-5xl px-5 pt-20 sm:px-8 sm:pt-28">
             {slotOrPlaceholder("faq", faq)}
           </div>
           <div className="relative z-10">
@@ -160,7 +177,7 @@ export function LandingPage({
            * bubble cluster above it. It now clears the bubbles and only
            * overlaps the empty tail of that section.
            */}
-          <div className="relative z-20 -mt-6 sm:-mt-10">
+          <div className="relative z-40 -mt-6 sm:-mt-10">
             {slotOrPlaceholder("cta", cta)}
           </div>
           <div

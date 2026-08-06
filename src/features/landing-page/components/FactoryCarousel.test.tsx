@@ -9,8 +9,11 @@ import {
 import userEvent from "@testing-library/user-event";
 import { landingPageTheme } from "@/features/landing-page/landing-page.theme";
 import {
+  CAROUSEL_SLIDE_WIDTH,
   FactoryCarousel,
+  getCarouselSignedOffset,
   getCarouselSlideDepth,
+  getCarouselTrackPlacement,
   wrapCarouselIndex,
 } from "./FactoryCarousel";
 import type { FactorySlideData } from "./FactorySlide";
@@ -108,6 +111,35 @@ describe("getCarouselSlideDepth", () => {
   });
 });
 
+describe("getCarouselSignedOffset", () => {
+  test("takes the shorter way around so the track keeps rotating", () => {
+    // Last slide → first is one step forward, not seven steps back.
+    expect(getCarouselSignedOffset(0, 7, 8)).toBe(1);
+    expect(getCarouselSignedOffset(7, 0, 8)).toBe(-1);
+    expect(getCarouselSignedOffset(3, 3, 8)).toBe(0);
+    expect(getCarouselSignedOffset(5, 3, 8)).toBe(2);
+  });
+});
+
+describe("getCarouselTrackPlacement", () => {
+  test("travels by a fixed step and never resizes the box", () => {
+    const active = getCarouselTrackPlacement(2, 2, 8);
+    const next = getCarouselTrackPlacement(3, 2, 8);
+    const previous = getCarouselTrackPlacement(1, 2, 8);
+
+    expect(active.translatePercent).toBe(0);
+    expect(next.translatePercent).toBe(78);
+    expect(previous.translatePercent).toBe(-78);
+    expect(active.scale).toBeGreaterThan(next.scale);
+    expect(active.zIndex).toBeGreaterThan(next.zIndex);
+  });
+
+  test("parks slides beyond the second ring fully transparent", () => {
+    expect(getCarouselTrackPlacement(6, 2, 12).opacity).toBe(0);
+    expect(getCarouselTrackPlacement(4, 2, 12).opacity).toBeGreaterThan(0);
+  });
+});
+
 describe("FactoryCarousel", () => {
   afterEach(() => {
     cleanup();
@@ -186,12 +218,23 @@ describe("FactoryCarousel", () => {
     expect(neighborLeft.getAttribute("data-carousel-slot")).toBe("rail");
     expect(neighborRight.getAttribute("data-carousel-slot")).toBe("rail");
     expect(far.getAttribute("data-carousel-slot")).toBe("rail");
-    expect(active.style.left).toBe("9%");
-    expect(active.style.width).toBe("82%");
-    expect(neighborLeft.style.left).toBe("0.5%");
-    expect(neighborRight.style.left).toBe("55%");
-    expect(Number(neighborLeft.style.zIndex)).toBeGreaterThan(
-      Number(active.style.zIndex),
+    /**
+     * Every slide occupies the same box and differs only by transform, so
+     * position is read off the transform rather than off `left`/`width`. That
+     * is the point of the layout: cards travel along the track instead of
+     * resizing between a rail slot and a feature slot.
+     */
+    expect(active.style.left).toBe("50%");
+    expect(active.style.width).toBe(CAROUSEL_SLIDE_WIDTH);
+    expect(neighborLeft.style.width).toBe(CAROUSEL_SLIDE_WIDTH);
+    expect(active.style.transform).toContain("translateX(0%)");
+    expect(neighborLeft.style.transform).toContain("translateX(-78%)");
+    expect(neighborRight.style.transform).toContain("translateX(78%)");
+    expect(active.getAttribute("data-carousel-slide-offset")).toBe("0");
+    expect(neighborLeft.getAttribute("data-carousel-slide-offset")).toBe("-1");
+    expect(neighborRight.getAttribute("data-carousel-slide-offset")).toBe("1");
+    expect(Number(active.style.zIndex)).toBeGreaterThan(
+      Number(neighborLeft.style.zIndex),
     );
     expect(active.style.transitionDuration).toBe(
       `${landingPageTheme.carousel.transitionMs}ms`,
@@ -348,18 +391,24 @@ describe("FactoryCarousel", () => {
 
     expect(selectorHost?.className).toContain("md:flex");
     expect(worktreeSelector.getAttribute("aria-pressed")).toBe("false");
-    expect(slideEl("slide-loop").style.left).toBe("9%");
-    expect(slideEl("slide-worktree").style.left).toBe("55%");
+    expect(slideEl("slide-loop").style.transform).toContain("translateX(0%)");
+    expect(slideEl("slide-worktree").style.transform).toContain(
+      "translateX(78%)",
+    );
 
     await user.click(worktreeSelector);
 
     expect(root.getAttribute("data-carousel-active-index")).toBe("2");
     expect(worktreeSelector.getAttribute("aria-pressed")).toBe("true");
     expect(slideEl("slide-worktree").getAttribute("data-active")).toBe("true");
-    expect(slideEl("slide-worktree").style.left).toBe("9%");
-    expect(slideEl("slide-worktree").style.width).toBe("82%");
-    expect(slideEl("slide-loop").style.left).toBe("0.5%");
-    expect(slideEl("slide-loop").style.width).toBe("14.5%");
+    // The clicked card travels to the centre and the previous active card
+    // travels one step left — neither changes size.
+    expect(slideEl("slide-worktree").style.transform).toContain(
+      "translateX(0%)",
+    );
+    expect(slideEl("slide-loop").style.transform).toContain("translateX(-78%)");
+    expect(slideEl("slide-worktree").style.width).toBe(CAROUSEL_SLIDE_WIDTH);
+    expect(slideEl("slide-loop").style.width).toBe(CAROUSEL_SLIDE_WIDTH);
   });
 
   test("ArrowLeft and ArrowRight on the focused carousel change the active slide", async () => {

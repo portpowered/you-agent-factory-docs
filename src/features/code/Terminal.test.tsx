@@ -121,7 +121,16 @@ describe("Terminal", () => {
     rerender(<Terminal lines={["echo dark"]} variant="dark" />);
     const darkRoot = document.querySelector("[data-terminal]");
     expect(darkRoot?.getAttribute("data-terminal-variant")).toBe("dark");
-    expect(darkRoot?.className).toContain("bg-zinc-950");
+    // The dark shell paints in the site's navy/yellow pair, not a generic grey.
+    expect(darkRoot?.className).toContain(
+      "[--landing-terminal-surface:#191f2b]",
+    );
+    expect(darkRoot?.className).toContain(
+      "[--landing-terminal-accent:#f3bd3d]",
+    );
+    expect(darkRoot?.className).toContain(
+      "bg-[var(--landing-terminal-surface)]",
+    );
     expect(darkRoot?.className).toContain("rounded-3xl");
     expect(darkRoot?.className).not.toContain(
       "bg-[var(--docs-chrome-primary-yellow)]",

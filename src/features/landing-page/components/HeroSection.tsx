@@ -96,9 +96,10 @@ export function HeroSection({
     <section
       aria-label={hasTitle ? undefined : "Hero"}
       className={cn(
-        // z-10, below the middle scene: the portrait overhangs the hero's
-        // bottom edge and must pass *under* the painted transition there.
-        "relative z-10 mx-auto grid min-h-[50rem] w-full max-w-[100rem] grid-cols-1 items-center gap-2 overflow-visible px-[clamp(1rem,4vw,4rem)] pt-0 pb-0 sm:px-8 md:grid-cols-[minmax(0,1.16fr)_minmax(22rem,0.84fr)] lg:gap-4",
+        // z-20 sits between the middle scene's background layers (z-10 and
+        // below) and its painted transition (z-30), so the portrait overhang
+        // is covered by the transition art alone.
+        "relative z-20 mx-auto grid min-h-[50rem] w-full max-w-[100rem] grid-cols-1 items-center gap-2 overflow-visible px-[clamp(1rem,4vw,4rem)] pt-0 pb-0 sm:px-8 md:grid-cols-[minmax(0,1.16fr)_minmax(22rem,0.84fr)] lg:gap-4",
         className,
       )}
       data-hero-section=""

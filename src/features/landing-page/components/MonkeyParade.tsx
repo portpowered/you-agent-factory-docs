@@ -12,8 +12,31 @@ export type MonkeyParadeProps = {
   className?: string;
 };
 
-/** Default monkeys in the band — enough to read as a troop, few enough to stay quiet. */
-export const MONKEY_PARADE_DEFAULT_COUNT = 4;
+/**
+ * Default monkeys in the band.
+ *
+ * Four left visible gaps between isolated sprites; a real troop needs enough
+ * bodies that they overlap. The band is decorative and every monkey is the same
+ * cached image, so the count costs layout work rather than bandwidth.
+ */
+export const MONKEY_PARADE_DEFAULT_COUNT = 40;
+
+/**
+ * How far the troop spreads, as a percentage of the band width.
+ *
+ * Wider than the band so the line runs off both edges — with the ends visible
+ * the troop reads as a fixed row rather than a crowd passing through.
+ */
+const MONKEY_SPREAD_PERCENT = 128;
+
+/** Horizontal start of the spread, so the extra width overhangs both sides. */
+const MONKEY_SPREAD_ORIGIN_PERCENT = -14;
+
+/**
+ * Width of one monkey relative to the band. Larger than the per-monkey spacing
+ * at the default count, which is what makes neighbours overlap.
+ */
+const MONKEY_WIDTH_PERCENT = 7.5;
 
 /**
  * Decorative band of monkeys travelling left to right across the middle scene.
@@ -33,12 +56,19 @@ export function MonkeyParade({
   className,
 }: MonkeyParadeProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const monkeys = Array.from({ length: Math.max(0, count) }, (_, index) => ({
+  const total = Math.max(0, count);
+  const monkeys = Array.from({ length: total }, (_, index) => ({
     id: `monkey-${index}`,
-    // Stagger the resting positions so the troop is spread across the band.
-    leftPercent: (index * 100) / Math.max(1, count),
-    // Alternate depth: nearer monkeys are larger and travel further.
-    depth: index % 2 === 0 ? 1 : 0.78,
+    // Even spread across a span wider than the band, so the row overlaps
+    // itself and runs off both edges.
+    leftPercent:
+      MONKEY_SPREAD_ORIGIN_PERCENT +
+      (index * MONKEY_SPREAD_PERCENT) / Math.max(1, total),
+    // Three depths rather than two: with this many bodies, a single alternation
+    // reads as a repeating pattern instead of a crowd.
+    depth: [1, 0.72, 0.86][index % 3] ?? 1,
+    // Vertical jitter keeps the feet off one ruled line.
+    bottomPercent: [0, 7, 3, 11][index % 4] ?? 0,
   }));
 
   const { reduced } = useGsapMotion(ref, (element, { gsap }) => {
@@ -47,11 +77,13 @@ export function MonkeyParade({
     for (const item of items) {
       const depth = Number(item.dataset.monkeyDepth ?? "1");
 
+      // Travel is per-monkey and depth-scaled, so the near row outpaces the
+      // far row and the crowd shears slightly instead of sliding as one plate.
       gsap.fromTo(
         item,
-        { xPercent: -30 * depth },
+        { xPercent: -55 * depth },
         {
-          xPercent: 130 * depth,
+          xPercent: 55 * depth,
           ease: "none",
           scrollTrigger: {
             trigger: element,
@@ -84,7 +116,7 @@ export function MonkeyParade({
         // overflow-visible: the troop enters and leaves past the band edges,
         // which a clip would cut into a hard pop-in. Horizontal spill is
         // contained by `overflow-x-clip` on the landing root.
-        "pointer-events-none relative h-[clamp(4rem,9vw,9rem)] w-full overflow-visible",
+        "pointer-events-none relative h-[clamp(7rem,15vw,15rem)] w-full overflow-visible",
         className,
       )}
       data-monkey-parade=""
@@ -95,7 +127,7 @@ export function MonkeyParade({
       {monkeys.map((monkey) => (
         <img
           alt=""
-          className="absolute bottom-0 h-full w-auto max-w-none select-none"
+          className="absolute h-full max-w-none select-none object-contain object-bottom"
           data-monkey=""
           data-monkey-depth={String(monkey.depth)}
           decoding="async"
@@ -103,8 +135,10 @@ export function MonkeyParade({
           key={monkey.id}
           src={src}
           style={{
+            bottom: `${monkey.bottomPercent}%`,
             left: `${monkey.leftPercent}%`,
-            opacity: 0.35 + monkey.depth * 0.35,
+            width: `${MONKEY_WIDTH_PERCENT}%`,
+            opacity: 0.42 + monkey.depth * 0.34,
             transform: `scale(${monkey.depth})`,
             transformOrigin: "bottom center",
           }}

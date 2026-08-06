@@ -43,10 +43,11 @@ export const HERO_PORTRAIT_DEFAULT_ALT = "Portrait";
 
 /**
  * How far the portrait sinks, as a percentage of its own height, by the time
- * the hero has left the viewport. Enough travel to read as descending behind
- * the middle-scene transition rather than as a small parallax nudge.
+ * the hero has left the viewport. Far enough to carry the head fully under the
+ * middle-scene transition art — a shorter travel leaves it half-submerged with
+ * the top of the head still showing above the painted edge.
  */
-export const HERO_PORTRAIT_SINK_PERCENT = 46;
+export const HERO_PORTRAIT_SINK_PERCENT = 92;
 
 /**
  * Hero woman-head portrait with layout-appropriate responsive sizes.
@@ -76,17 +77,19 @@ export function HeroPortrait({
     // viewport, not to the portrait's own much shorter box.
     const trigger = element.closest("[data-hero-section]") ?? element;
 
+    // Travel only — no fade. The portrait has to still be fully painted when
+    // it reaches the transition art, otherwise it reads as vanishing into flat
+    // navy before anything covers it.
     gsap.fromTo(
       element,
-      { yPercent: 0, opacity: 1 },
+      { yPercent: 0 },
       {
         yPercent: HERO_PORTRAIT_SINK_PERCENT,
-        opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger,
-          start: "bottom 92%",
-          end: "bottom 30%",
+          start: "bottom 95%",
+          end: "bottom 15%",
           scrub: 0.5,
         },
       },

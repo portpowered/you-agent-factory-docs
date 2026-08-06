@@ -148,7 +148,14 @@ export const fixtureLandingPageData: LandingPageData = {
   header: {
     brand: "YOU",
     nav: [
-      { id: "home", label: "Home", href: "/" },
+      // "Home" pointed at `/` from the homepage itself, so it cost a nav slot
+      // and went nowhere. GitHub is the destination readers actually want from
+      // here — the repo, and somewhere to leave a star.
+      {
+        id: "github",
+        label: "GitHub",
+        href: "https://github.com/portpowered/you-agent-factory",
+      },
       { id: "docs", label: "Docs", href: "/docs" },
       { id: "blog", label: "Blog", href: "/blog" },
     ],

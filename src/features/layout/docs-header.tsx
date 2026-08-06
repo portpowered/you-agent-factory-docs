@@ -4,7 +4,6 @@ import type * as PageTree from "fumadocs-core/page-tree";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { type ReactNode, Suspense, useId, useState } from "react";
-import { FaGithub } from "react-icons/fa";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
 import {
@@ -12,6 +11,7 @@ import {
   DOCS_CHROME_HEADER_TEXT_CLASSES,
 } from "@/features/docs/styles/docs-chrome-header-breadcrumb";
 import { DOCS_CHROME_HEADER_ACTION_ICON_CLASSES } from "@/features/docs/styles/docs-chrome-search-globe-github";
+import { GithubMarkIcon } from "@/features/layout/github-mark-icon";
 import { LanguageSwitcher } from "@/features/layout/language-switcher";
 import { MobileDocsDrawer } from "@/features/layout/mobile-docs-drawer";
 import {
@@ -155,7 +155,7 @@ export function DocsHeader({
               title="Open project GitHub repository"
               className={`${buttonVariants({ variant: "outline", size: "icon" })} ${DOCS_CHROME_HEADER_ACTION_ICON_CLASSES}`}
             >
-              <FaGithub className="size-4" aria-hidden />
+              <GithubMarkIcon className="size-4" aria-hidden />
             </Link>
           </div>
           {trailing ? (

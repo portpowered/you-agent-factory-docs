@@ -12,6 +12,27 @@ import { cn } from "@/lib/utils";
 /** Supported Terminal chrome looks (yellow install shell vs dark pill). */
 export type TerminalVariant = "install" | "dark";
 
+/**
+ * The dark shell's two colours, as local custom properties.
+ *
+ * It previously used the generic zinc ramp, which read as a foreign grey box
+ * wherever it appeared on the site. Both surfaces it ships on — the landing
+ * carousel and the code harness — sit in the navy/yellow palette, so the shell
+ * now shares it. Callers can retint by overriding these two properties instead
+ * of layering `[&_[data-terminal-*]]` overrides on top.
+ */
+const DARK_TERMINAL_SHELL_CLASS = [
+  "[--landing-terminal-surface:#191f2b]",
+  "[--landing-terminal-accent:#f3bd3d]",
+  "rounded-3xl border shadow-md",
+  "border-[color-mix(in_oklab,var(--landing-terminal-accent)_38%,transparent)]",
+  "bg-[var(--landing-terminal-surface)] text-[var(--landing-terminal-accent)]",
+].join(" ");
+
+/** Traffic lights on the dark shell, dimmed into the accent rather than grey. */
+const MUTED_TRAFFIC_LIGHT_CLASS =
+  "bg-[color-mix(in_oklab,var(--landing-terminal-accent)_35%,transparent)]";
+
 export type TerminalProps = {
   /** Command/output lines shown in the body and joined for clipboard copy. */
   lines: string[];
@@ -73,7 +94,7 @@ export function Terminal({
         "relative overflow-hidden font-mono text-sm",
         isInstall
           ? "rounded-lg border border-[color-mix(in_oklab,var(--docs-chrome-primary-yellow)_55%,transparent)] bg-[var(--docs-chrome-primary-yellow)] text-[var(--primary-foreground)] shadow-sm"
-          : "rounded-3xl border border-zinc-700/80 bg-zinc-950 text-zinc-100 shadow-md",
+          : DARK_TERMINAL_SHELL_CLASS,
         className,
       )}
     >
@@ -83,7 +104,7 @@ export function Terminal({
           "flex items-center gap-2 border-b px-3 py-2",
           isInstall
             ? "border-[color-mix(in_oklab,var(--primary-foreground)_18%,transparent)]"
-            : "border-zinc-800",
+            : "border-[color-mix(in_oklab,var(--landing-terminal-accent)_22%,transparent)]",
         )}
       >
         <TrafficLights muted={!isInstall} />
@@ -99,8 +120,8 @@ export function Terminal({
                 isInstall
                   ? "bg-[color-mix(in_oklab,var(--primary-foreground)_14%,transparent)] text-[var(--primary-foreground)]"
                   : selected
-                    ? "bg-[#f3bd3d] text-[#191f2b]"
-                    : "bg-zinc-800 text-zinc-200",
+                    ? "bg-[var(--landing-terminal-accent)] text-[var(--landing-terminal-surface)]"
+                    : "bg-[color-mix(in_oklab,var(--landing-terminal-accent)_14%,transparent)] text-[var(--landing-terminal-accent)]",
                 onChipChange &&
                   "transition-colors hover:bg-[#f3bd3d] hover:text-[#191f2b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f3bd3d]",
               );
@@ -140,7 +161,7 @@ export function Terminal({
             "inline-flex shrink-0 items-center justify-center rounded-md p-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             isInstall
               ? "text-[var(--primary-foreground)]/80 hover:bg-[color-mix(in_oklab,var(--primary-foreground)_12%,transparent)] hover:text-[var(--primary-foreground)]"
-              : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100",
+              : "text-[color-mix(in_oklab,var(--landing-terminal-accent)_70%,transparent)] hover:bg-[color-mix(in_oklab,var(--landing-terminal-accent)_16%,transparent)] hover:text-[var(--landing-terminal-accent)]",
           )}
         >
           {copied ? (
@@ -162,7 +183,9 @@ export function Terminal({
         data-terminal-body=""
         className={cn(
           "overflow-x-auto p-3 whitespace-pre",
-          isInstall ? "text-[var(--primary-foreground)]" : "text-zinc-100",
+          isInstall
+            ? "text-[var(--primary-foreground)]"
+            : "text-[var(--landing-terminal-accent)]",
         )}
       >
         <code className="font-mono whitespace-pre">{joined}</code>
@@ -185,19 +208,19 @@ function TrafficLights({ muted }: TrafficLightsProps) {
       <span
         className={cn(
           "size-2.5 rounded-full",
-          muted ? "bg-zinc-600" : "bg-[#ff5f57]",
+          muted ? MUTED_TRAFFIC_LIGHT_CLASS : "bg-[#ff5f57]",
         )}
       />
       <span
         className={cn(
           "size-2.5 rounded-full",
-          muted ? "bg-zinc-600" : "bg-[#febc2e]",
+          muted ? MUTED_TRAFFIC_LIGHT_CLASS : "bg-[#febc2e]",
         )}
       />
       <span
         className={cn(
           "size-2.5 rounded-full",
-          muted ? "bg-zinc-600" : "bg-[#28c840]",
+          muted ? MUTED_TRAFFIC_LIGHT_CLASS : "bg-[#28c840]",
         )}
       />
     </div>

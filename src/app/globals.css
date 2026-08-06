@@ -312,38 +312,42 @@ button[data-search] {
   }
 }
 
+/*
+ * Rail cards on the carousel track are partly tucked behind the active card,
+ * so their copy is pushed to whichever edge stays visible: left-hand rails keep
+ * their text at the left, right-hand rails at the right. Without this the copy
+ * sits against the card's inner edge and disappears under the active card,
+ * leaving a stray line of text apparently floating in the scene.
+ */
+.factory-carousel__slide[data-carousel-rail-side="right"] .factory-slide__copy {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.factory-carousel__slide[data-carousel-slot="rail"] .factory-slide__blurb {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  max-width: 62%;
+  overflow: hidden;
+}
+
 /* Mobile factory carousel: the active workflow becomes the content while the
- * previous and next workflows remain visible as draggable/clickable edges. */
+ * previous and next workflows remain visible as draggable/clickable edges.
+ *
+ * Geometry is inherited from the desktop track — every slide shares one box and
+ * differs only by transform — so this block widens the box and leaves the
+ * travel alone. Overriding `left`/`width` here would fight the inline transform
+ * and break the rotation. */
 @media (max-width: 767px) {
   .factory-carousel__track {
-    min-height: 25rem !important;
+    min-height: 27rem !important;
   }
 
-  .factory-carousel__slide[data-carousel-rail-side="active"] {
-    left: 10% !important;
-    top: 1.5rem !important;
-    width: 80% !important;
+  .factory-carousel__slide {
+    width: 74% !important;
     height: 21rem !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="left"],
-  .factory-carousel__slide[data-carousel-rail-side="right"] {
-    display: block;
-    top: 5rem !important;
-    width: 13% !important;
-    height: 14rem !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="left"] {
-    left: -2% !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="right"] {
-    left: 89% !important;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="far"] {
-    display: none;
   }
 
   .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide {
