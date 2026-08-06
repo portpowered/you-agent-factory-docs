@@ -307,9 +307,17 @@ describe("factory search and navigation convergence end-to-end", () => {
       name: "Docs",
       children: [],
     });
-    const folderNames = pageTree.children
+    const groupNames = pageTree.children
       .filter((node) => node.type === "folder")
       .map((folder) => String(folder.name));
+    // Collection folders sit one level below the four reader-facing groups.
+    const folderNames = pageTree.children
+      .filter((node) => node.type === "folder")
+      .flatMap((group) =>
+        group.children
+          .filter((node) => node.type === "folder")
+          .map((folder) => String(folder.name)),
+      );
 
     expect([...FACTORY_NAV_COLLECTION_IDS]).toEqual([
       "guides",
@@ -324,24 +332,36 @@ describe("factory search and navigation convergence end-to-end", () => {
     ]);
     expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
       "guides",
+      "references",
       "documentation",
       "concepts",
       "techniques",
-      "references",
       "factories",
       "workers",
       "workstations",
     ]);
+    expect(groupNames).toEqual([
+      "Quick starts",
+      "How-tos",
+      "References",
+      "Information",
+    ]);
     expect(folderNames).toEqual([
       FACTORY_EXPLORER_FOLDER_LABELS.guides,
+      // Reference is inlined into its group, so its nested route families
+      // surface directly instead of the collection folder.
+      FACTORY_EXPLORER_FOLDER_LABELS.factories,
+      FACTORY_EXPLORER_FOLDER_LABELS.workers,
+      FACTORY_EXPLORER_FOLDER_LABELS.workstations,
       FACTORY_EXPLORER_FOLDER_LABELS.documentation,
       FACTORY_EXPLORER_FOLDER_LABELS.concepts,
       FACTORY_EXPLORER_FOLDER_LABELS.techniques,
-      FACTORY_EXPLORER_FOLDER_LABELS.references,
       "Internal architecture",
       "Miscellanea",
     ]);
-    expect(folderNames).not.toContain(FACTORY_EXPLORER_FOLDER_LABELS.factories);
+    expect(folderNames).not.toContain(
+      FACTORY_EXPLORER_FOLDER_LABELS.references,
+    );
     expect(folderNames).not.toContain("Glossary");
     expect(pageTree.name).toBe("You Agent Factory");
     for (const label of RETIRED_ATLAS_NAV_FOLDER_LABELS) {

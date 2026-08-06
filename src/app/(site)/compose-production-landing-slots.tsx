@@ -269,6 +269,7 @@ export function composeProductionYouiSlot(
  */
 export function mapFixtureCarouselToFactoryCarouselProps(
   carousel: LandingCarouselData = fixtureLandingPageData.carousel,
+  basePathOrEnv: string | BuildModeEnv = process.env,
 ): Pick<FactoryCarouselProps, "slides"> {
   const slides: FactorySlideData[] = carousel.slides.map((slide) => {
     const mapped: FactorySlideData = {
@@ -280,6 +281,9 @@ export function mapFixtureCarouselToFactoryCarouselProps(
     if (slide.art != null) {
       mapped.art = slide.art;
     }
+    if (slide.artSrc != null) {
+      mapped.artSrc = resolvePublicAssetHref(slide.artSrc, basePathOrEnv);
+    }
     return mapped;
   });
 
@@ -290,6 +294,7 @@ export function mapFixtureCarouselToFactoryCarouselProps(
 export function composeProductionCarouselSlot(
   carousel: LandingCarouselData = fixtureLandingPageData.carousel,
   octopusSrc?: string,
+  basePathOrEnv: string | BuildModeEnv = process.env,
 ): ReactNode {
   return (
     <section
@@ -298,7 +303,7 @@ export function composeProductionCarouselSlot(
     >
       <div className="relative mx-auto max-w-[100rem]">
         <FactoryCarousel
-          {...mapFixtureCarouselToFactoryCarouselProps(carousel)}
+          {...mapFixtureCarouselToFactoryCarouselProps(carousel, basePathOrEnv)}
           className="relative z-10"
           eyebrow="pre-installed factories"
           featureArtSrc={octopusSrc}
@@ -493,7 +498,11 @@ export function composeProductionLandingSlots(
       },
       assets.factoryGraphUi,
     ),
-    carousel: composeProductionCarouselSlot(data.carousel, assets.octopus),
+    carousel: composeProductionCarouselSlot(
+      data.carousel,
+      assets.octopus,
+      basePathOrEnv,
+    ),
     faq: composeProductionFaqSlot(data.faq),
     cta: composeProductionCtaSlot(data.cta, assets.ctaFog),
     whaleBubbles: composeProductionWhaleBubblesSlot({

@@ -5,6 +5,7 @@ import {
   getSidebarGroupLabel,
   type SidebarGroupingSection,
 } from "@/lib/content/sidebar-grouping";
+import { findFolderChildren } from "@/lib/navigation/explorer-tree-test-helpers";
 import { source } from "@/lib/source";
 
 const REQUIRED_SUBGROUP_LABELS = {
@@ -98,15 +99,7 @@ const GROUPED_SECTION_BY_FOLDER = {
 >;
 
 function getFolderChildren(folderName: string): Node[] {
-  const folder = source.pageTree.children.find(
-    (node) => node.type === "folder" && node.name === folderName,
-  );
-  expect(folder?.type).toBe("folder");
-  if (folder?.type !== "folder") {
-    throw new Error(`expected ${folderName} folder in docs sidebar`);
-  }
-
-  return folder.children;
+  return findFolderChildren(source.pageTree, folderName);
 }
 
 function getSeparatorLabels(nodes: Node[]): string[] {

@@ -14,6 +14,8 @@ export type FactorySlideData = {
   title: string;
   blurb: string;
   command: string;
+  /** Per-slide creature plate. WebP, served from `/home/factories`. */
+  artSrc?: string;
   art?: ReactNode;
 };
 
@@ -35,6 +37,7 @@ export function FactorySlide({
   blurb,
   command,
   art,
+  artSrc,
   className,
   presentation = "feature",
   backgroundArtSrc,
@@ -48,6 +51,8 @@ export function FactorySlide({
       : "",
   ];
   const isFeature = presentation === "feature";
+  // Per-slide creature plate, falling back to the shared feature art.
+  const plateSrc = artSrc ?? backgroundArtSrc;
 
   return (
     <article
@@ -58,30 +63,51 @@ export function FactorySlide({
         // Every slide is the same box on the carousel track, so the feature
         // card lays its parts out in flow rather than pinning them to fixed
         // percentages of a much wider card.
+        // Both surfaces are light: the unfocused cards read as paper stacked
+        // behind the focused one rather than as dark holes in the scene.
         isFeature
           ? "flex flex-col bg-[#f1eee6] px-[clamp(1rem,2vw,2rem)] py-[clamp(1rem,2vw,2rem)] text-[#191f2b]"
-          : // Lifted off the page navy with a border: at exactly #191f2b the
-            // rail cards were invisible against the background and read as
-            // loose text floating beside the active card.
-            "border border-[#f1eee6]/15 bg-[#222b3b] px-[clamp(0.45rem,1.25vw,1.25rem)] py-[clamp(0.7rem,1.5vw,1.5rem)] text-[#f1eee6]",
+          : "flex flex-col border border-[#191f2b]/12 bg-white px-[clamp(0.45rem,1.25vw,1.25rem)] py-[clamp(0.7rem,1.5vw,1.5rem)] text-[#191f2b] shadow-[0_12px_36px_rgba(0,0,0,0.28)]",
         className,
       )}
     >
-      {backgroundArtSrc != null || art != null ? (
+      {plateSrc != null ? (
+        /*
+         * Blurred, low-contrast copy of the plate bled behind the whole card.
+         * It gives the header something to sit on so the title reads as part of
+         * the artwork instead of as a caption floating above it.
+         */
         <div
-          aria-hidden={backgroundArtSrc != null ? "true" : undefined}
-          className={cn(
-            "factory-slide__art pointer-events-none",
-            isFeature ? "relative z-0 min-h-0 flex-1" : "sr-only",
-          )}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
+          data-factory-slide-art-wash=""
+        >
+          <img
+            alt=""
+            className="h-full w-full scale-125 object-cover opacity-25 blur-2xl"
+            decoding="async"
+            loading="lazy"
+            src={plateSrc}
+          />
+        </div>
+      ) : null}
+
+      {plateSrc != null || art != null ? (
+        <div
+          aria-hidden={plateSrc != null ? "true" : undefined}
+          // No z-index: a positioned element with one starts its own stacking
+          // context, which isolates `mix-blend-multiply` from the card behind
+          // it and leaves each plate's white backing painted as a hard box.
+          className="factory-slide__art pointer-events-none relative min-h-0 flex-1"
           data-factory-slide-art=""
         >
-          {backgroundArtSrc != null ? (
+          {plateSrc != null ? (
             <img
               alt=""
               className="h-full w-full object-contain object-center mix-blend-multiply"
               decoding="async"
-              src={backgroundArtSrc}
+              loading="lazy"
+              src={plateSrc}
             />
           ) : null}
           {art}
@@ -93,7 +119,7 @@ export function FactorySlide({
           "factory-slide__copy relative z-10 flex flex-col",
           isFeature
             ? "shrink-0 gap-1 pb-[clamp(0.6rem,1.2vw,1.2rem)]"
-            : "h-full gap-[clamp(0.35rem,0.8vw,0.75rem)]",
+            : "shrink-0 gap-[clamp(0.2rem,0.5vw,0.5rem)]",
         )}
       >
         <h3

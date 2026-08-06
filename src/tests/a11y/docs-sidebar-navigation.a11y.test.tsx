@@ -27,6 +27,36 @@ describe("docs sidebar navigation accessibility", () => {
     restoreFetchMock();
   });
 
+  /**
+   * Expands the four reader-facing groups the explorer opens on.
+   *
+   * Collection folders are nested inside them, so a group has to be open before
+   * its folders exist in the DOM. Labels come from the locale catalog, not
+   * hardcoded English — in a localized tree the group headings are translated
+   * too, so English names match nothing and every folder below stays hidden.
+   *
+   * Guarded on `aria-expanded`: clicking an open group collapses it again.
+   */
+  async function openTopLevelGroups(
+    container: HTMLElement,
+    messages: Awaited<ReturnType<typeof loadUiMessages>>,
+    groupNames: readonly string[] = Object.values(
+      messages.explorer.topLevelGroups,
+    ),
+  ): Promise<void> {
+    for (const groupName of groupNames) {
+      const group = within(container)
+        .queryAllByRole("button", { name: groupName })
+        .at(-1);
+      if (!group || group.getAttribute("aria-expanded") === "true") {
+        continue;
+      }
+      await act(async () => {
+        group.click();
+      });
+    }
+  }
+
   async function openExplorerFolder(
     container: HTMLElement,
     folderName: string,
@@ -86,6 +116,8 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
+    await openTopLevelGroups(sidebar, context.messages);
+
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,
     );
@@ -129,6 +161,54 @@ describe("docs sidebar navigation accessibility", () => {
     expect(document.activeElement).toBe(ralphLink);
   });
 
+  test("References group exposes reference contracts and the nested route families", async () => {
+    captureOriginalFetch();
+    await installDocsSearchFetchMock();
+    const context = await loadAppTestContext();
+
+    await act(async () => {
+      await renderWithAppProviders(
+        <CanonicalDocsLayout messages={context.messages}>
+          <p>Fixture article</p>
+        </CanonicalDocsLayout>,
+        { context },
+      );
+    });
+
+    const sidebar = document.getElementById("nd-sidebar");
+    expect(sidebar).toBeTruthy();
+    if (!sidebar) {
+      throw new Error("expected Fumadocs docs sidebar");
+    }
+
+    await openTopLevelGroups(sidebar, context.messages, [
+      context.messages.explorer.topLevelGroups.references,
+    ]);
+    for (const folderName of [
+      context.messages.explorer.folders.factories,
+      context.messages.explorer.folders.workers,
+      context.messages.explorer.folders.workstations,
+    ] as const) {
+      await openExplorerFolder(sidebar, folderName);
+    }
+
+    expect(
+      within(sidebar)
+        .getAllByRole("link", { name: "API" })
+        .some((link) => link.getAttribute("href") === "/docs/references/api"),
+    ).toBe(true);
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Agent worker" })
+        .getAttribute("href"),
+    ).toBe("/docs/workers/agent");
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Inference-run workstation" })
+        .getAttribute("href"),
+    ).toBe("/docs/workstations/inference-run");
+  });
+
   test("rendered docs sidebar shows factory collection folders and representative pages", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
@@ -149,19 +229,20 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
+    // Only the two groups this test asserts on. Opening References as well
+    // renders every reference page at once — the group inlines them rather
+    // than nesting them behind a folder — and the combined DOM is large enough
+    // to take the accessibility runtime down.
+    await openTopLevelGroups(sidebar, context.messages, [
+      context.messages.explorer.topLevelGroups["how-tos"],
+      context.messages.explorer.topLevelGroups.information,
+    ]);
+
     for (const folderName of [
       context.messages.explorer.folders.guides,
       context.messages.explorer.folders.concepts,
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
-      context.messages.explorer.folders.references,
-    ] as const) {
-      await openExplorerFolder(sidebar, folderName);
-    }
-    for (const folderName of [
-      context.messages.explorer.folders.factories,
-      context.messages.explorer.folders.workers,
-      context.messages.explorer.folders.workstations,
     ] as const) {
       await openExplorerFolder(sidebar, folderName);
     }
@@ -180,11 +261,9 @@ describe("docs sidebar navigation accessibility", () => {
         .getAttribute("href"),
     ).toBe(GETTING_STARTED_GUIDE_URL);
 
-    expect(
-      within(sidebar)
-        .getAllByRole("link", { name: "API" })
-        .some((link) => link.getAttribute("href") === "/docs/references/api"),
-    ).toBe(true);
+    // Configuration keeps its /docs/factories route but is placed under
+    // Program documentation -> Operations -> Configuring, so it is asserted
+    // here rather than with the Reference route families.
     expect(
       within(sidebar)
         .getAllByRole("link", { name: "Configuration" })
@@ -193,16 +272,6 @@ describe("docs sidebar navigation accessibility", () => {
             link.getAttribute("href") === "/docs/factories/configuration",
         ),
     ).toBe(true);
-    expect(
-      within(sidebar)
-        .getByRole("link", { name: "Agent worker" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers/agent");
-    expect(
-      within(sidebar)
-        .getByRole("link", { name: "Inference-run workstation" })
-        .getAttribute("href"),
-    ).toBe("/docs/workstations/inference-run");
     expect(
       within(sidebar).queryByRole("link", {
         name: "submitWorkBySessionId",
@@ -385,6 +454,8 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
+    await openTopLevelGroups(sidebar, context.messages);
+
     const homeBrandLink = within(sidebar).queryByRole("link", {
       name: "You Agent Factory",
     });
@@ -477,6 +548,8 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
+    await openTopLevelGroups(sidebar, context.messages);
+
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,
     );
@@ -553,6 +626,8 @@ describe("docs sidebar navigation accessibility", () => {
     if (!sidebar) {
       throw new Error("expected Fumadocs docs sidebar");
     }
+
+    await openTopLevelGroups(sidebar, context.messages);
 
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,

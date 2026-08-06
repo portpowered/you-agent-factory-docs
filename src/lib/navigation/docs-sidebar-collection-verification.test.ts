@@ -4,6 +4,10 @@ import {
   collectSidebarPageLinks,
   findSidebarPageLink,
 } from "@/lib/navigation/docs-sidebar-contract";
+import {
+  findFolderChildren,
+  listCollectionFolderNames,
+} from "@/lib/navigation/explorer-tree-test-helpers";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
 import { source } from "@/lib/source";
 
@@ -81,21 +85,11 @@ function buildVerificationPageTree(): Root {
 }
 
 function getTopLevelFolderNames(pageTree: Root): string[] {
-  return pageTree.children
-    .filter((node) => node.type === "folder")
-    .map((folder) => String(folder.name));
+  return listCollectionFolderNames(pageTree);
 }
 
 function getFolderChildren(pageTree: Root, folderName: string): Node[] {
-  const folder = pageTree.children.find(
-    (node) => node.type === "folder" && node.name === folderName,
-  );
-  expect(folder?.type).toBe("folder");
-  if (folder?.type !== "folder") {
-    throw new Error(`expected ${folderName} folder in docs sidebar`);
-  }
-
-  return folder.children;
+  return findFolderChildren(pageTree, folderName);
 }
 
 function findPrecedingSeparatorLabel(

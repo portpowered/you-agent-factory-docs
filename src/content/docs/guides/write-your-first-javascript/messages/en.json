@@ -1,0 +1,30 @@
+{
+  "title": "Write Your First JavaScript Step",
+  "description": "Drop into JavaScript when the declarative configuration runs out.",
+  "openingSummary": "Declarative configuration covers most flow logic. When it does not, a JavaScript step lets you compute the next move in code without leaving the factory.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A JavaScript step is an ordinary function the runtime calls with the current work state. It returns the next state, and the graph carries on from there."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use JavaScript when a decision depends on something the declarative form cannot express: parsing a payload, calling out to your own service, or branching on a computed value."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Add a script worker to your factory, write the function, then run the factory and read the step's output in the logs."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Keep the step small and pure where you can. A JavaScript step that does its own retries, its own logging, and its own error handling is competing with the runtime rather than using it."
+    },
+    "tags": {
+      "title": "Tags"
+    }
+  },
+  "links": {
+    "workerLabel": "Add a script worker",
+    "runLabel": "Run the factory"
+  }
+}

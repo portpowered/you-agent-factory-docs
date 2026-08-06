@@ -119,15 +119,19 @@ export function CtaBand({
 
       <div
         className={cn(
-          // Left-aligned on every surface so the CTA headline shares the left
-          // edge with the hero and capability copy above it.
-          "relative mx-auto flex max-w-6xl flex-col items-start gap-5",
-          surface !== "fog" && "text-left text-[#191f2b]",
+          // Centred: this band is a single closing line rather than a column
+          // of copy, so it reads as a poster rather than as another
+          // left-aligned section.
+          "relative mx-auto flex max-w-6xl flex-col items-center gap-5 text-center",
+          surface !== "fog" && "text-[#191f2b]",
         )}
       >
         <h2
           className={cn(
-            "max-w-5xl font-sans text-[clamp(2.2rem,6vw,6rem)] leading-[0.86] font-normal tracking-[-0.065em] text-balance uppercase",
+            // One line. `text-balance` plus a 5xl cap wrapped "YOU SHOULD
+            // INSTALL YOU" across two lines; the clamp is sized off viewport
+            // width so the line fits at every size instead of breaking.
+            "max-w-none whitespace-nowrap font-sans text-[clamp(1.5rem,5.2vw,5.4rem)] leading-[0.9] font-normal tracking-[-0.065em] uppercase",
             "text-[#191f2b]",
           )}
           data-landing-cta-headline=""

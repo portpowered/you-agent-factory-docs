@@ -64,12 +64,26 @@ const RETIRED_ATLAS_BROWSE_LABELS = [
   "Module Components",
 ] as const;
 
+/** The four reader-facing groups the explorer opens on. */
+const FACTORY_SIDEBAR_GROUP_NAMES = [
+  "Quick starts",
+  "How-tos",
+  "References",
+  "Information",
+] as const;
+
+/**
+ * Folders one level down, in tree order. Reference is inlined into its group,
+ * so its nested route families surface here in its place.
+ */
 const FACTORY_SIDEBAR_FOLDER_NAMES = [
   "Guides",
+  "Factories",
+  "Workers",
+  "Workstations",
   "Program documentation",
   "Concepts",
   "Techniques",
-  "Reference",
   "Internal architecture",
   "Miscellanea",
 ] as const;
@@ -103,6 +117,19 @@ function topLevelFolderNames(
   return pageTree.children
     .filter((node) => node.type === "folder")
     .map((folder) => String(folder.name));
+}
+
+/** Folder names one level below the four reader-facing groups. */
+function collectionFolderNames(
+  pageTree: ReturnType<typeof buildGeneratedDocsPageTree>,
+): string[] {
+  return pageTree.children
+    .filter((node) => node.type === "folder")
+    .flatMap((group) =>
+      group.children
+        .filter((node) => node.type === "folder")
+        .map((folder) => String(folder.name)),
+    );
 }
 
 describe("factory-only public inventory end-to-end", () => {
@@ -154,10 +181,13 @@ describe("factory-only public inventory end-to-end", () => {
       name: "Docs",
       children: [],
     });
-    const folderNames = topLevelFolderNames(pageTree);
+    const folderNames = collectionFolderNames(pageTree);
 
+    expect(topLevelFolderNames(pageTree)).toEqual([
+      ...FACTORY_SIDEBAR_GROUP_NAMES,
+    ]);
     expect(folderNames).toEqual([...FACTORY_SIDEBAR_FOLDER_NAMES]);
-    expect(folderNames).toEqual(topLevelFolderNames(source.pageTree));
+    expect(folderNames).toEqual(collectionFolderNames(source.pageTree));
 
     for (const retired of [
       "Models",

@@ -1,0 +1,31 @@
+{
+  "title": "Write Your First Factory",
+  "description": "Author a factory of your own: one workstation, one worker, one goal.",
+  "openingSummary": "A factory is a graph of workstations and workers described in configuration. The smallest useful one has a single workstation that hands a goal to a single agent worker.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Writing a factory means declaring what work exists, who does it, and how work moves between them. Everything else — retries, review, fan-out — is added to that skeleton later."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this once a packaged factory has done something close to what you want, but not close enough. Start from the smallest graph that runs, then grow it."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Scaffold a factory, replace the starter workstation with your own, point it at a worker, then run it."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Do not start by describing the whole workflow. A factory that does not run teaches you nothing; a factory that runs badly teaches you exactly what to fix next."
+    },
+    "tags": {
+      "title": "Tags"
+    }
+  },
+  "links": {
+    "scaffoldLabel": "Scaffold a starter factory",
+    "runLabel": "Run what you wrote",
+    "validateLabel": "Check the configuration before running"
+  }
+}

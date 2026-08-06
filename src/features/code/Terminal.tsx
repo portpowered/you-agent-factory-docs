@@ -20,9 +20,16 @@ export type TerminalVariant = "install" | "dark";
  * carousel and the code harness — sit in the navy/yellow palette, so the shell
  * now shares it. Callers can retint by overriding these two properties instead
  * of layering `[&_[data-terminal-*]]` overrides on top.
+ *
+ * The surface is a lifted, more saturated navy rather than the page background
+ * itself (#191f2b). At that value the shell is technically the same colour as
+ * the page, but sitting on a cream card it reads as a black box — only 18
+ * points of blue over red survive the surrounding contrast. This keeps the same
+ * hue family and enough blue to actually look blue. Yellow-on-navy still
+ * clears 7:1.
  */
 const DARK_TERMINAL_SHELL_CLASS = [
-  "[--landing-terminal-surface:#191f2b]",
+  "[--landing-terminal-surface:#1e3057]",
   "[--landing-terminal-accent:#f3bd3d]",
   "rounded-3xl border shadow-md",
   "border-[color-mix(in_oklab,var(--landing-terminal-accent)_38%,transparent)]",

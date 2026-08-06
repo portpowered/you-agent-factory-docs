@@ -99,10 +99,16 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * the packaged-factory quorum/tts child reference pages onto that same head.
  * Prior quorum/tts-on-main CI measured ~377.56 MiB before fusion/review
  * landed; combined with the Batch 4 export, keep modest headroom at 385 MiB.
- * JS and search ceilings remain unchanged.
+ *
+ * Raised to 396 MiB on 2026-08-06 UTC for the quick-start guides and the
+ * carousel artwork. Four new guide pages render across four locales and enter
+ * the search index; the seven carousel plates add ~0.8 MiB as WebP (they are
+ * ~13 MiB as the source PNGs, so the conversion is doing most of the work).
+ * A local export measured ~388.5 MiB. JS and search ceilings are unchanged —
+ * neither moved, which is the check that matters for what readers download.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 385_000_000,
+  maxTotalOutBytes: 396_000_000,
   maxNextStaticJsBytes: 15_000_000,
   maxSearchBootstrapBytes: 32_000_000,
 } as const;

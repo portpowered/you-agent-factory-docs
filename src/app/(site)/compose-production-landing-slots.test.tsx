@@ -506,8 +506,11 @@ describe("composeProductionLandingSlots", () => {
       landingHomeAssets.midEndWhale,
       landingHomeAssets.seadragonCrop,
       landingHomeAssets.ctaFog,
-      landingHomeAssets.octopus,
       landingHomeAssets.youYouYouBackground,
+      // Carousel slides carry their own creature plate now, so the shared
+      // octopus prop is no longer what reaches the markup.
+      "/home/factories/octopus.webp",
+      "/home/factories/owl.webp",
     ]) {
       expect(html).toContain(`${basePath}${assetPath}`);
       expect(html).not.toContain(`src="${assetPath}"`);

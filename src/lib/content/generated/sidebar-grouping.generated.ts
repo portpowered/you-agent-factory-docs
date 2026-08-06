@@ -87,5 +87,13 @@ export const GENERATED_REFERENCE_SIDEBAR_GROUP_BY_SLUG = {
   "javascript-runtime": "contracts",
   "mcp-reference": "contracts",
   "mock-workers-schema": "schemas",
+  "packaged-factories-index": "packaged-factories",
+  "packaged-factories-index/deep-research": "packaged-factories",
+  "packaged-factories-index/fusion": "packaged-factories",
+  "packaged-factories-index/goal": "packaged-factories",
+  "packaged-factories-index/quorum": "packaged-factories",
+  "packaged-factories-index/review": "packaged-factories",
+  "packaged-factories-index/subagent": "packaged-factories",
+  "packaged-factories-index/tts": "packaged-factories",
   "system-config-schema": "schemas",
 } as const;

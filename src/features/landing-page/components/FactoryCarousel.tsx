@@ -134,31 +134,37 @@ export function getCarouselSignedOffset(
   return forward > length / 2 ? forward - length : forward;
 }
 
+/** Focused plate width, as a percentage of the track. Wide, like the artwork. */
+export const CAROUSEL_FEATURE_WIDTH_PERCENT = 58;
+
+export const CAROUSEL_SLIDE_HEIGHT = "clamp(20rem, 40vw, 40rem)";
+export const CAROUSEL_RAIL_HEIGHT = "clamp(11rem, 22vw, 22rem)";
+
+/** Back-compat alias for the focused plate width. */
+export const CAROUSEL_SLIDE_WIDTH = `${CAROUSEL_FEATURE_WIDTH_PERCENT}%`;
+
 export type CarouselTrackPlacement = {
-  /** Horizontal travel as a percentage of the slide's own width. */
-  translatePercent: number;
-  scale: number;
+  /** Centre of the slide, as a percentage of the track width. */
+  centerPercent: number;
+  /** Slide width, as a percentage of the track width. */
+  widthPercent: number;
+  /** Slide height as a CSS length. */
+  height: string;
   opacity: number;
   zIndex: number;
 };
 
-/**
- * Travel per step, as a percentage of one slide's width.
- *
- * Under 100 so adjacent slides stay partly on screen — the peek is what tells
- * the reader there is more to turn to, and gives the click target something to
- * aim at.
- */
-const TRACK_STEP_PERCENT = 78;
+/** Centre-to-centre spacing from the focused slide, per ring. */
+const RING_OFFSET_PERCENT = [0, 38, 55] as const;
 
 /**
- * Where a slide sits on the rotating track.
+ * Where a slide sits on the rotating track, and how wide it is there.
  *
- * Every slide is laid out in the *same* box and differs only by transform, so
- * changing the active index moves cards along the track instead of resizing
- * them in place. That distinction is the whole point: animating `width` and
- * `height` between a small rail slot and a wide feature slot made cards appear
- * to stretch open, which does not read as a carousel turning.
+ * The focused slide is a wide plate and the unfocused ones are narrow cards, so
+ * a slide entering focus both travels and widens, and shrinks again on the way
+ * out. Width and centre are the only things that change — the earlier version
+ * animated the two independently through `left`/`top`/`width`/`height` per
+ * named slot, which made cards appear to stretch open in place.
  */
 export function getCarouselTrackPlacement(
   index: number,
@@ -167,25 +173,33 @@ export function getCarouselTrackPlacement(
 ): CarouselTrackPlacement {
   const offset = getCarouselSignedOffset(index, activeIndex, length);
   const distance = Math.abs(offset);
-  const translatePercent = offset * TRACK_STEP_PERCENT;
+  const direction = Math.sign(offset);
 
   if (distance === 0) {
-    return { translatePercent, scale: 1.16, opacity: 1, zIndex: 30 };
+    return {
+      centerPercent: 50,
+      widthPercent: CAROUSEL_FEATURE_WIDTH_PERCENT,
+      height: CAROUSEL_SLIDE_HEIGHT,
+      opacity: 1,
+      zIndex: 30,
+    };
   }
-  if (distance === 1) {
-    return { translatePercent, scale: 0.9, opacity: 1, zIndex: 20 };
-  }
-  if (distance === 2) {
-    return { translatePercent, scale: 0.76, opacity: 0.5, zIndex: 12 };
-  }
-  // Beyond the second ring a slide is off-frame; parked and fully transparent
-  // so it neither paints nor catches a pointer.
-  return { translatePercent, scale: 0.66, opacity: 0, zIndex: 5 };
-}
 
-/** Uniform slide box. Identical for every slide — only the transform differs. */
-export const CAROUSEL_SLIDE_WIDTH = "34%";
-export const CAROUSEL_SLIDE_HEIGHT = "clamp(20rem, 38vw, 38rem)";
+  const ring = Math.min(distance, RING_OFFSET_PERCENT.length - 1);
+  const spacing = RING_OFFSET_PERCENT[ring] ?? 55;
+
+  return {
+    centerPercent: 50 + direction * spacing,
+    widthPercent: distance === 1 ? 17 : 13,
+    height: CAROUSEL_RAIL_HEIGHT,
+    // Beyond the second ring a slide is off-frame; parked and fully transparent
+    // so it neither paints nor catches a pointer.
+    // Well under 1: at full opacity the white cards competed with the focused
+    // plate for attention instead of receding behind it.
+    opacity: distance === 1 ? 0.55 : distance === 2 ? 0.22 : 0,
+    zIndex: distance === 1 ? 20 : 12,
+  };
+}
 
 /**
  * Wrap active index by `delta` steps. Empty length stays at 0.
@@ -212,7 +226,24 @@ type DragSession = {
  * Below 1 so the collage feels weighted rather than loose, and so a long drag
  * cannot fling cards past the frame edge.
  */
+/**
+ * Horizontal fade at both ends of the track, so slides dissolve out instead of
+ * meeting a hard clip. Prefixed for WebKit, which still needs
+ * `-webkit-mask-image` for gradient masks.
+ */
+const TRACK_EDGE_FEATHER_CLASS = [
+  "[mask-image:linear-gradient(90deg,transparent_0%,black_14%,black_86%,transparent_100%)]",
+  "[-webkit-mask-image:linear-gradient(90deg,transparent_0%,black_14%,black_86%,transparent_100%)]",
+].join(" ");
+
 const DRAG_FOLLOW_RATIO = 0.45;
+
+/**
+ * Movement before a pointer press is treated as a drag rather than a tap.
+ *
+ * Under this, the press stays a click so the side cards' select buttons fire.
+ */
+const DRAG_ACTIVATION_PX = 6;
 
 /**
  * Factory depth carousel: active slide in the foreground, neighbors recessed
@@ -311,11 +342,18 @@ export function FactoryCarousel({
     [slides.length, step],
   );
 
+  /**
+   * Note what was pressed, but do **not** capture the pointer yet.
+   *
+   * Capturing here retargets every later pointer event — including the one that
+   * would have produced a `click` — at the track, so tapping a side card
+   * selected nothing. Capture is deferred to the first real movement in
+   * `onPointerMove`, which leaves a plain tap to reach the card's own button.
+   */
   const onPointerDown = useCallback((event: PointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
     dragRef.current = { pointerId: event.pointerId, startX: event.clientX };
     setAutoPlaySuspended(true);
-    event.currentTarget.setPointerCapture(event.pointerId);
   }, []);
 
   /**
@@ -326,6 +364,15 @@ export function FactoryCarousel({
   const onPointerMove = useCallback((event: PointerEvent<HTMLElement>) => {
     const session = dragRef.current;
     if (!session || session.pointerId !== event.pointerId) return;
+
+    const travelled = Math.abs(event.clientX - session.startX);
+    if (travelled < DRAG_ACTIVATION_PX) {
+      // Still within tap tolerance — leave the click path alone.
+      return;
+    }
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
     setDragOffsetPx((event.clientX - session.startX) * DRAG_FOLLOW_RATIO);
   }, []);
 
@@ -386,17 +433,14 @@ export function FactoryCarousel({
     const offset = getCarouselSignedOffset(index, resolvedIndex, slides.length);
     const railSide = isActive ? "active" : offset < 0 ? "left" : "right";
     const slideStyle: CSSProperties = {
-      height: CAROUSEL_SLIDE_HEIGHT,
-      left: "50%",
+      height: placement.height,
+      left: `${placement.centerPercent}%`,
       top: "50%",
-      width: CAROUSEL_SLIDE_WIDTH,
+      width: `${placement.widthPercent}%`,
       opacity: placement.opacity,
       zIndex: placement.zIndex,
-      // Centre first, then travel, then scale. Only the transform changes
-      // between states, so the browser animates one composited property and
-      // the cards glide rather than stretch.
-      transform: `translate(-50%, -50%) translateX(${placement.translatePercent}%) scale(${placement.scale})`,
-      transitionProperty: "transform, opacity",
+      transform: "translate(-50%, -50%)",
+      transitionProperty: "left, width, height, opacity",
       transitionDuration: reduceMotion ? "0ms" : `${theme.transitionMs}ms`,
       transitionTimingFunction: "cubic-bezier(0.16, 0.84, 0.22, 1)",
     };
@@ -506,7 +550,13 @@ export function FactoryCarousel({
       ) : null}
 
       <div
-        className="factory-carousel__track relative mx-auto min-h-[clamp(24rem,46vw,46rem)] w-full max-w-[100rem] touch-pan-y"
+        className={cn(
+          "factory-carousel__track relative mx-auto min-h-[clamp(24rem,46vw,46rem)] w-full max-w-[100rem] touch-pan-y",
+          // Feather both ends. The frame used to clip the outermost cards on a
+          // hard vertical line, which read as a rendering error rather than as
+          // more content continuing past the edge.
+          TRACK_EDGE_FEATHER_CLASS,
+        )}
         data-carousel-track=""
         data-carousel-dragging={dragOffsetPx !== 0 ? "true" : undefined}
         onPointerCancel={onPointerCancel}

@@ -13,11 +13,14 @@ import { isDeletedAiSearchUrl } from "@/lib/search/factory-search-deleted-record
  * separate section refs — see `FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS`.
  */
 export const FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS = [
+  // Order follows the four reader-facing groups below: How-tos (guides),
+  // References (references, inlined), Information (documentation, concepts,
+  // techniques).
   "guides",
+  "references",
   "documentation",
   "concepts",
   "techniques",
-  "references",
 ] as const satisfies readonly DocsCollectionId[];
 
 /**
@@ -123,37 +126,141 @@ export type FactoryExplorerPageSectionRef = {
   docsSlug: typeof DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG;
 };
 
+/**
+ * A collection folder inlined into a top-level group: the collection's children
+ * become the group's children and the collection's own folder is dropped.
+ *
+ * Used for Reference under the References group, where keeping both would nest
+ * a folder called "Reference" inside a group called "References".
+ */
+export type FactoryExplorerInlinedCollectionSectionRef = {
+  kind: "inlined-collection";
+  id: FactoryExplorerTopLevelCollectionId;
+};
+
+/**
+ * A page listed directly in a group as a curated entry point.
+ *
+ * Placement is exclusive: the page is lifted out of whichever collection folder
+ * would otherwise own it. Listing the five quick starts in both Quick starts
+ * and Guides made the Guides folder read as a superset of the group above it,
+ * which is the opposite of what the grouping is for.
+ */
+export type FactoryExplorerCuratedPageSectionRef = {
+  kind: "curated-page";
+  docsSlug: string;
+};
+
 export type FactoryExplorerSectionRef =
   | FactoryExplorerCollectionSectionRef
   | FactoryExplorerVirtualFolderSectionRef
-  | FactoryExplorerPageSectionRef;
+  | FactoryExplorerPageSectionRef
+  | FactoryExplorerInlinedCollectionSectionRef
+  | FactoryExplorerCuratedPageSectionRef;
 
 /**
- * Full explorer top-level order under locked PS-100: Guides → Program
- * documentation → Concepts → Techniques → Reference → Internal architecture →
- * Miscellanea → FAQ. Factories / Workers / Workstations nest under Reference
- * (see `FACTORY_REFERENCE_NESTED_COLLECTION_IDS`).
+ * The four reader-facing top-level groups.
+ *
+ * The explorer used to open on eight sibling folders named after how the docs
+ * are *authored* — Guides, Program documentation, Concepts, Techniques,
+ * Reference, Internal architecture, Miscellanea, FAQ. These four name what a
+ * reader is trying to do instead: start, follow a recipe, look something up, or
+ * read background. The old folders survive one level down.
  */
-export const FACTORY_EXPLORER_SECTION_ORDER = [
-  ...FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS.map(
+export const FACTORY_EXPLORER_TOP_LEVEL_GROUP_IDS = [
+  "quick-starts",
+  "how-tos",
+  "references",
+  "information",
+] as const;
+
+export type FactoryExplorerTopLevelGroupId =
+  (typeof FACTORY_EXPLORER_TOP_LEVEL_GROUP_IDS)[number];
+
+/** English default labels for the four top-level groups. */
+export const FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS = {
+  "quick-starts": "Quick starts",
+  "how-tos": "How-tos",
+  references: "References",
+  information: "Information",
+} as const satisfies Record<FactoryExplorerTopLevelGroupId, string>;
+
+/**
+ * The ordered onboarding path, shortest useful route first: install it, run
+ * something someone else wrote, write your own, drop into JavaScript when the
+ * declarative form runs out, then hand the whole thing to an agent.
+ */
+export const FACTORY_EXPLORER_QUICK_START_DOCS_SLUGS = [
+  "documentation/install",
+  "guides/run-your-first-factory",
+  "guides/write-your-first-factory",
+  "guides/write-your-first-javascript",
+  "guides/connect-your-agent-to-you",
+] as const;
+
+/** Ordered member sections for each top-level group. */
+export const FACTORY_EXPLORER_TOP_LEVEL_GROUP_MEMBERSHIP: Record<
+  FactoryExplorerTopLevelGroupId,
+  readonly FactoryExplorerSectionRef[]
+> = {
+  "quick-starts": FACTORY_EXPLORER_QUICK_START_DOCS_SLUGS.map(
+    (docsSlug) =>
+      ({
+        kind: "curated-page",
+        docsSlug,
+      }) as const satisfies FactoryExplorerCuratedPageSectionRef,
+  ),
+  "how-tos": [{ kind: "collection", id: "guides" }],
+  references: [{ kind: "inlined-collection", id: "references" }],
+  information: [
+    { kind: "collection", id: "documentation" },
+    { kind: "collection", id: "concepts" },
+    // Techniques are patterns to understand rather than recipes to follow, so
+    // they read as background alongside Concepts, not as a how-to.
+    { kind: "collection", id: "techniques" },
+    { kind: "virtual-folder", id: "internal-architecture" },
+    { kind: "virtual-folder", id: "miscellanea" },
+    { kind: "page", docsSlug: DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG },
+  ],
+};
+
+export type FactoryExplorerTopLevelGroup = {
+  id: FactoryExplorerTopLevelGroupId;
+  label: string;
+  sections: readonly FactoryExplorerSectionRef[];
+};
+
+/** The full top-level explorer structure, in reader-facing order. */
+export const FACTORY_EXPLORER_TOP_LEVEL_GROUPS =
+  FACTORY_EXPLORER_TOP_LEVEL_GROUP_IDS.map(
     (id) =>
       ({
-        kind: "collection",
         id,
-      }) as const satisfies FactoryExplorerCollectionSectionRef,
-  ),
-  ...FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS.map(
-    (id) =>
-      ({
-        kind: "virtual-folder",
-        id,
-      }) as const satisfies FactoryExplorerVirtualFolderSectionRef,
-  ),
-  {
-    kind: "page",
-    docsSlug: DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG,
-  } as const satisfies FactoryExplorerPageSectionRef,
-] as const satisfies readonly FactoryExplorerSectionRef[];
+        label: FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS[id],
+        sections: FACTORY_EXPLORER_TOP_LEVEL_GROUP_MEMBERSHIP[id],
+      }) satisfies FactoryExplorerTopLevelGroup,
+  );
+
+/**
+ * Every section ref in reader-facing order, flattened across the four groups.
+ *
+ * Derived rather than declared so the group membership above stays the single
+ * place the explorer's shape is edited; `assertFactoryExplorerSectionOrder`
+ * checks a built tree against this.
+ */
+export const FACTORY_EXPLORER_SECTION_ORDER =
+  FACTORY_EXPLORER_TOP_LEVEL_GROUPS.flatMap(
+    (group) => group.sections,
+  ) as readonly FactoryExplorerSectionRef[];
+
+const QUICK_START_DOCS_SLUG_SET = new Set<string>(
+  FACTORY_EXPLORER_QUICK_START_DOCS_SLUGS,
+);
+
+/** True when a page is claimed by the Quick starts group. */
+export function isDocsExplorerQuickStartPage(docsSlug: string): boolean {
+  return QUICK_START_DOCS_SLUG_SET.has(docsSlug);
+}
 
 const VIRTUAL_FOLDER_DOCS_SLUG_SET = new Set<string>(
   Object.values(FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP).flat(),
@@ -336,15 +443,15 @@ function describeExplorerSectionRef(
     return "(missing)";
   }
 
-  if (section.kind === "collection") {
-    return `collection:${section.id}`;
+  if (section.kind === "collection" || section.kind === "inlined-collection") {
+    return `${section.kind}:${section.id}`;
   }
 
   if (section.kind === "virtual-folder") {
     return `virtual-folder:${section.id}`;
   }
 
-  return `page:${section.docsSlug}`;
+  return `${section.kind}:${section.docsSlug}`;
 }
 
 /**
@@ -380,8 +487,15 @@ export function assertFactoryExplorerSectionOrder(
   assertFactorySidebarSectionOrder(
     sections
       .filter(
-        (section): section is FactoryExplorerCollectionSectionRef =>
-          section.kind === "collection",
+        (
+          section,
+        ): section is
+          | FactoryExplorerCollectionSectionRef
+          | FactoryExplorerInlinedCollectionSectionRef =>
+          // An inlined collection is still a collection in the order contract —
+          // it just contributes its children instead of its folder.
+          section.kind === "collection" ||
+          section.kind === "inlined-collection",
       )
       .map((section) => section.id),
   );

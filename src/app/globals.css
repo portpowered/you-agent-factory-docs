@@ -68,7 +68,13 @@
    * src/lib/theme/docs-chrome-highlighting-tokens.ts — consume these vars
    * from shared chrome CSS instead of scattering one-off hex values.
    */
-  --docs-chrome-surrounding-background: var(--background);
+  /*
+   * The globe and GitHub controls sit on this. `--background` is the page
+   * canvas (#050b10), which is near-black — against the header the two buttons
+   * read as black holes rather than as site chrome. This is the same navy the
+   * landing page is built on, so they read blue like the rest of the site.
+   */
+  --docs-chrome-surrounding-background: #191f2b;
   --docs-chrome-primary-yellow: var(--primary);
   --docs-chrome-secondary-blue: var(--secondary);
   --docs-chrome-white: var(--foreground);
@@ -333,53 +339,62 @@ button[data-search] {
   overflow: hidden;
 }
 
-/* Mobile factory carousel: the active workflow becomes the content while the
- * previous and next workflows remain visible as draggable/clickable edges.
+/*
+ * Mobile factory carousel.
+ *
+ * This block used to belong to the old slot-based layout: it made the active
+ * card transparent, absolutely positioned its copy, and set `display: none` on
+ * the artwork and the command. On the uniform track that left the primary image
+ * with a zero-height box, so the card rendered as loose text floating over the
+ * scene with no picture at all.
  *
  * Geometry is inherited from the desktop track — every slide shares one box and
- * differs only by transform — so this block widens the box and leaves the
- * travel alone. Overriding `left`/`width` here would fight the inline transform
- * and break the rotation. */
+ * differs only by its `left`/`width` — so this only resizes the box and gives
+ * the artwork a floor to occupy. Overriding the travel here would break the
+ * rotation.
+ */
 @media (max-width: 767px) {
   .factory-carousel__track {
-    min-height: 27rem !important;
+    min-height: 30rem !important;
   }
 
   .factory-carousel__slide {
-    width: 74% !important;
-    height: 21rem !important;
+    width: 76% !important;
+    height: 26rem !important;
   }
 
-  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide {
-    background: transparent;
+  /* A floor, not a fixed height: without it `flex: 1` collapses to zero once
+   * the title, blurb, and command have taken the card's height. */
+  .factory-carousel__slide[data-carousel-slot="feature"] .factory-slide__art {
+    min-height: 8.5rem;
   }
 
-  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__art,
-  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__command {
+  .factory-carousel__slide[data-carousel-slot="feature"] .factory-slide__title {
+    font-size: clamp(1.9rem, 9vw, 3.2rem);
+  }
+
+  .factory-carousel__slide[data-carousel-slot="feature"] .factory-slide__blurb {
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
+  /* Rail cards are too narrow on a phone to carry a legible command. */
+  .factory-carousel__slide[data-carousel-slot="rail"] .factory-slide__blurb {
     display: none;
-  }
-
-  /* Left-aligned to match the desktop poster copy and the hero left edge. */
-  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__copy {
-    position: absolute;
-    inset: 4rem 0 auto;
-    align-items: flex-start;
-    gap: 1rem;
-    text-align: left;
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__title {
-    font-size: clamp(3.25rem, 16vw, 6rem);
-  }
-
-  .factory-carousel__slide[data-carousel-rail-side="active"] .factory-slide__blurb {
-    max-width: 18rem;
-    font-size: 1rem;
-    line-height: 1.35;
   }
 
   .factory-carousel__controls {
     display: none;
+  }
+
+  /* Bigger troop: at the desktop share each monkey is ~29px across on a phone,
+   * which reads as speckle rather than as animals. */
+  [data-monkey-parade] {
+    height: 9rem !important;
+  }
+
+  [data-monkey] {
+    width: 17% !important;
   }
 }
 

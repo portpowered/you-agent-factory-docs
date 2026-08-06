@@ -1,0 +1,30 @@
+{
+  "title": "Connect Your Agent To YOU",
+  "description": "Expose your factories over MCP so an AI agent can run them for you.",
+  "openingSummary": "MCP turns your factories into tools an agent can call. Once connected, an agent can start runs, submit work, and read results without you driving the CLI.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "The MCP server presents each factory capability as a tool. Any MCP-speaking harness — Claude, Codex, Cursor, and others — can discover and call them."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this once you have a factory worth reusing. It is the difference between running a workflow yourself and having an agent reach for it when it needs one."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Start the MCP server, register it with your harness, then ask the agent to list its tools to confirm the connection."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "The agent can only do what the server exposes. If a tool is missing, the factory is not published rather than the connection being broken — check what the server advertises before debugging the harness."
+    },
+    "tags": {
+      "title": "Tags"
+    }
+  },
+  "links": {
+    "serveLabel": "Start the MCP server",
+    "listLabel": "List the tools it advertises"
+  }
+}
