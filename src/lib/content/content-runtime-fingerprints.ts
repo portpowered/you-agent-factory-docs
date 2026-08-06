@@ -61,6 +61,20 @@ export const CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS: readonly ContentRuntimeSte
       schemaPaths: ["src/lib/content/schemas.ts"],
     },
     {
+      stepId: "sidebar-grouping-runtime",
+      // Grouping is declared on registry records and keyed by published docs
+      // slugs, so both trees are inputs.
+      inputPaths: ["src/content/registry", "src/content/docs"],
+      generatorPaths: [
+        "scripts/generate-sidebar-grouping-runtime.ts",
+        "src/lib/content/sidebar-grouping-source.ts",
+        "src/lib/content/published-docs-registry-source.ts",
+        "src/lib/content/render-typescript-literal.ts",
+        "src/lib/content/write-file-if-changed.ts",
+      ],
+      schemaPaths: ["src/lib/content/schemas.ts"],
+    },
+    {
       stepId: "published-docs-registry",
       inputPaths: ["src/content/docs"],
       generatorPaths: [
