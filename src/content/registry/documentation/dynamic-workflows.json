@@ -19,5 +19,8 @@
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T07:01:57.000Z",
-  "updatedAt": "2026-07-21T09:30:00.000Z"
+  "updatedAt": "2026-07-21T09:30:00.000Z",
+  "sidebarGrouping": {
+    "documentation": "capabilities"
+  }
 }

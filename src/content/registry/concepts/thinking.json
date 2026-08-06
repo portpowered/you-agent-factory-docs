@@ -13,5 +13,8 @@
   "updatedAt": "2026-07-09T23:34:34.047Z",
   "conceptType": "general",
   "prerequisiteIds": [],
-  "explainsIds": []
+  "explainsIds": [],
+  "sidebarGrouping": {
+    "concepts": "model-inference"
+  }
 }

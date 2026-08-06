@@ -23,5 +23,9 @@
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-18T13:00:00.000Z",
-  "updatedAt": "2026-07-18T17:00:00.000Z"
+  "updatedAt": "2026-07-18T17:00:00.000Z",
+  "sidebarGrouping": {
+    "documentation": "operations",
+    "documentationSecondary": "configuring"
+  }
 }

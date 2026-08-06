@@ -26,7 +26,9 @@ describe("mcp concept page", () => {
     expect(mcpRecord?.kind).toBe("concept");
     if (mcpRecord?.kind === "concept") {
       expect(resolveConceptsSidebarGroup(mcpRecord)).toBe("harnesses");
-      expect(mcpRecord.sidebarGrouping?.concepts).toBeUndefined();
+      // The record declares its own explorer placement; the Concepts
+      // assignment map is generated from this field.
+      expect(mcpRecord.sidebarGrouping?.concepts).toBe("harnesses");
       expect(mcpRecord.aliases).toContain("Model Context Protocol");
       expect(mcpRecord.aliases).toContain("you mcp serve");
       expect(mcpRecord.aliases).toContain("MCP server");
