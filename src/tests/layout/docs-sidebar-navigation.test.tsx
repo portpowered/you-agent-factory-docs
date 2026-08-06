@@ -118,19 +118,42 @@ describe("docs sidebar page-tree contract", () => {
     expect(sidebarJson).not.toContain("Attention Variants");
   });
 
-  test("page tree omits demoted documentation install from explorer membership", () => {
+  test("install opens the Quick starts group rather than a collection folder", () => {
     const links = collectSidebarPageLinks(source.pageTree);
+    const quickStarts = source.pageTree.children.find(
+      (node) => node.type === "folder" && node.name === "Quick starts",
+    );
 
-    expect(findSidebarPageLink(links, INSTALL_DOCS_URL)).toBeUndefined();
+    // Install was demoted while Getting Started owned install teaching. A
+    // quick-start path has to begin with installing, so it is listed there —
+    // and only there.
+    expect(findSidebarPageLink(links, INSTALL_DOCS_URL)).toEqual({
+      name: "Install you-agent-factory",
+      url: INSTALL_DOCS_URL,
+    });
+    if (quickStarts?.type !== "folder") {
+      throw new Error("expected a Quick starts group in the explorer");
+    }
+    expect(
+      collectSidebarPageLinks(quickStarts.children)[0]?.url,
+    ).toBe(INSTALL_DOCS_URL);
+    expect(
+      links.filter((link) => link.url === INSTALL_DOCS_URL),
+    ).toHaveLength(1);
   });
 
-  test("FAQ is a top-level explorer page outside Program documentation", () => {
+  test("FAQ closes the Information group outside Program documentation", () => {
     const links = collectSidebarPageLinks(source.pageTree);
-    const topLevelFaq = source.pageTree.children.find(
+    const informationGroup = source.pageTree.children.find(
+      (node) => node.type === "folder" && node.name === "Information",
+    );
+    const informationChildren =
+      informationGroup?.type === "folder" ? informationGroup.children : [];
+    const topLevelFaq = informationChildren.find(
       (node) =>
         node.type === "page" && "url" in node && node.url === FAQ_DOCS_URL,
     );
-    const documentationFolder = source.pageTree.children.find(
+    const documentationFolder = informationChildren.find(
       (node) => node.type === "folder" && node.name === "Program documentation",
     );
 
@@ -143,7 +166,7 @@ describe("docs sidebar page-tree contract", () => {
       name: "FAQ",
       url: FAQ_DOCS_URL,
     });
-    expect(source.pageTree.children.at(-1)).toEqual(topLevelFaq);
+    expect(informationChildren.at(-1)).toEqual(topLevelFaq);
     if (documentationFolder?.type === "folder") {
       expect(
         collectSidebarPageLinks(documentationFolder.children).some(
