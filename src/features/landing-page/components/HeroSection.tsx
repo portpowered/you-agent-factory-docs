@@ -106,7 +106,12 @@ export function HeroSection({
       style={style}
     >
       <div
-        className="pointer-events-none absolute top-[-3%] right-[-34%] z-0 flex aspect-square w-[min(100vw,88rem)] items-center justify-center sm:right-[-28%] md:top-[-8%] md:right-[-24%]"
+        // On a phone the sphere is centred and dropped down the column so it
+        // sits on top of the portrait's head, reading as a ball balanced there.
+        // From `sm` up it returns to the off-canvas right-hand placement, where
+        // the two-column layout puts the portrait beside the copy instead of
+        // beneath it.
+        className="pointer-events-none absolute top-[34%] left-1/2 z-0 flex aspect-square w-[86vw] -translate-x-1/2 items-center justify-center sm:top-[-3%] sm:right-[-28%] sm:left-auto sm:w-[min(100vw,88rem)] sm:translate-x-0 md:top-[-8%] md:right-[-24%]"
         data-hero-section-sphere=""
       >
         {holeOrPlaceholder(

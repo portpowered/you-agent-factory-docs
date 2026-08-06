@@ -27,6 +27,33 @@ describe("docs sidebar navigation accessibility", () => {
     restoreFetchMock();
   });
 
+  /**
+   * Expands the four reader-facing groups the explorer opens on.
+   *
+   * Collection folders are nested inside them, so a group has to be open before
+   * its folders exist in the DOM. Labels come from the locale catalog, not
+   * hardcoded English — in a localized tree the group headings are translated
+   * too, so English names match nothing and every folder below stays hidden.
+   *
+   * Guarded on `aria-expanded`: clicking an open group collapses it again.
+   */
+  async function openTopLevelGroups(
+    container: HTMLElement,
+    messages: Awaited<ReturnType<typeof loadUiMessages>>,
+  ): Promise<void> {
+    for (const groupName of Object.values(messages.explorer.topLevelGroups)) {
+      const group = within(container)
+        .queryAllByRole("button", { name: groupName })
+        .at(-1);
+      if (!group || group.getAttribute("aria-expanded") === "true") {
+        continue;
+      }
+      await act(async () => {
+        group.click();
+      });
+    }
+  }
+
   async function openExplorerFolder(
     container: HTMLElement,
     folderName: string,
@@ -85,6 +112,8 @@ describe("docs sidebar navigation accessibility", () => {
     if (!sidebar) {
       throw new Error("expected Fumadocs docs sidebar");
     }
+
+    await openTopLevelGroups(sidebar, context.messages);
 
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,
@@ -149,12 +178,13 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
+    await openTopLevelGroups(sidebar, context.messages);
+
     for (const folderName of [
       context.messages.explorer.folders.guides,
       context.messages.explorer.folders.concepts,
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
-      context.messages.explorer.folders.references,
     ] as const) {
       await openExplorerFolder(sidebar, folderName);
     }
@@ -385,6 +415,8 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
+    await openTopLevelGroups(sidebar, context.messages);
+
     const homeBrandLink = within(sidebar).queryByRole("link", {
       name: "You Agent Factory",
     });
@@ -477,6 +509,8 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
+    await openTopLevelGroups(sidebar, context.messages);
+
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,
     );
@@ -553,6 +587,8 @@ describe("docs sidebar navigation accessibility", () => {
     if (!sidebar) {
       throw new Error("expected Fumadocs docs sidebar");
     }
+
+    await openTopLevelGroups(sidebar, context.messages);
 
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,

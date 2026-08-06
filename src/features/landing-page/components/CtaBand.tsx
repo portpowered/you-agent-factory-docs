@@ -119,10 +119,11 @@ export function CtaBand({
 
       <div
         className={cn(
-          // Left-aligned on every surface so the CTA headline shares the left
-          // edge with the hero and capability copy above it.
-          "relative mx-auto flex max-w-6xl flex-col items-start gap-5",
-          surface !== "fog" && "text-left text-[#191f2b]",
+          // Centred: this band is a single closing line rather than a column
+          // of copy, so it reads as a poster rather than as another
+          // left-aligned section.
+          "relative mx-auto flex max-w-6xl flex-col items-center gap-5 text-center",
+          surface !== "fog" && "text-[#191f2b]",
         )}
       >
         <h2
