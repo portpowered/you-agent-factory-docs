@@ -9,6 +9,7 @@ import {
   type FactoryExplorerTopLevelGroup,
   type FactoryExplorerVirtualFolderId,
   type FactoryReferenceNestedCollectionId,
+  isDocsExplorerQuickStartPage,
   isDocsExplorerTopLevelFaqPage,
   isDocsExplorerVirtualFolderPage,
   listFactoryExplorerVirtualFolderMembership,
@@ -219,6 +220,11 @@ export function buildDocsSidebarSectionNodes({
       continue;
     }
     if (isDocsExplorerVirtualFolderPage(page.docsSlug)) {
+      continue;
+    }
+    // Quick starts are listed in their own group; leaving them in Guides too
+    // would make that folder a superset of the group above it.
+    if (isDocsExplorerQuickStartPage(page.docsSlug)) {
       continue;
     }
     // W18 move stubs keep static compatibility routes but are not explorer

@@ -1,0 +1,60 @@
+---
+title: "Run Your First Factory"
+description: "Run a packaged factory end to end without writing any configuration."
+kind: "guide"
+registryId: "guide.run-your-first-factory"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+updatedAt: "2026-08-06"
+---
+
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
+  <T k="sections.stepsOrWorkflow.body" />
+
+  <p>
+    <T k="links.runPackagedLabel" />
+  </p>
+
+```sh
+you run -a "@you/goal" --to "summarise this repository"
+```
+
+  <p>
+    <T k="links.watchLabel" />
+  </p>
+
+```sh
+you session list
+```
+
+  <p>
+    <T k="links.logsLabel" />
+  </p>
+
+```sh
+you logs --follow
+```
+
+</Section>
+
+<Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
+  <T k="sections.commonPitfalls.body" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList tags={[]} />
+</Section>

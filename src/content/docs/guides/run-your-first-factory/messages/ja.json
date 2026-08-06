@@ -1,0 +1,31 @@
+{
+  "title": "Run Your First Factory",
+  "description": "Run a packaged factory end to end without writing any configuration.",
+  "openingSummary": "Packaged factories ship ready to run, so the shortest path to seeing you-agent-factory work is to run one someone else already wrote.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A packaged factory is a complete, published workflow you can run by name. You supply a goal; the factory supplies the graph, the workers, and the review steps."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this right after installing, before writing anything of your own. Running a packaged factory proves your install works and shows you the shape of a factory run."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Pick a packaged factory, run it against a goal, then watch the session until it settles."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "A packaged factory still needs a harness to drive it. If the run exits immediately, check that your provider credentials are set and that the session actually started."
+    },
+    "tags": {
+      "title": "Tags"
+    }
+  },
+  "links": {
+    "runPackagedLabel": "Run a packaged factory",
+    "watchLabel": "Confirm the session is live",
+    "logsLabel": "Follow the run"
+  }
+}

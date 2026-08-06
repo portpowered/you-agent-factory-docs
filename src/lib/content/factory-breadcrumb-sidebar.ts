@@ -13,14 +13,14 @@ import { isDeletedAiSearchUrl } from "@/lib/search/factory-search-deleted-record
  * separate section refs — see `FACTORY_EXPLORER_VIRTUAL_FOLDER_IDS`.
  */
 export const FACTORY_EXPLORER_TOP_LEVEL_COLLECTION_IDS = [
-  // Order follows the four reader-facing groups below: How-tos (guides,
-  // techniques), References (references, inlined), Information (documentation,
-  // concepts).
+  // Order follows the four reader-facing groups below: How-tos (guides),
+  // References (references, inlined), Information (documentation, concepts,
+  // techniques).
   "guides",
-  "techniques",
   "references",
   "documentation",
   "concepts",
+  "techniques",
 ] as const satisfies readonly DocsCollectionId[];
 
 /**
@@ -141,10 +141,10 @@ export type FactoryExplorerInlinedCollectionSectionRef = {
 /**
  * A page listed directly in a group as a curated entry point.
  *
- * Unlike virtual-folder membership this is *additive*: the page keeps its place
- * in whichever collection folder owns it. A quick start is a route into
- * material that also has a permanent home, and hiding it from that home to
- * feature it here would trade one kind of findability for another.
+ * Placement is exclusive: the page is lifted out of whichever collection folder
+ * would otherwise own it. Listing the five quick starts in both Quick starts
+ * and Guides made the Guides folder read as a superset of the group above it,
+ * which is the opposite of what the grouping is for.
  */
 export type FactoryExplorerCuratedPageSectionRef = {
   kind: "curated-page";
@@ -192,10 +192,10 @@ export const FACTORY_EXPLORER_TOP_LEVEL_GROUP_LABELS = {
  */
 export const FACTORY_EXPLORER_QUICK_START_DOCS_SLUGS = [
   "documentation/install",
-  "documentation/packaged-factories",
-  "factories/configuration",
-  "references/javascript-runtime",
-  "documentation/mcp",
+  "guides/run-your-first-factory",
+  "guides/write-your-first-factory",
+  "guides/write-your-first-javascript",
+  "guides/connect-your-agent-to-you",
 ] as const;
 
 /** Ordered member sections for each top-level group. */
@@ -210,14 +210,14 @@ export const FACTORY_EXPLORER_TOP_LEVEL_GROUP_MEMBERSHIP: Record<
         docsSlug,
       }) as const satisfies FactoryExplorerCuratedPageSectionRef,
   ),
-  "how-tos": [
-    { kind: "collection", id: "guides" },
-    { kind: "collection", id: "techniques" },
-  ],
+  "how-tos": [{ kind: "collection", id: "guides" }],
   references: [{ kind: "inlined-collection", id: "references" }],
   information: [
     { kind: "collection", id: "documentation" },
     { kind: "collection", id: "concepts" },
+    // Techniques are patterns to understand rather than recipes to follow, so
+    // they read as background alongside Concepts, not as a how-to.
+    { kind: "collection", id: "techniques" },
     { kind: "virtual-folder", id: "internal-architecture" },
     { kind: "virtual-folder", id: "miscellanea" },
     { kind: "page", docsSlug: DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG },
@@ -252,6 +252,15 @@ export const FACTORY_EXPLORER_SECTION_ORDER =
   FACTORY_EXPLORER_TOP_LEVEL_GROUPS.flatMap(
     (group) => group.sections,
   ) as readonly FactoryExplorerSectionRef[];
+
+const QUICK_START_DOCS_SLUG_SET = new Set<string>(
+  FACTORY_EXPLORER_QUICK_START_DOCS_SLUGS,
+);
+
+/** True when a page is claimed by the Quick starts group. */
+export function isDocsExplorerQuickStartPage(docsSlug: string): boolean {
+  return QUICK_START_DOCS_SLUG_SET.has(docsSlug);
+}
 
 const VIRTUAL_FOLDER_DOCS_SLUG_SET = new Set<string>(
   Object.values(FACTORY_EXPLORER_VIRTUAL_FOLDER_MEMBERSHIP).flat(),
