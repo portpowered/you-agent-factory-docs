@@ -123,7 +123,7 @@ describe("Terminal", () => {
     expect(darkRoot?.getAttribute("data-terminal-variant")).toBe("dark");
     // The dark shell paints in the site's navy/yellow pair, not a generic grey.
     expect(darkRoot?.className).toContain(
-      "[--landing-terminal-surface:#191f2b]",
+      "[--landing-terminal-surface:#1e3057]",
     );
     expect(darkRoot?.className).toContain(
       "[--landing-terminal-accent:#f3bd3d]",
