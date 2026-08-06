@@ -26,7 +26,9 @@ describe("skills concept page", () => {
     expect(skillsRecord?.kind).toBe("concept");
     if (skillsRecord?.kind === "concept") {
       expect(resolveConceptsSidebarGroup(skillsRecord)).toBe("harnesses");
-      expect(skillsRecord.sidebarGrouping?.concepts).toBeUndefined();
+      // The record declares its own explorer placement; the Concepts
+      // assignment map is generated from this field.
+      expect(skillsRecord.sidebarGrouping?.concepts).toBe("harnesses");
       expect(skillsRecord.aliases).toContain("agent skills");
       expect(skillsRecord.aliases).toContain("Cursor Agent Skills");
       expect(skillsRecord.aliases).toContain("SKILL.md");

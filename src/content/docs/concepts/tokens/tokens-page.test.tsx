@@ -26,7 +26,9 @@ describe("tokens concept page", () => {
     expect(tokensRecord?.kind).toBe("concept");
     if (tokensRecord?.kind === "concept") {
       expect(resolveConceptsSidebarGroup(tokensRecord)).toBe("model-inference");
-      expect(tokensRecord.sidebarGrouping?.concepts).toBeUndefined();
+      // The record declares its own explorer placement; the Concepts
+      // assignment map is generated from this field.
+      expect(tokensRecord.sidebarGrouping?.concepts).toBe("model-inference");
       expect(tokensRecord.aliases).toContain("model-inference tokens");
       expect(tokensRecord.aliases).not.toContain("factory token");
       expect(tokensRecord.aliases).not.toContain("work token");

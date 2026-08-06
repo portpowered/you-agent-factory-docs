@@ -21,5 +21,7 @@
   "conceptType": "general",
   "prerequisiteIds": [],
   "explainsIds": [],
-  "sidebarGrouping": {}
+  "sidebarGrouping": {
+    "concepts": "model-inference"
+  }
 }

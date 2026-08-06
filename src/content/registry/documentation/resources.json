@@ -10,5 +10,9 @@
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-09T22:41:00.000Z",
-  "updatedAt": "2026-07-09T22:41:00.000Z"
+  "updatedAt": "2026-07-09T22:41:00.000Z",
+  "sidebarGrouping": {
+    "documentation": "operations",
+    "documentationSecondary": "configuring"
+  }
 }
