@@ -9,7 +9,6 @@ import {
   PACKAGED_FACTORIES_INDEX_MANIFEST_PATH,
   PackagedFactoriesIndexGeneratedArtifactsError,
   packagedFactoriesIndexFactoryDefinitionArtifactPath,
-  serializePackagedFactoriesIndexGeneratedJson,
 } from "./generated-artifacts-model";
 import {
   buildPackagedFactoryIndexCorpus,

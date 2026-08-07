@@ -110,6 +110,7 @@
     "generate:page-bundle": "bun ./scripts/generate-page-bundle.ts",
     "generate:table-registry": "bun ./scripts/generate-table-registry-runtime.ts",
     "generate:api-package-consumed-hash-ledger": "bun ./scripts/generate-api-package-consumed-hash-ledger.ts",
+    "emit:openapi-public-artifact": "bun ./scripts/emit-openapi-public-artifact.ts",
     "verify:table-registry": "bun ./scripts/verify-table-registry-runtime.ts",
     "verify:content-runtime-completeness": "bun ./scripts/verify-content-runtime-completeness.ts",
     "build:search-index": "bun ./scripts/build-search-index.ts",

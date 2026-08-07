@@ -30,6 +30,7 @@ import {
   API_PLAYGROUND_OPTIONS,
   apiReferencePlaygroundPageOptions,
 } from "./playground-suppression";
+import { API_SCHEMA_SLOT_ATTR } from "./schema-slot";
 import { resolveApiSseOperationSummary } from "./sse-operation-summary";
 import { API_SHIKI_OPTIONS, API_TOKEN_CLASSES } from "./theme-tokens";
 
@@ -61,11 +62,7 @@ export const API_FUMADOCS_OPERATIONS_ATTR =
 export const API_FUMADOCS_OPERATION_ATTR =
   "data-api-fumadocs-operation" as const;
 
-/**
- * Marker on request-body / response-body slots that host Fumadocs Schema UI
- * (promoted from the W01 spike schema-slot pattern).
- */
-export const API_SCHEMA_SLOT_ATTR = "data-api-schema-slot" as const;
+export { API_SCHEMA_SLOT_ATTR } from "./schema-slot";
 
 /**
  * Marker wrapping the static method/path bar (Fumadocs disabled-playground

@@ -116,6 +116,13 @@ export const CONTENT_RUNTIME_COMPLETENESS_CONTRACT: readonly ContentRuntimePrepa
       gitClassification: "ignored",
       owningSurface: "API package consumed-hash ledger",
     },
+    {
+      id: "openapi-public-artifact",
+      command: ["bun", "run", "emit:openapi-public-artifact"],
+      outputPath: "public/generated/openapi.json",
+      gitClassification: "ignored",
+      owningSurface: "shipped OpenAPI JSON asset for /docs/references/api",
+    },
   ] as const;
 
 export const CONTENT_RUNTIME_PREPARATION_STEPS =

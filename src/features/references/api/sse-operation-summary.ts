@@ -15,7 +15,6 @@ import {
   API_SSE_OPERATIONS,
   API_SSE_SUMMARY_SAFETY,
   type ApiSseOperation,
-  type ApiSseOperationItem,
   type ApiSseRole,
   findApiSseOperation,
 } from "./sse-operations";

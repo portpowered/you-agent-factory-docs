@@ -184,7 +184,7 @@ export function getW20A11yResponsiveBrowserVerifyViewport(): {
   const viewport = getReferenceSurfaceViewport(
     W20_A11Y_RESPONSIVE_BROWSER_VERIFY.viewportId,
   );
-  if (!viewport || viewport.id !== "mobile") {
+  if (viewport?.id !== "mobile") {
     throw new Error(
       `Missing W19 mobile viewport for W20 browser verify: ${W20_A11Y_RESPONSIVE_BROWSER_VERIFY.viewportId}`,
     );

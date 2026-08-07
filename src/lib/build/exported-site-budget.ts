@@ -108,7 +108,12 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * neither moved, which is the check that matters for what readers download.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 396_000_000,
+  // Lowered on 2026-08-07 after /docs/references/api moved to client rendering
+  // from the shipped OpenAPI JSON. That route family was ~113 MB of a ~362 MB
+  // export across four locales; it is now ~3.6 MB and the export measures
+  // ~213 MB. The ceiling tracks the new shape so a regression back toward
+  // per-locale HTML expansion fails here instead of at the Pages publish step.
+  maxTotalOutBytes: 280_000_000,
   maxNextStaticJsBytes: 15_000_000,
   maxSearchBootstrapBytes: 32_000_000,
 } as const;

@@ -85,6 +85,12 @@ try {
     waitUntil: "domcontentloaded",
     timeout: 120_000,
   });
+
+  // Operation detail renders on the client from the shipped OpenAPI JSON.
+  // Nothing below this point exists in the delivered HTML.
+  await page.waitForSelector('[data-api-shipped-json-state="ready"]', {
+    timeout: 60_000,
+  });
   if (!response?.ok()) {
     throw new Error(
       `Expected 200 for ${PAGE_PATH}, got ${response?.status() ?? "no response"}`,
@@ -120,18 +126,14 @@ try {
 
   const { operationId, expectedFieldNames, schemaRef } =
     API_SCHEMA_COMPONENT_PROBE;
-  const section = page.locator(
-    `[data-api-fumadocs-operation="${operationId}"]`,
-  );
+  const section = page.locator(`[data-api-operation-id="${operationId}"]`);
   await section.waitFor({ state: "attached", timeout: 60_000 });
   await section.scrollIntoViewIfNeeded();
 
   // SchemaUI is a lazy client boundary — wait for request schema slot + fields.
   await page.waitForFunction(
     ({ opId, slotAttr, fields }) => {
-      const op = document.querySelector(
-        `[data-api-fumadocs-operation="${opId}"]`,
-      );
+      const op = document.querySelector(`[data-api-operation-id="${opId}"]`);
       if (!op) return false;
       const requestSlot = op.querySelector(`[${slotAttr}="request"]`);
       if (!requestSlot) return false;

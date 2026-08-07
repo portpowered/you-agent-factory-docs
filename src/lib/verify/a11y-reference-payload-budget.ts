@@ -93,10 +93,15 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
     {
       routeId: "references-api",
       path: "/docs/references/api",
-      measuredHtmlBytes: 10_258_887,
-      measuredJsPayloadBytes: 2_597_203,
-      // ~25% headroom above Fumadocs Schema UI SSR HTML for 45 operations.
-      maxHtmlBytes: 13_000_000,
+      // Operations render on the client from `public/generated/openapi.json`;
+      // the HTML carries the shell, tag navigation, and one static header per
+      // operation. Server-rendered Fumadocs Schema UI measured 10_258_887 bytes
+      // here — a 31x reduction, and the ceiling comes down with it so the page
+      // cannot quietly regrow toward the old figure.
+      measuredHtmlBytes: 326_658,
+      measuredJsPayloadBytes: 3_070_795,
+      // ~25% headroom above the client-rendered shell.
+      maxHtmlBytes: 420_000,
       maxJsPayloadBytes: 3_250_000,
     },
     {

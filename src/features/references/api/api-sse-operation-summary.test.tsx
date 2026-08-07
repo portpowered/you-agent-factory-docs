@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { ApiNavigationVerificationHarness } from "./api-navigation-verification-harness";
 import { ApiOperationSection } from "./api-operation-section";
 import { ApiSseOperationSummaryPanel } from "./api-sse-operation-summary";
