@@ -153,17 +153,17 @@ describe("verify-export-base-path", () => {
   test("Pages representative nav hrefs require relative home/getting-started/comparing under project site", () => {
     const representativeHrefs = [
       "/",
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
       "/blog/comparing-agent-factories",
     ] as const;
     const relativePrefixedHtml = [
       '<a href="/you-agent-factory-docs">Home</a>',
-      '<a href="/you-agent-factory-docs/docs/guides/getting-started">Getting started</a>',
+      '<a href="/you-agent-factory-docs/docs/guides/run-your-first-factory">Getting started</a>',
       '<a href="/you-agent-factory-docs/blog/comparing-agent-factories">Comparing</a>',
     ].join("");
     const comparingAbsoluteOnlyHtml = [
       '<a href="/you-agent-factory-docs">Home</a>',
-      '<a href="/you-agent-factory-docs/docs/guides/getting-started">Getting started</a>',
+      '<a href="/you-agent-factory-docs/docs/guides/run-your-first-factory">Getting started</a>',
       '<link rel="canonical" href="https://portpowered.github.io/you-agent-factory-docs/blog/comparing-agent-factories">',
       '<meta property="og:url" content="https://portpowered.github.io/you-agent-factory-docs/blog/comparing-agent-factories">',
     ].join("");

@@ -42,7 +42,7 @@ function prefixedPageHtml(title: string): string {
 <script src="${JS_PATH}"></script>
 </head><body>
 <a href="${BASE}/">Home</a>
-<a href="${BASE}/docs/guides/getting-started">Getting started</a>
+<a href="${BASE}/docs/guides/run-your-first-factory">Getting started</a>
 <a href="${BASE}/blog/comparing-agent-factories">Comparing agent factories</a>
 <h1>${title}</h1>
 </body></html>`;
@@ -54,7 +54,7 @@ function unprefixedPageHtml(title: string): string {
 <script src="/_next/static/chunks/main.js"></script>
 </head><body>
 <a href="/">Home</a>
-<a href="/docs/guides/getting-started">Getting started</a>
+<a href="/docs/guides/run-your-first-factory">Getting started</a>
 <a href="/blog/comparing-agent-factories">Comparing agent factories</a>
 <h1>${title}</h1>
 </body></html>`;
@@ -74,8 +74,8 @@ function writeRepairedExport(outDir: string): void {
   writeExportHtml(outDir, "/", prefixedPageHtml("home"));
   writeExportHtml(
     outDir,
-    "/docs/guides/getting-started",
-    prefixedPageHtml("getting-started"),
+    "/docs/guides/run-your-first-factory",
+    prefixedPageHtml("run-your-first-factory"),
   );
   writeExportHtml(
     outDir,
@@ -107,8 +107,8 @@ function writeUnprefixedExport(outDir: string): void {
   writeExportHtml(outDir, "/", unprefixedPageHtml("home"));
   writeExportHtml(
     outDir,
-    "/docs/guides/getting-started",
-    unprefixedPageHtml("getting-started"),
+    "/docs/guides/run-your-first-factory",
+    unprefixedPageHtml("run-your-first-factory"),
   );
   writeExportHtml(
     outDir,
@@ -209,7 +209,7 @@ describe("evaluatePagesDeployedArtifactProbes", () => {
 <meta property="og:url" content="https://portpowered.github.io${BASE}/blog/comparing-agent-factories"/>
 </head><body>
 <a href="${BASE}/">Home</a>
-<a href="${BASE}/docs/guides/getting-started">Getting started</a>
+<a href="${BASE}/docs/guides/run-your-first-factory">Getting started</a>
 <h1>comparing-agent-factories</h1>
 </body></html>`;
 

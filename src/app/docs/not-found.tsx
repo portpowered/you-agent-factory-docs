@@ -7,10 +7,10 @@ const recoveryLinkClassName =
 const recoveryLinks = [
   {
     href: buildLocalizedRoute(
-      { surface: "docs-page", slug: "guides/getting-started" },
+      { surface: "docs-page", slug: "guides/run-your-first-factory" },
       defaultLocale,
     ),
-    label: "Getting Started",
+    label: "Run your first factory",
   },
   {
     href: buildLocalizedRoute({ surface: "browse" }, defaultLocale),
@@ -31,8 +31,9 @@ export default function DocsNotFound() {
     <main className="mx-auto flex max-w-2xl flex-col gap-4 px-6 py-16">
       <h1 className="text-2xl font-semibold text-foreground">Page not found</h1>
       <p className="text-muted-foreground">
-        No documentation page matches this path. Continue from Getting Started,
-        browse the factory collections, search the docs, or read the blog.
+        No documentation page matches this path. Continue from Run your first
+        factory, browse the factory collections, search the docs, or read the
+        blog.
       </p>
       <nav
         aria-label="Recovery links"

@@ -1,0 +1,148 @@
+---
+title: "How To Make Your Agent Use YOU"
+description: "Point an AI agent at the packaged you-agent-factory agent orientation topic and let it drive the you CLI itself, with MCP and ACP as the deeper integrations."
+kind: "guide"
+registryId: "guide.make-your-agent-use-you"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "connect your agent to you"
+  - "agent orientation"
+  - "you docs agents"
+updatedAt: "2026-08-07"
+---
+
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+
+```sh
+you docs agents
+```
+
+  <T k="callouts.orientationTopic.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
+  <T k="sections.stepsOrWorkflow.body" />
+
+  <p>
+    <T k="links.step1Label" />
+  </p>
+  <T k="callouts.step1.body" />
+
+  <p>
+    <T k="links.step2Label" />
+  </p>
+
+```text
+Before using you-agent-factory, run `you docs agents` and read the output.
+It is the agent orientation topic and command matrix for the installed binary.
+Then use the `you` CLI directly for anything it covers — prefer `you run --named`
+against an installed packaged factory over reimplementing a workflow yourself.
+Run `you docs` for the full topic index, and `you docs <topic>` for depth.
+```
+
+  <T k="callouts.step2.body" />
+
+  <p>
+    <T k="links.step3Label" />
+  </p>
+
+```sh
+you docs
+```
+
+  <T k="callouts.step3.body" />
+
+  <p>
+    <T k="links.step4Label" />
+  </p>
+
+```sh
+you factory list --dir ~/.you-agent-factory/factories
+you run --named @you/subagent --output primary "Summarise the working tree"
+```
+
+  <T k="callouts.step4.body" />
+</Section>
+
+<Section id="what-the-agent-can-reach" titleKey="sections.whatTheAgentCanReach.title">
+  <T k="sections.whatTheAgentCanReach.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/cli",
+        labelKey: "links.cliReference",
+      },
+      {
+        href: "/docs/references/packaged-factories-index",
+        labelKey: "links.packagedFactoriesReference",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="deeper-integrations" titleKey="sections.deeperIntegrations.title">
+  <T k="sections.deeperIntegrations.body" />
+  <p>
+    <T k="links.mcpLabel" />
+  </p>
+
+```sh
+you mcp serve
+```
+
+  <p>
+    <T k="links.acpLabel" />
+  </p>
+
+```sh
+you serve acp
+```
+
+  <T k="callouts.acpDistinction.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/references/mcp-reference",
+        labelKey: "links.mcpReference",
+      },
+      {
+        href: "/docs/factories/dynamic-workflows",
+        labelKey: "links.dynamicWorkflows",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
+  <T k="sections.commonPitfalls.body" />
+  <T k="callouts.cliIsTheAgentPath.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/security-trust-boundaries",
+        labelKey: "links.securityTrustBoundaries",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList tags={[]} />
+</Section>

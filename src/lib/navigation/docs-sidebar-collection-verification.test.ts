@@ -35,7 +35,7 @@ const RETIRED_ATLAS_FOLDER_NAMES = [
 const REPRESENTATIVE_FACTORY_PAGES = [
   {
     folderName: "Guides",
-    url: "/docs/guides/getting-started",
+    url: "/docs/guides/run-your-first-factory",
     name: "Getting Started",
   },
   {

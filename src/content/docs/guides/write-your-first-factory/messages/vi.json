@@ -1,0 +1,141 @@
+{
+  "title": "Viết factory đầu tiên của bạn",
+  "description": "Tự viết một factory you-agent-factory theo từng bước, bằng định dạng đồ thị khai báo hoặc định dạng bộ điều phối JavaScript.",
+  "openingSummary": "Một factory là một tệp duy nhất nói rõ có những công việc gì, ai làm chúng, và công việc di chuyển giữa họ ra sao. Có hai cách viết: dưới dạng một đồ thị khai báo, hoặc dưới dạng một quy trình JavaScript gọi thẳng các tác tử. Cả hai đều tạo ra một factory chạy bằng cùng một lệnh.",
+  "sections": {
+    "whatItIs": {
+      "title": "Nó là gì",
+      "body": "Một định nghĩa factory đặt tên cho ba thứ. Loại công việc là các nhóm công việc chảy qua nó, mỗi loại có một trạng thái khởi đầu, một trạng thái kết thúc và một trạng thái thất bại. Worker là runtime thực sự thực thi — một tác tử, một script, một lời gọi suy luận. Workstation là bước xử lý: nhận công việc ở một trạng thái, điều phối nó tới worker, rồi đẩy nó sang trạng thái kế tiếp. Mọi thứ còn lại — thử lại, vòng rà soát, guard, chạy song song, tài nguyên dùng chung — đều được thêm vào bộ khung đó về sau."
+    },
+    "whenToUse": {
+      "title": "Khi nào dùng",
+      "body": "Hãy tự viết khi một factory đóng gói làm gần đúng điều bạn muốn nhưng chưa đủ. Bắt đầu từ định nghĩa nhỏ nhất chạy được trọn vẹn, rồi mới mở rộng. Một factory không chạy chẳng dạy bạn điều gì; một factory chạy tệ lại cho biết chính xác cần sửa gì tiếp theo."
+    },
+    "chooseAFormat": {
+      "title": "Chọn định dạng",
+      "body": "Trường orchestrator quyết định engine nào chạy factory của bạn, và lựa chọn đó quyết định cách bạn viết nó. Factory đồ thị mô tả một cấu trúc liên kết và để engine đưa công việc chạy qua đó. Factory JavaScript mô tả một thủ tục và gọi thẳng runtime. Không cái nào là tập con của cái kia: dạng đồ thị cho bạn trạng thái bền vững theo từng hạng mục và tính đồng thời miễn phí, còn dạng JavaScript cho bạn luồng điều khiển thông thường."
+    },
+    "startFromAWorkingExample": {
+      "title": "Bắt đầu từ một ví dụ chạy được",
+      "body": "Khởi đầu nhanh và chắc nhất là một factory đóng gói bạn đã chạy. Cài nó vào một thư mục gốc cục bộ của dự án, bạn sẽ có một định nghĩa chắc chắn hợp lệ, chắc chắn chạy được, và đủ nhỏ để đọc hết trong một lần. @you/subagent là cái nhỏ nhất: một loại công việc, một worker, một workstation."
+    },
+    "writeAGraphFactory": {
+      "title": "Viết factory đồ thị",
+      "body": "Dựng định nghĩa theo đúng thứ tự engine đọc: khai báo công việc trước người làm, và người làm trước các bước sử dụng họ. Mỗi bước dưới đây thêm một mảng cấp cao nhất vào tệp."
+    },
+    "writeAJavascriptFactory": {
+      "title": "Viết factory JavaScript",
+      "body": "Factory JavaScript thay đồ thị workstation bằng một script. Không có loại công việc, worker hay workstation nào phải khai báo — khối orchestrator mang mã nguồn, lược đồ tham số và chính sách an toàn, còn bản thân script gọi các tác tử theo thứ tự bạn viết."
+    },
+    "validateAndRun": {
+      "title": "Kiểm tra rồi chạy",
+      "body": "Kiểm tra là bước tách biệt với chạy, và đáng làm trước: nó đối chiếu tải trọng với cùng hợp đồng mà endpoint kiểm tra factory qua HTTP sử dụng, mà không khởi động runtime nào. Khi đã qua, hãy chạy thẳng tệp đó như một factory di động."
+    },
+    "growTheFile": {
+      "title": "Mở rộng tệp",
+      "body": "Một tệp duy nhất thôi hết dễ chịu vào khoảng workstation thứ ba. Bố cục tách rời ghi ra factory.json chuẩn cùng các thư mục workers và workstations, nhờ đó mỗi bước thành một tệp riêng và phần khác biệt vẫn dễ đọc."
+    },
+    "commonPitfalls": {
+      "title": "Lỗi thường gặp",
+      "body": "Ba sai lầm chiếm phần lớn thất bại của factory đầu tiên. Một workstation có trạng thái đầu vào mà chẳng công việc nào đến được, khiến lần chạy nằm không rồi thoát mà chưa làm gì. Một worker được tham chiếu bằng cái tên không khớp mục nào trong mảng workers. Và những trường mượn từ loại worker khác — công cụ tác tử gắn cho script worker, hay định tuyến mô hình gắn cho poller — bị lược đồ từ chối, vì mỗi loại worker chọn riêng tập trường của mình."
+    },
+    "letAFactoryWriteIt": {
+      "title": "Để một factory viết hộ",
+      "body": "Có factory đóng gói chuyên tạo ra factory. @you/factory-builder nhận một yêu cầu bằng ngôn ngữ thường, tạo ra một định nghĩa đã kiểm tra theo dạng bạn chọn, rồi cài nó dưới một cái tên bạn có thể chạy ngay."
+    },
+    "tags": {
+      "title": "Thẻ"
+    }
+  },
+  "links": {
+    "factorySchemaReference": "Lược đồ Factory — mọi định nghĩa, trường, ràng buộc và giá trị mặc định",
+    "factorySchemaFields": "Lược đồ Factory — ràng buộc và enum ở cấp trường",
+    "factorySchemaConstraints": "Lược đồ Factory — tập trường của worker và workstation",
+    "javascriptRuntimeReference": "Tham chiếu JavaScript Runtime — mọi ký hiệu runtime và lược đồ dùng chung",
+    "writeYourFirstJavascript": "Viết bước JavaScript đầu tiên của bạn",
+    "packagedFactoriesReference": "Tham chiếu Factory đóng gói — mã nguồn đầy đủ để chép lại",
+    "agentRunWorkstation": "Workstation AGENT_RUN",
+    "agentWorker": "AGENT_WORKER",
+    "troubleshooting": "Khắc phục sự cố",
+    "formatTableQuestionHeader": "Câu hỏi",
+    "formatTableGraphHeader": "Factory đồ thị",
+    "formatTableJavascriptHeader": "Factory JavaScript",
+    "formatRowShapeQuestion": "Bạn viết cái gì?",
+    "formatRowShapeGraph": "Loại công việc, worker và workstation bằng JSON hoặc YAML.",
+    "formatRowShapeJavascript": "Một hàm JavaScript cộng một khối orchestrator.",
+    "formatRowControlQuestion": "Luồng điều khiển đi thế nào?",
+    "formatRowControlGraph": "Công việc di chuyển giữa các trạng thái; workstation nào có công việc ở trạng thái đầu vào thì chạy.",
+    "formatRowControlJavascript": "Từ trên xuống dưới, với await, vòng lặp và điều kiện thông thường.",
+    "formatRowStateQuestion": "Trạng thái nằm ở đâu?",
+    "formatRowStateGraph": "Ngay trong chính các hạng mục công việc, bền vững, mỗi hạng mục một bản.",
+    "formatRowStateJavascript": "Trong biến của script, kèm checkpoint tường minh khi cần khôi phục.",
+    "formatRowDeclareQuestion": "Bạn phải khai báo gì?",
+    "formatRowDeclareGraph": "Mọi trạng thái mà một hạng mục công việc có thể ở.",
+    "formatRowDeclareJavascript": "Một lược đồ tham số và một chính sách thực thi.",
+    "graphStep1Label": "Bước 1 — đặt tên cho factory",
+    "graphStep2Label": "Bước 2 — khai báo loại công việc và các trạng thái của nó",
+    "graphStep3Label": "Bước 3 — khai báo một worker",
+    "graphStep4Label": "Bước 4 — khai báo một workstation",
+    "graphStep5Label": "Bước 5 — khai báo chữ ký lời gọi",
+    "graphWholeFileLabel": "Toàn bộ tệp",
+    "jsStep1Label": "Bước 1 — khai báo loại bộ điều phối",
+    "jsStep2Label": "Bước 2 — trỏ tới mã nguồn quy trình",
+    "jsStep3Label": "Bước 3 — khai báo lược đồ tham số",
+    "jsStep4Label": "Bước 4 — đặt chính sách mặc định",
+    "jsWorkflowSourceLabel": "Mã nguồn quy trình",
+    "jsWholeFileLabel": "Định nghĩa nạp nó",
+    "validateLabel": "Kiểm tra trước khi chạy",
+    "runPortableLabel": "Chạy nó như một factory di động",
+    "installNamedLabel": "Hoặc cài nó dưới một cái tên và chạy từ bất cứ đâu"
+  },
+  "callouts": {
+    "orchestratorDefault": {
+      "body": "Bỏ trống khối orchestrator là hợp lệ và có nghĩa là đồ thị: các định nghĩa sẵn có nạp theo mặc định tương thích vào engine Petri. Dù vậy hãy khai báo tường minh — một factory JavaScript quên khai báo sẽ thất bại theo cách rất khó hiểu."
+    },
+    "readBeforeEditing": {
+      "body": "Hãy đọc định nghĩa đã cài trước khi sửa. Đổi tên workstation, trỏ nó vào lời nhắc của riêng bạn, rồi chạy lại — đó là bước sửa đầu tiên nhỏ hơn nhiều so với viết tệp từ đầu, và giữ nguyên mọi trường đã làm nó hợp lệ."
+    },
+    "graphFieldReference": {
+      "body": "Tám loại workstation và sáu loại worker mỗi loại chấp nhận một tập trường khác nhau. Trang tham chiếu lược đồ liệt kê trường nào dùng chung, trường nào chỉ thuộc về một biến thể, và trường nào bị từ chối."
+    },
+    "jsRuntimeReference": {
+      "body": "Script chạy trên một tập liên kết runtime cố định: args và meta cho dữ liệu đầu vào của lời gọi, agent.run cho một lần điều phối con, parallel và pipeline để chạy song song, phase và log cho tiến độ, và không gian tên workflow cho ngân sách, checkpoint, hiện vật và kết quả cuối."
+    },
+    "handlingBehaviorDefault": {
+      "body": "Một lần chạy di động cần biết loại công việc nào nhận dữ liệu đầu vào của lời gọi. Factory chạy bằng --factory phải khai báo handlingBehavior DEFAULT trên đúng một loại công việc — không hơn, không kém."
+    },
+    "flattenBack": {
+      "body": "Thao tác ngược lại ghi dạng một tệp chuẩn ra stdout, tiện khi cần so sánh bố cục tách rời với một định nghĩa ai đó gửi cho bạn."
+    },
+    "factoryBuilderOrchestrator": {
+      "body": "Tham số orchestrator chọn dạng mà bộ tạo sẽ viết: graph cho cấu trúc YAML, javascript cho bộ điều phối JavaScript. Mặc định là graph."
+    },
+    "graphStep1": {
+      "body": "Đặt tên cho factory. Đây là trường cấp cao nhất duy nhất bắt buộc, và cũng là thứ mà các lệnh factory có tên sẽ tham chiếu sau này."
+    },
+    "graphStep2": {
+      "body": "Khai báo một loại công việc với ba trạng thái: trạng thái INITIAL nơi công việc gửi vào cập bến, trạng thái TERMINAL nghĩa là đã xong, và trạng thái FAILED cho công việc mà đồ thị không hoàn tất được. Gắn handlingBehavior DEFAULT để một lần chạy di động biết đặt dữ liệu đầu vào của lời gọi vào đâu."
+    },
+    "graphStep3": {
+      "body": "Khai báo một worker. Trường type quyết định những trường nào hợp lệ với nó: AGENT_WORKER nhận công cụ tác tử và thiết lập quyền, SCRIPT_WORKER nhận lệnh và tham số, INFERENCE_WORKER nhận các thao tác và vị trí chạy mô hình. Để trống model và provider để kế thừa mặc định vận hành bạn đã cấu hình lúc cài."
+    },
+    "graphStep4": {
+      "body": "Khai báo một workstation. inputs nêu loại công việc và trạng thái nó tiêu thụ, outputs nêu trạng thái nó phát ra khi thành công, còn onFailure nêu trạng thái phát ra khi worker thất bại. body chính là lời nhắc: nó có thể chèn tham số lời gọi và tham chiếu hạng mục công việc đang xử lý."
+    },
+    "graphStep5": {
+      "body": "Khai báo chữ ký lời gọi để bên gọi biết phải truyền gì. Mỗi tham số có tên nội bộ, tên ngoài dùng trên dòng lệnh, và các cách liên kết nó chấp nhận — văn bản vị trí, stdin qua ống dẫn, hoặc một cờ có tên."
+    },
+    "jsStep1": {
+      "body": "Đặt orchestrator.kind thành JAVASCRIPT. Không đặt thì định nghĩa sẽ nạp như một factory đồ thị theo mặc định tương thích, và engine sẽ đi tìm những workstation vốn không tồn tại."
+    },
+    "jsStep2": {
+      "body": "Trỏ tới mã nguồn quy trình. Dùng sourceRef với đường dẫn tương đối theo factory khi script nằm cạnh định nghĩa, hoặc inlineSource khi bạn muốn định nghĩa mang thẳng nội dung script. Các factory JavaScript đóng gói dùng dạng nội tuyến để phát hành gọn trong một tệp."
+    },
+    "jsStep3": {
+      "body": "Khai báo argsSchema như một đối tượng JSON Schema. Nó kiểm tra tham số trước khi script khởi chạy, và cũng là nguồn để điền giá trị cho liên kết args trong script."
+    },
+    "jsStep4": {
+      "body": "Đặt defaultPolicy. Nó giới hạn những gì quy trình được phép làm khi không có ghi đè từ runtime: tổng số lời gọi tác tử, số lời gọi chạy đồng thời, độ sâu lồng nhau của điều phối con, có cho phép truy cập mạng không, và những thư mục gốc nào ghi được. READ_ONLY cùng danh sách thư mục ghi được để trống là điểm khởi đầu an toàn."
+    }
+  }
+}

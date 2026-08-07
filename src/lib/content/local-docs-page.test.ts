@@ -41,10 +41,12 @@ updatedAt: "2026-07-18"
 
 describe("parseLocalDocsPageRef nested catch-all slugs", () => {
   test("accepts two-segment and deeper slugs under supported docs sections", () => {
-    expect(parseLocalDocsPageRef(["guides", "getting-started"])).toEqual({
-      section: "guides",
-      slug: "getting-started",
-    });
+    expect(parseLocalDocsPageRef(["guides", "run-your-first-factory"])).toEqual(
+      {
+        section: "guides",
+        slug: "run-your-first-factory",
+      },
+    );
     expect(parseLocalDocsPageRef(["workers", "agent", "variant"])).toEqual({
       section: "workers",
       slug: "agent/variant",

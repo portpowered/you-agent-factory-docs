@@ -9,7 +9,7 @@ import { FACTORY_DARK_FOUNDATION } from "@/lib/theme/host-semantic-theme-tokens"
 
 /** Representative code-heavy guide used by the R00 lane gate. */
 export const THEME_CODE_COPY_R00_ROUTE =
-  "/docs/guides/getting-started" as const;
+  "/docs/guides/run-your-first-factory" as const;
 
 /** Desktop / laptop viewport for the R00 gate. */
 export const THEME_CODE_COPY_R00_DESKTOP_VIEWPORT = {

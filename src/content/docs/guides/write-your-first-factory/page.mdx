@@ -1,58 +1,419 @@
 ---
 title: "Write Your First Factory"
-description: "Author a factory of your own: one workstation, one worker, one goal."
+description: "Author a you-agent-factory factory of your own, step by step, in either the declarative graph format or the JavaScript orchestrator format."
 kind: "guide"
 registryId: "guide.write-your-first-factory"
 messageNamespace: "local"
 assetNamespace: "local"
 status: "published"
 tags: []
-updatedAt: "2026-08-06"
+aliases:
+  - "author a factory"
+  - "factory.json"
+  - "JavaScript factory"
+updatedAt: "2026-08-07"
 ---
 
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="what-it-is" titleKey="sections.whatItIs.title">
   <T k="sections.whatItIs.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.factorySchemaReference",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="when-to-use" titleKey="sections.whenToUse.title">
   <T k="sections.whenToUse.body" />
 </Section>
 
-<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
-  <T k="sections.stepsOrWorkflow.body" />
+<Section id="choose-a-format" titleKey="sections.chooseAFormat.title">
+  <T k="sections.chooseAFormat.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.formatTableQuestionHeader" />
+        </th>
+        <th>
+          <T k="links.formatTableGraphHeader" />
+        </th>
+        <th>
+          <T k="links.formatTableJavascriptHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.formatRowShapeQuestion" />
+        </td>
+        <td>
+          <T k="links.formatRowShapeGraph" />
+        </td>
+        <td>
+          <T k="links.formatRowShapeJavascript" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.formatRowControlQuestion" />
+        </td>
+        <td>
+          <T k="links.formatRowControlGraph" />
+        </td>
+        <td>
+          <T k="links.formatRowControlJavascript" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.formatRowStateQuestion" />
+        </td>
+        <td>
+          <T k="links.formatRowStateGraph" />
+        </td>
+        <td>
+          <T k="links.formatRowStateJavascript" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.formatRowDeclareQuestion" />
+        </td>
+        <td>
+          <T k="links.formatRowDeclareGraph" />
+        </td>
+        <td>
+          <T k="links.formatRowDeclareJavascript" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.orchestratorDefault.body" />
+</Section>
 
-  <p>
-    <T k="links.scaffoldLabel" />
-  </p>
+<Section id="start-from-a-working-example" titleKey="sections.startFromAWorkingExample.title">
+  <T k="sections.startFromAWorkingExample.body" />
 
 ```sh
-you init
+you init --package @you/subagent --dir ./factory --replace
+```
+
+  <T k="callouts.readBeforeEditing.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index",
+        labelKey: "links.packagedFactoriesReference",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="write-a-graph-factory" titleKey="sections.writeAGraphFactory.title">
+  <T k="sections.writeAGraphFactory.body" />
+
+  <p>
+    <T k="links.graphStep1Label" />
+  </p>
+  <T k="callouts.graphStep1.body" />
+
+  <p>
+    <T k="links.graphStep2Label" />
+  </p>
+  <T k="callouts.graphStep2.body" />
+
+  <p>
+    <T k="links.graphStep3Label" />
+  </p>
+  <T k="callouts.graphStep3.body" />
+
+  <p>
+    <T k="links.graphStep4Label" />
+  </p>
+  <T k="callouts.graphStep4.body" />
+
+  <p>
+    <T k="links.graphStep5Label" />
+  </p>
+  <T k="callouts.graphStep5.body" />
+
+  <p>
+    <T k="links.graphWholeFileLabel" />
+  </p>
+
+```json
+{
+  "name": "summarize",
+  "description": "Summarize one submitted request in a single agent pass.",
+  "workTypes": [
+    {
+      "name": "task",
+      "handlingBehavior": ["DEFAULT"],
+      "states": [
+        { "name": "init", "type": "INITIAL" },
+        { "name": "complete", "type": "TERMINAL" },
+        { "name": "failed", "type": "FAILED" }
+      ]
+    }
+  ],
+  "workers": [
+    {
+      "name": "summarizer",
+      "type": "AGENT_WORKER",
+      "agentTools": { "policy": "READ_ONLY" },
+      "skipPermissions": true
+    }
+  ],
+  "workstations": [
+    {
+      "name": "summarize-request",
+      "type": "AGENT_RUN",
+      "worker": "summarizer",
+      "inputs": [{ "workType": "task", "state": "init" }],
+      "outputs": [{ "workType": "task", "state": "complete" }],
+      "onFailure": [{ "workType": "task", "state": "failed" }],
+      "body": "Read the request below in full and return a self-contained summary with the key claims, the evidence behind them, and anything you could not verify.\n\nRequest:\n${input}\n"
+    }
+  ],
+  "invocationSignature": {
+    "parameters": [
+      {
+        "name": "input",
+        "externalName": "to",
+        "description": "Text request to summarize.",
+        "required": true,
+        "bindings": [{ "kind": "POSITIONAL", "position": 1 }, { "kind": "STDIN" }, { "kind": "NAMED" }]
+      }
+    ]
+  }
+}
+```
+
+  <T k="callouts.graphFieldReference.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.factorySchemaFields",
+      },
+      {
+        href: "/docs/workstations/agent-run",
+        labelKey: "links.agentRunWorkstation",
+      },
+      {
+        href: "/docs/workers/agent",
+        labelKey: "links.agentWorker",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="write-a-javascript-factory" titleKey="sections.writeAJavascriptFactory.title">
+  <T k="sections.writeAJavascriptFactory.body" />
+
+  <p>
+    <T k="links.jsStep1Label" />
+  </p>
+  <T k="callouts.jsStep1.body" />
+
+  <p>
+    <T k="links.jsStep2Label" />
+  </p>
+  <T k="callouts.jsStep2.body" />
+
+  <p>
+    <T k="links.jsStep3Label" />
+  </p>
+  <T k="callouts.jsStep3.body" />
+
+  <p>
+    <T k="links.jsStep4Label" />
+  </p>
+  <T k="callouts.jsStep4.body" />
+
+  <p>
+    <T k="links.jsWorkflowSourceLabel" />
+  </p>
+
+```js
+return (async function () {
+  phase("draft");
+  const draft = await agent.run({
+    label: "drafter",
+    prompt: "Write a first draft that answers the request in full.\n\nRequest:\n" + args.request,
+  });
+  if (draft.status !== "COMPLETED") {
+    throw "drafting failed";
+  }
+
+  phase("review");
+  const reviews = await parallel([
+    {
+      label: "review-accuracy",
+      prompt: "Judge this draft for factual accuracy. List every unsupported claim.\n\n" + draft.output.text,
+    },
+    {
+      label: "review-completeness",
+      prompt: "Judge this draft for completeness. List every part of the request it does not answer.\n\nRequest:\n" +
+        args.request + "\n\nDraft:\n" + draft.output.text,
+    },
+  ]);
+
+  phase("revise");
+  const final = await agent.run({
+    label: "reviser",
+    prompt: "Revise the draft so it survives both reviews. Return only the revised text.\n\nDraft:\n" +
+      draft.output.text + "\n\nReviews:\n" + JSON.stringify(reviews.map((r) => r.output.text)),
+  });
+  if (final.status !== "COMPLETED") {
+    throw "revision failed";
+  }
+  return final.output.text.trim();
+})();
 ```
 
   <p>
-    <T k="links.runLabel" />
+    <T k="links.jsWholeFileLabel" />
   </p>
 
-```sh
-you run --to "your goal here"
+```json
+{
+  "name": "draft-review-revise",
+  "description": "Drafts an answer, reviews it from two angles, and revises once.",
+  "orchestrator": {
+    "kind": "JAVASCRIPT",
+    "javascript": {
+      "sourceRef": "workflows/draft-review-revise.js",
+      "argsSchema": {
+        "type": "object",
+        "required": ["request"],
+        "additionalProperties": false,
+        "properties": {
+          "request": { "type": "string", "minLength": 1 }
+        }
+      },
+      "defaultPolicy": {
+        "mode": "READ_ONLY",
+        "maxAgents": 8,
+        "concurrency": 2,
+        "maxDepth": 1,
+        "maxRetries": 0,
+        "allowNetwork": false,
+        "writableRoots": []
+      }
+    }
+  },
+  "invocationSignature": {
+    "parameters": [
+      {
+        "name": "request",
+        "externalName": "to",
+        "description": "Request to draft, review, and revise.",
+        "required": true,
+        "bindings": [{ "kind": "POSITIONAL", "position": 1 }, { "kind": "STDIN" }, { "kind": "NAMED" }]
+      }
+    ]
+  }
+}
 ```
+
+  <T k="callouts.jsRuntimeReference.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/javascript-runtime",
+        labelKey: "links.javascriptRuntimeReference",
+      },
+      {
+        href: "/docs/guides/write-your-first-javascript",
+        labelKey: "links.writeYourFirstJavascript",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="validate-and-run" titleKey="sections.validateAndRun.title">
+  <T k="sections.validateAndRun.body" />
 
   <p>
     <T k="links.validateLabel" />
   </p>
 
 ```sh
-you config validate
+you factory config validate ./factory/factory.json
+```
+
+  <p>
+    <T k="links.runPortableLabel" />
+  </p>
+
+```sh
+you run --factory ./factory/factory.json "Summarise this repository"
+```
+
+  <T k="callouts.handlingBehaviorDefault.body" />
+  <p>
+    <T k="links.installNamedLabel" />
+  </p>
+
+```sh
+you factory create summarize --from ./factory/factory.json --set-current
+you run --named summarize "Summarise this repository"
+```
+
+</Section>
+
+<Section id="grow-the-file" titleKey="sections.growTheFile.title">
+  <T k="sections.growTheFile.body" />
+
+```sh
+you factory config expand ./factory/factory.json
+```
+
+  <T k="callouts.flattenBack.body" />
+
+```sh
+you factory config flatten ./factory
 ```
 
 </Section>
 
 <Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
   <T k="sections.commonPitfalls.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.factorySchemaConstraints",
+      },
+      {
+        href: "/docs/documentation/troubleshooting",
+        labelKey: "links.troubleshooting",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="let-a-factory-write-it" titleKey="sections.letAFactoryWriteIt.title">
+  <T k="sections.letAFactoryWriteIt.body" />
+
+```sh
+you init --package @you/factory-builder
+you run --named @you/factory-builder --factory-name release-note-review --orchestrator graph \
+  --to "Review submitted release notes and return an approved summary."
+```
+
+  <T k="callouts.factoryBuilderOrchestrator.body" />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">

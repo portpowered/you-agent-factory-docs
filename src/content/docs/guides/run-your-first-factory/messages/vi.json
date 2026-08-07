@@ -1,0 +1,64 @@
+{
+  "title": "Chạy factory đầu tiên của bạn",
+  "description": "Cài một factory đóng gói từ danh mục tích hợp và chạy trọn vẹn nó mà không cần viết bất kỳ cấu hình nào.",
+  "openingSummary": "Factory đóng gói đi kèm ngay trong tệp nhị phân you và sẵn sàng chạy. Cách nhanh nhất để thấy you-agent-factory hoạt động là cài một cái người khác đã viết sẵn rồi giao cho nó một mục tiêu.",
+  "sections": {
+    "whatItIs": {
+      "title": "Nó là gì",
+      "body": "Factory đóng gói là một quy trình hoàn chỉnh đã công bố, mang tên chuẩn như @you/goal. Bạn chỉ cung cấp yêu cầu; factory lo phần đồ thị, worker, các bước rà soát và hợp đồng tham số. Có 15 factory đi kèm tệp nhị phân, bao phủ theo đuổi mục tiêu, vòng rà soát, chạy song song, thi đấu loại, nghiên cứu chuyên sâu và chuyển văn bản thành giọng nói."
+    },
+    "whenToUse": {
+      "title": "Khi nào dùng",
+      "body": "Hãy chạy một cái ngay sau khi cài, trước khi tự viết bất cứ thứ gì. Một lần chạy đóng gói chứng minh bản cài hoạt động, chứng minh nhà cung cấp đã được cấu hình, và cho bạn thấy hình dạng của một lần chạy factory trước khi phải tự viết."
+    },
+    "stepsOrWorkflow": {
+      "title": "Các bước",
+      "body": "Cài một factory đóng gói vào thư mục gốc factory có tên của bạn, xác nhận nó đã có mặt, rồi chạy nó với một yêu cầu. @you/goal là lựa chọn đầu tiên tốt nhất: nó lưu lại tiến độ và tiếp tục theo đuổi mục tiêu cho tới khi bộ thực thi xác định là hoàn thành hoặc bị chặn."
+    },
+    "watchTheRun": {
+      "title": "Theo dõi lần chạy",
+      "body": "Một lần chạy thông thường không mở cổng HTTP nào — nó thực thi ở chế độ theo lô và thoát khi công việc lắng xuống. Khi muốn xem đồ thị chuyển động, hãy yêu cầu bảng điều khiển tích hợp: cổng lắng nghe chỉ gắn với loopback, sống đúng bằng thời gian chạy, và mở trình duyệt một lần khi đã sẵn sàng."
+    },
+    "tryAnotherFactory": {
+      "title": "Thử một factory khác",
+      "body": "Mỗi factory đóng gói tự khai báo tham số của mình, nên cùng hai lệnh đó dùng được cho cả danh mục. @you/review tạo bản nháp rồi lặp lại rà soát độc lập cho tới khi được duyệt; @you/quorum chạy song song nhiều đánh giá độc lập rồi hợp nhất; @you/spawn lập kế hoạch đúng số lượng tác vụ và thực thi đồng thời."
+    },
+    "commonPitfalls": {
+      "title": "Lỗi thường gặp",
+      "body": "Factory đóng gói vẫn cần một nhà cung cấp để chạy worker của nó. Nếu lần chạy kết thúc gần như ngay lập tức mà không có kết quả, nguyên nhân thường là chưa cấu hình nhà cung cấp mặc định, chứ không phải factory hỏng. Ngoài ra, dữ liệu đầu vào của lời gọi là bắt buộc: một lần chạy theo tên mà không có văn bản vị trí và không có stdin thì chẳng có gì để làm."
+    },
+    "nextSteps": {
+      "title": "Bước tiếp theo",
+      "body": "Khi một factory đóng gói làm gần đúng điều bạn muốn nhưng chưa đủ, bước kế tiếp là tự viết một cái — hoặc giao cả danh mục cho một tác tử và để nó chọn."
+    },
+    "tags": {
+      "title": "Thẻ"
+    }
+  },
+  "links": {
+    "packagedFactoriesReference": "Tham chiếu Factory đóng gói — mọi factory đi kèm và mã nguồn đầy đủ",
+    "packagedFactoriesSources": "Tham chiếu Factory đóng gói — tham số và ví dụ của từng factory",
+    "installPackagedLabel": "Cài một factory đóng gói từ danh mục tích hợp",
+    "confirmInstalledLabel": "Xác nhận nó đã nằm trong thư mục gốc factory có tên toàn cục",
+    "runPackagedLabel": "Chạy nó với một yêu cầu",
+    "primaryOutputLabel": "Chỉ in kết quả cuối thay vì phát tiến độ theo dòng",
+    "sessionListLabel": "Liệt kê các phiên trên máy chủ đang chạy đó",
+    "apiDocs": "API — kết nối tới factory đang chạy qua HTTP",
+    "cliReference": "Tham chiếu CLI — mọi lệnh và cờ đã công bố",
+    "installDocs": "Cài đặt you-agent-factory",
+    "troubleshooting": "Khắc phục sự cố",
+    "writeYourFirstFactory": "Viết factory đầu tiên của bạn",
+    "makeYourAgentUseYou": "Cách khiến tác tử của bạn dùng YOU"
+  },
+  "callouts": {
+    "invocationInput": {
+      "body": "Dữ liệu đầu vào của lời gọi đến với factory theo ba đường: văn bản vị trí sau lệnh, stdin qua ống dẫn, hoặc một tham số có tên do factory khai báo. Ống dẫn là cách dễ nhất để truyền một yêu cầu dài mà không phải bận tâm dấu nháy."
+    },
+    "serverOnly": {
+      "body": "Dùng cờ máy chủ mà không bật bảng điều khiển khi bạn muốn có HTTP API trong suốt lần chạy nhưng không mở cửa sổ trình duyệt. Dù theo cách nào, cổng lắng nghe cũng biến mất khi lần chạy kết thúc."
+    },
+    "catalogBreadth": {
+      "body": "Mọi factory đóng gói đều công bố tên tham số, giá trị mặc định và ví dụ thực tế. Hãy đọc chúng trước khi đoán cờ."
+    }
+  }
+}

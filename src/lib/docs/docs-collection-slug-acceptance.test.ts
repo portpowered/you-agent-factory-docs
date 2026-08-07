@@ -10,7 +10,7 @@ import {
 describe("docs collection slug acceptance", () => {
   test("accepts CLI route prefixes as belonging to the matching CLI collection", () => {
     expect(
-      docsSlugBelongsToCliCollection("guides/getting-started", "guides"),
+      docsSlugBelongsToCliCollection("guides/run-your-first-factory", "guides"),
     ).toBe(true);
     expect(
       docsSlugBelongsToCliCollection("concepts/attention-overview", "concepts"),
@@ -27,9 +27,9 @@ describe("docs collection slug acceptance", () => {
   });
 
   test("resolves each CLI prefix to the matching collection id", () => {
-    expect(resolveDocsCollectionIdFromDocsSlug("guides/getting-started")).toBe(
-      "guides",
-    );
+    expect(
+      resolveDocsCollectionIdFromDocsSlug("guides/run-your-first-factory"),
+    ).toBe("guides");
     expect(
       resolveDocsCollectionIdFromDocsSlug("concepts/attention-overview"),
     ).toBe("concepts");
@@ -115,7 +115,7 @@ describe("docs collection slug acceptance", () => {
       "documentation",
     ]);
     expect(
-      docsSlugBelongsToCliCollection("guides/getting-started", "guides"),
+      docsSlugBelongsToCliCollection("guides/run-your-first-factory", "guides"),
     ).toBe(true);
     expect(
       docsSlugBelongsToCliCollection("concepts/attention-overview", "concepts"),

@@ -26,7 +26,7 @@ const FACTORY_ALIAS_CASES = [
   },
   {
     alias: "Quickstart",
-    url: "/docs/guides/getting-started",
+    url: "/docs/documentation/install",
   },
   {
     alias: "draft-then-refine",

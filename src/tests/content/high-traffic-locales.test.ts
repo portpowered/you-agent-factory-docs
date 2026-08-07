@@ -29,8 +29,12 @@ const NON_DEFAULT_LOCALES = [
 ] as const satisfies readonly NonDefaultLocale[];
 
 const HIGH_TRAFFIC_DOCS_PAGES = [
-  { section: "guides", slug: "getting-started" },
+  // The quick-start path, in reader order. The retired `guides/getting-started`
+  // page used to open this list; install + run-your-first-factory replaced it.
   { section: "documentation", slug: "install" },
+  { section: "guides", slug: "run-your-first-factory" },
+  { section: "guides", slug: "write-your-first-factory" },
+  { section: "guides", slug: "make-your-agent-use-you" },
   { section: "documentation", slug: "what-is-you-agent-factory" },
   { section: "documentation", slug: "cli" },
   { section: "guides", slug: "using-you-agent-factory-for-loops" },

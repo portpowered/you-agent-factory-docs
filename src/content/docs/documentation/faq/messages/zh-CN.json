@@ -1,44 +1,71 @@
 {
   "title": "FAQ",
-  "description": "Short answers to common you-agent-factory questions that point at the owning canonical docs for install, run, configuration, MCP, and dynamic workflows.",
-  "openingSummary": "FAQ is the you-agent-factory short-answer surface for common product questions. Each reply stays brief and sends you to the canonical doc that owns the full contract.",
+  "description": "针对 you-agent-factory 常见问题的简短回答，并指向负责安装、运行工厂、编写、智能体、配置与恢复的规范文档与参考页面。",
+  "openingSummary": "常见问题是 you-agent-factory 的简答区。每条回答都力求简短，并把你带到掌握完整约定的规范文档或参考页面。",
   "sections": {
     "whatIsYouAgentFactory": {
-      "title": "What Is You-Agent-Factory, And Where Do I Start?",
-      "body": "you-agent-factory is the CLI and workflow system that keeps long-running agent work persistent. Start with the product overview, then follow Getting Started for first-run order before you dig into install or CLI depth."
+      "title": "you-agent-factory 是什么？我该从哪里开始？",
+      "body": "you-agent-factory 是让长期运行的智能体工作保持持久化的命令行工具与工作流系统。它以一个名为 you 的二进制文件安装。先读产品概览，再安装并运行一个打包工厂，然后才深入命令行细节。"
     },
     "howToInstall": {
-      "title": "How Do I Install You?",
-      "body": "Install with the OS-specific script for your machine, then confirm you resolves on PATH. Open Install for the full command matrix and post-install scaffold notes—this FAQ does not repeat those commands."
+      "title": "怎么安装 you？",
+      "body": "用适合你机器的操作系统脚本安装，确认 shell 能解析 you，然后配置运行工作单元的提供方。完整命令都在安装页面——本页不再重复。"
     },
-    "howToRunNamedWorkflow": {
-      "title": "How Do I Run A Named Workflow Or Confirm A Live Session?",
-      "body": "Start or attach a factory, then confirm a live Factory Session with you session list before you submit work. For first-run order open Getting Started; for the command matrix open CLI; for empty-list vs connection-failure language open Factory Session."
+    "howToRunAFactory": {
+      "title": "怎么运行一个工厂？",
+      "body": "用 you init --package 安装一个打包工厂，然后用 you run --named 加上请求按名字运行它。普通运行是批处理模式，不会启动 HTTP 监听器，因此只有在启动运行时带上服务器、或 you server 正在运行时，you session list 才会有响应。"
+    },
+    "whichFactoriesShip": {
+      "title": "二进制文件里随附了哪些工厂？",
+      "body": "内置目录中随附了 15 个打包工厂，覆盖目标推进、评审循环、多数表决与锦标赛式比较、并行扇出、规划、分类、深度研究、工厂自动编写以及文本转语音。每个工厂都公布自己的参数、默认值和实际示例。"
+    },
+    "graphOrJavascript": {
+      "title": "该写图工厂还是 JavaScript 工厂？",
+      "body": "当工作流是一张工作在其中流转的拓扑，并且你想免费获得按条目持久化的状态与并发时，写图工厂。当工作流是一段过程，并且你想用普通控制流时，写 JavaScript 工厂。orchestrator 字段决定引擎；省略它即表示图。"
     },
     "whereConfigurationLives": {
-      "title": "Where Does Configuration Live?",
-      "body": "Per-factory topology lives in factory.json under the factory root; optional operator defaults live in ~/.you-agent-factory/config.json. Open Configuration for factory.json shape and Global Configuration Factories for operator-default modes—do not treat this FAQ as a second config reference."
+      "title": "配置放在哪里？",
+      "body": "每个工厂的拓扑位于工厂根目录下的 factory.json；诸如工作单元提供方之类的运维默认值位于 ~/.you-agent-factory/config.json。从目录安装的具名工厂位于 ~/.you-agent-factory/factories，除非你把它们指向别处。"
+    },
+    "howToMakeAnAgentUseYou": {
+      "title": "怎么让 AI 智能体使用 YOU？",
+      "body": "让智能体运行 you docs agents 并读取输出。那个主题是随已安装二进制文件一同携带的智能体入门说明与命令一览，因此智能体学到的是它手边真实拥有的命令面貌，而不是一份可能过时的副本。之后它就能直接驱动命令行。"
     },
     "howMcpOrCursorConnects": {
-      "title": "How Do MCP Or Cursor Dynamic Workflows Connect?",
-      "body": "Hosts spawn you mcp serve so Factory Session tools appear under you.factory_session.* names; Cursor uses that MCP bridge for its first dynamic-workflow loop. Open MCP for host JSON and serve modes, Dynamic Workflows for source depth, and the Cursor guide for the first-loop walkthrough."
+      "title": "MCP 或 Cursor 动态工作流如何接入？",
+      "body": "宿主会启动 you mcp serve，Factory Session 工具随之以 you.factory_session.* 的名字出现，Cursor 的第一个动态工作流循环就用这条桥接。MCP 服务器通过 stdio 通信，不会自行启动任何 HTTP 或仪表盘监听器。"
+    },
+    "whereAreTheExactContracts": {
+      "title": "确切的命令和模式在哪里？",
+      "body": "在参考页面上。它们是从已安装的 @you-agent-factory/api 包投影出来的，而不是手工誊抄的。CLI 参考收录所有已发布的命令、参数与实参；API 参考渲染随附的 OpenAPI 文档本身；事件参考收录完整的事件集合与流式约定。"
     },
     "somethingFailed": {
-      "title": "Something Failed—Where Do I Recover?",
-      "body": "When install, run, configuration, MCP, or dynamic-workflow steps fail, open Troubleshooting for symptom-scoped recovery that links into the owning canonical docs. Use this FAQ for common how-to questions; use Troubleshooting when you already have a failure symptom."
+      "title": "出错了——去哪里恢复？",
+      "body": "当安装、运行、配置、MCP 或动态工作流的步骤失败时，请打开故障排查页，那里按症状给出恢复路径并链接到负责的规范文档。日常的“怎么做”问题看本页；已经有明确故障现象时看故障排查。"
     }
   },
   "links": {
-    "whatIsYouAgentFactory": "What is you-agent-factory",
-    "gettingStarted": "Getting Started",
-    "installDocs": "Install",
+    "whatIsYouAgentFactory": "什么是 you-agent-factory",
+    "runYourFirstFactory": "运行你的第一个工厂",
+    "installDocs": "安装",
     "cliDocs": "CLI",
-    "factorySession": "Factory Session",
-    "configurationDocs": "Configuration",
-    "globalConfigurationFactories": "Global Configuration Factories",
+    "factorySession": "工厂会话",
+    "packagedFactoriesReference": "打包工厂参考",
+    "packagedFactoriesDocs": "打包工厂",
+    "writeYourFirstFactory": "编写你的第一个工厂",
+    "factorySchemaReference": "工厂模式参考",
+    "javascriptRuntimeReference": "JavaScript 运行时参考",
+    "configurationDocs": "配置",
+    "globalConfigurationFactories": "全局配置工厂",
+    "systemConfigSchema": "系统配置模式",
+    "makeYourAgentUseYou": "如何让你的智能体使用 YOU",
     "mcpDocs": "MCP",
-    "dynamicWorkflows": "Dynamic Workflows",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows guide",
-    "troubleshooting": "Troubleshooting"
+    "mcpReference": "MCP 参考",
+    "dynamicWorkflows": "动态工作流",
+    "cursorDynamicWorkflows": "Cursor 动态工作流指南",
+    "cliReference": "CLI 参考",
+    "apiReference": "API 参考",
+    "eventsReference": "事件参考",
+    "troubleshooting": "故障排查"
   }
 }

@@ -31,10 +31,10 @@ describe("docs and harness-support accessibility", () => {
     restoreFetchMock();
   });
 
-  test("getting-started docs article exposes landmarks, headings, keyboard chrome, and no serious axe violations", async () => {
+  test("run-your-first-factory docs article exposes landmarks, headings, keyboard chrome, and no serious axe violations", async () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
-    const page = await renderDocsSlugPage(["guides", "getting-started"]);
+    const page = await renderDocsSlugPage(["guides", "run-your-first-factory"]);
 
     await act(async () => {
       await renderWithAppProviders(
@@ -46,7 +46,7 @@ describe("docs and harness-support accessibility", () => {
     });
 
     const structure = expectCriticalPageStructure(document, {
-      expectedH1: "Getting Started",
+      expectedH1: "Run Your First Factory",
     });
     expect(structure.headingLevels[0]).toBe(1);
     expect(structure.headingLevels).toContain(2);
@@ -54,7 +54,7 @@ describe("docs and harness-support accessibility", () => {
       screen.getByRole("heading", { level: 2, name: "What It Is" }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { level: 2, name: "Install" }),
+      screen.getByRole("heading", { level: 2, name: "Steps Or Workflow" }),
     ).toBeTruthy();
 
     const nav = screen.getByRole("navigation", { name: "Primary" });

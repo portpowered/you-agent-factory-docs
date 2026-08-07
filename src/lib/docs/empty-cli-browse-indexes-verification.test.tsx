@@ -65,7 +65,7 @@ const CLI_BROWSE_SECTION_MESSAGE_KEYS = [
 const REPRESENTATIVE_SECTION_PAGES = {
   guides: {
     title: "Getting Started",
-    href: "/docs/guides/getting-started",
+    href: "/docs/guides/run-your-first-factory",
   },
   concepts: {
     title: "Harness",

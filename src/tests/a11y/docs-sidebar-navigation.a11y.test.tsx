@@ -5,10 +5,11 @@ import { act } from "react";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
-  GETTING_STARTED_GUIDE_URL,
   HARNESS_CONCEPT_URL,
+  INSTALL_DOCS_URL,
   PLACEHOLDER_SIDEBAR_DESCRIPTION,
   RALPH_TECHNIQUE_URL,
+  RUN_FIRST_FACTORY_GUIDE_URL,
   TOKENS_CONCEPT_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
@@ -252,15 +253,6 @@ describe("docs sidebar navigation accessibility", () => {
       within(sidebar).queryByRole("button", { name: "Glossary" }),
     ).toBeNull();
 
-    expect(
-      within(sidebar).getByRole("link", { name: "Getting Started" }),
-    ).toBeTruthy();
-    expect(
-      within(sidebar)
-        .getByRole("link", { name: "Getting Started" })
-        .getAttribute("href"),
-    ).toBe(GETTING_STARTED_GUIDE_URL);
-
     // Configuration keeps its /docs/factories route but is placed under
     // Program documentation -> Operations -> Configuring, so it is asserted
     // here rather than with the Reference route families.
@@ -425,6 +417,53 @@ describe("docs sidebar navigation accessibility", () => {
       "false",
     );
     expect(position(faqLink)).toBeGreaterThan(position(configuringSecondary));
+  });
+
+  test("Quick starts group exposes the onboarding path in reader order", async () => {
+    captureOriginalFetch();
+    await installDocsSearchFetchMock();
+    const context = await loadAppTestContext();
+
+    await act(async () => {
+      await renderWithAppProviders(
+        <CanonicalDocsLayout messages={context.messages}>
+          <p>Fixture article</p>
+        </CanonicalDocsLayout>,
+        { context },
+      );
+    });
+
+    const sidebar = document.getElementById("nd-sidebar");
+    expect(sidebar).toBeTruthy();
+    if (!sidebar) {
+      throw new Error("expected Fumadocs docs sidebar");
+    }
+
+    // Quick starts alone: five curated pages, so the rendered DOM stays small
+    // enough for the accessibility runtime.
+    await openTopLevelGroups(sidebar, context.messages, [
+      context.messages.explorer.topLevelGroups["quick-starts"],
+    ]);
+
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Install you-agent-factory" })
+        .getAttribute("href"),
+    ).toBe(INSTALL_DOCS_URL);
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Run Your First Factory" })
+        .getAttribute("href"),
+    ).toBe(RUN_FIRST_FACTORY_GUIDE_URL);
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "How To Make Your Agent Use YOU" })
+        .getAttribute("href"),
+    ).toBe("/docs/guides/make-your-agent-use-you");
+    // The retired quickstart route must not reappear anywhere in the tree.
+    expect(
+      within(sidebar).queryByRole("link", { name: "Getting Started" }),
+    ).toBeNull();
   });
 
   test("localized docs shell preserves locale while exposing shipped Vietnamese docs links", async () => {

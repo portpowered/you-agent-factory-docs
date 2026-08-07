@@ -157,7 +157,7 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("Getting Started");
-    expect(html).toContain("/docs/guides/getting-started");
+    expect(html).toContain("/docs/guides/run-your-first-factory");
     expect(html).not.toContain(indexMessages.emptyTitle);
   });
 

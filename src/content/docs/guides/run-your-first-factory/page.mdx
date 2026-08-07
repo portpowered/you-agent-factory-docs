@@ -1,21 +1,33 @@
 ---
 title: "Run Your First Factory"
-description: "Run a packaged factory end to end without writing any configuration."
+description: "Install a packaged factory from the embedded catalog and run it end to end without writing any configuration."
 kind: "guide"
 registryId: "guide.run-your-first-factory"
 messageNamespace: "local"
 assetNamespace: "local"
 status: "published"
 tags: []
-updatedAt: "2026-08-06"
+aliases:
+  - "first run"
+  - "run a packaged factory"
+updatedAt: "2026-08-07"
 ---
 
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="what-it-is" titleKey="sections.whatItIs.title">
   <T k="sections.whatItIs.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index",
+        labelKey: "links.packagedFactoriesReference",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="when-to-use" titleKey="sections.whenToUse.title">
@@ -26,33 +38,129 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.stepsOrWorkflow.body" />
 
   <p>
+    <T k="links.installPackagedLabel" />
+  </p>
+
+```sh
+you init --package @you/goal
+```
+
+  <p>
+    <T k="links.confirmInstalledLabel" />
+  </p>
+
+```sh
+you factory list --dir ~/.you-agent-factory/factories
+```
+
+  <p>
     <T k="links.runPackagedLabel" />
   </p>
 
 ```sh
-you run -a "@you/goal" --to "summarise this repository"
+you run --named @you/goal "Summarise this repository"
+```
+
+  <T k="callouts.invocationInput.body" />
+
+```sh
+echo "Summarise this repository" | you run --named @you/goal
 ```
 
   <p>
-    <T k="links.watchLabel" />
+    <T k="links.primaryOutputLabel" />
+  </p>
+
+```sh
+you run --named @you/goal --output primary "Summarise this repository"
+```
+
+</Section>
+
+<Section id="watch-the-run" titleKey="sections.watchTheRun.title">
+  <T k="sections.watchTheRun.body" />
+
+```sh
+you run --named @you/goal --with-site "Summarise this repository"
+```
+
+  <T k="callouts.serverOnly.body" />
+
+```sh
+you run --named @you/goal --with-server "Summarise this repository"
+```
+
+  <p>
+    <T k="links.sessionListLabel" />
   </p>
 
 ```sh
 you session list
 ```
 
-  <p>
-    <T k="links.logsLabel" />
-  </p>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/api",
+        labelKey: "links.apiDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="try-another-factory" titleKey="sections.tryAnotherFactory.title">
+  <T k="sections.tryAnotherFactory.body" />
 
 ```sh
-you logs --follow
+you init --package @you/review
+you run --named @you/review "Draft the release notes"
 ```
 
+  <T k="callouts.catalogBreadth.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index",
+        labelKey: "links.packagedFactoriesSources",
+      },
+      {
+        href: "/docs/references/cli",
+        labelKey: "links.cliReference",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
   <T k="sections.commonPitfalls.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+      {
+        href: "/docs/documentation/troubleshooting",
+        labelKey: "links.troubleshooting",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="next-steps" titleKey="sections.nextSteps.title">
+  <T k="sections.nextSteps.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/write-your-first-factory",
+        labelKey: "links.writeYourFirstFactory",
+      },
+      {
+        href: "/docs/guides/make-your-agent-use-you",
+        labelKey: "links.makeYourAgentUseYou",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">

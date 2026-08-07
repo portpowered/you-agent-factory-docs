@@ -1,30 +1,76 @@
 {
-  "title": "Write Your First JavaScript Step",
-  "description": "Drop into JavaScript when the declarative configuration runs out.",
-  "openingSummary": "Declarative configuration covers most flow logic. When it does not, a JavaScript step lets you compute the next move in code without leaving the factory.",
+  "title": "Write Your First JavaScript Workflow",
+  "description": "Use the you-agent-factory JavaScript orchestrator: the runtime bindings a workflow script gets, how it dispatches agents, and how it bounds, checkpoints, and returns its work.",
+  "openingSummary": "A JavaScript factory replaces the workstation graph with one script. The script is not free-form: it runs against a fixed, published set of runtime bindings, and everything it can do — dispatch an agent, fan out, checkpoint, return a result — goes through one of them.",
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A JavaScript step is an ordinary function the runtime calls with the current work state. It returns the next state, and the graph carries on from there."
+      "body": "The JavaScript orchestrator runs a single workflow script instead of moving work between workstations. The script is an async function body: it reads its invocation arguments, calls agents, and returns the final answer. The factory definition around it carries the source, the argument schema, and the execution policy."
     },
     "whenToUse": {
       "title": "When To Use",
-      "body": "Use JavaScript when a decision depends on something the declarative form cannot express: parsing a payload, calling out to your own service, or branching on a computed value."
+      "body": "Choose it when the workflow is a procedure rather than a topology — when the next step depends on a computed value, a loop count, or a branch that is awkward to express as states and transitions. Choose the graph form instead when you want durable per-item state without writing it yourself."
     },
-    "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Add a script worker to your factory, write the function, then run the factory and read the step's output in the logs."
+    "theRuntimeBindings": {
+      "title": "The Runtime Bindings",
+      "body": "Fifteen symbols are published across eight top-level names. There is no module system and no import: these are simply in scope when the script starts."
+    },
+    "dispatchingOneAgent": {
+      "title": "Dispatching One Agent",
+      "body": "A single child dispatch takes a spec object and resolves to a child result. Only the prompt is required; a label makes the dispatch identifiable in progress output, and the provider, model, preset, and reasoning-effort fields override what the operator configured for this one call."
+    },
+    "fanningOut": {
+      "title": "Fanning Out",
+      "body": "Concurrent work takes an array of run specs or item functions and resolves to an array of child results in the same order. Sequential per-item work takes a list plus a worker function, and optionally a second stage, running the stages in order for each item."
+    },
+    "stayingInsideTheBudget": {
+      "title": "Staying Inside The Budget",
+      "body": "A workflow that dispatches more agents than its policy allows fails partway through, after spending real work. Read the budget first and fail immediately instead. The snapshot always carries the maximum agent count and the concurrency limit, and may carry sandbox mode, duration and output caps, and a token ceiling."
+    },
+    "checkpointsAndResume": {
+      "title": "Checkpoints And Resume",
+      "body": "Script variables do not survive a restart, so anything expensive to recompute should be written to a labeled checkpoint with JSON-compatible state. A resumed session reads that state back, or gets nothing when the session is starting fresh."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
-      "body": "Keep the step small and pure where you can. A JavaScript step that does its own retries, its own logging, and its own error handling is competing with the runtime rather than using it."
+      "body": "Three habits cause most trouble. Not checking a child result's status, so a failed dispatch silently becomes empty text downstream. Writing retries, logging, and error handling that duplicate what the runtime already does. And letting the script grow past what a reader can follow — at that point the workflow probably wanted to be a graph."
     },
     "tags": {
       "title": "Tags"
     }
   },
   "links": {
-    "workerLabel": "Add a script worker",
-    "runLabel": "Run the factory"
+    "writeYourFirstFactory": "Write your first factory — the definition that loads this script",
+    "javascriptRuntimeReference": "JavaScript Runtime reference — every symbol, parameter, and shared schema",
+    "packagedFactoriesReference": "Packaged Factory Reference — real workflow sources to read",
+    "factorySchemaReference": "Factory schema — the orchestrator block",
+    "bindingsSymbolHeader": "Symbol",
+    "bindingsPurposeHeader": "What it does",
+    "bindingArgsSymbol": "args, meta",
+    "bindingArgsPurpose": "Invocation arguments and metadata, bound as mutable snapshots at script start. Writing to them changes only the in-script view, never the original request.",
+    "bindingAgentRunSymbol": "agent.run(spec)",
+    "bindingAgentRunPurpose": "Dispatch one child agent and await its result.",
+    "bindingParallelSymbol": "parallel(items)",
+    "bindingParallelPurpose": "Run an array of run specs or item functions concurrently and await all of their results.",
+    "bindingPipelineSymbol": "pipeline(items, worker, next)",
+    "bindingPipelinePurpose": "Map each item through a worker function and an optional second stage, running the stages in order per item.",
+    "bindingPhaseSymbol": "phase(name), log(message, fields)",
+    "bindingPhasePurpose": "Record a named phase transition, or emit a progress message, for anyone watching the run.",
+    "bindingWorkflowSymbol": "workflow.budget / checkpoint / resumeState / artifact / log / final",
+    "bindingWorkflowPurpose": "Read the execution budget, persist and restore resume state, publish an artifact, and terminate with a final value."
+  },
+  "callouts": {
+    "checkStatus": {
+      "body": "Always check the status before reading the output. A dispatch that did not complete still returns a result object, so skipping the check turns a failure into an empty string that quietly poisons everything downstream."
+    },
+    "pipelineVsParallel": {
+      "body": "Use concurrent fan-out when the items are independent and you need all the results together. Use the per-item pipeline when each item passes through more than one stage and you would rather not make every item wait for the slowest one at each stage boundary."
+    },
+    "policyIsAuthoritative": {
+      "body": "The budget reflects the default policy declared in the factory definition, with any runtime override applied. It is authoritative: exceeding it is not a soft warning."
+    },
+    "artifactsAndFinal": {
+      "body": "Two other workflow calls matter for output. Publishing an artifact records a labeled, kinded, JSON-compatible payload alongside the run. Terminating with a final value wins over whatever the script returns, so use one or the other rather than both."
+    }
   }
 }

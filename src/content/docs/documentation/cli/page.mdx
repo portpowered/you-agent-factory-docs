@@ -10,31 +10,24 @@ tags: []
 aliases:
   - "you CLI"
   - "CLI"
-updatedAt: "2026-07-09"
+updatedAt: "2026-08-07"
 ---
 
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="install" titleKey="sections.install.title">
   <T k="sections.install.body" />
-  <p>
-    <T k="links.installMacosLinuxLabel" />
-  </p>
-  <pre>
-    <code>
-      <T k="links.installMacosLinuxCommand" />
-    </code>
-  </pre>
-  <p>
-    <T k="links.installWindowsLabel" />
-  </p>
-  <pre>
-    <code>
-      <T k="links.installWindowsCommand" />
-    </code>
-  </pre>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="commands" titleKey="sections.commands.title">
@@ -43,122 +36,228 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
     <thead>
       <tr>
         <th>
-          <T k="links.commandMatrixCommandHeader" />
+          <T k="links.matrixCommandHeader" />
         </th>
         <th>
-          <T k="links.commandMatrixPurposeHeader" />
+          <T k="links.matrixPurposeHeader" />
         </th>
         <th>
-          <T k="links.commandMatrixRunningFactoryHeader" />
+          <T k="links.matrixRunningFactoryHeader" />
         </th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>
-          <T k="links.commandMatrixYouCommand" />
+          <T k="links.matrixInitCommand" />
         </td>
         <td>
-          <T k="links.commandMatrixYouPurpose" />
+          <T k="links.matrixInitPurpose" />
         </td>
         <td>
-          <T k="links.commandMatrixYouRunning" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.commandMatrixYouRunDirCommand" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouRunDirPurpose" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouRunDirRunning" />
+          <T k="links.matrixInitRunning" />
         </td>
       </tr>
       <tr>
         <td>
-          <T k="links.commandMatrixYouRunNamedCommand" />
+          <T k="links.matrixRunCommand" />
         </td>
         <td>
-          <T k="links.commandMatrixYouRunNamedPurpose" />
+          <T k="links.matrixRunPurpose" />
         </td>
         <td>
-          <T k="links.commandMatrixYouRunNamedRunning" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.commandMatrixYouRunWorkCommand" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouRunWorkPurpose" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouRunWorkRunning" />
+          <T k="links.matrixRunRunning" />
         </td>
       </tr>
       <tr>
         <td>
-          <T k="links.commandMatrixYouSubmitCommand" />
+          <T k="links.matrixServerCommand" />
         </td>
         <td>
-          <T k="links.commandMatrixYouSubmitPurpose" />
+          <T k="links.matrixServerPurpose" />
         </td>
         <td>
-          <T k="links.commandMatrixYouSubmitRunning" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.commandMatrixYouSubmitBatchCommand" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouSubmitBatchPurpose" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouSubmitBatchRunning" />
+          <T k="links.matrixServerRunning" />
         </td>
       </tr>
       <tr>
         <td>
-          <T k="links.commandMatrixYouSessionListCommand" />
+          <T k="links.matrixFactoryCommand" />
         </td>
         <td>
-          <T k="links.commandMatrixYouSessionListPurpose" />
+          <T k="links.matrixFactoryPurpose" />
         </td>
         <td>
-          <T k="links.commandMatrixYouSessionListRunning" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.commandMatrixYouWorkCommand" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouWorkPurpose" />
-        </td>
-        <td>
-          <T k="links.commandMatrixYouWorkRunning" />
+          <T k="links.matrixFactoryRunning" />
         </td>
       </tr>
       <tr>
         <td>
-          <T k="links.commandMatrixYouDocsCommand" />
+          <T k="links.matrixFactoryConfigCommand" />
         </td>
         <td>
-          <T k="links.commandMatrixYouDocsPurpose" />
+          <T k="links.matrixFactoryConfigPurpose" />
         </td>
         <td>
-          <T k="links.commandMatrixYouDocsRunning" />
+          <T k="links.matrixFactoryConfigRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixSessionCommand" />
+        </td>
+        <td>
+          <T k="links.matrixSessionPurpose" />
+        </td>
+        <td>
+          <T k="links.matrixSessionRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixSubmitCommand" />
+        </td>
+        <td>
+          <T k="links.matrixSubmitPurpose" />
+        </td>
+        <td>
+          <T k="links.matrixSubmitRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixWorkCommand" />
+        </td>
+        <td>
+          <T k="links.matrixWorkPurpose" />
+        </td>
+        <td>
+          <T k="links.matrixWorkRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixWorkersCommand" />
+        </td>
+        <td>
+          <T k="links.matrixWorkersPurpose" />
+        </td>
+        <td>
+          <T k="links.matrixWorkersRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixModelsCommand" />
+        </td>
+        <td>
+          <T k="links.matrixModelsPurpose" />
+        </td>
+        <td>
+          <T k="links.matrixModelsRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixMcpCommand" />
+        </td>
+        <td>
+          <T k="links.matrixMcpPurpose" />
+        </td>
+        <td>
+          <T k="links.matrixMcpRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixServeCommand" />
+        </td>
+        <td>
+          <T k="links.matrixServePurpose" />
+        </td>
+        <td>
+          <T k="links.matrixServeRunning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.matrixDocsCommand" />
+        </td>
+        <td>
+          <T k="links.matrixDocsPurpose" />
+        </td>
+        <td>
+          <T k="links.matrixDocsRunning" />
         </td>
       </tr>
     </tbody>
   </table>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/cli",
+        labelKey: "links.cliReference",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="selecting-a-factory" titleKey="sections.selectingAFactory.title">
+  <T k="sections.selectingAFactory.body" />
+
+```sh
+you run --named @you/goal "Ship the login bugfix"
+you run --dir factory --work ./docs/examples/startup-work.json
+you run --factory ./factory.yaml "Fix the lint issues"
+```
+
+  <T k="callouts.currentFactoryDefault.body" />
+</Section>
+
+<Section id="global-flags" titleKey="sections.globalFlags.title">
+  <T k="sections.globalFlags.body" />
+
+```sh
+you --json factory list
+you --server http://127.0.0.1:7437 session list
+you --verbose run --named @you/review "Draft the release notes"
+```
+
+  <T k="callouts.deprecatedPort.body" />
+</Section>
+
+<Section id="offline-reference" titleKey="sections.offlineReference.title">
+  <T k="sections.offlineReference.body" />
+
+```sh
+you docs
+you docs agents
+```
+
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/make-your-agent-use-you",
+        labelKey: "links.makeYourAgentUseYou",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/cli",
+        labelKey: "links.cliReferenceFullContract",
+      },
+      {
+        href: "/docs/references/api",
+        labelKey: "links.apiReference",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">

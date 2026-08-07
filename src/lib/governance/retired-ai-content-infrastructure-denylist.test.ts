@@ -83,7 +83,7 @@ describe("retired-ai-content-infrastructure-denylist", () => {
 
   test("fails when route inventory includes retired public route families", () => {
     const findings = auditRetiredRouteInventory("fixture-routes", [
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
       "/docs/models",
       "/docs/modules/attention",
       "/docs/systems",
@@ -157,7 +157,7 @@ describe("retired-ai-content-infrastructure-denylist", () => {
       routeInventories: [
         {
           name: "routes",
-          routes: ["/docs/guides/getting-started", "/docs/papers"],
+          routes: ["/docs/guides/run-your-first-factory", "/docs/papers"],
         },
       ],
       contentFixtures: [

@@ -54,7 +54,7 @@ describe("localizePageTree", () => {
     const localizedTree = localizePageTree(source.pageTree, "vi");
     const links = collectLinks(localizedTree.children);
 
-    expect(links).toContain("/vi/docs/guides/getting-started");
+    expect(links).toContain("/vi/docs/guides/run-your-first-factory");
     expect(links).toContain("/vi/docs/concepts/harness");
     expect(links).toContain("/vi/docs/techniques/ralph");
     expect(links).toContain("/vi/docs/documentation/what-is-you-agent-factory");
@@ -67,7 +67,7 @@ describe("localizePageTree", () => {
     const localizedTree = localizePageTree(source.pageTree, "ja");
     const links = collectLinks(localizedTree.children);
 
-    expect(links).toContain("/ja/docs/guides/getting-started");
+    expect(links).toContain("/ja/docs/guides/run-your-first-factory");
     expect(links).toContain("/ja/docs/concepts/harness");
     expect(links).toContain("/ja/docs/techniques/ralph");
     expect(links).toContain("/ja/docs/documentation/what-is-you-agent-factory");
@@ -149,7 +149,7 @@ describe("localizePageTree", () => {
       (child) =>
         child.type === "page" &&
         "url" in child &&
-        child.url === "/ja/docs/guides/getting-started",
+        child.url === "/ja/docs/guides/run-your-first-factory",
     );
     expect(gettingStartedNode).toMatchObject({
       type: "page",

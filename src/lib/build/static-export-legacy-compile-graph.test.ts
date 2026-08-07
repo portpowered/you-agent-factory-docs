@@ -23,7 +23,9 @@ describe("static-export-legacy-compile-graph", () => {
       expect(isRetiredAtlasDocsSlug([id])).toBe(true);
       expect(isRetiredAtlasDocsSlug([id, "attention"])).toBe(true);
     }
-    expect(isRetiredAtlasDocsSlug(["guides", "getting-started"])).toBe(false);
+    expect(isRetiredAtlasDocsSlug(["guides", "run-your-first-factory"])).toBe(
+      false,
+    );
     expect(isRetiredAtlasDocsSlug(["concepts", "harness"])).toBe(false);
     expect(isRetiredAtlasDocsSlug(["glossary", "token"])).toBe(false);
     expect(isRetiredAtlasDocsSlug(undefined)).toBe(false);
@@ -32,7 +34,7 @@ describe("static-export-legacy-compile-graph", () => {
 
   test("omitRetiredAtlasDocsStaticParams drops retired Atlas params and keeps factory ones", () => {
     const filtered = omitRetiredAtlasDocsStaticParams([
-      { slug: ["guides", "getting-started"] },
+      { slug: ["guides", "run-your-first-factory"] },
       { slug: ["modules", "attention"] },
       { slug: ["models"] },
       { slug: ["concepts", "harness"] },
@@ -42,7 +44,7 @@ describe("static-export-legacy-compile-graph", () => {
     ]);
 
     expect(filtered).toEqual([
-      { slug: ["guides", "getting-started"] },
+      { slug: ["guides", "run-your-first-factory"] },
       { slug: ["concepts", "harness"] },
       { locale: "ja", slug: ["techniques", "ralph"] },
     ]);
@@ -109,7 +111,10 @@ describe("static-export-legacy-compile-graph", () => {
       mkdirSync(join(dir, "ja/docs/models"), { recursive: true });
       mkdirSync(join(dir, "topology"), { recursive: true });
       writeFileSync(join(dir, "index.html"), "<html></html>\n");
-      writeFileSync(join(dir, "docs/guides/getting-started.html"), "<html/>\n");
+      writeFileSync(
+        join(dir, "docs/guides/run-your-first-factory.html"),
+        "<html/>\n",
+      );
       writeFileSync(join(dir, "docs/modules/attention.html"), "<html/>\n");
       writeFileSync(join(dir, "ja/docs/models/index.html"), "<html/>\n");
       writeFileSync(join(dir, "topology.html"), "<html/>\n");
@@ -120,7 +125,7 @@ describe("static-export-legacy-compile-graph", () => {
       expect(paths).toContain("docs/modules/attention.html");
       expect(paths).toContain("ja/docs/models/index.html");
       expect(paths).toContain("topology.html");
-      expect(paths).not.toContain("docs/guides/getting-started.html");
+      expect(paths).not.toContain("docs/guides/run-your-first-factory.html");
       expect(paths).not.toContain("index.html");
     } finally {
       rmSync(dir, { recursive: true, force: true });

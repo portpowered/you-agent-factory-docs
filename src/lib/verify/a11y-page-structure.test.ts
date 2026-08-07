@@ -18,7 +18,7 @@ describe("a11y-page-structure probes", () => {
       <main>
         <h1>you-agent-factory</h1>
         <h2>Install</h2>
-        <a href="/docs/guides/getting-started">Getting started</a>
+        <a href="/docs/guides/run-your-first-factory">Getting started</a>
       </main>
     `;
 

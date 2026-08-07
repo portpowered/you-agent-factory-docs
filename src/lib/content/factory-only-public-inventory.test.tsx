@@ -92,7 +92,7 @@ const FACTORY_SECTION_INDEX_CASES = [
   {
     kind: "guide" as const,
     title: "Guides",
-    pageHref: "/docs/guides/getting-started",
+    pageHref: "/docs/guides/run-your-first-factory",
   },
   {
     kind: "concept" as const,

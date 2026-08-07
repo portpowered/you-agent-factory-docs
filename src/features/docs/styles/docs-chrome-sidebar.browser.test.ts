@@ -73,11 +73,11 @@ function buildSidebarHoverFixtureHtml(): string {
   </head>
   <body>
     <aside id="nd-sidebar">
-      <a class="${DOCS_CHROME_SIDEBAR_ROW_MARKER_CLASS}" href="/docs/guides/getting-started" data-probe="desktop-rest">Getting started</a>
+      <a class="${DOCS_CHROME_SIDEBAR_ROW_MARKER_CLASS}" href="/docs/guides/run-your-first-factory" data-probe="desktop-rest">Getting started</a>
       <a class="${DOCS_CHROME_SIDEBAR_ROW_MARKER_CLASS}" href="/docs/concepts/harness" data-active="true" data-probe="desktop-active">Harness</a>
     </aside>
     <div data-mobile-docs-drawer>
-      <a class="${DOCS_CHROME_SIDEBAR_ROW_MARKER_CLASS}" href="/docs/guides/getting-started" data-probe="mobile-rest">Getting started</a>
+      <a class="${DOCS_CHROME_SIDEBAR_ROW_MARKER_CLASS}" href="/docs/guides/run-your-first-factory" data-probe="mobile-rest">Getting started</a>
       <a class="${DOCS_CHROME_SIDEBAR_ROW_MARKER_CLASS}" href="/docs/concepts/harness" data-active="true" data-probe="mobile-active">Harness</a>
     </div>
   </body>

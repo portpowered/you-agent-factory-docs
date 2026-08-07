@@ -73,7 +73,7 @@ describe("validateDocumentationLinks", () => {
     const urls = files.map((file) => file.url).sort();
     const paths = files.map((file) => file.path);
 
-    expect(urls).toContain("/docs/guides/getting-started");
+    expect(urls).toContain("/docs/guides/run-your-first-factory");
     expect(urls).toContain("/docs/concepts/skills");
     expect(urls).toContain("/docs/concepts/mcp");
     expect(urls).toContain("/docs/concepts/tool-calling");

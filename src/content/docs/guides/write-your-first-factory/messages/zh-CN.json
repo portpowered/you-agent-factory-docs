@@ -1,0 +1,141 @@
+{
+  "title": "编写你的第一个工厂",
+  "description": "按步骤编写属于你自己的 you-agent-factory 工厂，可选用声明式的图格式，也可选用 JavaScript 编排器格式。",
+  "openingSummary": "一个工厂就是一个文件，它说明存在哪些工作、由谁来做、以及工作如何在它们之间流转。它有两种写法：写成声明式的图，或写成直接调用智能体的 JavaScript 工作流。两者产出的工厂用同一条命令运行。",
+  "sections": {
+    "whatItIs": {
+      "title": "它是什么",
+      "body": "一份工厂定义要指明三样东西。工作类型（work type）是流经工厂的工作类别，每种都有初始状态、终止状态和失败状态。工作单元（worker）是真正执行的运行时——智能体、脚本或一次推理调用。工作站（workstation）是处理步骤：取走处于某个状态的工作，派发给工作单元，再把它送入下一个状态。其余的一切——重试、评审循环、守卫、扇出、共享资源——都是后来加在这副骨架上的。"
+    },
+    "whenToUse": {
+      "title": "何时使用",
+      "body": "当某个打包工厂做的事已经接近你的需求但还不够时，就该自己写了。从能完整跑通的最小定义开始，然后慢慢长大。跑不起来的工厂什么也教不了你；跑得不好的工厂会准确告诉你下一步该修什么。"
+    },
+    "chooseAFormat": {
+      "title": "选择格式",
+      "body": "orchestrator 字段决定用哪个引擎运行你的工厂，而这个选择又决定了你怎么写它。图工厂描述一张拓扑，让引擎推动工作在其中流转。JavaScript 工厂描述一段过程，直接调用运行时。两者互不包含：图形式免费给你按条目持久化的状态和并发，JavaScript 形式则给你普通的控制流。"
+    },
+    "startFromAWorkingExample": {
+      "title": "从一个能跑的例子开始",
+      "body": "最快且稳妥的起点，是你已经运行过的打包工厂。把它装进项目本地的根目录，你就得到一份已知能通过校验、已知能运行、且小到可以一口气读完的定义。@you/subagent 是其中最小的：一个工作类型、一个工作单元、一个工作站。"
+    },
+    "writeAGraphFactory": {
+      "title": "编写图工厂",
+      "body": "按引擎读取的顺序来搭建定义：先声明工作，再声明做事的人，最后声明用到他们的步骤。下面每一步都会向文件里加入一个顶层数组。"
+    },
+    "writeAJavascriptFactory": {
+      "title": "编写 JavaScript 工厂",
+      "body": "JavaScript 工厂用一段脚本取代了工作站构成的图。没有工作类型、工作单元或工作站需要声明——orchestrator 块承载源代码、参数模式和安全策略，脚本本身按你写的顺序调用智能体。"
+    },
+    "validateAndRun": {
+      "title": "校验并运行",
+      "body": "校验与运行是两个独立步骤，而且值得先做：它用与 HTTP 工厂校验端点相同的约定检查载荷，而不启动任何运行时。通过之后，就把这个文件当作可移植工厂直接运行。"
+    },
+    "growTheFile": {
+      "title": "让文件长大",
+      "body": "单文件大约到第三个工作站就不再舒服了。拆分布局会写出规范的 factory.json，并在旁边生成 workers 和 workstations 目录，于是每个步骤各占一个文件，差异也变得可读。"
+    },
+    "commonPitfalls": {
+      "title": "常见陷阱",
+      "body": "第一次写工厂的失败大多来自三个错误。其一，某个工作站的输入状态永远没有工作到达，于是运行空转、什么都没做就退出。其二，用一个与 workers 数组中任何条目都不匹配的名字去引用工作单元。其三，借用了别的工作单元类型的字段——给脚本工作单元配智能体工具，或给轮询器配模型路由——模式会拒绝，因为每种工作单元类型各自选定了自己的字段集合。"
+    },
+    "letAFactoryWriteIt": {
+      "title": "让一个工厂来写它",
+      "body": "打包工厂里就有能创建工厂的。@you/factory-builder 接收一段自然语言请求，按你指定的形式产出一份通过校验的定义，然后以一个你可以直接运行的名字安装它。"
+    },
+    "tags": {
+      "title": "标签"
+    }
+  },
+  "links": {
+    "factorySchemaReference": "工厂模式 — 全部定义、字段、约束与默认值",
+    "factorySchemaFields": "工厂模式 — 字段级约束与枚举",
+    "factorySchemaConstraints": "工厂模式 — 工作单元与工作站的字段集合",
+    "javascriptRuntimeReference": "JavaScript 运行时参考 — 全部运行时符号与共享模式",
+    "writeYourFirstJavascript": "编写你的第一个 JavaScript 步骤",
+    "packagedFactoriesReference": "打包工厂参考 — 可直接照抄的完整源文件",
+    "agentRunWorkstation": "AGENT_RUN 工作站",
+    "agentWorker": "AGENT_WORKER",
+    "troubleshooting": "故障排查",
+    "formatTableQuestionHeader": "问题",
+    "formatTableGraphHeader": "图工厂",
+    "formatTableJavascriptHeader": "JavaScript 工厂",
+    "formatRowShapeQuestion": "你写的是什么？",
+    "formatRowShapeGraph": "用 JSON 或 YAML 写工作类型、工作单元和工作站。",
+    "formatRowShapeJavascript": "一个 JavaScript 函数加一个 orchestrator 块。",
+    "formatRowControlQuestion": "控制流如何流转？",
+    "formatRowControlGraph": "工作在状态之间移动；输入状态里有工作的工作站就会运行。",
+    "formatRowControlJavascript": "自上而下，使用普通的 await、循环和条件判断。",
+    "formatRowStateQuestion": "状态存在哪里？",
+    "formatRowStateGraph": "存在工作条目自身之中，持久保存，每条一份。",
+    "formatRowStateJavascript": "存在脚本变量里；需要恢复时用显式检查点。",
+    "formatRowDeclareQuestion": "必须声明什么？",
+    "formatRowDeclareGraph": "工作条目可能处于的每一个状态。",
+    "formatRowDeclareJavascript": "一份参数模式和一份执行策略。",
+    "graphStep1Label": "第 1 步 — 为工厂命名",
+    "graphStep2Label": "第 2 步 — 声明工作类型及其状态",
+    "graphStep3Label": "第 3 步 — 声明一个工作单元",
+    "graphStep4Label": "第 4 步 — 声明一个工作站",
+    "graphStep5Label": "第 5 步 — 声明调用签名",
+    "graphWholeFileLabel": "完整文件",
+    "jsStep1Label": "第 1 步 — 声明编排器种类",
+    "jsStep2Label": "第 2 步 — 指向工作流源代码",
+    "jsStep3Label": "第 3 步 — 声明参数模式",
+    "jsStep4Label": "第 4 步 — 设置默认策略",
+    "jsWorkflowSourceLabel": "工作流源代码",
+    "jsWholeFileLabel": "加载它的定义",
+    "validateLabel": "运行前先校验",
+    "runPortableLabel": "作为可移植工厂运行",
+    "installNamedLabel": "或者用一个名字安装它，然后在任何地方运行"
+  },
+  "callouts": {
+    "orchestratorDefault": {
+      "body": "省略 orchestrator 块是合法的，含义是图：已有定义会按兼容默认值加载到 Petri 引擎。即便如此也请显式声明——JavaScript 工厂漏写它时的失败方式很令人困惑。"
+    },
+    "readBeforeEditing": {
+      "body": "改动之前先读一遍安装好的定义。重命名工作站、让它指向你自己的提示词、再跑一次——这比从零写一个文件是更小的第一步改动，而且保留了让它有效的每一个字段。"
+    },
+    "graphFieldReference": {
+      "body": "八种工作站类型和六种工作单元类型各自接受不同的字段集合。模式参考页列出了哪些字段是共享的、哪些由某一种类型独占、哪些会被拒绝。"
+    },
+    "jsRuntimeReference": {
+      "body": "脚本运行在一组固定的运行时绑定之上：承载调用输入的 args 与 meta，派发单个子任务的 agent.run，用于扇出的 parallel 与 pipeline，用于进度的 phase 与 log，以及处理预算、检查点、产物和最终结果的 workflow 命名空间。"
+    },
+    "handlingBehaviorDefault": {
+      "body": "可移植运行需要知道由哪个工作类型接收调用输入。用 --factory 运行的工厂必须在恰好一个工作类型上声明 handlingBehavior DEFAULT——不多也不少。"
+    },
+    "flattenBack": {
+      "body": "反方向的操作会把规范的单文件形式写回标准输出，便于把拆分布局与别人发给你的定义做差异比较。"
+    },
+    "factoryBuilderOrchestrator": {
+      "body": "orchestrator 参数决定生成器写出的形式：graph 生成 YAML 拓扑，javascript 生成 JavaScript 编排器。默认是 graph。"
+    },
+    "graphStep1": {
+      "body": "给工厂起个名字。这是唯一必填的顶层字段，也是后续具名工厂命令所引用的对象。"
+    },
+    "graphStep2": {
+      "body": "声明一个带三种状态的工作类型：提交的工作抵达的 INITIAL 状态、表示完成的 TERMINAL 状态，以及图无法完成时使用的 FAILED 状态。给它标上 handlingBehavior DEFAULT，可移植运行才知道该把调用输入放在哪里。"
+    },
+    "graphStep3": {
+      "body": "声明一个工作单元。type 决定它允许哪些字段：AGENT_WORKER 接受智能体工具和权限设置，SCRIPT_WORKER 接受命令与参数，INFERENCE_WORKER 接受操作与模型位置。把 model 和 provider 留空，即可继承你在安装时配置的运维默认值。"
+    },
+    "graphStep4": {
+      "body": "声明一个工作站。inputs 指明它消费的工作类型与状态，outputs 指明成功时送出的状态，onFailure 指明工作单元失败时送出的状态。body 就是提示词：它可以插入调用参数，也可以引用正在处理的工作条目。"
+    },
+    "graphStep5": {
+      "body": "声明调用签名，让调用方知道该传什么。每个参数都有内部名称、命令行上使用的外部名称，以及它接受的绑定方式——位置文本、管道 stdin，或具名参数。"
+    },
+    "jsStep1": {
+      "body": "把 orchestrator.kind 设为 JAVASCRIPT。不设的话，定义会按兼容默认值当作图工厂加载，引擎就会去找根本不存在的工作站。"
+    },
+    "jsStep2": {
+      "body": "指向工作流源代码。脚本与定义放在一起时用 sourceRef 写相对于工厂的路径；想让定义直接携带脚本文本时用 inlineSource。随附的 JavaScript 工厂都用内联形式，以便作为单个文件发布。"
+    },
+    "jsStep3": {
+      "body": "把 argsSchema 声明为一个 JSON Schema 对象。它在脚本启动前校验参数，也是脚本中 args 绑定取值的来源。"
+    },
+    "jsStep4": {
+      "body": "设置 defaultPolicy。它限定在没有运行时覆盖时该工作流被允许做什么：总共可发起多少次智能体调用、可同时运行多少、子派发可嵌套多深、是否允许联网、哪些根目录可写。READ_ONLY 加一个空的可写根列表是安全的起点。"
+    }
+  }
+}

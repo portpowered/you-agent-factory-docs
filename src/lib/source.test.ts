@@ -32,7 +32,7 @@ const RETIRED_ATLAS_FOLDER_NAMES = [
 ] as const;
 
 const REPRESENTATIVE_SECTION_URLS = {
-  guides: ["/docs/guides/getting-started"],
+  guides: ["/docs/guides/run-your-first-factory"],
   concepts: ["/docs/concepts/harness", "/docs/concepts/compaction"],
   techniques: ["/docs/techniques/ralph", "/docs/techniques/writer-reviewer"],
   documentation: ["/docs/documentation/what-is-you-agent-factory"],

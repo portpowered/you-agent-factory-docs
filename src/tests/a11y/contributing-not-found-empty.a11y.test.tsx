@@ -93,7 +93,7 @@ describe("contributing, not-found, and empty-state accessibility", () => {
     }
 
     const gettingStarted = screen.getByRole("link", {
-      name: "Getting started",
+      name: "Run your first factory",
     });
     gettingStarted.focus();
     expect(document.activeElement).toBe(gettingStarted);
@@ -126,14 +126,14 @@ describe("contributing, not-found, and empty-state accessibility", () => {
       name: "Recovery links",
     });
     const gettingStarted = within(recovery).getByRole("link", {
-      name: "Getting Started",
+      name: "Run your first factory",
     });
     const browse = within(recovery).getByRole("link", { name: "Browse" });
     const search = within(recovery).getByRole("link", { name: "Search" });
     const blog = within(recovery).getByRole("link", { name: "Blog" });
 
     expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
     );
     expect(browse.getAttribute("href")).toBe("/browse");
     expect(search.getAttribute("href")).toBe("/search");

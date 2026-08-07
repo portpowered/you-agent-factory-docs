@@ -5,7 +5,8 @@ import type { Node } from "fumadocs-core/page-tree";
 export const TOKENS_CONCEPT_URL = "/docs/concepts/tokens";
 export const HARNESS_CONCEPT_URL = "/docs/concepts/harness";
 export const RALPH_TECHNIQUE_URL = "/docs/techniques/ralph";
-export const GETTING_STARTED_GUIDE_URL = "/docs/guides/getting-started";
+export const RUN_FIRST_FACTORY_GUIDE_URL =
+  "/docs/guides/run-your-first-factory";
 export const INSTALL_DOCS_URL = "/docs/documentation/install";
 /** Top-level explorer FAQ entry; content stays on the documentation route. */
 export const FAQ_DOCS_URL = "/docs/documentation/faq";

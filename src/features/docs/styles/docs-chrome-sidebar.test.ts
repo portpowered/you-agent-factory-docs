@@ -143,7 +143,7 @@ describe("docs chrome sidebar highlighting", () => {
 
     const resting = document.createElement("a");
     resting.className = DOCS_CHROME_SIDEBAR_ROW_MARKER_CLASS;
-    resting.href = "/docs/guides/getting-started";
+    resting.href = "/docs/guides/run-your-first-factory";
     resting.style.color = tokens.restText;
     resting.style.backgroundColor = "transparent";
 

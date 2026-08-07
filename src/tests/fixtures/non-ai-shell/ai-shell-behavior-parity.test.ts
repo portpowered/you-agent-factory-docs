@@ -48,7 +48,7 @@ const CLI_SECTION_INDEX_CASES = [
     kind: "guide" as const,
     title: "Guides",
     pageTitle: "Getting Started",
-    pageHref: "/docs/guides/getting-started",
+    pageHref: "/docs/guides/run-your-first-factory",
   },
   {
     kind: "concept" as const,

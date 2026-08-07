@@ -28,9 +28,9 @@
     "stepsSessionListLabel": "Confirm a live factory session",
     "stepsSubmitLabel": "Submit work for this loop pass",
     "stepsSubmitBatchLabel": "Or submit a small batch",
-    "gettingStarted": "Getting started",
     "loopConcept": "Loop concept",
-    "writeReviewLoopsGuide": "Write-Review Loops"
+    "writeReviewLoopsGuide": "Write-Review Loops",
+    "runYourFirstFactory": "Run your first factory"
   },
   "callouts": {
     "stepsKeepIterating": {

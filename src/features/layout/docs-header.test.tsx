@@ -873,7 +873,7 @@ describe("DocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const user = userEvent.setup();
-    const pathname = "/docs/guides/getting-started";
+    const pathname = "/docs/guides/run-your-first-factory";
     window.history.replaceState({}, "", pathname);
     renderHeaderWithNavigation(
       <DocsHeader messages={messages} pageTree={source.pageTree} />,

@@ -173,7 +173,7 @@ function buildFiveSurfaceFixtureHtml(): string {
     </nav>
 
     <aside id="nd-sidebar">
-      <a class="docs-chrome-sidebar-row" href="/docs/guides/getting-started" data-probe="sidebar-row">Getting started</a>
+      <a class="docs-chrome-sidebar-row" href="/docs/guides/run-your-first-factory" data-probe="sidebar-row">Getting started</a>
       <a class="docs-chrome-sidebar-row" href="/docs/concepts/harness" data-active="true" data-probe="sidebar-active">Harness</a>
     </aside>
     <!-- Reference wash: browsers report color-mix as oklch(... / 0.18); compare equality. -->

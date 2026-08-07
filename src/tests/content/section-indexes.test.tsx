@@ -162,7 +162,7 @@ describe("CLI section index page render", () => {
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("Getting Started");
-    expect(html).toContain("/docs/guides/getting-started");
+    expect(html).toContain("/docs/guides/run-your-first-factory");
     expect(html).toContain("Using you-agent-factory for Loops");
     expect(html).toContain("/docs/guides/using-you-agent-factory-for-loops");
     expect(html).not.toContain(indexMessages.emptyTitle);
@@ -301,7 +301,7 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(messages.guidesIndex.title);
     expect(html).toContain(`aria-label="${messages.guidesIndex.listLabel}"`);
     expect(html).toContain("Bắt đầu");
-    expect(html).toContain("/vi/docs/guides/getting-started");
+    expect(html).toContain("/vi/docs/guides/run-your-first-factory");
     expect(html).toContain("Dùng you-agent-factory cho vòng lặp");
     expect(html).toContain("/vi/docs/guides/using-you-agent-factory-for-loops");
     expect(html).not.toContain(messages.guidesIndex.emptyTitle);

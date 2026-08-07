@@ -5,15 +5,15 @@
   "sections": {
     "commandNotFound": {
       "title": "you Not Found After Install",
-      "body": "Symptom: your shell reports you: command not found, or which you finds nothing, after you ran an install script. Recovery: open a new terminal so PATH reloads, then confirm you resolves. If the binary is still missing, re-run the install script for your operating system and confirm the script finished without error before retrying you. For the full OS install paths and post-install scaffold notes, open Install."
+      "body": "Symptom: your shell reports you: command not found, or which you finds nothing, after you ran an install script. Recovery: open a new terminal so PATH reloads, then confirm you resolves. If the binary is still missing, re-run the install script for your operating system and confirm the script finished without error before retrying you. For the full OS install paths and the provider step that follows, open Install."
     },
     "osInstallOrInit": {
-      "title": "OS Install Or Executor Init Confusion",
-      "body": "Symptom: the install path does not match your OS, or you are unsure which you init starter scaffold to use after install. Recovery: use the macOS/Linux curl script or the Windows PowerShell script for your machine, then scaffold with you init for the default Codex-backed starter, or you init --executor claude when you want a Claude-backed starter. Do not mix OS install entrypoints. For the install reference and first-run order, open Install and Getting Started."
+      "title": "OS Install Or Provider Setup Confusion",
+      "body": "Symptom: the install path does not match your OS, or you are unsure what to configure after install. Recovery: use the macOS/Linux curl script or the Windows PowerShell script for your machine, then run you init to record the provider that executes your workers, or you init --provider <name> to set it non-interactively. Do not mix OS install entrypoints. For the install reference and first-run order, open Install and Run Your First Factory."
     },
     "noLiveFactory": {
       "title": "Submit Or Work Against A Factory That Is Not Live",
-      "body": "Symptom: you session list is empty, or the host connection fails, when you try to submit or inspect work. Recovery: start or attach a factory with you or you run first, then confirm a live Factory Session with you session list before you submit. An empty list means the host responded but no session is registered yet; a connection failure means nothing is listening—start the factory and retry. For session liveness and the broader command matrix, open Factory Session, Getting Started, and CLI."
+      "body": "Symptom: you session list is empty, or the host connection fails, when you try to submit or inspect work. Recovery: start or attach a factory with you or you run first, then confirm a live Factory Session with you session list before you submit. An empty list means the host responded but no session is registered yet; a connection failure means nothing is listening—start the factory and retry. For session liveness and the broader command matrix, open Factory Session, Run Your First Factory, and CLI."
     },
     "operatorDefaultsStartup": {
       "title": "Operator Defaults Fail At Startup",
@@ -37,7 +37,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "Troubleshooting is a recovery lookup for you-agent-factory failure modes. It is not the install command matrix, not the getting-started quickstart, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short recovery actions here."
+      "body": "Troubleshooting is a recovery lookup for you-agent-factory failure modes. It is not the install command matrix, not the first-run walkthrough, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short recovery actions here."
     },
     "tags": {
       "title": "Tags"
@@ -45,13 +45,13 @@
   },
   "links": {
     "installDocs": "Install",
-    "gettingStarted": "Getting Started",
     "cliDocs": "CLI",
     "factorySession": "Factory Session",
     "configurationDocs": "Configuration",
     "globalConfigurationFactories": "Global Configuration Factories",
     "mcpDocs": "MCP",
     "dynamicWorkflows": "Dynamic Workflows",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows guide"
+    "cursorDynamicWorkflows": "Cursor dynamic workflows guide",
+    "runYourFirstFactory": "最初のファクトリーを実行する"
   }
 }

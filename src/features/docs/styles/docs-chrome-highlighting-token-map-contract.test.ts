@@ -195,7 +195,7 @@ describe("docs chrome highlighting token-map contract (five surfaces)", () => {
 
     const sidebar = document.createElement("a");
     sidebar.className = "docs-chrome-sidebar-row";
-    sidebar.href = "/docs/guides/getting-started";
+    sidebar.href = "/docs/guides/run-your-first-factory";
     sidebar.style.color = expectations.sidebarRow.restProofs[0];
     sidebar.style.backgroundColor = "transparent";
 

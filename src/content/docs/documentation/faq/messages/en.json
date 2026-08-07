@@ -1,27 +1,43 @@
 {
   "title": "FAQ",
-  "description": "Short answers to common you-agent-factory questions that point at the owning canonical docs for install, run, configuration, MCP, and dynamic workflows.",
-  "openingSummary": "FAQ is the you-agent-factory short-answer surface for common product questions. Each reply stays brief and sends you to the canonical doc that owns the full contract.",
+  "description": "Short answers to common you-agent-factory questions that point at the canonical docs and reference pages for install, running factories, authoring, agents, configuration, and recovery.",
+  "openingSummary": "FAQ is the you-agent-factory short-answer surface for common product questions. Each reply stays brief and sends you to the canonical doc or reference page that owns the full contract.",
   "sections": {
     "whatIsYouAgentFactory": {
       "title": "What Is You-Agent-Factory, And Where Do I Start?",
-      "body": "you-agent-factory is the CLI and workflow system that keeps long-running agent work persistent. Start with the product overview, then follow Getting Started for first-run order before you dig into install or CLI depth."
+      "body": "you-agent-factory is the CLI and workflow system that keeps long-running agent work persistent. It installs as one binary named you. Start with the product overview, then install it and run a packaged factory before digging into CLI depth."
     },
     "howToInstall": {
       "title": "How Do I Install You?",
-      "body": "Install with the OS-specific script for your machine, then confirm you resolves on PATH. Open Install for the full command matrix and post-install scaffold notes—this FAQ does not repeat those commands."
+      "body": "Install with the OS-specific script for your machine, confirm you resolves on PATH, then configure the provider that runs your workers. Install carries the full command matrix—this FAQ does not repeat those commands."
     },
-    "howToRunNamedWorkflow": {
-      "title": "How Do I Run A Named Workflow Or Confirm A Live Session?",
-      "body": "Start or attach a factory, then confirm a live Factory Session with you session list before you submit work. For first-run order open Getting Started; for the command matrix open CLI; for empty-list vs connection-failure language open Factory Session."
+    "howToRunAFactory": {
+      "title": "How Do I Run A Factory?",
+      "body": "Install a packaged factory with you init --package, then run it by name with you run --named and a request. A plain run is batch mode and starts no HTTP listener, so you session list only answers when a run was started with a server or when you server is up."
+    },
+    "whichFactoriesShip": {
+      "title": "Which Factories Ship With The Binary?",
+      "body": "Fifteen packaged factories ship in the embedded catalog, covering goal pursuit, review loops, quorum and tournament comparison, parallel fan-out, planning, classification, deep research, factory authoring, and text to speech. Each publishes its own arguments, defaults, and worked examples."
+    },
+    "graphOrJavascript": {
+      "title": "Should I Write A Graph Factory Or A JavaScript One?",
+      "body": "Write a graph factory when the workflow is a topology work moves through and you want durable per-item state and concurrency for free. Write a JavaScript factory when the workflow is a procedure and you want ordinary control flow. The orchestrator field picks the engine; omitting it means graph."
     },
     "whereConfigurationLives": {
       "title": "Where Does Configuration Live?",
-      "body": "Per-factory topology lives in factory.json under the factory root; optional operator defaults live in ~/.you-agent-factory/config.json. Open Configuration for factory.json shape and Global Configuration Factories for operator-default modes—do not treat this FAQ as a second config reference."
+      "body": "Per-factory topology lives in factory.json under the factory root; operator defaults such as the worker provider live in ~/.you-agent-factory/config.json. Named factories installed from the catalog live under ~/.you-agent-factory/factories unless you point them elsewhere."
+    },
+    "howToMakeAnAgentUseYou": {
+      "title": "How Do I Make An AI Agent Use YOU?",
+      "body": "Tell the agent to run you docs agents and read the output. That topic is the agent orientation and command matrix carried inside the installed binary, so the agent learns the command surface it actually has rather than a copy that can go stale. From there it drives the CLI directly."
     },
     "howMcpOrCursorConnects": {
       "title": "How Do MCP Or Cursor Dynamic Workflows Connect?",
-      "body": "Hosts spawn you mcp serve so Factory Session tools appear under you.factory_session.* names; Cursor uses that MCP bridge for its first dynamic-workflow loop. Open MCP for host JSON and serve modes, Dynamic Workflows for source depth, and the Cursor guide for the first-loop walkthrough."
+      "body": "Hosts spawn you mcp serve so Factory Session tools appear under you.factory_session.* names, and Cursor uses that bridge for its first dynamic-workflow loop. The MCP server communicates over stdio and starts no HTTP or dashboard listener of its own."
+    },
+    "whereAreTheExactContracts": {
+      "title": "Where Are The Exact Commands And Schemas?",
+      "body": "On the reference pages, which are projected from the installed @you-agent-factory/api package rather than retyped. The CLI reference carries every published command, flag, and argument; the API reference renders the shipped OpenAPI document; the Events reference carries the full event corpus and stream contracts."
     },
     "somethingFailed": {
       "title": "Something Failed—Where Do I Recover?",
@@ -30,15 +46,26 @@
   },
   "links": {
     "whatIsYouAgentFactory": "What is you-agent-factory",
-    "gettingStarted": "Getting Started",
+    "runYourFirstFactory": "Run your first factory",
     "installDocs": "Install",
     "cliDocs": "CLI",
     "factorySession": "Factory Session",
+    "packagedFactoriesReference": "Packaged Factory Reference",
+    "packagedFactoriesDocs": "Packaged factories",
+    "writeYourFirstFactory": "Write your first factory",
+    "factorySchemaReference": "Factory schema reference",
+    "javascriptRuntimeReference": "JavaScript Runtime reference",
     "configurationDocs": "Configuration",
     "globalConfigurationFactories": "Global Configuration Factories",
+    "systemConfigSchema": "System configuration schema",
+    "makeYourAgentUseYou": "How to make your agent use YOU",
     "mcpDocs": "MCP",
+    "mcpReference": "MCP Reference",
     "dynamicWorkflows": "Dynamic Workflows",
     "cursorDynamicWorkflows": "Cursor dynamic workflows guide",
+    "cliReference": "CLI Reference",
+    "apiReference": "API Reference",
+    "eventsReference": "Events Reference",
     "troubleshooting": "Troubleshooting"
   }
 }

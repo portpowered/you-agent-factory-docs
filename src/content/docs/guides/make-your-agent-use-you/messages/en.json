@@ -1,0 +1,71 @@
+{
+  "title": "How To Make Your Agent Use YOU",
+  "description": "Point an AI agent at the packaged you-agent-factory agent orientation topic and let it drive the you CLI itself, with MCP and ACP as the deeper integrations.",
+  "openingSummary": "An agent that can run shell commands already has everything it needs. The binary carries an orientation topic written for agents — point the agent at it once, and it can pick the right you command on its own.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "The installed binary ships its own reference documentation, and one topic is written specifically for AI agents: an orientation and command matrix that explains what you-agent-factory is, which commands exist, and which one to reach for. It prints as plain markdown with no wrapper formatting, which is exactly what an agent wants to read."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this the moment you have an agent that can run commands and a factory worth reusing. It is the difference between an agent that reimplements a review loop from scratch every session and one that reaches for the packaged review factory you already have installed."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "There is no server to start and no integration to register. The whole setup is one instruction in the place your agent already reads its project instructions."
+    },
+    "whatTheAgentCanReach": {
+      "title": "What The Agent Can Reach",
+      "body": "Through the CLI alone an agent can install and list factories, run one against a request, submit work to a live session, inspect work items and sessions, list and inspect discovered models, and read every packaged reference topic. That covers nearly everything an operator does by hand."
+    },
+    "deeperIntegrations": {
+      "title": "Deeper Integrations",
+      "body": "Two protocol servers exist for hosts that want structured tools rather than a shell. The Model Context Protocol server presents Factory Session tools over stdio, so an MCP host can call them as named tools. The Agent Client Protocol server hosts you-agent-factory itself as an agent an editor can drive."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "The most common failure is an agent that never reads the orientation topic and guesses at flags instead. Put the instruction where the agent actually looks — the project instruction file it loads every session — rather than in a one-off message. The second is assuming a protocol server is required; for most agents the CLI is both simpler and more capable."
+    },
+    "tags": {
+      "title": "Tags"
+    }
+  },
+  "links": {
+    "step1Label": "Step 1 — make sure the binary is there",
+    "step2Label": "Step 2 — add one instruction to your agent's project instructions",
+    "step3Label": "Step 3 — let it discover the rest of the topics",
+    "step4Label": "Step 4 — verify with one real run",
+    "cliReference": "CLI Reference — every published command and flag",
+    "packagedFactoriesReference": "Packaged Factory Reference — what an agent can run by name",
+    "mcpLabel": "Serve Factory Session tools over the Model Context Protocol",
+    "acpLabel": "Host you-agent-factory as an Agent Client Protocol agent",
+    "mcpDocs": "MCP",
+    "mcpReference": "MCP Reference — published tool input schemas",
+    "dynamicWorkflows": "Dynamic workflows",
+    "securityTrustBoundaries": "Security / Trust Boundaries"
+  },
+  "callouts": {
+    "orientationTopic": {
+      "body": "Run it yourself once before handing it to an agent. It tells you exactly what the agent will learn, and it is the fastest orientation to the command surface that exists."
+    },
+    "acpDistinction": {
+      "body": "These three surfaces are easy to confuse. Serving as an Agent Client Protocol agent hosts you-agent-factory for an external editor. Adding an Agent Client Protocol provider configures an external agent that you-agent-factory itself dispatches work to. Serving over the Model Context Protocol is a separate tool server entirely, and starts no HTTP or dashboard listener."
+    },
+    "cliIsTheAgentPath": {
+      "body": "Autonomous agents submit work through the CLI. The dashboard submit form and the HTTP work endpoint stay operator paths and are not a parallel control channel for agents."
+    },
+    "step1": {
+      "body": "Install you-agent-factory and configure a provider on the machine the agent runs on. An agent cannot use a binary that is not on its PATH, and a factory with no provider will not execute anything."
+    },
+    "step2": {
+      "body": "Put that instruction in the file your agent loads automatically — AGENTS.md, CLAUDE.md, a Cursor rules file, or whatever your harness reads. The point is that the agent learns the command surface from the binary it actually has, not from a copy of the documentation that can go stale."
+    },
+    "step3": {
+      "body": "Twenty-one topics are available, covering authoring factories, runs, configuration, mock workers, record and replay, guards, relationships, work, sessions, orchestrators, JavaScript workflows, MCP, workstations, workers, resources, models, batch inputs, and templates. An agent that needs depth on one subject can fetch exactly that."
+    },
+    "step4": {
+      "body": "Confirm the loop works by asking the agent to do something small end to end: list what is installed, then run one packaged factory and report its result. Asking for final-result-only output keeps the agent's context clean."
+    }
+  }
+}

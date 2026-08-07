@@ -55,7 +55,7 @@ describe("focused repair suites R02 convergence", () => {
     for (const url of R02_PROGRAM_DOC_URLS) {
       expect(urls.has(url)).toBe(true);
     }
-    expect(urls.has("/docs/guides/getting-started")).toBe(true);
+    expect(urls.has("/docs/guides/run-your-first-factory")).toBe(true);
     expect(urls.has("/docs/glossary/token")).toBe(false);
     expect(urls.has("/docs/modules/grouped-query-attention")).toBe(false);
     expect(new Set(paths).size).toBe(paths.length);

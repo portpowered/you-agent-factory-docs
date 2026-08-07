@@ -8,9 +8,9 @@ import { source } from "@/lib/source";
 
 describe("routable local docs pages", () => {
   test("identifies factory collection local docs page bundle paths only", () => {
-    expect(isLocalDocsPageBundlePath("guides/getting-started/page.mdx")).toBe(
-      true,
-    );
+    expect(
+      isLocalDocsPageBundlePath("guides/run-your-first-factory/page.mdx"),
+    ).toBe(true);
     expect(isLocalDocsPageBundlePath("concepts/foo/page.mdx")).toBe(true);
     expect(
       isLocalDocsPageBundlePath("techniques/prompt-caching/page.mdx"),

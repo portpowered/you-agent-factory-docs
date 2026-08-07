@@ -34,14 +34,14 @@ describe("renderTypescriptLiteral", () => {
     expect(
       renderTypescriptLiteral([
         {
-          registryId: "guide.getting-started",
-          slug: "getting-started",
+          registryId: "guide.run-your-first-factory",
+          slug: "run-your-first-factory",
         },
       ]),
     ).toBe(`[
   {
-    registryId: "guide.getting-started",
-    slug: "getting-started",
+    registryId: "guide.run-your-first-factory",
+    slug: "run-your-first-factory",
   },
 ]`);
   });

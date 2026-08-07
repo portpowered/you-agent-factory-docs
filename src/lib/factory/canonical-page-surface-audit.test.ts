@@ -1005,7 +1005,10 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/guides/getting-started/messages"),
+        join(
+          repoRoot,
+          "src/content/docs/guides/run-your-first-factory/messages",
+        ),
         { recursive: true },
       );
       mkdirSync(join(repoRoot, "src/content/registry/guides"), {
@@ -1013,17 +1016,26 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/guides/getting-started/page.mdx"),
-        `---\nkind: "guide"\nregistryId: "guide.getting-started"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+        join(
+          repoRoot,
+          "src/content/docs/guides/run-your-first-factory/page.mdx",
+        ),
+        `---\nkind: "guide"\nregistryId: "guide.run-your-first-factory"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/docs/guides/getting-started/assets.json"),
+        join(
+          repoRoot,
+          "src/content/docs/guides/run-your-first-factory/assets.json",
+        ),
         [],
       );
       writeJson(
-        join(repoRoot, "src/content/registry/guides/getting-started.json"),
+        join(
+          repoRoot,
+          "src/content/registry/guides/run-your-first-factory.json",
+        ),
         {
-          id: "guide.getting-started",
+          id: "guide.run-your-first-factory",
         },
       );
 
@@ -1039,15 +1051,15 @@ describe("canonical page surface audit", () => {
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
           "src/content/docs/getting-started.mdx",
-          "src/content/docs/guides/getting-started/page.mdx",
-          "src/content/docs/guides/getting-started/messages/en.json",
-          "src/content/docs/guides/getting-started/assets.json",
-          "src/content/registry/guides/getting-started.json",
+          "src/content/docs/guides/run-your-first-factory/page.mdx",
+          "src/content/docs/guides/run-your-first-factory/messages/en.json",
+          "src/content/docs/guides/run-your-first-factory/assets.json",
+          "src/content/registry/guides/run-your-first-factory.json",
         ],
         snapshot,
       });
 
-      expect(audit.pageScope.registryId).toBe("guide.getting-started");
+      expect(audit.pageScope.registryId).toBe("guide.run-your-first-factory");
       expect(audit.budgetStatus).toBe("within-budget");
       expect(audit.guidance.recommendedAction).toBe("keep-routine");
       expect(

@@ -1,0 +1,71 @@
+{
+  "title": "Cách khiến tác tử của bạn dùng YOU",
+  "description": "Trỏ tác tử AI tới chủ đề định hướng dành cho tác tử đi kèm bản cài you-agent-factory và để nó tự điều khiển CLI you; MCP và ACP là các mức tích hợp sâu hơn.",
+  "openingSummary": "Một tác tử chạy được lệnh shell thì đã có đủ mọi thứ nó cần. Tệp nhị phân mang sẵn một chủ đề định hướng viết riêng cho tác tử — chỉ cần trỏ tác tử tới đó một lần, nó sẽ tự chọn đúng lệnh you.",
+  "sections": {
+    "whatItIs": {
+      "title": "Nó là gì",
+      "body": "Tệp nhị phân đã cài mang theo tài liệu tham chiếu của chính nó, và một chủ đề được viết riêng cho tác tử AI: phần định hướng kèm bảng lệnh, giải thích you-agent-factory là gì, có những lệnh nào, và nên dùng lệnh nào. Nó in ra dưới dạng markdown thuần, không kèm định dạng bao ngoài — đúng thứ một tác tử muốn đọc."
+    },
+    "whenToUse": {
+      "title": "Khi nào dùng",
+      "body": "Hãy dùng ngay khi bạn có một tác tử chạy được lệnh và một factory đáng tái sử dụng. Đó là khác biệt giữa một tác tử dựng lại vòng rà soát từ đầu mỗi phiên và một tác tử với tay lấy đúng factory rà soát đóng gói mà bạn đã cài sẵn."
+    },
+    "stepsOrWorkflow": {
+      "title": "Các bước",
+      "body": "Không có máy chủ nào phải khởi động và không có tích hợp nào phải đăng ký. Toàn bộ thiết lập là một câu chỉ dẫn đặt ngay chỗ tác tử vốn đã đọc hướng dẫn dự án."
+    },
+    "whatTheAgentCanReach": {
+      "title": "Tác tử với tới được những gì",
+      "body": "Chỉ qua CLI, một tác tử đã có thể cài và liệt kê factory, chạy một factory với một yêu cầu, gửi công việc vào phiên đang hoạt động, kiểm tra hạng mục công việc và phiên, liệt kê cùng xem chi tiết các mô hình đã phát hiện, và đọc mọi chủ đề tham chiếu đi kèm. Chừng đó gần như bao trọn những gì người vận hành làm thủ công."
+    },
+    "deeperIntegrations": {
+      "title": "Tích hợp sâu hơn",
+      "body": "Có hai máy chủ giao thức dành cho những nền tảng muốn công cụ có cấu trúc thay vì shell. Máy chủ Model Context Protocol phơi bày các công cụ Factory Session qua stdio, để một nền tảng MCP gọi chúng như những công cụ có tên. Máy chủ Agent Client Protocol lại lưu trữ chính you-agent-factory như một tác tử mà trình soạn thảo có thể điều khiển."
+    },
+    "commonPitfalls": {
+      "title": "Lỗi thường gặp",
+      "body": "Sự cố phổ biến nhất là tác tử chẳng bao giờ đọc chủ đề định hướng mà cứ đoán cờ. Hãy đặt chỉ dẫn ở nơi tác tử thật sự nhìn tới — tệp hướng dẫn dự án nó nạp mỗi phiên — chứ không phải trong một tin nhắn dùng một lần. Lỗi thứ hai là cho rằng nhất thiết phải có máy chủ giao thức; với hầu hết tác tử, CLI vừa đơn giản hơn vừa làm được nhiều hơn."
+    },
+    "tags": {
+      "title": "Thẻ"
+    }
+  },
+  "links": {
+    "step1Label": "Bước 1 — bảo đảm tệp nhị phân có ở đó",
+    "step2Label": "Bước 2 — thêm một chỉ dẫn vào hướng dẫn dự án của tác tử",
+    "step3Label": "Bước 3 — để nó tự khám phá các chủ đề còn lại",
+    "step4Label": "Bước 4 — xác minh bằng một lần chạy thật",
+    "cliReference": "Tham chiếu CLI — mọi lệnh và cờ đã công bố",
+    "packagedFactoriesReference": "Tham chiếu Factory đóng gói — những gì tác tử chạy được theo tên",
+    "mcpLabel": "Phục vụ các công cụ Factory Session qua Model Context Protocol",
+    "acpLabel": "Lưu trữ you-agent-factory như một tác tử Agent Client Protocol",
+    "mcpDocs": "MCP",
+    "mcpReference": "Tham chiếu MCP — lược đồ đầu vào của các công cụ đã công bố",
+    "dynamicWorkflows": "Quy trình động",
+    "securityTrustBoundaries": "Bảo mật / Ranh giới tin cậy"
+  },
+  "callouts": {
+    "orientationTopic": {
+      "body": "Hãy tự chạy nó một lần trước khi giao cho tác tử. Nó cho bạn biết chính xác tác tử sẽ học được gì, và là cách nhanh nhất hiện có để nắm bề mặt lệnh."
+    },
+    "acpDistinction": {
+      "body": "Ba bề mặt này rất dễ nhầm. Lưu trữ dưới dạng tác tử Agent Client Protocol là cung cấp you-agent-factory cho một trình soạn thảo bên ngoài. Thêm một nhà cung cấp Agent Client Protocol là cấu hình một tác tử bên ngoài mà chính you-agent-factory sẽ điều phối công việc tới. Còn phục vụ qua Model Context Protocol là một máy chủ công cụ hoàn toàn khác, và không khởi động cổng HTTP hay bảng điều khiển nào."
+    },
+    "cliIsTheAgentPath": {
+      "body": "Tác tử tự trị gửi công việc qua CLI. Biểu mẫu gửi trên bảng điều khiển và endpoint work qua HTTP vẫn là đường của người vận hành, không phải kênh điều khiển song song dành cho tác tử."
+    },
+    "step1": {
+      "body": "Cài you-agent-factory và cấu hình nhà cung cấp trên chính máy mà tác tử chạy. Tác tử không dùng được một tệp nhị phân không nằm trên PATH, và một factory không có nhà cung cấp thì chẳng thực thi được gì."
+    },
+    "step2": {
+      "body": "Đặt chỉ dẫn đó vào tệp mà tác tử nạp tự động — AGENTS.md, CLAUDE.md, tệp quy tắc của Cursor, hay bất cứ tệp nào nền tảng của bạn đọc. Điểm mấu chốt là tác tử học bề mặt lệnh từ chính tệp nhị phân nó đang có, chứ không phải từ một bản sao tài liệu có thể lỗi thời."
+    },
+    "step3": {
+      "body": "Có 21 chủ đề, bao phủ việc soạn factory, chạy, cấu hình, worker giả lập, ghi và phát lại, guard, quan hệ, công việc, phiên, bộ điều phối, quy trình JavaScript, MCP, workstation, worker, tài nguyên, mô hình, đầu vào theo lô và mẫu. Tác tử cần chiều sâu ở chủ đề nào thì lấy đúng chủ đề đó."
+    },
+    "step4": {
+      "body": "Xác nhận vòng lặp hoạt động bằng cách yêu cầu tác tử làm trọn một việc nhỏ: liệt kê những gì đã cài, rồi chạy một factory đóng gói và báo lại kết quả. Yêu cầu chỉ in kết quả cuối sẽ giữ ngữ cảnh của tác tử gọn gàng."
+    }
+  }
+}

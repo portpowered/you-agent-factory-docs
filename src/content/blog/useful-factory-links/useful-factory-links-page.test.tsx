@@ -34,7 +34,7 @@ describe("useful-factory-links blog post (001–002)", () => {
     // Internal destinations (sample per group)
     expect(html).toContain('href="/docs/documentation/cli"');
     expect(html).toContain('href="/docs/documentation/install"');
-    expect(html).toContain('href="/docs/guides/getting-started"');
+    expect(html).toContain('href="/docs/guides/run-your-first-factory"');
     expect(html).toContain(
       'href="/docs/documentation/what-is-you-agent-factory"',
     );

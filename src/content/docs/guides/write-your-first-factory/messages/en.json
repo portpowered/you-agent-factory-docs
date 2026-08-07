@@ -1,31 +1,141 @@
 {
   "title": "Write Your First Factory",
-  "description": "Author a factory of your own: one workstation, one worker, one goal.",
-  "openingSummary": "A factory is a graph of workstations and workers described in configuration. The smallest useful one has a single workstation that hands a goal to a single agent worker.",
+  "description": "Author a you-agent-factory factory of your own, step by step, in either the declarative graph format or the JavaScript orchestrator format.",
+  "openingSummary": "A factory is one file that says what work exists, who does it, and how work moves between them. It can be written two ways: as a declarative graph, or as a JavaScript workflow that calls agents directly. Both produce a factory you run with the same command.",
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Writing a factory means declaring what work exists, who does it, and how work moves between them. Everything else — retries, review, fan-out — is added to that skeleton later."
+      "body": "A factory definition names three things. Work types are the categories of work that flow through it, each with an initial state, a terminal state, and a failure state. Workers are the runtimes that execute — an agent, a script, an inference call. Workstations are the steps that consume work in one state, dispatch it to a worker, and emit it into the next state. Everything else — retries, review loops, guards, fan-out, shared resources — is added to that skeleton later."
     },
     "whenToUse": {
       "title": "When To Use",
-      "body": "Use this once a packaged factory has done something close to what you want, but not close enough. Start from the smallest graph that runs, then grow it."
+      "body": "Write your own once a packaged factory does something close to what you want but not close enough. Start from the smallest definition that runs end to end, then grow it. A factory that does not run teaches you nothing; a factory that runs badly tells you exactly what to fix next."
     },
-    "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Scaffold a factory, replace the starter workstation with your own, point it at a worker, then run it."
+    "chooseAFormat": {
+      "title": "Choose A Format",
+      "body": "The orchestrator field decides which engine runs your factory, and that choice decides how you author it. Graph factories describe a topology and let the engine move work through it. JavaScript factories describe a procedure and call the runtime directly. Neither is a subset of the other: the graph form gives you durable per-item state and concurrency for free, and the JavaScript form gives you ordinary control flow."
+    },
+    "startFromAWorkingExample": {
+      "title": "Start From A Working Example",
+      "body": "The fastest correct start is a packaged factory you already ran. Installing one into a project-local root gives you a definition that is known to validate, known to run, and small enough to read in one sitting. @you/subagent is the smallest: one work type, one worker, one workstation."
+    },
+    "writeAGraphFactory": {
+      "title": "Write A Graph Factory",
+      "body": "Build the definition in the order the engine reads it: declare the work before the people, and the people before the steps that use them. Each step below adds one top-level array to the file."
+    },
+    "writeAJavascriptFactory": {
+      "title": "Write A JavaScript Factory",
+      "body": "A JavaScript factory replaces the workstation graph with a script. There are no work types, workers, or workstations to declare — the orchestrator block carries the source, the argument schema, and the safety policy, and the script itself calls agents in whatever order you write."
+    },
+    "validateAndRun": {
+      "title": "Validate And Run",
+      "body": "Validation is a separate step from running, and it is worth doing first: it checks the payload against the same contract the HTTP factory-validation endpoint uses, without starting a runtime. Once it passes, run the file directly as a portable factory."
+    },
+    "growTheFile": {
+      "title": "Grow The File",
+      "body": "One file stops being comfortable somewhere around the third workstation. The split layout writes canonical factory.json alongside workers and workstations directories, so each step becomes its own file and diffs stay readable."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
-      "body": "Do not start by describing the whole workflow. A factory that does not run teaches you nothing; a factory that runs badly teaches you exactly what to fix next."
+      "body": "Three mistakes account for most first-factory failures. A workstation whose input state no work ever reaches, so the run idles and exits with nothing done. A worker referenced by a name that does not match any entry in the workers array. And fields borrowed from the wrong worker type — agent tooling on a script worker, or model routing on a poller — which the schema rejects because each worker type selects its own field set."
+    },
+    "letAFactoryWriteIt": {
+      "title": "Let A Factory Write It",
+      "body": "A packaged factory can author factories. @you/factory-builder takes a plain-language request and produces one validated definition in whichever form you ask for, then installs it under a name you can run."
     },
     "tags": {
       "title": "Tags"
     }
   },
   "links": {
-    "scaffoldLabel": "Scaffold a starter factory",
-    "runLabel": "Run what you wrote",
-    "validateLabel": "Check the configuration before running"
+    "factorySchemaReference": "Factory schema — every definition, field, constraint, and default",
+    "factorySchemaFields": "Factory schema — field-level constraints and enums",
+    "factorySchemaConstraints": "Factory schema — worker and workstation field sets",
+    "javascriptRuntimeReference": "JavaScript Runtime reference — every runtime symbol and shared schema",
+    "writeYourFirstJavascript": "Write your first JavaScript step",
+    "packagedFactoriesReference": "Packaged Factory Reference — unabridged sources you can copy from",
+    "agentRunWorkstation": "AGENT_RUN workstation",
+    "agentWorker": "AGENT_WORKER",
+    "troubleshooting": "Troubleshooting",
+    "formatTableQuestionHeader": "Question",
+    "formatTableGraphHeader": "Graph factory",
+    "formatTableJavascriptHeader": "JavaScript factory",
+    "formatRowShapeQuestion": "What do you write?",
+    "formatRowShapeGraph": "Work types, workers, and workstations in JSON or YAML.",
+    "formatRowShapeJavascript": "One JavaScript function plus an orchestrator block.",
+    "formatRowControlQuestion": "How does control flow?",
+    "formatRowControlGraph": "Work moves between states; any workstation whose input state has work runs.",
+    "formatRowControlJavascript": "Top to bottom, with ordinary await, loops, and conditionals.",
+    "formatRowStateQuestion": "Where does state live?",
+    "formatRowStateGraph": "In the work items themselves, durably, one per item.",
+    "formatRowStateJavascript": "In script variables, with explicit checkpoints when you need resume.",
+    "formatRowDeclareQuestion": "What must you declare?",
+    "formatRowDeclareGraph": "Every state a work item can occupy.",
+    "formatRowDeclareJavascript": "An argument schema and an execution policy.",
+    "graphStep1Label": "Step 1 — name the factory",
+    "graphStep2Label": "Step 2 — declare the work type and its states",
+    "graphStep3Label": "Step 3 — declare a worker",
+    "graphStep4Label": "Step 4 — declare a workstation",
+    "graphStep5Label": "Step 5 — declare the invocation signature",
+    "graphWholeFileLabel": "The whole file",
+    "jsStep1Label": "Step 1 — declare the orchestrator kind",
+    "jsStep2Label": "Step 2 — point at the workflow source",
+    "jsStep3Label": "Step 3 — declare the argument schema",
+    "jsStep4Label": "Step 4 — set the default policy",
+    "jsWorkflowSourceLabel": "The workflow source",
+    "jsWholeFileLabel": "The definition that loads it",
+    "validateLabel": "Validate before running",
+    "runPortableLabel": "Run it as a portable factory",
+    "installNamedLabel": "Or install it under a name and run it from anywhere"
+  },
+  "callouts": {
+    "orchestratorDefault": {
+      "body": "Omitting the orchestrator block is legal and means graph: existing definitions load through compatibility defaulting to the Petri engine. Declare it explicitly anyway — a JavaScript factory that forgets it fails in a confusing way."
+    },
+    "readBeforeEditing": {
+      "body": "Read the installed definition before changing it. Renaming the workstation, pointing it at your own prompt, and running it again is a smaller first edit than writing a file from scratch, and it keeps every field that made it valid."
+    },
+    "graphFieldReference": {
+      "body": "The eight workstation types and six worker types each accept a different field set. The schema reference lists which fields are shared, which are selected by one variant, and which are rejected."
+    },
+    "jsRuntimeReference": {
+      "body": "The script runs against a fixed set of runtime bindings: args and meta for invocation input, agent.run for a single child dispatch, parallel and pipeline for fan-out, phase and log for progress, and the workflow namespace for budgets, checkpoints, artifacts, and the final result."
+    },
+    "handlingBehaviorDefault": {
+      "body": "A portable run needs to know which work type receives the invocation input. Factories run with --factory must declare handlingBehavior DEFAULT on exactly one work type — no more, no fewer."
+    },
+    "flattenBack": {
+      "body": "The reverse writes the canonical single-file form back to stdout, which is useful for diffing a split layout against a definition someone sent you."
+    },
+    "factoryBuilderOrchestrator": {
+      "body": "The orchestrator argument chooses the form the builder writes: graph for a YAML topology, javascript for a JavaScript orchestrator. It defaults to graph."
+    },
+    "graphStep1": {
+      "body": "Give the factory a name. It is the only required top-level field, and it is what the named-factory commands address later."
+    },
+    "graphStep2": {
+      "body": "Declare one work type with three states: an INITIAL state where submitted work arrives, a TERMINAL state that means done, and a FAILED state for work the graph could not finish. Mark it handlingBehavior DEFAULT so a portable run knows where to put the invocation input."
+    },
+    "graphStep3": {
+      "body": "Declare one worker. The type decides which fields are legal on it: AGENT_WORKER accepts agent tooling and permission settings, SCRIPT_WORKER accepts a command and arguments, INFERENCE_WORKER accepts operations and model locality. Leave model and provider unset to inherit the operator defaults you configured at install."
+    },
+    "graphStep4": {
+      "body": "Declare one workstation. Its inputs name the work type and state it consumes, its outputs name the state it emits on success, and onFailure names the state it emits when the worker fails. The body is the prompt: it can interpolate invocation arguments and reference the work item being processed."
+    },
+    "graphStep5": {
+      "body": "Declare the invocation signature so callers know what to pass. Each parameter has an internal name, the external name used on the command line, and the bindings that accept it — positional text, piped stdin, or a named flag."
+    },
+    "jsStep1": {
+      "body": "Set orchestrator.kind to JAVASCRIPT. Without it the definition loads as a graph factory through compatibility defaulting, and the engine will look for workstations that are not there."
+    },
+    "jsStep2": {
+      "body": "Point at the workflow source. Use sourceRef for a factory-relative path when the script lives beside the definition, or inlineSource when you want the definition to carry the script text directly. The packaged JavaScript factories use the inline form so they can ship as a single file."
+    },
+    "jsStep3": {
+      "body": "Declare argsSchema as a JSON Schema object. It is what validates the arguments before the script starts, and it is what the args binding in the script is populated from."
+    },
+    "jsStep4": {
+      "body": "Set defaultPolicy. It bounds what the workflow may do when no runtime override exists: how many agent calls it may make in total, how many may run at once, how deep child dispatch may nest, whether network access is allowed, and which roots are writable. READ_ONLY with an empty writable-root list is the safe starting point."
+    }
   }
 }

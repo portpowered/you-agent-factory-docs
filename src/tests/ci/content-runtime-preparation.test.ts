@@ -50,8 +50,8 @@ const LEGACY_TOP_LEVEL_GENERATED_RUNTIME_PATHS = [
 const GENERATED_PUBLISHED_DOCS_REGISTRY_RELATIVE_PATH =
   "src/lib/content/generated/published-docs-registry.generated.ts";
 /** Stable published page used by recovery/import proofs (rewrite-era content). */
-const STABLE_PUBLISHED_DOCS_REGISTRY_ID = "guide.getting-started";
-const STABLE_PUBLISHED_DOCS_SLUG = "guides/getting-started";
+const STABLE_PUBLISHED_DOCS_REGISTRY_ID = "guide.run-your-first-factory";
+const STABLE_PUBLISHED_DOCS_SLUG = "guides/run-your-first-factory";
 const RUNTIME_DISCOVERY_TEST_DOCS_SLUG = "glossary/runtime-recovery-smoke-test";
 const RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH = join(
   "src/content/docs",

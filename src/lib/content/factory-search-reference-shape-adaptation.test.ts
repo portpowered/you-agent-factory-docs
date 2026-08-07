@@ -32,12 +32,12 @@ function emptyIndexes(): RegistryIndexes {
 
 function syntheticGuidePage(): DocsPageSource {
   return {
-    pageDir: "/tmp/guides/getting-started",
-    docsSlug: "guides/getting-started",
-    url: "/docs/guides/getting-started",
+    pageDir: "/tmp/guides/run-your-first-factory",
+    docsSlug: "guides/run-your-first-factory",
+    url: "/docs/guides/run-your-first-factory",
     frontmatter: {
       kind: "guide",
-      registryId: "guide.getting-started",
+      registryId: "guide.run-your-first-factory",
       messageNamespace: "local",
       assetNamespace: "local",
       tags: ["guides"],
@@ -106,7 +106,9 @@ describe("factory search reference shape adaptation (W16-002)", () => {
       );
 
       expect(
-        documents.some((doc) => doc.url === "/docs/guides/getting-started"),
+        documents.some(
+          (doc) => doc.url === "/docs/guides/run-your-first-factory",
+        ),
       ).toBe(true);
 
       const itemHit = documents.find((doc) => doc.id === representative.id);

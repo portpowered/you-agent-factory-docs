@@ -1,6 +1,6 @@
 ---
 title: "API"
-description: "Reach and use the you-agent-factory local HTTP API: default base URL, factory-running precondition, session-oriented flow, and the path to the operations catalog."
+description: "Reach and use the you-agent-factory local HTTP API: how to get a listener running at all, the default base URL, the session-oriented flow, and the path to the operations catalog."
 kind: "documentation"
 registryId: "documentation.api"
 messageNamespace: "local"
@@ -11,7 +11,7 @@ aliases:
   - "local HTTP API"
   - "Factory HTTP API"
   - "API how-to"
-updatedAt: "2026-07-21"
+updatedAt: "2026-08-07"
 ---
 
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
@@ -29,16 +29,18 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 http://localhost:7437
 ```
 
-  <T k="callouts.factoryMustBeRunning.body" />
+  <T k="callouts.noListenerByDefault.body" />
   <p>
-    <T k="links.factoryRunningLabel" />
+    <T k="links.startListenerLabel" />
   </p>
 
-```bash
-you
-# or: you run --dir <factory>
+```sh
+you server
+you run --named @you/goal --with-server "Ship the login bugfix"
+you run --named @you/goal --with-site "Ship the login bugfix"
 ```
 
+  <T k="callouts.listenerLifetime.body" />
 </Section>
 
 <Section id="typical-session-flow" titleKey="sections.typicalSessionFlow.title">
@@ -48,25 +50,64 @@ you
   </p>
 
 ```bash
-you session list
+curl -s "http://localhost:7437/factory-sessions"
 ```
 
   <T k="callouts.sessionListConfirm.body" />
-
-```bash
-you session show <session-id>
-```
-
-  <T k="callouts.sessionShowNote.body" />
   <p>
-    <T k="links.statusReadLabel" />
+    <T k="links.sessionInspectLabel" />
   </p>
 
 ```bash
-curl -s "http://localhost:7437/factory-sessions/~default/status"
+curl -s "http://localhost:7437/factory-sessions/<session-id>"
+curl -s "http://localhost:7437/factory-sessions/<session-id>/status"
 ```
 
-  <T k="callouts.statusReadNote.body" />
+  <T k="callouts.sessionIdNote.body" />
+  <p>
+    <T k="links.cliEquivalentLabel" />
+  </p>
+
+```sh
+you session list
+you session show <session-id>
+```
+
+</Section>
+
+<Section id="submitting-and-reading-results" titleKey="sections.submittingAndReadingResults.title">
+  <T k="sections.submittingAndReadingResults.body" />
+  <T k="callouts.resultReads.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWork",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="streaming-events" titleKey="sections.streamingEvents.title">
+  <T k="sections.streamingEvents.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/events",
+        labelKey: "links.eventsReference",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="validating-without-a-session" titleKey="sections.validatingWithoutASession.title">
+  <T k="sections.validatingWithoutASession.body" />
+
+```sh
+you factory config validate ./factory/factory.json
+```
+
+  <T k="callouts.validationParity.body" />
 </Section>
 
 <Section id="trust-boundaries" titleKey="sections.trustBoundaries.title">
@@ -90,6 +131,10 @@ curl -s "http://localhost:7437/factory-sessions/~default/status"
       {
         href: "/docs/references/api",
         labelKey: "links.apiReferenceCatalog",
+      },
+      {
+        href: "/docs/references/cli",
+        labelKey: "links.cliReference",
       },
     ]}
   />

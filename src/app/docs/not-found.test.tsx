@@ -9,8 +9,8 @@ describe("docs not-found recovery paths", () => {
     expect(html).toContain("<h1");
     expect(html).toContain("Page not found");
     expect(html).toContain('aria-label="Recovery links"');
-    expect(html).toContain('href="/docs/guides/getting-started"');
-    expect(html).toContain(">Getting Started<");
+    expect(html).toContain('href="/docs/guides/run-your-first-factory"');
+    expect(html).toContain(">Run your first factory<");
     expect(html).toContain('href="/browse"');
     expect(html).toContain(">Browse<");
     expect(html).toContain('href="/search"');

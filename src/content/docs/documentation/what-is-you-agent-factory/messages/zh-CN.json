@@ -12,7 +12,7 @@
     }
   },
   "links": {
-    "gettingStarted": "快速开始",
-    "architectureOfSystem": "系统架构"
+    "architectureOfSystem": "系统架构",
+    "runYourFirstFactory": "运行你的第一个工厂"
   }
 }

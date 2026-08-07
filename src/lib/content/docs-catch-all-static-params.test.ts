@@ -105,11 +105,11 @@ describe("docs catch-all static params helpers", () => {
     expect(
       buildDocsCatchAllStaticParamsFromDocsSlugs([
         "references/openapi/paths",
-        "guides/getting-started",
+        "guides/run-your-first-factory",
       ]),
     ).toEqual([
       { slug: ["references", "openapi", "paths"] },
-      { slug: ["guides", "getting-started"] },
+      { slug: ["guides", "run-your-first-factory"] },
     ]);
   });
 
@@ -121,7 +121,9 @@ describe("docs catch-all static params helpers", () => {
         true,
       );
     }
-    expect(isDirectDocsRouteFamilySlug("guides/getting-started")).toBe(false);
+    expect(isDirectDocsRouteFamilySlug("guides/run-your-first-factory")).toBe(
+      false,
+    );
     expect(isDirectDocsRouteFamilyCatchAllSlug(["concepts", "harness"])).toBe(
       false,
     );
@@ -341,8 +343,8 @@ describe("W05 route-family static params and not-found", () => {
 
     const html = renderToStaticMarkup(DocsNotFound());
     expect(html).toContain("Page not found");
-    expect(html).toContain("Getting Started");
-    expect(html).toContain('href="/docs/guides/getting-started"');
+    expect(html).toContain("Run your first factory");
+    expect(html).toContain('href="/docs/guides/run-your-first-factory"');
   });
 });
 

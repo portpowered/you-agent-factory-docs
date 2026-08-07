@@ -48,9 +48,9 @@ describe("what-is-you-agent-factory documentation page", () => {
     expect(limits?.textContent).toMatch(/not Model Atlas/i);
     expect(
       screen
-        .getByRole("link", { name: "Getting started" })
+        .getByRole("link", { name: "Run your first factory" })
         .getAttribute("href"),
-    ).toBe("/docs/guides/getting-started");
+    ).toBe("/docs/guides/run-your-first-factory");
     expect(
       screen
         .getByRole("link", { name: "Architecture of system" })

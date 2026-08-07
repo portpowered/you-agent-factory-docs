@@ -28,9 +28,9 @@
     "stepsSessionListLabel": "Xác nhận phiên factory đang sống",
     "stepsSubmitLabel": "Gửi công việc cho lượt vòng lặp này",
     "stepsSubmitBatchLabel": "Hoặc gửi một lô nhỏ",
-    "gettingStarted": "Bắt đầu",
     "loopConcept": "Khái niệm vòng lặp",
-    "writeReviewLoopsGuide": "Vòng lặp viết-duyệt"
+    "writeReviewLoopsGuide": "Vòng lặp viết-duyệt",
+    "runYourFirstFactory": "Chạy factory đầu tiên của bạn"
   },
   "callouts": {
     "stepsKeepIterating": {

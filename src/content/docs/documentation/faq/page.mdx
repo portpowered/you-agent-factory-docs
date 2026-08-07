@@ -1,6 +1,6 @@
 ---
 title: "FAQ"
-description: "Short answers to common you-agent-factory questions that point at the owning canonical docs for install, run, configuration, MCP, and dynamic workflows."
+description: "Short answers to common you-agent-factory questions that point at the canonical docs and reference pages for install, running factories, authoring, agents, configuration, and recovery."
 kind: "documentation"
 registryId: "documentation.faq"
 messageNamespace: "local"
@@ -11,13 +11,12 @@ aliases:
   - "FAQ"
   - "common questions"
   - "frequently asked questions"
-updatedAt: "2026-07-11"
+updatedAt: "2026-08-07"
 ---
 
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
-
 
 <Section
   id="what-is-you-agent-factory"
@@ -31,8 +30,8 @@ import { T } from "@/features/docs/components/T";
         labelKey: "links.whatIsYouAgentFactory",
       },
       {
-        href: "/docs/guides/getting-started",
-        labelKey: "links.gettingStarted",
+        href: "/docs/guides/run-your-first-factory",
+        labelKey: "links.runYourFirstFactory",
       },
     ]}
   />
@@ -50,16 +49,13 @@ import { T } from "@/features/docs/components/T";
   />
 </Section>
 
-<Section
-  id="how-to-run-named-workflow"
-  titleKey="sections.howToRunNamedWorkflow.title"
->
-  <T k="sections.howToRunNamedWorkflow.body" />
+<Section id="how-to-run-a-factory" titleKey="sections.howToRunAFactory.title">
+  <T k="sections.howToRunAFactory.body" />
   <LocalizedLinkList
     items={[
       {
-        href: "/docs/guides/getting-started",
-        labelKey: "links.gettingStarted",
+        href: "/docs/guides/run-your-first-factory",
+        labelKey: "links.runYourFirstFactory",
       },
       {
         href: "/docs/documentation/cli",
@@ -68,6 +64,48 @@ import { T } from "@/features/docs/components/T";
       {
         href: "/docs/factories/sessions",
         labelKey: "links.factorySession",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="which-factories-ship"
+  titleKey="sections.whichFactoriesShip.title"
+>
+  <T k="sections.whichFactoriesShip.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index",
+        labelKey: "links.packagedFactoriesReference",
+      },
+      {
+        href: "/docs/documentation/packaged-factories",
+        labelKey: "links.packagedFactoriesDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="graph-or-javascript"
+  titleKey="sections.graphOrJavascript.title"
+>
+  <T k="sections.graphOrJavascript.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/write-your-first-factory",
+        labelKey: "links.writeYourFirstFactory",
+      },
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.factorySchemaReference",
+      },
+      {
+        href: "/docs/references/javascript-runtime",
+        labelKey: "links.javascriptRuntimeReference",
       },
     ]}
   />
@@ -88,6 +126,25 @@ import { T } from "@/features/docs/components/T";
         href: "/docs/factories/global-configuration",
         labelKey: "links.globalConfigurationFactories",
       },
+      {
+        href: "/docs/references/system-config-schema",
+        labelKey: "links.systemConfigSchema",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="how-to-make-an-agent-use-you"
+  titleKey="sections.howToMakeAnAgentUseYou.title"
+>
+  <T k="sections.howToMakeAnAgentUseYou.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/make-your-agent-use-you",
+        labelKey: "links.makeYourAgentUseYou",
+      },
     ]}
   />
 </Section>
@@ -104,12 +161,39 @@ import { T } from "@/features/docs/components/T";
         labelKey: "links.mcpDocs",
       },
       {
+        href: "/docs/references/mcp-reference",
+        labelKey: "links.mcpReference",
+      },
+      {
         href: "/docs/factories/dynamic-workflows",
         labelKey: "links.dynamicWorkflows",
       },
       {
         href: "/docs/guides/cursor-dynamic-workflows",
         labelKey: "links.cursorDynamicWorkflows",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="where-are-the-exact-contracts"
+  titleKey="sections.whereAreTheExactContracts.title"
+>
+  <T k="sections.whereAreTheExactContracts.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/cli",
+        labelKey: "links.cliReference",
+      },
+      {
+        href: "/docs/references/api",
+        labelKey: "links.apiReference",
+      },
+      {
+        href: "/docs/references/events",
+        labelKey: "links.eventsReference",
       },
     ]}
   />

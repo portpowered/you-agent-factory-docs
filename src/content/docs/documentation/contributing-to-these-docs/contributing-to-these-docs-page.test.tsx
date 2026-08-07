@@ -88,8 +88,8 @@ describe("contributing-to-these-docs documentation page", () => {
     const whatIs = screen.getByRole("link", {
       name: "What is you-agent-factory",
     });
-    const gettingStarted = screen.getByRole("link", {
-      name: "Getting started",
+    const runFirstFactory = screen.getByRole("link", {
+      name: "Run your first factory",
     });
     const siteFundamentals = screen.getByRole("link", {
       name: "Site fundamentals (repository)",
@@ -106,8 +106,8 @@ describe("contributing-to-these-docs documentation page", () => {
     expect(whatIs.getAttribute("href")).toBe(
       "/docs/documentation/what-is-you-agent-factory",
     );
-    expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
+    expect(runFirstFactory.getAttribute("href")).toBe(
+      "/docs/guides/run-your-first-factory",
     );
     expect(siteFundamentals.getAttribute("href")).toBe(
       "https://github.com/portpowered/you-agent-factory-docs/blob/main/docs/site-fundamentals.md",

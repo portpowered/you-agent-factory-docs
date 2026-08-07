@@ -4,11 +4,11 @@
   "kind": "guide",
   "defaultTitleKey": "title",
   "defaultSummaryKey": "description",
-  "aliases": [],
+  "aliases": ["first run", "run a packaged factory"],
   "tags": [],
   "relatedIds": [],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-08-06T00:00:00.000Z",
-  "updatedAt": "2026-08-06T00:00:00.000Z"
+  "updatedAt": "2026-08-07T00:00:00.000Z"
 }

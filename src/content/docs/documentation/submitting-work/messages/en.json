@@ -36,6 +36,6 @@
     "sourceTargetNote": "Read DEPENDS_ON as: the source waits for the target. Read PARENT_CHILD as: the source is a child of the target. requiredState applies only to DEPENDS_ON and names the state the target must reach; it defaults to complete when omitted.",
     "relationsExampleLabel": "Minimal relations fragment:",
     "cliDocs": "CLI docs",
-    "gettingStarted": "Getting started"
+    "runYourFirstFactory": "Run your first factory"
   }
 }
