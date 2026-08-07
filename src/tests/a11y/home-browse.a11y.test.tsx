@@ -47,7 +47,7 @@ describe("home and browse accessibility", () => {
     expect(document.querySelector("main")).toBeTruthy();
 
     const structure = expectCriticalPageStructure(document, {
-      expectedH1: /YOU AGENT\s+FACTORY CLI/,
+      expectedH1: /^YOU$/,
     });
     expect(structure.headingLevels[0]).toBe(1);
 

@@ -18,6 +18,19 @@ export const docs = defineDocs({
     files: ["**/*.{md,mdx}"],
     schema: docsPageSchema,
   },
+  meta: {
+    // Scoped to the conventional filename. The fumadocs default is `**/*.json`,
+    // which also swept up colocated data artifacts under `src/content/docs`
+    // (generated factory definitions, recordings, message catalogs) and
+    // validated them against the meta schema. That passed only by accident:
+    // those files had no `description` key until `@you-agent-factory/api` 0.0.6
+    // added one as an object, at which point the build failed on data files
+    // that were never meta in the first place.
+    //
+    // The page tree itself is built in code (`buildGeneratedDocsPageTree`), so
+    // no meta.json exists today; this keeps the collection honest if one lands.
+    files: ["**/meta.json"],
+  },
 });
 
 export default defineConfig();

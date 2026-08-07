@@ -190,7 +190,11 @@ describe("composeWaveALandingHarnessSlots", () => {
     expect(heroHtml).toContain('data-particle-sphere=""');
 
     const combined = `${footerHtml}${whaleHtml}${heroHtml}`;
-    expect(combined).not.toContain(fixtureLandingPageData.hero.title);
+    // The hero title is now the bare wordmark "YOU", which legitimately appears
+    // elsewhere (the footer marquee repeats it). Assert on the hero copy
+    // markers and the distinctive subtitle instead of a three-letter token.
+    expect(combined).not.toContain('data-hero-section-title=""');
+    expect(combined).not.toContain(fixtureLandingPageData.hero.subtitle);
     expect(combined).not.toContain(fixtureLandingPageData.youi.title);
     expect(combined).not.toContain(
       fixtureLandingPageData.faq.items[0]?.question ?? "",
