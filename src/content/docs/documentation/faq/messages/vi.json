@@ -1,44 +1,71 @@
 {
   "title": "FAQ",
-  "description": "Short answers to common you-agent-factory questions that point at the owning canonical docs for install, run, configuration, MCP, and dynamic workflows.",
-  "openingSummary": "FAQ is the you-agent-factory short-answer surface for common product questions. Each reply stays brief and sends you to the canonical doc that owns the full contract.",
+  "description": "Câu trả lời ngắn cho những thắc mắc phổ biến về you-agent-factory, dẫn tới tài liệu chuẩn và trang tham chiếu phụ trách cài đặt, chạy factory, soạn thảo, tác tử, cấu hình và khắc phục sự cố.",
+  "openingSummary": "Trang câu hỏi thường gặp là nơi trả lời ngắn gọn cho các thắc mắc phổ biến về you-agent-factory. Mỗi câu trả lời giữ độ ngắn và dẫn bạn tới tài liệu chuẩn hoặc trang tham chiếu nắm giữ hợp đồng đầy đủ.",
   "sections": {
     "whatIsYouAgentFactory": {
-      "title": "What Is You-Agent-Factory, And Where Do I Start?",
-      "body": "you-agent-factory is the CLI and workflow system that keeps long-running agent work persistent. Start with the product overview, then follow Getting Started for first-run order before you dig into install or CLI depth."
+      "title": "you-agent-factory là gì, và nên bắt đầu từ đâu?",
+      "body": "you-agent-factory là CLI và hệ thống quy trình giữ cho công việc tác tử dài hạn luôn bền vững. Nó cài dưới dạng một tệp nhị phân duy nhất tên you. Hãy đọc phần tổng quan sản phẩm trước, rồi cài đặt và chạy một factory đóng gói, sau đó mới đi sâu vào CLI."
     },
     "howToInstall": {
-      "title": "How Do I Install You?",
-      "body": "Install with the OS-specific script for your machine, then confirm you resolves on PATH. Open Install for the full command matrix and post-install scaffold notes—this FAQ does not repeat those commands."
+      "title": "Cài you như thế nào?",
+      "body": "Cài bằng script dành cho hệ điều hành của bạn, xác nhận shell phân giải được you, rồi cấu hình nhà cung cấp chạy worker. Toàn bộ lệnh nằm ở trang cài đặt — trang này không lặp lại chúng."
     },
-    "howToRunNamedWorkflow": {
-      "title": "How Do I Run A Named Workflow Or Confirm A Live Session?",
-      "body": "Start or attach a factory, then confirm a live Factory Session with you session list before you submit work. For first-run order open Getting Started; for the command matrix open CLI; for empty-list vs connection-failure language open Factory Session."
+    "howToRunAFactory": {
+      "title": "Chạy một factory thế nào?",
+      "body": "Cài một factory đóng gói bằng you init --package, rồi chạy nó theo tên với you run --named kèm một yêu cầu. Một lần chạy thông thường là chế độ theo lô và không mở cổng HTTP nào, nên you session list chỉ trả lời khi lần chạy được khởi động kèm máy chủ, hoặc khi you server đang chạy."
+    },
+    "whichFactoriesShip": {
+      "title": "Những factory nào đi kèm tệp nhị phân?",
+      "body": "Danh mục tích hợp có 15 factory đóng gói, bao phủ theo đuổi mục tiêu, vòng rà soát, so sánh kiểu biểu quyết và thi đấu loại, chạy song song, lập kế hoạch, phân loại, nghiên cứu chuyên sâu, tự soạn factory và chuyển văn bản thành giọng nói. Mỗi factory tự công bố tham số, giá trị mặc định và ví dụ thực tế."
+    },
+    "graphOrJavascript": {
+      "title": "Nên viết factory đồ thị hay factory JavaScript?",
+      "body": "Hãy viết factory đồ thị khi quy trình là một cấu trúc mà công việc chạy xuyên qua, và bạn muốn có sẵn trạng thái bền vững theo từng hạng mục cùng tính đồng thời. Hãy viết factory JavaScript khi quy trình là một thủ tục và bạn muốn luồng điều khiển thông thường. Trường orchestrator chọn engine; bỏ trống nghĩa là đồ thị."
     },
     "whereConfigurationLives": {
-      "title": "Where Does Configuration Live?",
-      "body": "Per-factory topology lives in factory.json under the factory root; optional operator defaults live in ~/.you-agent-factory/config.json. Open Configuration for factory.json shape and Global Configuration Factories for operator-default modes—do not treat this FAQ as a second config reference."
+      "title": "Cấu hình nằm ở đâu?",
+      "body": "Cấu trúc của từng factory nằm trong factory.json dưới thư mục gốc factory; các mặc định vận hành như nhà cung cấp worker nằm trong ~/.you-agent-factory/config.json. Factory có tên cài từ danh mục nằm dưới ~/.you-agent-factory/factories trừ khi bạn trỏ chúng đi nơi khác."
+    },
+    "howToMakeAnAgentUseYou": {
+      "title": "Làm sao để tác tử AI dùng YOU?",
+      "body": "Hãy bảo tác tử chạy you docs agents và đọc kết quả. Chủ đề đó là phần định hướng và bảng lệnh dành cho tác tử nằm ngay trong tệp nhị phân đã cài, nên tác tử học đúng bề mặt lệnh nó đang có chứ không phải một bản sao có thể lỗi thời. Từ đó nó tự điều khiển CLI."
     },
     "howMcpOrCursorConnects": {
-      "title": "How Do MCP Or Cursor Dynamic Workflows Connect?",
-      "body": "Hosts spawn you mcp serve so Factory Session tools appear under you.factory_session.* names; Cursor uses that MCP bridge for its first dynamic-workflow loop. Open MCP for host JSON and serve modes, Dynamic Workflows for source depth, and the Cursor guide for the first-loop walkthrough."
+      "title": "MCP hay quy trình động của Cursor kết nối ra sao?",
+      "body": "Nền tảng chủ sẽ khởi chạy you mcp serve, nhờ đó các công cụ Factory Session xuất hiện dưới tên you.factory_session.*, và Cursor dùng cầu nối này cho vòng quy trình động đầu tiên. Máy chủ MCP giao tiếp qua stdio và không tự mở cổng HTTP hay bảng điều khiển nào."
+    },
+    "whereAreTheExactContracts": {
+      "title": "Lệnh và lược đồ chính xác nằm ở đâu?",
+      "body": "Ở các trang tham chiếu, vốn được chiếu ra từ gói @you-agent-factory/api đã cài chứ không chép tay. Trang tham chiếu CLI có mọi lệnh, cờ và tham số đã công bố; trang tham chiếu API hiển thị chính tài liệu OpenAPI đi kèm; trang tham chiếu Sự kiện có toàn bộ tập sự kiện và hợp đồng luồng."
     },
     "somethingFailed": {
-      "title": "Something Failed—Where Do I Recover?",
-      "body": "When install, run, configuration, MCP, or dynamic-workflow steps fail, open Troubleshooting for symptom-scoped recovery that links into the owning canonical docs. Use this FAQ for common how-to questions; use Troubleshooting when you already have a failure symptom."
+      "title": "Có gì đó hỏng — khắc phục ở đâu?",
+      "body": "Khi các bước cài đặt, chạy, cấu hình, MCP hay quy trình động thất bại, hãy mở trang khắc phục sự cố để xem hướng xử lý theo triệu chứng, có liên kết tới tài liệu chuẩn phụ trách. Dùng trang này cho những câu hỏi cách làm thông thường; dùng trang khắc phục sự cố khi bạn đã có triệu chứng lỗi cụ thể."
     }
   },
   "links": {
-    "whatIsYouAgentFactory": "What is you-agent-factory",
-    "gettingStarted": "Getting Started",
-    "installDocs": "Install",
+    "whatIsYouAgentFactory": "you-agent-factory là gì",
+    "runYourFirstFactory": "Chạy factory đầu tiên của bạn",
+    "installDocs": "Cài đặt",
     "cliDocs": "CLI",
-    "factorySession": "Factory Session",
-    "configurationDocs": "Configuration",
-    "globalConfigurationFactories": "Global Configuration Factories",
+    "factorySession": "Phiên Factory",
+    "packagedFactoriesReference": "Tham chiếu Factory đóng gói",
+    "packagedFactoriesDocs": "Factory đóng gói",
+    "writeYourFirstFactory": "Viết factory đầu tiên của bạn",
+    "factorySchemaReference": "Tham chiếu lược đồ Factory",
+    "javascriptRuntimeReference": "Tham chiếu JavaScript Runtime",
+    "configurationDocs": "Cấu hình",
+    "globalConfigurationFactories": "Factory cấu hình toàn cục",
+    "systemConfigSchema": "Lược đồ cấu hình hệ thống",
+    "makeYourAgentUseYou": "Cách khiến tác tử của bạn dùng YOU",
     "mcpDocs": "MCP",
-    "dynamicWorkflows": "Dynamic Workflows",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows guide",
-    "troubleshooting": "Troubleshooting"
+    "mcpReference": "Tham chiếu MCP",
+    "dynamicWorkflows": "Quy trình động",
+    "cursorDynamicWorkflows": "Hướng dẫn quy trình động với Cursor",
+    "cliReference": "Tham chiếu CLI",
+    "apiReference": "Tham chiếu API",
+    "eventsReference": "Tham chiếu Sự kiện",
+    "troubleshooting": "Khắc phục sự cố"
   }
 }

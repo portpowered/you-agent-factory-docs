@@ -1,0 +1,18 @@
+{
+  "id": "guide.make-your-agent-use-you",
+  "slug": "make-your-agent-use-you",
+  "kind": "guide",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "connect your agent to you",
+    "agent orientation",
+    "you docs agents"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-08-06T00:00:00.000Z",
+  "updatedAt": "2026-08-07T00:00:00.000Z"
+}

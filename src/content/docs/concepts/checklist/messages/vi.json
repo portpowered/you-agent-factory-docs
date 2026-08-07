@@ -13,7 +13,7 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "Picture a compact board for a docs rewrite. Customer outcomes: publish the install guide and the getting-started page. Done: the install guide lane is finished. Active: the checklist concept page is in progress. Ready next: the task-queue concept page can start when a lane frees up. Held: a colliding registry change is already in flight, so that lane waits for a concrete collision reason—not because a phase label says later work must wait."
+      "body": "Picture a compact board for a docs rewrite. Customer outcomes: publish the install guide and the run-your-first-factory page. Done: the install guide lane is finished. Active: the checklist concept page is in progress. Ready next: the task-queue concept page can start when a lane frees up. Held: a colliding registry change is already in flight, so that lane waits for a concrete collision reason—not because a phase label says later work must wait."
     },
     "whereItAppears": {
       "title": "Where It Appears",

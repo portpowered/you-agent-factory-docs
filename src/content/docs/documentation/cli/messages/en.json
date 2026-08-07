@@ -1,58 +1,91 @@
 {
   "title": "CLI",
-  "description": "Install the you-agent-factory CLI and look up the core you commands for starting a factory, submitting work, checking sessions, and reading packaged docs.",
-  "openingSummary": "The you-agent-factory CLI is the command-line entrypoint for installing the factory tooling and operating long-running agent work from your machine.",
+  "description": "Look up the you-agent-factory command groups, how a factory is selected for a run, the global flags every command shares, and where the full published CLI contract lives.",
+  "openingSummary": "The you-agent-factory CLI is one binary named you, organized into a dozen command groups. Most of what you do falls into three of them: starting a run, addressing a running host, and looking something up offline.",
   "sections": {
     "install": {
       "title": "Install",
-      "body": "Install the you CLI with the published release entrypoint for your operating system. These commands install the binary; they do not start a factory."
+      "body": "Install the you CLI with the published release entrypoint for your operating system, then configure a provider before the first run. The install page carries the OS commands, the provider step, and the packaged-factory install."
     },
     "commands": {
       "title": "Commands",
-      "body": "Use this matrix to pick a core you command and see whether a factory must already be running. Startup forms create or attach to a local runtime. Submit forms enqueue work against a live factory. Docs print packaged reference markdown offline."
+      "body": "Pick a command group by what you are trying to do, and check whether it needs a factory host already listening. Startup forms create the runtime. Session, work, and submit forms address a runtime that already exists. Everything else reads or writes local state."
+    },
+    "selectingAFactory": {
+      "title": "Selecting A Factory",
+      "body": "A run needs to know which factory to load, and there are three ways to say so. A named factory is resolved from ./factory first and then from the global factory root. A directory names a factory layout on disk. A portable factory is a single JSON or YAML file or an unambiguous directory, run in place without installing it."
+    },
+    "globalFlags": {
+      "title": "Global Flags",
+      "body": "Four flags are available on every command and are written before the subcommand. Structured output emits JSON on stdout while diagnostics stay on stderr, which is what makes the CLI scriptable. The server flag sets the factory API base URI: HTTP client commands target it, and server-enabled runs bind its loopback host and port."
+    },
+    "offlineReference": {
+      "title": "Offline Reference",
+      "body": "The binary carries its own reference topics and prints them with no network connection and no running host. Twenty-one topics cover authoring factories, runs, configuration, mock workers, record and replay, guards, relationships, work, sessions, orchestrators, JavaScript workflows, MCP, workstations, workers, resources, models, batch inputs, and templates."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "CLI coverage here is install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
+      "body": "Coverage here is command groups, factory selection, and global flags. Exhaustive per-command flags, arguments, exit codes, and lifecycle state live on the CLI reference, which is projected directly from the installed package contract rather than retyped. HTTP operations live on the API reference."
     },
     "tags": {
       "title": "Tags"
     }
   },
   "links": {
-    "installMacosLinuxLabel": "macOS / Linux",
-    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
-    "installWindowsLabel": "Windows (PowerShell)",
-    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
-    "commandMatrixCommandHeader": "Command",
-    "commandMatrixPurposeHeader": "Purpose",
-    "commandMatrixRunningFactoryHeader": "Factory must already be running?",
-    "commandMatrixYouCommand": "you",
-    "commandMatrixYouPurpose": "Start the default local factory and dashboard from the current project.",
-    "commandMatrixYouRunning": "No — this starts the runtime.",
-    "commandMatrixYouRunDirCommand": "you run --dir <factory>",
-    "commandMatrixYouRunDirPurpose": "Start or attach to a local factory from an explicit factory directory.",
-    "commandMatrixYouRunDirRunning": "No — this starts the runtime.",
-    "commandMatrixYouRunNamedCommand": "you run --named <factory> / you run --factory <path>",
-    "commandMatrixYouRunNamedPurpose": "Run a named or portable factory without guessing the local directory layout.",
-    "commandMatrixYouRunNamedRunning": "No — this starts the runtime.",
-    "commandMatrixYouRunWorkCommand": "you run --work <batch.json>",
-    "commandMatrixYouRunWorkPurpose": "Submit batch JSON as part of local factory startup, not steady-state ingress.",
-    "commandMatrixYouRunWorkRunning": "No when used with a startup form such as --dir.",
-    "commandMatrixYouSubmitCommand": "you submit",
-    "commandMatrixYouSubmitPurpose": "Submit one work item to a factory that is already accepting work.",
-    "commandMatrixYouSubmitRunning": "Yes",
-    "commandMatrixYouSubmitBatchCommand": "you submit batch",
-    "commandMatrixYouSubmitBatchPurpose": "Upsert batch JSON to a running factory session.",
-    "commandMatrixYouSubmitBatchRunning": "Yes",
-    "commandMatrixYouSessionListCommand": "you session list",
-    "commandMatrixYouSessionListPurpose": "Check whether a factory host has open sessions before submitting work.",
-    "commandMatrixYouSessionListRunning": "Yes — talks to a running host.",
-    "commandMatrixYouWorkCommand": "you work list / you work show",
-    "commandMatrixYouWorkPurpose": "Inspect work items from a running factory.",
-    "commandMatrixYouWorkRunning": "Yes",
-    "commandMatrixYouDocsCommand": "you docs / you docs <topic>",
-    "commandMatrixYouDocsPurpose": "Print packaged reference markdown from the installed binary.",
-    "commandMatrixYouDocsRunning": "No"
+    "installDocs": "Install you-agent-factory",
+    "matrixCommandHeader": "Command group",
+    "matrixPurposeHeader": "Purpose",
+    "matrixRunningFactoryHeader": "Factory must already be running?",
+    "cliReference": "CLI Reference — every published command, flag, and argument",
+    "cliReferenceFullContract": "CLI Reference — the full published contract",
+    "apiReference": "API Reference — the HTTP operations catalog",
+    "makeYourAgentUseYou": "How to make your agent use YOU",
+    "matrixInitCommand": "you init",
+    "matrixInitPurpose": "Configure the default provider and model, or install a packaged factory from the embedded catalog.",
+    "matrixInitRunning": "No",
+    "matrixRunCommand": "you run",
+    "matrixRunPurpose": "Load a factory and run the engine. Batch by default; add --continuously to stay alive while idle.",
+    "matrixRunRunning": "No — this starts the runtime.",
+    "matrixServerCommand": "you server",
+    "matrixServerPurpose": "Validate and serve the current factory from ./factory/factory.json, opening the dashboard once ready.",
+    "matrixServerRunning": "No — this starts the runtime.",
+    "matrixFactoryCommand": "you factory list / create / update / delete",
+    "matrixFactoryPurpose": "Manage persisted named factories under one factory root at a time.",
+    "matrixFactoryRunning": "No",
+    "matrixFactoryConfigCommand": "you factory config validate / expand / flatten",
+    "matrixFactoryConfigPurpose": "Validate a definition without persisting it, or convert between the single-file and split layouts.",
+    "matrixFactoryConfigRunning": "No",
+    "matrixSessionCommand": "you session list / show / create / delete / pause / resume / dispatches",
+    "matrixSessionPurpose": "Manage factory sessions and read their durable dispatches on a host.",
+    "matrixSessionRunning": "Yes",
+    "matrixSubmitCommand": "you submit / you submit batch",
+    "matrixSubmitPurpose": "Submit one work item, or upsert a canonical request batch, to a live session.",
+    "matrixSubmitRunning": "Yes",
+    "matrixWorkCommand": "you work list / show / move / visualize",
+    "matrixWorkPurpose": "Inspect and move work items. Visualizing a batch file reads local JSON instead.",
+    "matrixWorkRunning": "Yes, except visualize",
+    "matrixWorkersCommand": "you workers list / acp add / acp delete",
+    "matrixWorkersPurpose": "Inspect selectable worker integrations and configure Agent Client Protocol providers.",
+    "matrixWorkersRunning": "No",
+    "matrixModelsCommand": "you models list / inspect / pull / invoke",
+    "matrixModelsPurpose": "Read discovered models and their readiness, pull local models into the managed cache, or invoke one directly.",
+    "matrixModelsRunning": "Yes, except invoke",
+    "matrixMcpCommand": "you mcp serve",
+    "matrixMcpPurpose": "Start the Factory Session Model Context Protocol server over stdio for an MCP host.",
+    "matrixMcpRunning": "No",
+    "matrixServeCommand": "you serve acp",
+    "matrixServePurpose": "Host you-agent-factory as an Agent Client Protocol agent over stdio for an editor.",
+    "matrixServeRunning": "No",
+    "matrixDocsCommand": "you docs / you docs <topic>",
+    "matrixDocsPurpose": "Print packaged reference markdown from the installed binary.",
+    "matrixDocsRunning": "No"
+  },
+  "callouts": {
+    "currentFactoryDefault": {
+      "body": "With no selector at all, a run validates the invocation-local ./factory/factory.json as the current factory. It does not bootstrap a missing definition and does not follow another current-factory pointer, so a run in the wrong directory fails before anything starts rather than silently picking something else."
+    },
+    "deprecatedPort": {
+      "body": "The per-command --port flag is deprecated in favour of the global --server flag. Prefer the base URI: it carries scheme, host, and port in one value and applies uniformly."
+    }
   }
 }

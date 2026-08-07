@@ -35,9 +35,10 @@ import { source } from "@/lib/source";
 
 const REPRESENTATIVE_FACTORY_PAGES = [
   {
-    href: "/docs/guides/getting-started",
-    previous: "/docs/guides/cursor-dynamic-workflows",
-    next: "/docs/guides/using-you-agent-factory-for-loops",
+    // Second entry in the Quick starts group, which opens the explorer.
+    href: "/docs/guides/run-your-first-factory",
+    previous: "/docs/documentation/install",
+    next: "/docs/guides/write-your-first-factory",
   },
   {
     href: "/docs/concepts/harness",
@@ -61,7 +62,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
 
 const FUSION_RELATED_HREFS = [
   "/docs/concepts/harness",
-  "/docs/guides/getting-started",
+  "/docs/guides/run-your-first-factory",
   "/docs/concepts/loop",
   "/docs/guides/write-review-loops",
 ] as const;

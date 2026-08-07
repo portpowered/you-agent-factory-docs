@@ -21,14 +21,14 @@ function emptyIndexes(): RegistryIndexes {
 function syntheticPage(locale: string): DocsPageSource {
   return {
     pageDir: `/tmp/${locale}/getting-started`,
-    docsSlug: "guides/getting-started",
+    docsSlug: "guides/run-your-first-factory",
     url:
       locale === "en"
-        ? "/docs/guides/getting-started"
-        : `/${locale}/docs/guides/getting-started`,
+        ? "/docs/guides/run-your-first-factory"
+        : `/${locale}/docs/guides/run-your-first-factory`,
     frontmatter: {
       kind: "guide",
-      registryId: "guide.getting-started",
+      registryId: "guide.run-your-first-factory",
       messageNamespace: "local",
       assetNamespace: "local",
       tags: ["guides"],

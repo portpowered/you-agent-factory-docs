@@ -52,10 +52,10 @@ const NON_DEFAULT_LOCALES = FACTORY_SHIPPED_LOCALES.filter(
 
 const REPRESENTATIVE_DOCS = [
   {
-    slug: ["guides", "getting-started"] as const,
+    slug: ["guides", "run-your-first-factory"] as const,
     title: "Getting Started",
-    docsSlug: "guides/getting-started",
-    href: "/docs/guides/getting-started",
+    docsSlug: "guides/run-your-first-factory",
+    href: "/docs/guides/run-your-first-factory",
   },
   {
     slug: ["concepts", "harness"] as const,
@@ -91,9 +91,9 @@ describe("factory locale and Pages base path", () => {
       "/docs/techniques/ralph",
     );
 
-    assertFactoryLocaleHref("/docs/guides/getting-started", "en");
+    assertFactoryLocaleHref("/docs/guides/run-your-first-factory", "en");
     expect(() =>
-      assertFactoryLocaleHref("/ja/docs/guides/getting-started", "en"),
+      assertFactoryLocaleHref("/ja/docs/guides/run-your-first-factory", "en"),
     ).toThrow(/must not carry locale prefix/);
   });
 
@@ -149,11 +149,11 @@ describe("factory locale and Pages base path", () => {
 
     expect(
       resolveFactoryLocalizedHref(
-        { surface: "docs-page", slug: "guides/getting-started" },
+        { surface: "docs-page", slug: "guides/run-your-first-factory" },
         "ja",
         PROJECT_SITE_BASE_PATH,
       ),
-    ).toBe(`${PROJECT_SITE_BASE_PATH}/ja/docs/guides/getting-started`);
+    ).toBe(`${PROJECT_SITE_BASE_PATH}/ja/docs/guides/run-your-first-factory`);
 
     expect(
       resolveFactoryNavHrefsWithBasePath(

@@ -38,7 +38,7 @@ const cliDocsSiteConfig = {
     },
     {
       kind: "docs-page",
-      slug: "guides/getting-started",
+      slug: "guides/run-your-first-factory",
       titleKey: "title",
       descriptionKey: "subtitle",
     },

@@ -28,9 +28,9 @@
     "stepsSessionListLabel": "稼働中のファクトリーセッションを確認する",
     "stepsSubmitLabel": "このループパス用の作業を投入する",
     "stepsSubmitBatchLabel": "または小さなバッチを投入する",
-    "gettingStarted": "はじめに",
     "loopConcept": "ループの概念",
-    "writeReviewLoopsGuide": "書き込み・レビューループ"
+    "writeReviewLoopsGuide": "書き込み・レビューループ",
+    "runYourFirstFactory": "最初のファクトリーを実行する"
   },
   "callouts": {
     "stepsKeepIterating": {

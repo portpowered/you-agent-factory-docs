@@ -28,9 +28,9 @@
     "stepsSessionListLabel": "确认活跃的工厂会话",
     "stepsSubmitLabel": "为本循环轮次提交工作",
     "stepsSubmitBatchLabel": "或提交一小批",
-    "gettingStarted": "快速开始",
     "loopConcept": "循环概念",
-    "writeReviewLoopsGuide": "写-审循环"
+    "writeReviewLoopsGuide": "写-审循环",
+    "runYourFirstFactory": "运行你的第一个工厂"
   },
   "callouts": {
     "stepsKeepIterating": {

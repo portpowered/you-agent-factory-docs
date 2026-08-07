@@ -77,7 +77,7 @@ describe("localized route metadata alternates", () => {
     const gettingStartedMetadata = await generateLocalizedDocsMetadata({
       params: Promise.resolve({
         locale: "ja",
-        slug: ["guides", "getting-started"],
+        slug: ["guides", "run-your-first-factory"],
       }),
     });
     const cliMetadata = await generateLocalizedDocsMetadata({
@@ -94,12 +94,12 @@ describe("localized route metadata alternates", () => {
 
     expect(gettingStartedMetadata.title).toBe("はじめに");
     expect(gettingStartedMetadata.alternates).toEqual({
-      canonical: "/docs/guides/getting-started",
+      canonical: "/docs/guides/run-your-first-factory",
       languages: {
-        en: "/docs/guides/getting-started",
-        ja: "/ja/docs/guides/getting-started",
-        "zh-CN": "/zh-CN/docs/guides/getting-started",
-        vi: "/vi/docs/guides/getting-started",
+        en: "/docs/guides/run-your-first-factory",
+        ja: "/ja/docs/guides/run-your-first-factory",
+        "zh-CN": "/zh-CN/docs/guides/run-your-first-factory",
+        vi: "/vi/docs/guides/run-your-first-factory",
       },
     });
     expect(cliMetadata.title).toBe("CLI");
@@ -196,7 +196,7 @@ describe("localized route metadata alternates", () => {
   it("resolves high-traffic docs metadata from filled locale message bundles", async () => {
     const highTrafficPages = [
       {
-        slug: ["guides", "getting-started"],
+        slug: ["guides", "run-your-first-factory"],
         titles: {
           ja: "はじめに",
           "zh-CN": "快速开始",
@@ -253,7 +253,7 @@ describe("localized route metadata alternates", () => {
     const jaGettingStarted = await generateLocalizedDocsMetadata({
       params: Promise.resolve({
         locale: "ja",
-        slug: ["guides", "getting-started"],
+        slug: ["guides", "run-your-first-factory"],
       }),
     });
     expect(String(jaGettingStarted.description)).not.toBe(
@@ -270,7 +270,7 @@ describe("localized route metadata alternates", () => {
       );
 
     for (const locale of ["ja", "zh-CN", "vi"] as const) {
-      expect(hasLocaleSlug(locale, "guides/getting-started")).toBe(true);
+      expect(hasLocaleSlug(locale, "guides/run-your-first-factory")).toBe(true);
       expect(hasLocaleSlug(locale, "documentation/install")).toBe(true);
       expect(hasLocaleSlug(locale, "documentation/cli")).toBe(true);
       expect(

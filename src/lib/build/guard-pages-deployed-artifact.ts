@@ -26,14 +26,14 @@ import { runStaticExportServerLifecycle } from "@/lib/verify/static-export-serve
 /** Representative reader routes the Pages deploy guard must HTTP-probe. */
 export const PAGES_DEPLOYED_ARTIFACT_PROBE_ROUTES = [
   "/",
-  "/docs/guides/getting-started",
+  "/docs/guides/run-your-first-factory",
   "/blog/comparing-agent-factories",
 ] as const;
 
 /** Navigation hrefs that must stay under the project-site prefix in probed HTML. */
 export const PAGES_DEPLOYED_ARTIFACT_PROBE_NAV_HREFS = [
   "/",
-  "/docs/guides/getting-started",
+  "/docs/guides/run-your-first-factory",
   "/blog/comparing-agent-factories",
 ] as const;
 

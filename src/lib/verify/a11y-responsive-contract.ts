@@ -32,7 +32,7 @@ export const CRITICAL_ROUTES: readonly CriticalRoute[] = [
   { id: "search", path: "/search", label: "Search" },
   {
     id: "docs-article",
-    path: "/docs/guides/getting-started",
+    path: "/docs/guides/run-your-first-factory",
     label: "Docs article",
   },
   {

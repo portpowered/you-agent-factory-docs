@@ -12,7 +12,7 @@
     }
   },
   "links": {
-    "gettingStarted": "Bắt đầu",
-    "architectureOfSystem": "Kiến trúc hệ thống"
+    "architectureOfSystem": "Kiến trúc hệ thống",
+    "runYourFirstFactory": "Chạy factory đầu tiên của bạn"
   }
 }

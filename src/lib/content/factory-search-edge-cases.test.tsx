@@ -237,7 +237,7 @@ describe("factory search edge cases", () => {
 
     const pageTree = localizePageTree(source.getPageTree(), "en");
     for (const href of [
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
       "/docs/concepts/harness",
       "/docs/techniques/ralph",
     ]) {

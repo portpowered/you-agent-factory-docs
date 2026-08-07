@@ -45,9 +45,9 @@ import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page
 const REPRESENTATIVE_FACTORY_PAGES = [
   {
     collectionId: "guides" as const,
-    slug: ["guides", "getting-started"],
-    title: "Getting Started",
-    href: "/docs/guides/getting-started",
+    slug: ["guides", "run-your-first-factory"],
+    title: "Run Your First Factory",
+    href: "/docs/guides/run-your-first-factory",
     folderLabel: "Guides",
   },
   {

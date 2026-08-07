@@ -195,7 +195,7 @@ export const FACTORY_EXPLORER_QUICK_START_DOCS_SLUGS = [
   "guides/run-your-first-factory",
   "guides/write-your-first-factory",
   "guides/write-your-first-javascript",
-  "guides/connect-your-agent-to-you",
+  "guides/make-your-agent-use-you",
 ] as const;
 
 /** Ordered member sections for each top-level group. */

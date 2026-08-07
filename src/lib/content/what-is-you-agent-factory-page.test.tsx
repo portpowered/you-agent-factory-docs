@@ -62,14 +62,14 @@ describe("what-is-you-agent-factory documentation page", () => {
     ).toBeTruthy();
     expect(screen.getByText(/not Model Atlas/i)).toBeTruthy();
 
-    const gettingStarted = screen.getByRole("link", {
-      name: "Getting started",
+    const runFirstFactory = screen.getByRole("link", {
+      name: "Run your first factory",
     });
     const architecture = screen.getByRole("link", {
       name: "Architecture of system",
     });
-    expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
+    expect(runFirstFactory.getAttribute("href")).toBe(
+      "/docs/guides/run-your-first-factory",
     );
     expect(architecture.getAttribute("href")).toBe(
       "/docs/documentation/architecture-of-system",
@@ -83,7 +83,7 @@ describe("what-is-you-agent-factory documentation page", () => {
       limitsHeading: "限界と前提",
       proseNeedle:
         /コマンドラインインターフェース（CLI）およびエージェントファクトリー/,
-      gettingStartedLabel: "はじめに",
+      runFirstFactoryLabel: "最初のファクトリーを実行する",
       architectureLabel: "システムのアーキテクチャ",
     },
     {
@@ -91,7 +91,7 @@ describe("what-is-you-agent-factory documentation page", () => {
       title: "什么是 you-agent-factory",
       limitsHeading: "限制与假设",
       proseNeedle: /命令行界面（CLI）与代理工厂工作流系统/,
-      gettingStartedLabel: "快速开始",
+      runFirstFactoryLabel: "运行你的第一个工厂",
       architectureLabel: "系统架构",
     },
     {
@@ -100,7 +100,7 @@ describe("what-is-you-agent-factory documentation page", () => {
       limitsHeading: "Giới hạn và giả định",
       proseNeedle:
         /giao diện dòng lệnh \(CLI\) và hệ thống workflow agent-factory/,
-      gettingStartedLabel: "Bắt đầu",
+      runFirstFactoryLabel: "Chạy factory đầu tiên của bạn",
       architectureLabel: "Kiến trúc hệ thống",
     },
   ])("renders $locale what-is with real target-language prose", async ({
@@ -108,7 +108,7 @@ describe("what-is-you-agent-factory documentation page", () => {
     title,
     limitsHeading,
     proseNeedle,
-    gettingStartedLabel,
+    runFirstFactoryLabel,
     architectureLabel,
   }) => {
     const en = await loadLocalDocsPage({
@@ -156,7 +156,7 @@ describe("what-is-you-agent-factory documentation page", () => {
     expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(screen.getByRole("heading", { name: limitsHeading })).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: gettingStartedLabel }),
+      screen.getByRole("link", { name: runFirstFactoryLabel }),
     ).toBeTruthy();
     expect(screen.getByRole("link", { name: architectureLabel })).toBeTruthy();
     expect(document.body.textContent ?? "").toMatch(/Model Atlas/);

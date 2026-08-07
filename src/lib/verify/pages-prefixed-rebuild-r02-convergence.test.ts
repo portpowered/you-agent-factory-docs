@@ -24,7 +24,7 @@ function prefixedHtml(): string {
 <script src="${JS}"></script>
 </head><body>
 <a href="${BASE}/">Home</a>
-<a href="${BASE}/docs/guides/getting-started">Getting started</a>
+<a href="${BASE}/docs/guides/run-your-first-factory">Getting started</a>
 <a href="${BASE}/blog/comparing-agent-factories">Comparing agent factories</a>
 </body></html>`;
 }
@@ -35,7 +35,7 @@ function unprefixedHtml(): string {
 <script src="/_next/static/chunks/main.js"></script>
 </head><body>
 <a href="/">Home</a>
-<a href="/docs/guides/getting-started">Getting started</a>
+<a href="/docs/guides/run-your-first-factory">Getting started</a>
 <a href="/blog/comparing-agent-factories">Comparing agent factories</a>
 </body></html>`;
 }
@@ -49,12 +49,12 @@ describe("pages prefixed rebuild R02 convergence", () => {
   test("deployed-artifact probe inventory covers home, getting-started, and comparing", () => {
     expect([...PAGES_DEPLOYED_ARTIFACT_PROBE_ROUTES]).toEqual([
       "/",
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
       "/blog/comparing-agent-factories",
     ]);
     expect([...PAGES_DEPLOYED_ARTIFACT_PROBE_NAV_HREFS]).toEqual([
       "/",
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
       "/blog/comparing-agent-factories",
     ]);
   });

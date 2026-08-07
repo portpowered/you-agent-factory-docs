@@ -1,31 +1,64 @@
 {
   "title": "Run Your First Factory",
-  "description": "Run a packaged factory end to end without writing any configuration.",
-  "openingSummary": "Packaged factories ship ready to run, so the shortest path to seeing you-agent-factory work is to run one someone else already wrote.",
+  "description": "Install a packaged factory from the embedded catalog and run it end to end without writing any configuration.",
+  "openingSummary": "Packaged factories ship inside the you binary, ready to run. The shortest path to seeing you-agent-factory work is to install one someone else already wrote and hand it a goal.",
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A packaged factory is a complete, published workflow you can run by name. You supply a goal; the factory supplies the graph, the workers, and the review steps."
+      "body": "A packaged factory is a complete, published workflow with a canonical name such as @you/goal. You supply the request; the factory supplies the graph, the workers, the review steps, and the argument contract. Fifteen ship with the binary, covering goal pursuit, review loops, parallel fan-out, tournaments, deep research, and text to speech."
     },
     "whenToUse": {
       "title": "When To Use",
-      "body": "Use this right after installing, before writing anything of your own. Running a packaged factory proves your install works and shows you the shape of a factory run."
+      "body": "Run one right after installing, before writing anything of your own. A packaged run proves the install works, proves the provider is configured, and shows you the shape of a factory run before you have to author one."
     },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
-      "body": "Pick a packaged factory, run it against a goal, then watch the session until it settles."
+      "body": "Install a packaged factory into your named factory root, confirm it landed, then run it against a request. @you/goal is the best first choice: it persists progress and keeps working the goal until the executor calls it complete or blocked."
+    },
+    "watchTheRun": {
+      "title": "Watch The Run",
+      "body": "A plain run starts no HTTP listener — it executes in batch mode and exits once the work settles. Ask for the embedded dashboard when you want to watch the graph move: the listener binds loopback only, lives exactly as long as the run, and opens the browser once it is ready."
+    },
+    "tryAnotherFactory": {
+      "title": "Try Another Factory",
+      "body": "Each packaged factory declares its own arguments, so the same two commands work across the catalog. @you/review produces candidate work and repeats independent review until approval; @you/quorum runs independent assessments in parallel and merges them; @you/spawn plans an exact number of tasks and executes them concurrently."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
-      "body": "A packaged factory still needs a harness to drive it. If the run exits immediately, check that your provider credentials are set and that the session actually started."
+      "body": "A packaged factory still needs a provider to drive its workers. If the run exits almost immediately with no output, the usual cause is that no default provider is configured, not that the factory is broken. Also note the invocation input is required: a named run with no positional text and no piped stdin has nothing to work on."
+    },
+    "nextSteps": {
+      "title": "Next Steps",
+      "body": "Once a packaged factory does something close to what you want but not close enough, the next move is to write your own — or to hand the whole catalog to an agent and let it choose."
     },
     "tags": {
       "title": "Tags"
     }
   },
   "links": {
-    "runPackagedLabel": "Run a packaged factory",
-    "watchLabel": "Confirm the session is live",
-    "logsLabel": "Follow the run"
+    "packagedFactoriesReference": "Packaged Factory Reference — every shipped factory and its unabridged source",
+    "packagedFactoriesSources": "Packaged Factory Reference — arguments and examples for each factory",
+    "installPackagedLabel": "Install a packaged factory from the embedded catalog",
+    "confirmInstalledLabel": "Confirm it landed in the global named factory root",
+    "runPackagedLabel": "Run it against a request",
+    "primaryOutputLabel": "Print only the final result instead of streaming progress",
+    "sessionListLabel": "List sessions on that running host",
+    "apiDocs": "API — reaching a running factory over HTTP",
+    "cliReference": "CLI Reference — every published command and flag",
+    "installDocs": "Install you-agent-factory",
+    "troubleshooting": "Troubleshooting",
+    "writeYourFirstFactory": "Write your first factory",
+    "makeYourAgentUseYou": "How to make your agent use YOU"
+  },
+  "callouts": {
+    "invocationInput": {
+      "body": "Invocation input reaches the factory three ways: positional text after the command, piped stdin, or a named argument the factory declares. Piping is the easiest way to pass a long request without quoting it."
+    },
+    "serverOnly": {
+      "body": "Use the server flag without the dashboard when you want the HTTP API available for the lifetime of the run but no browser window. Either way the listener disappears when the run ends."
+    },
+    "catalogBreadth": {
+      "body": "Every packaged factory publishes its argument names, defaults, and worked examples. Read those before guessing at flags."
+    }
   }
 }

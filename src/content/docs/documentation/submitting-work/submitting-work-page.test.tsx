@@ -137,12 +137,12 @@ describe("submitting-work documentation page", () => {
     );
 
     const cliDocs = screen.getByRole("link", { name: "CLI docs" });
-    const gettingStarted = screen.getByRole("link", {
-      name: "Getting started",
+    const runFirstFactory = screen.getByRole("link", {
+      name: "Run your first factory",
     });
     expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
-    expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
+    expect(runFirstFactory.getAttribute("href")).toBe(
+      "/docs/guides/run-your-first-factory",
     );
   });
 });

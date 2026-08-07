@@ -16,7 +16,7 @@ function writeNestedWorkersFixture(docsRoot: string): {
 } {
   const parentDir = join(docsRoot, "workers", "agent");
   const nestedDir = join(docsRoot, "workers", "agent", "variant");
-  const twoSegmentGuideDir = join(docsRoot, "guides", "getting-started");
+  const twoSegmentGuideDir = join(docsRoot, "guides", "run-your-first-factory");
 
   for (const pageDir of [parentDir, nestedDir, twoSegmentGuideDir]) {
     mkdirSync(join(pageDir, "messages"), { recursive: true });
@@ -116,7 +116,7 @@ describe("nested docs page directories", () => {
     expect(bySlug.get("workers/agent/variant")?.url).toBe(
       "/docs/workers/agent/variant",
     );
-    expect(bySlug.get("guides/getting-started")?.pageDir).toBe(
+    expect(bySlug.get("guides/run-your-first-factory")?.pageDir).toBe(
       twoSegmentGuideDir,
     );
     expect(bySlug.has("workers/agent/variant")).toBe(true);

@@ -1,14 +1,61 @@
 {
   "title": "Cài đặt you-agent-factory",
-  "description": "Nội dung hướng dẫn cài đặt you-agent-factory nằm trong Bắt đầu. Tiếp tục ở đó cho script cài đặt theo OS, xác nhận you, và scaffold khởi đầu.",
-  "openingSummary": "Cài đặt CLI you-agent-factory từ Bắt đầu.",
+  "description": "Cài đặt CLI you của you-agent-factory, xác nhận nó phân giải được trên PATH, chọn nhà cung cấp chạy worker, và cài một factory đóng gói từ danh mục tích hợp.",
+  "openingSummary": "you-agent-factory được cài dưới dạng một tệp nhị phân duy nhất tên là you. Việc cài đặt chỉ tốn một lệnh; để dùng được thực sự thì cần thêm hai bước nữa — chọn nhà cung cấp chạy worker, và cài một factory để nó chạy.",
   "sections": {
-    "installPath": {
-      "title": "Đường dẫn cài đặt",
-      "body": "Bắt đầu dạy toàn bộ đường dẫn cài đặt you-agent-factory: script phát hành theo OS, xác nhận you có sẵn trong shell, và lựa chọn scaffold khởi đầu. Tiếp tục ở đó để cài đặt và chạy."
+    "install": {
+      "title": "Cài đặt",
+      "body": "Điểm vào bản phát hành chính thức sẽ tải tệp nhị phân you cho hệ điều hành của bạn và đưa nó vào PATH. Nó chỉ cài CLI; nó không khởi động factory và không ghi bất kỳ cấu hình nào."
+    },
+    "confirmTheInstall": {
+      "title": "Xác nhận cài đặt",
+      "body": "In trợ giúp gốc để xác nhận shell phân giải được you và để xem các nhóm lệnh cấp cao nhất."
+    },
+    "chooseAProvider": {
+      "title": "Chọn nhà cung cấp",
+      "body": "Nhà cung cấp worker là tác tử hoặc runtime mô hình thực sự thực thi công việc — tác tử lập trình hoặc backend suy luận đứng sau mỗi worker. you init ghi lại nhà cung cấp mặc định và một mô hình mặc định tùy chọn, nhờ đó factory không phải tự khai báo. Chạy lệnh không kèm cờ để được hỏi tương tác, hoặc truyền --provider để cấu hình phi tương tác trong script hay job CI."
+    },
+    "installAPackagedFactory": {
+      "title": "Cài một factory đóng gói",
+      "body": "Factory đóng gói là những quy trình hoàn chỉnh đi kèm ngay trong tệp nhị phân. Cài một cái sẽ chép định nghĩa của nó vào thư mục gốc factory có tên của bạn, để bạn chạy, đọc và chỉnh sửa được."
+    },
+    "whereThingsLand": {
+      "title": "Mọi thứ nằm ở đâu",
+      "body": "Mặc định của nhà cung cấp là thiết lập vận hành và nằm trong ~/.you-agent-factory/config.json. Factory có tên cài bằng --package nằm dưới ~/.you-agent-factory/factories trừ khi --dir trỏ tới nơi khác. Factory bạn tự viết cho một dự án thì nằm cạnh dự án đó, tại ./factory/factory.json."
+    },
+    "commonPitfalls": {
+      "title": "Lỗi thường gặp",
+      "body": "Sự cố phổ biến nhất sau khi cài là thiếu nhà cung cấp: worker được điều phối, không tìm thấy runtime nào được cấu hình, và lần chạy kết thúc ngay. Hãy cấu hình nhà cung cấp trước lần chạy đầu tiên. Phổ biến thứ hai là trình cài đặt kết thúc trong một shell đã nạp PATH từ trước — hãy mở terminal mới trước khi kết luận rằng cài đặt thất bại."
+    },
+    "nextSteps": {
+      "title": "Bước tiếp theo",
+      "body": "Khi đã cấu hình nhà cung cấp và cài một factory đóng gói, bước hữu ích nhất tiếp theo là chạy trọn vẹn một cái."
     }
   },
   "links": {
-    "gettingStarted": "Bắt đầu"
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "initInteractiveLabel": "Cấu hình nhà cung cấp theo kiểu tương tác",
+    "initProviderLabel": "Cấu hình nhà cung cấp theo kiểu phi tương tác",
+    "packagedFactoriesReference": "Tham chiếu Factory đóng gói — mọi factory đi kèm và mã nguồn của chúng",
+    "globalConfiguration": "Factory cấu hình toàn cục",
+    "factoryConfiguration": "Cấu hình factory",
+    "runYourFirstFactory": "Chạy factory đầu tiên của bạn",
+    "cliOverview": "CLI",
+    "cliReference": "Tham chiếu CLI — mọi lệnh đã công bố"
+  },
+  "callouts": {
+    "newShell": {
+      "body": "Trình cài đặt ghi tệp nhị phân và cập nhật PATH cho các shell mới. Hãy mở terminal mới, hoặc nạp lại profile shell, trước khi chạy you lần đầu."
+    },
+    "packagedDocs": {
+      "body": "Tệp nhị phân cũng mang theo các chủ đề tham chiếu đọc được ngoại tuyến. In chỉ mục sẽ cho thấy mọi chủ đề bạn có thể đọc mà không cần kết nối mạng."
+    },
+    "providerNames": {
+      "body": "Tên nhà cung cấp không do tài liệu này quy định — tệp nhị phân sẽ báo cáo những tên nó chọn được, bao gồm cả các nhà cung cấp Agent Client Protocol do người vận hành thêm vào."
+    },
+    "packagedInstallTargets": {
+      "body": "Mặc định, factory đóng gói được cài vào thư mục gốc factory có tên toàn cục dưới thư mục home của bạn. Truyền --dir để cài vào một thư mục gốc cục bộ của dự án, --format để chọn định dạng định nghĩa gốc, và --replace để ghi đè một thư mục đã tồn tại. Lệnh liệt kê chỉ đọc đúng một thư mục gốc mỗi lần và không bao giờ gộp cả hai, nên hãy trỏ --dir vào thư mục gốc toàn cục để xem những gì --package đã cài."
+    }
   }
 }

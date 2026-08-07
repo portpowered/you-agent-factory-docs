@@ -65,7 +65,7 @@ describe("content-paths", () => {
     const representativePages = [
       {
         section: "guides",
-        slug: "getting-started",
+        slug: "run-your-first-factory",
         sectionRoot: GUIDES_DOCS_ROOT,
       },
       { section: "concepts", slug: "alibi", sectionRoot: CONCEPTS_DOCS_ROOT },
@@ -100,7 +100,7 @@ describe("content-paths", () => {
   test("generic docs page helper preserves section-plus-slug invariants for custom roots", () => {
     const docsRoot = "/tmp/factory-docs/docs";
     const representativePages = [
-      { section: "guides", slug: "getting-started" },
+      { section: "guides", slug: "run-your-first-factory" },
       { section: "concepts", slug: "alibi" },
       { section: "techniques", slug: "prompt-caching" },
       { section: "documentation", slug: "cli-reference" },

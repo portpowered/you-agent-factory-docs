@@ -92,13 +92,13 @@ describe("retired Atlas collection index routes", () => {
 
     expect(html).toContain("Page not found");
     expect(html).toContain(
-      "No documentation page matches this path. Continue from Getting Started, browse the factory collections, search the docs, or read the blog.",
+      "No documentation page matches this path. Continue from Run your first factory, browse the factory collections, search the docs, or read the blog.",
     );
-    expect(html).toContain("Getting Started");
+    expect(html).toContain("Run your first factory");
     expect(html).toContain("Browse");
     expect(html).toContain("Search");
     expect(html).toContain("Blog");
-    expect(html).toContain('href="/docs/guides/getting-started"');
+    expect(html).toContain('href="/docs/guides/run-your-first-factory"');
     expect(html).toContain('href="/browse"');
     expect(html).toContain('href="/search"');
     expect(html).toContain('href="/blog"');

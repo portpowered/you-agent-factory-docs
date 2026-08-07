@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import {
   extractNdSidebarHtml,
-  GETTING_STARTED_GUIDE_URL,
   hasLegacyPlaceholderSidebar,
   PLACEHOLDER_SIDEBAR_DESCRIPTION,
+  RUN_FIRST_FACTORY_GUIDE_URL,
   stripHtmlScripts,
   TOKENS_CONCEPT_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
@@ -14,7 +14,7 @@ const BUILT_HTML_INDEX_ROUTES = [
     path: "/docs/guides",
     file: ".next/server/app/docs/guides.html",
     title: "Guides",
-    entryHref: GETTING_STARTED_GUIDE_URL,
+    entryHref: RUN_FIRST_FACTORY_GUIDE_URL,
   },
   {
     path: "/docs/concepts",
@@ -43,8 +43,11 @@ describe("docs index routes unified shell (built HTML)", () => {
       expect(visibleHtml).toContain('id="nd-sidebar"');
       expect(visibleHtml).toContain('id="nd-page"');
       expect(sidebar.length).toBeGreaterThan(0);
-      expect(sidebar).toContain(">Guides<");
-      expect(sidebar).toContain(">Concepts<");
+      // Server HTML renders the four top-level explorer groups; collection
+      // folders nested inside a collapsed group are client-expanded only.
+      expect(sidebar).toContain(">Quick starts<");
+      expect(sidebar).toContain(">How-tos<");
+      expect(sidebar).toContain(">Information<");
       expect(visibleHtml).toContain(route.entryHref);
       expect(visibleHtml).not.toContain(PLACEHOLDER_SIDEBAR_DESCRIPTION);
       expect(hasLegacyPlaceholderSidebar(visibleHtml)).toBe(false);

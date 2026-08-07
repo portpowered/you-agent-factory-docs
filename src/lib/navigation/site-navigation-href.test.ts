@@ -82,11 +82,11 @@ describe("site navigation href consumers", () => {
     ).toBe("/you-agent-factory-docs/vi/docs/guides");
     expect(
       resolveLocaleSwitchedSiteHref(
-        "/docs/guides/getting-started",
+        "/docs/guides/run-your-first-factory",
         "zh-CN",
         PROJECT_SITE_BASE_PATH,
       ),
-    ).toBe("/you-agent-factory-docs/zh-CN/docs/guides/getting-started");
+    ).toBe("/you-agent-factory-docs/zh-CN/docs/guides/run-your-first-factory");
     expect(
       resolveLocaleSwitchedSiteHref(
         "/docs/documentation/cli",

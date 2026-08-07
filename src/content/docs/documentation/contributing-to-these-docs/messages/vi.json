@@ -17,10 +17,10 @@
   },
   "links": {
     "whatIsYouAgentFactory": "What is you-agent-factory",
-    "gettingStarted": "Getting started",
     "siteFundamentals": "Site fundamentals (repository)",
     "documentationTemplate": "Documentation template (repository)",
     "writingStandards": "Writing standards (repository)",
-    "repoContributing": "Repository CONTRIBUTING guide"
+    "repoContributing": "Repository CONTRIBUTING guide",
+    "runYourFirstFactory": "Chạy factory đầu tiên của bạn"
   }
 }

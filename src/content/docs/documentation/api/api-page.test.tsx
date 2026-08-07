@@ -118,16 +118,18 @@ describe("api documentation how-to page", () => {
       expect(reachSection).toBeTruthy();
       expect(reachSection?.textContent).toMatch(/http:\/\/localhost:7437/);
       expect(reachSection?.textContent).toMatch(
-        /factory service must already be running/i,
+        /An ordinary run starts no HTTP listener/i,
       );
-      expect(reachSection?.textContent).toMatch(/\byou\b/);
+      expect(reachSection?.textContent).toMatch(/you server/);
+      expect(reachSection?.textContent).toMatch(/--with-server/);
+      expect(reachSection?.textContent).toMatch(/--with-site/);
 
       const flowSection = document.getElementById("typical-session-flow");
       expect(flowSection).toBeTruthy();
       expect(flowSection?.textContent).toMatch(/you session list/);
       expect(flowSection?.textContent).toMatch(/you session show/);
       expect(flowSection?.textContent).toMatch(
-        /\/factory-sessions\/~default\/status/,
+        /\/factory-sessions\/<session-id>\/status/,
       );
 
       const trustSection = document.getElementById("trust-boundaries");
@@ -139,9 +141,11 @@ describe("api documentation how-to page", () => {
       const limitsSection = document.getElementById("limits-and-assumptions");
       expect(limitsSection).toBeTruthy();
       expect(limitsSection?.textContent).toMatch(/not the operations catalog/i);
-      expect(limitsSection?.textContent).toMatch(/not an OpenAPI playground/i);
       expect(limitsSection?.textContent).toMatch(
-        /not agent CLI-ingress policy replacement/i,
+        /not a live request playground/i,
+      );
+      expect(limitsSection?.textContent).toMatch(
+        /Autonomous agents submit work through the CLI/i,
       );
     },
     PAGE_RENDER_TIMEOUT_MS,
@@ -161,9 +165,9 @@ describe("api documentation how-to page", () => {
       const limits = String(
         loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
       );
-      expect(howToUse).toMatch(/Reference API catalog/i);
+      expect(howToUse).toMatch(/API reference/i);
       expect(limits).toMatch(/operations catalog/i);
-      expect(limits).toMatch(/does not render OpenAPI/i);
+      expect(limits).toMatch(/not a pasted OpenAPI document/i);
 
       render(
         <main>
@@ -184,6 +188,10 @@ describe("api documentation how-to page", () => {
       );
       expect(catalogLinks.length).toBeGreaterThan(0);
       expect(howToUseSection?.textContent).toMatch(/operations catalog/i);
+      // Retired: `you workflow status` is not a published command.
+      expect(document.body.textContent ?? "").not.toContain(
+        "you workflow status",
+      );
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();

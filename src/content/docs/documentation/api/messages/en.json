@@ -1,27 +1,39 @@
 {
   "title": "API",
-  "description": "Reach and use the you-agent-factory local HTTP API: default base URL, factory-running precondition, session-oriented flow, and the path to the operations catalog.",
-  "openingSummary": "Point HTTP clients at a running local factory service—default http://localhost:7437—then follow a session-oriented read and submit flow. Exact operations live on the Reference API catalog.",
+  "description": "Reach and use the you-agent-factory local HTTP API: how to get a listener running at all, the default base URL, the session-oriented flow, and the path to the operations catalog.",
+  "openingSummary": "The local factory service exposes an HTTP API on the operator machine at http://localhost:7437. Getting a listener is the part people miss: an ordinary run starts none, so the API is reachable only when a command explicitly asks for a server.",
   "sections": {
     "howToReach": {
       "title": "How To Reach",
-      "body": "The local factory service exposes an HTTP API on the operator machine. Session and API traffic use the default local base URL http://localhost:7437 unless the process that bound the listener overrides host or port. Point HTTP clients at a local Factory server you run yourself—not at a documentation host."
+      "body": "The API binds the loopback interface on the machine that started it, so clients on that machine reach it and nothing else does. The default base URL is http://localhost:7437 unless the process that bound the listener overrode host or port through the global server flag. Point HTTP clients at a factory server you run yourself, never at a documentation host."
     },
     "typicalSessionFlow": {
       "title": "Typical Session Flow",
-      "body": "Treat the live Factory Session as the unit you discover, inspect, and address. Confirm a live session on the running host before submitting work or reading status. Inspect one session by id when you need its identity and runtime projection. Submit work and read status or events against that same session id. Prefer CLI and API reads—you session list, you session show, you workflow status, and matching status or event endpoints—when you need scripted inspection. Exhaustive path, method, and schema contracts stay on the Reference API catalog."
+      "body": "The live Factory Session is the unit you discover, inspect, and address. Every session-scoped operation takes a session id in the path, so the first call is always the one that gets you an id."
+    },
+    "submittingAndReadingResults": {
+      "title": "Submitting And Reading Results",
+      "body": "Work goes in through the session work endpoint, and finished output comes back through separate result reads: one for the primary result, one for the full result set, and one for a partial result while the session is still running. Durable sessions can also be started directly with synchronous or asynchronous start operations."
+    },
+    "streamingEvents": {
+      "title": "Streaming Events",
+      "body": "Two server-sent event streams are published per session. The canonical stream carries ordered FactoryEvent records and is the one to consume for durable progress. The ephemeral stream carries FactoryResponseEvent records for one invocation's response lifecycle."
+    },
+    "validatingWithoutASession": {
+      "title": "Validating Without A Session",
+      "body": "A factory definition can be checked before any session exists. The validation operation takes a definition payload and returns whether it satisfies the factory contract, and a separate preview operation returns the resolved shape a definition would load as."
     },
     "trustBoundaries": {
       "title": "Trust Boundaries",
-      "body": "Treat the default local bind as an operator-accessible local surface, not a multi-tenant public product edge. Open Security / Trust Boundaries for local-bind expectations, operator versus autonomous-agent ingress paths, and sensitive artifact handling. API coverage here points to that trust documentation; it does not replace it."
+      "body": "Treat the default local bind as an operator-accessible local surface, not a multi-tenant public product edge. The Security and Trust Boundaries page carries local-bind expectations, operator versus autonomous-agent ingress paths, and sensitive artifact handling."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start or attach a local factory so a service is listening. Point your HTTP client at http://localhost:7437 unless you overrode host or port. Confirm a live Factory Session, then call session-oriented status, event, or submit operations against that session id. Open the Reference API catalog when you need exact operations, media types, or schema components."
+      "body": "Start a server, confirm a live session, then call session-scoped status, event, submit, or result operations against that session id. Open the API reference when you need exact paths, methods, media types, or schema components."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "API coverage here is how to interact with the local HTTP API: default base URL, factory-running precondition, trust-boundary pointer, and a typical session-oriented flow. It is not the operations catalog, not an OpenAPI playground, not a pasted OpenAPI document, and not agent CLI-ingress policy replacement—it does not render OpenAPI or an operations embed. Exact HTTP operations live on the Reference API catalog. Autonomous agents must submit work only through the CLI; dashboard submit and operator HTTP submit paths remain operator surfaces."
+      "body": "Coverage here is how to interact with the local HTTP API: getting a listener, the default base URL, the session-oriented flow, and the trust-boundary pointer. It is not the operations catalog, not a live request playground, and not a pasted OpenAPI document. Autonomous agents submit work through the CLI; dashboard submit and operator HTTP submit remain operator surfaces."
     },
     "tags": {
       "title": "Tags"
@@ -29,30 +41,40 @@
   },
   "links": {
     "defaultBaseUrlLabel": "Default local base URL",
-    "factoryRunningLabel": "Start or attach a local factory before calling the API",
-    "sessionListLabel": "Confirm a live Factory Session before submit or status reads",
-    "statusReadLabel": "Example status read against the default local host",
-    "apiReferenceCatalog": "Reference API (operations catalog)",
+    "startListenerLabel": "Three ways to get a listener",
+    "sessionListLabel": "List sessions to get an id",
+    "sessionInspectLabel": "Inspect one session and read its runtime status",
+    "cliEquivalentLabel": "The same two reads from the CLI",
+    "submittingWork": "Submitting work",
+    "eventsReference": "Events Reference — the full event corpus and stream contracts",
+    "apiReferenceCatalog": "API Reference — the operations catalog",
+    "cliReference": "CLI Reference — every published command and flag",
     "securityTrustBoundariesDocs": "Security / Trust Boundaries"
   },
   "callouts": {
-    "factoryMustBeRunning": {
-      "body": "A factory service must already be running before clients can call the API. Startup forms such as you or you run create or attach to that runtime; the API does not start the factory by itself. If the host is unreachable, start or attach a factory, then retry."
+    "noListenerByDefault": {
+      "body": "An ordinary run starts no HTTP listener. Batch, continuous, named, portable, replay, mock-worker, and JavaScript runs all execute without one, so a client pointed at the base URL during such a run gets a connection failure — the factory is working, it just is not serving."
+    },
+    "listenerLifetime": {
+      "body": "Serving the current factory runs until you cancel it. The two run flags serve only for the lifetime of that one run: adding a server keeps the API available without a browser, and adding the site implies that server and opens the embedded dashboard once after readiness. Server-enabled runs bind the loopback host and preferred port, advance past collisions monotonically, and report the URL they actually bound."
     },
     "sessionListConfirm": {
-      "body": "Session list is the primary liveness check on a running host. An empty list means the host responded but no live session is registered yet. A connection failure means nothing is listening on that host and port."
+      "body": "Listing sessions is the primary liveness check. An empty list means the host responded but no live session is registered yet. A connection failure means nothing is listening on that host and port at all."
     },
-    "sessionShowNote": {
-      "body": "Replace <session-id> with a SESSION ID from session list. On single-session local hosts the default compatibility session is often ~default. When more than one session exists, target the intended session id rather than assuming the default."
+    "sessionIdNote": {
+      "body": "Replace the placeholder with a session id from the list. CLI commands that omit an explicit session target the default compatibility session, but an HTTP client has to name one, so read the id rather than assuming it."
     },
-    "statusReadNote": {
-      "body": "GET /factory-sessions/{session_id}/status is a published deeper runtime health read for one live Factory Session. Use the same host and port as the API base URL. Exact response fields and other operations stay on the Reference API catalog and Metrics documentation."
+    "resultReads": {
+      "body": "Prefer a result read over scraping the event stream when you only want the answer. Prefer the event stream when you need ordered progress while the work is still moving."
+    },
+    "validationParity": {
+      "body": "The CLI validation command runs through the same validate-only factory contract as the HTTP validation operation, so a definition that passes locally passes over HTTP. Use the CLI while authoring and the endpoint when a service is doing the checking."
     },
     "operatorIngress": {
-      "body": "Autonomous agents must submit work only through the CLI. Dashboard submit and POST /factory-sessions/{session_id}/work remain operator paths—do not treat them as parallel agent control ingress. See Security / Trust Boundaries for the full local-bind and ingress policy."
+      "body": "Autonomous agents submit work only through the CLI. Dashboard submit and the session work endpoint remain operator paths — do not treat them as a parallel agent control ingress."
     },
     "operationsCatalogPointer": {
-      "body": "Exact path, method, media-type, and schema contracts live on the Reference API operations catalog. Follow the catalog link when you need an operation inventory."
+      "body": "Exact path, method, media-type, and schema contracts live on the API reference, which renders the shipped OpenAPI document itself rather than a retyped summary of it."
     }
   }
 }

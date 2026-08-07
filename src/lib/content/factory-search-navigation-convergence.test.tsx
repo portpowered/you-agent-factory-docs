@@ -111,9 +111,9 @@ const FACTORY_CATEGORY_SET = [
 
 const REPRESENTATIVE_PAGES = [
   {
-    slug: ["guides", "getting-started"] as const,
+    slug: ["guides", "run-your-first-factory"] as const,
     title: "Getting Started",
-    href: "/docs/guides/getting-started",
+    href: "/docs/guides/run-your-first-factory",
     collectionId: "guides",
     collectionLabel: "Guides",
   },
@@ -143,7 +143,7 @@ const REPRESENTATIVE_PAGES = [
 const ALIAS_CASES = [
   { alias: "agent runtime", url: "/docs/concepts/harness" },
   { alias: "Ralph loop", url: "/docs/techniques/ralph" },
-  { alias: "Quickstart", url: "/docs/guides/getting-started" },
+  { alias: "Quickstart", url: "/docs/documentation/install" },
 ] as const;
 
 const BODY_CASES = [
@@ -465,7 +465,7 @@ describe("factory search and navigation convergence end-to-end", () => {
     const localizedTree = localizePageTree(source.pageTree, "ja");
     const jaNeighbors = resolveFactoryDocsFooterNeighbors(
       localizedTree,
-      "/ja/docs/guides/getting-started",
+      "/ja/docs/guides/run-your-first-factory",
     );
     if (jaNeighbors.next) {
       expect(jaNeighbors.next.url.startsWith("/ja/")).toBe(true);

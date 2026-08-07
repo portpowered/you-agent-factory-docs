@@ -1,0 +1,71 @@
+{
+  "title": "如何让你的智能体使用 YOU",
+  "description": "把 AI 智能体指向 you-agent-factory 随附的智能体入门主题，让它自己驱动 you 命令行工具；MCP 与 ACP 则是更深入的集成方式。",
+  "openingSummary": "一个能执行 shell 命令的智能体，其实已经具备了全部条件。二进制文件里带有一份专为智能体撰写的入门主题——把智能体指向它一次，它就能自己挑选合适的 you 命令。",
+  "sections": {
+    "whatItIs": {
+      "title": "它是什么",
+      "body": "安装好的二进制文件自带参考文档，其中一个主题专为 AI 智能体撰写：一份入门说明与命令一览，讲清 you-agent-factory 是什么、有哪些命令、该用哪一个。它以不带任何包装格式的纯 Markdown 输出，正好是智能体最愿意读的形态。"
+    },
+    "whenToUse": {
+      "title": "何时使用",
+      "body": "只要你有一个能执行命令的智能体，又有一个值得复用的工厂，就该用它了。差别在于：一个智能体每次会话都从头重造评审循环，另一个则直接去用你已经装好的打包评审工厂。"
+    },
+    "stepsOrWorkflow": {
+      "title": "步骤",
+      "body": "没有服务器要启动，也没有集成要注册。全部配置就是在智能体本来就会读取项目说明的地方，加上一条指令。"
+    },
+    "whatTheAgentCanReach": {
+      "title": "智能体能触达什么",
+      "body": "仅凭命令行，智能体就能安装和列出工厂、针对某个请求运行工厂、向活动会话提交工作、检查工作条目与会话、列出并查看已发现的模型，以及阅读全部随附参考主题。这几乎覆盖了运维人员手工要做的一切。"
+    },
+    "deeperIntegrations": {
+      "title": "更深入的集成",
+      "body": "对于希望获得结构化工具而非 shell 的宿主，有两个协议服务器。Model Context Protocol 服务器通过 stdio 暴露 Factory Session 工具，让 MCP 宿主以具名工具的方式调用它们。Agent Client Protocol 服务器则把 you-agent-factory 本身托管为一个编辑器可以驱动的智能体。"
+    },
+    "commonPitfalls": {
+      "title": "常见陷阱",
+      "body": "最常见的故障是智能体从不读入门主题，而是靠猜参数。请把这条指令放在智能体真正会看的地方——它每次会话都会加载的项目说明文件——而不是一条一次性消息里。第二个是误以为必须用协议服务器；对大多数智能体来说，命令行既更简单又更强。"
+    },
+    "tags": {
+      "title": "标签"
+    }
+  },
+  "links": {
+    "step1Label": "第 1 步 — 确认二进制文件确实在那里",
+    "step2Label": "第 2 步 — 在智能体的项目说明里加一条指令",
+    "step3Label": "第 3 步 — 让它自己去发现其余主题",
+    "step4Label": "第 4 步 — 用一次真实运行来验证",
+    "cliReference": "CLI 参考 — 所有已发布的命令与参数",
+    "packagedFactoriesReference": "打包工厂参考 — 智能体可以按名字运行的内容",
+    "mcpLabel": "通过 Model Context Protocol 提供 Factory Session 工具",
+    "acpLabel": "把 you-agent-factory 托管为 Agent Client Protocol 智能体",
+    "mcpDocs": "MCP",
+    "mcpReference": "MCP 参考 — 已发布的工具输入模式",
+    "dynamicWorkflows": "动态工作流",
+    "securityTrustBoundaries": "安全 / 信任边界"
+  },
+  "callouts": {
+    "orientationTopic": {
+      "body": "交给智能体之前，先自己跑一次。它会准确告诉你智能体将学到什么，而且是现存最快的命令面貌入门方式。"
+    },
+    "acpDistinction": {
+      "body": "这三个面很容易混淆。作为 Agent Client Protocol 智能体托管，是把 you-agent-factory 提供给外部编辑器。添加一个 Agent Client Protocol 提供方，是配置一个由 you-agent-factory 自己向其派发工作的外部智能体。而通过 Model Context Protocol 提供服务则完全是另一个工具服务器，并且不会启动任何 HTTP 或仪表盘监听器。"
+    },
+    "cliIsTheAgentPath": {
+      "body": "自主智能体通过命令行提交工作。仪表盘的提交表单和 HTTP work 端点仍然是运维人员的通道，不是给智能体用的并行控制通道。"
+    },
+    "step1": {
+      "body": "在智能体运行所在的机器上安装 you-agent-factory 并配置提供方。智能体用不了不在 PATH 上的二进制文件，而没有提供方的工厂什么也执行不了。"
+    },
+    "step2": {
+      "body": "把这条指令放进智能体会自动加载的文件——AGENTS.md、CLAUDE.md、Cursor 规则文件，或者你所用框架读取的任何文件。要点在于：智能体是从手边真实存在的二进制文件学到命令全貌，而不是从一份可能过时的文档副本。"
+    },
+    "step3": {
+      "body": "共有 21 个主题可用，涵盖编写工厂、运行、配置、模拟工作单元、录制与回放、守卫、关系、工作、会话、编排器、JavaScript 工作流、MCP、工作站、工作单元、资源、模型、批量输入和模板。需要在某个主题上深入时，智能体可以只取那一部分。"
+    },
+    "step4": {
+      "body": "让智能体完整做一件小事，来确认整个链路可用：先列出已安装的内容，再运行一个打包工厂并汇报结果。要求只输出最终结果，能让智能体的上下文保持干净。"
+    }
+  }
+}

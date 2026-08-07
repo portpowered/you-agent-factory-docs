@@ -122,7 +122,9 @@ describe("R02 brand / alignment / theme / code-copy convergence", () => {
   });
 
   test("code-heavy guide route keeps inset text, persistent copy, secondary blue, and accessible copied status", async () => {
-    expect(THEME_CODE_COPY_R00_ROUTE).toBe("/docs/guides/getting-started");
+    expect(THEME_CODE_COPY_R00_ROUTE).toBe(
+      "/docs/guides/run-your-first-factory",
+    );
     expect(DOCS_CODE_BLOCK_INSET_INLINE).toBe("1rem");
     expect(DOCS_CODE_COPY_CONTROL_ATTR).toBe("data-docs-code-copy");
     expect(DOCS_CODE_COPY_CONTROL_VALUE).toBe("control");

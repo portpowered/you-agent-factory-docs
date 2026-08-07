@@ -1,10 +1,15 @@
 /**
- * Page-owned render proof for documentation/install (PS-200 stub).
- * Asserts thin compatibility behavior: points at Getting Started and does not
- * re-teach OS scripts + Claude init as the primary page job.
+ * Page-owned render proof for documentation/install.
+ *
+ * Locks the canonical install teaching against the installed
+ * `@you-agent-factory/api` CLI contract: both OS release commands, the
+ * `you init --provider` provider step (never the retired `--executor` flag),
+ * packaged-factory install, and forward links to Run Your First Factory plus
+ * the CLI reference. Locale suites keep en / ja / zh-CN / vi key-shape parity
+ * with target-language prose.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import type { SiteLocale } from "@/lib/i18n/locale-routing";
@@ -13,44 +18,56 @@ const INSTALL_SH =
   "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh";
 const INSTALL_PS1 =
   "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex";
-const CLAUDE_INIT = "you init --executor claude";
+const INIT_PROVIDER = "you init --provider codex";
+const INIT_PACKAGE = "you init --package @you/goal";
+
+/** Retired 0.0.0-era surface that must not come back. */
+const RETIRED_EXECUTOR_FLAG = /--executor/;
+
+function assertCopyableInstallCommands(): void {
+  const installSection = document.getElementById("install");
+  expect(installSection).toBeTruthy();
+  const install = within(installSection as HTMLElement);
+  expect(install.getByText(INSTALL_SH)).toBeTruthy();
+  expect(install.getByText(INSTALL_PS1)).toBeTruthy();
+}
+
+function assertProviderAndPackagedFactorySteps(): void {
+  expect(screen.getByText("you -h")).toBeTruthy();
+  expect(screen.getByText("you init")).toBeTruthy();
+  expect(screen.getByText(INIT_PROVIDER)).toBeTruthy();
+  expect(screen.getByText("you workers list")).toBeTruthy();
+  expect(screen.getByText(INIT_PACKAGE)).toBeTruthy();
+  expect(
+    screen.getByText("you factory list --dir ~/.you-agent-factory/factories"),
+  ).toBeTruthy();
+  expect(document.body.textContent ?? "").not.toMatch(RETIRED_EXECUTOR_FLAG);
+}
 
 describe("install documentation page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("renders Getting Started stub without OS+Claude install teaching", async () => {
+  test("renders canonical install teaching aligned with the CLI contract", async () => {
     const loadedPage = await loadLocalDocsPage({
       section: "documentation",
       slug: "install",
     });
 
     expect(loadedPage.messages.title).toBe("Install you-agent-factory");
-    expect(loadedPage.messages.description).toMatch(/Getting Started/i);
+    expect(loadedPage.messages.description).not.toMatch(/Getting Started/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-    expect(loadedPage.messages.openingSummary).toMatch(/Getting Started/i);
     expect(Object.keys(loadedPage.messages.sections ?? {}).sort()).toEqual([
-      "installPath",
+      "chooseAProvider",
+      "commonPitfalls",
+      "confirmTheInstall",
+      "install",
+      "installAPackagedFactory",
+      "nextSteps",
+      "whereThingsLand",
     ]);
-    expect(Object.keys(loadedPage.messages.links ?? {}).sort()).toEqual([
-      "gettingStarted",
-    ]);
-    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
-    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
-    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
-    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
-    expect(loadedPage.messages.links?.macosLinuxLabel).toBeUndefined();
-    expect(loadedPage.messages.links?.claudeInitLabel).toBeUndefined();
-    expect(loadedPage.messages.callouts).toBeUndefined();
-
-    const installPath = String(
-      loadedPage.messages.sections?.installPath?.body ?? "",
-    );
-    expect(installPath).toMatch(/Getting Started/i);
-    expect(installPath).toMatch(/install path/i);
-    expect(installPath).not.toMatch(/This page|on this page|reader.?shortcut/i);
-    expect(installPath).not.toMatch(/install\.sh|install\.ps1|--executor/i);
+    expect(loadedPage.messages.links?.gettingStarted).toBeUndefined();
 
     render(
       <main>
@@ -63,58 +80,64 @@ describe("install documentation page", () => {
       </main>,
     );
 
+    expect(screen.getByRole("heading", { name: "Install" })).toBeTruthy();
     expect(
-      screen.queryByRole("heading", { name: "What It Covers" }),
-    ).toBeNull();
-    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
-    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+      screen.getByRole("heading", { name: "Choose A Provider" }),
+    ).toBeTruthy();
     expect(
-      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
-    ).toBeNull();
-    expect(document.getElementById("how-to-use")).toBeNull();
-    expect(document.getElementById("install-path")).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Install path" })).toBeTruthy();
-    expect(screen.queryByText(INSTALL_SH)).toBeNull();
-    expect(screen.queryByText(INSTALL_PS1)).toBeNull();
-    expect(screen.queryByText(CLAUDE_INIT)).toBeNull();
+      screen.getByRole("heading", { name: "Install A Packaged Factory" }),
+    ).toBeTruthy();
 
-    const gettingStarted = screen.getByRole("link", {
-      name: "Getting started",
+    assertCopyableInstallCommands();
+    assertProviderAndPackagedFactorySteps();
+
+    const runFirst = screen.getByRole("link", {
+      name: "Run your first factory",
     });
-    expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
+    expect(runFirst.getAttribute("href")).toBe(
+      "/docs/guides/run-your-first-factory",
     );
-    expect(screen.queryByRole("link", { name: "CLI docs" })).toBeNull();
+    const cliReference = screen.getByRole("link", {
+      name: /CLI Reference/i,
+    });
+    expect(cliReference.getAttribute("href")).toBe("/docs/references/cli");
+    const packagedReference = screen.getByRole("link", {
+      name: /Packaged Factory Reference/i,
+    });
+    expect(packagedReference.getAttribute("href")).toBe(
+      "/docs/references/packaged-factories-index",
+    );
+    expect(screen.queryByRole("link", { name: /getting started/i })).toBeNull();
   });
 
   test.each([
     {
       locale: "ja" as SiteLocale,
       title: "you-agent-factory のインストール",
-      installPathHeading: "インストールの経路",
-      proseNeedle: /はじめに/,
-      gettingStartedLabel: "はじめに",
+      installHeading: "インストール",
+      providerHeading: "プロバイダーを選ぶ",
+      proseNeedle: /単一のバイナリ/,
     },
     {
       locale: "zh-CN" as SiteLocale,
       title: "安装 you-agent-factory",
-      installPathHeading: "安装路径",
-      proseNeedle: /快速开始/,
-      gettingStartedLabel: "快速开始",
+      installHeading: "安装",
+      providerHeading: "选择提供方",
+      proseNeedle: /单个二进制文件/,
     },
     {
       locale: "vi" as SiteLocale,
       title: "Cài đặt you-agent-factory",
-      installPathHeading: "Đường dẫn cài đặt",
-      proseNeedle: /Bắt đầu/,
-      gettingStartedLabel: "Bắt đầu",
+      installHeading: "Cài đặt",
+      providerHeading: "Chọn nhà cung cấp",
+      proseNeedle: /tệp nhị phân duy nhất/,
     },
-  ])("renders $locale install stub with target-language prose and Getting Started link", async ({
+  ])("renders $locale install page with target-language prose and copyable commands", async ({
     locale,
     title,
-    installPathHeading,
+    installHeading,
+    providerHeading,
     proseNeedle,
-    gettingStartedLabel,
   }) => {
     const en = await loadLocalDocsPage({
       section: "documentation",
@@ -129,10 +152,9 @@ describe("install documentation page", () => {
     expect(localized.messages.title).not.toBe(en.messages.title);
     expect(localized.messages.description).not.toBe(en.messages.description);
     expect(localized.messages.description).toContain("you-agent-factory");
-    expect(
-      String(localized.messages.sections?.installPath?.body ?? ""),
-    ).toMatch(proseNeedle);
-    expect(localized.messages.sections?.howToUse).toBeUndefined();
+    expect(String(localized.messages.openingSummary ?? "")).toMatch(
+      proseNeedle,
+    );
     expect(Object.keys(localized.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
@@ -141,6 +163,12 @@ describe("install documentation page", () => {
     );
     expect(Object.keys(localized.messages.links ?? {}).sort()).toEqual(
       Object.keys(en.messages.links ?? {}).sort(),
+    );
+    expect(Object.keys(localized.messages.callouts ?? {}).sort()).toEqual(
+      Object.keys(en.messages.callouts ?? {}).sort(),
+    );
+    expect(localized.messages.sections?.install?.body).not.toBe(
+      en.messages.sections?.install?.body,
     );
 
     render(
@@ -155,19 +183,10 @@ describe("install documentation page", () => {
       </main>,
     );
 
-    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
-    expect(
-      screen.getByRole("heading", { name: installPathHeading }),
-    ).toBeTruthy();
-    expect(screen.queryByText(INSTALL_SH)).toBeNull();
-    expect(screen.queryByText(INSTALL_PS1)).toBeNull();
-    expect(screen.queryByText(CLAUDE_INIT)).toBeNull();
-    const gettingStarted = screen.getByRole("link", {
-      name: gettingStartedLabel,
-    });
-    expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
-    );
+    expect(screen.getByRole("heading", { name: installHeading })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: providerHeading })).toBeTruthy();
+    assertCopyableInstallCommands();
+    assertProviderAndPackagedFactorySteps();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });

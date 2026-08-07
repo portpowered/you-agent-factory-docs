@@ -18,7 +18,9 @@ afterEach(() => {
 
 describe("theme-code-copy-r00-gate helpers", () => {
   test("route and factory-dark RGB proofs stay aligned with foundation hex", () => {
-    expect(THEME_CODE_COPY_R00_ROUTE).toBe("/docs/guides/getting-started");
+    expect(THEME_CODE_COPY_R00_ROUTE).toBe(
+      "/docs/guides/run-your-first-factory",
+    );
     expect(THEME_CODE_COPY_R00_FACTORY_DARK_RGB.background).toEqual(
       hexToRgbTuple(FACTORY_DARK_FOUNDATION.background),
     );

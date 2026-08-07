@@ -88,12 +88,12 @@ describe("W20 pages-prefixed export convergence catalog", () => {
   test("catalogues the Pages guard probe inventory (home, docs, blog)", () => {
     expect([...W20_PAGES_PREFIXED_REQUIRED_PROBE_ROUTES]).toEqual([
       "/",
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
       "/blog/comparing-agent-factories",
     ]);
     expect([...W20_PAGES_PREFIXED_REQUIRED_PROBE_NAV_HREFS]).toEqual([
       "/",
-      "/docs/guides/getting-started",
+      "/docs/guides/run-your-first-factory",
       "/blog/comparing-agent-factories",
     ]);
 

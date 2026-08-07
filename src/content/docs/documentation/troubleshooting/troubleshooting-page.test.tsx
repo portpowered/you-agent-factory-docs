@@ -75,7 +75,9 @@ describe("troubleshooting documentation page", () => {
     expect(osInstallOrInit).toMatch(/Symptom:/i);
     expect(osInstallOrInit).toMatch(/Recovery:/i);
     expect(osInstallOrInit).toMatch(/you init/i);
-    expect(osInstallOrInit).toMatch(/executor/i);
+    expect(osInstallOrInit).toMatch(/--provider/i);
+    // `--executor` was removed from `you init`; it must not come back here.
+    expect(osInstallOrInit).not.toMatch(/--executor/i);
     expect(osInstallOrInit).not.toMatch(/curl -fsSL/i);
 
     expect(noLiveFactory).toMatch(/Symptom:/i);
@@ -145,7 +147,7 @@ describe("troubleshooting documentation page", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", {
-        name: "OS Install Or Executor Init Confusion",
+        name: "OS Install Or Provider Setup Confusion",
       }),
     ).toBeTruthy();
     expect(
@@ -188,7 +190,7 @@ describe("troubleshooting documentation page", () => {
     expect(document.getElementById("references")).toBeNull();
 
     expect(document.body.textContent).toMatch(/you: command not found/i);
-    expect(document.body.textContent).toMatch(/you init --executor claude/i);
+    expect(document.body.textContent).toMatch(/you init --provider <name>/i);
     expect(document.body.textContent).toMatch(/session list is empty/i);
     expect(document.body.textContent).toMatch(/malformed JSON/i);
     expect(document.body.textContent).toMatch(
@@ -210,12 +212,12 @@ describe("troubleshooting documentation page", () => {
       "/docs/documentation/install",
     );
 
-    const gettingStartedLinks = screen.getAllByRole("link", {
-      name: "Getting Started",
+    const runFirstFactoryLinks = screen.getAllByRole("link", {
+      name: "Run your first factory",
     });
-    expect(gettingStartedLinks.length).toBeGreaterThanOrEqual(1);
-    expect(gettingStartedLinks[0]?.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
+    expect(runFirstFactoryLinks.length).toBeGreaterThanOrEqual(1);
+    expect(runFirstFactoryLinks[0]?.getAttribute("href")).toBe(
+      "/docs/guides/run-your-first-factory",
     );
 
     expect(

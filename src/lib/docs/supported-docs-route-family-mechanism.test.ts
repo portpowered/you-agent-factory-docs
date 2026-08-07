@@ -125,7 +125,7 @@ describe("supported docs route-family mechanism", () => {
     }
 
     expect(
-      docsSlugBelongsToCliCollection("guides/getting-started", "guides"),
+      docsSlugBelongsToCliCollection("guides/run-your-first-factory", "guides"),
     ).toBe(true);
     expect(
       docsSlugBelongsToCliCollection("concepts/attention-overview", "concepts"),
@@ -140,17 +140,19 @@ describe("supported docs route-family mechanism", () => {
       ),
     ).toBe(true);
 
-    expect(parseLocalDocsPageRef(["guides", "getting-started"])).toEqual({
-      section: "guides",
-      slug: "getting-started",
-    });
+    expect(parseLocalDocsPageRef(["guides", "run-your-first-factory"])).toEqual(
+      {
+        section: "guides",
+        slug: "run-your-first-factory",
+      },
+    );
     expect(parseLocalDocsPageRef(["concepts", "harness", "nested"])).toEqual({
       section: "concepts",
       slug: "harness/nested",
     });
-    expect(resolveDocsCollectionIdFromDocsSlug("guides/getting-started")).toBe(
-      "guides",
-    );
+    expect(
+      resolveDocsCollectionIdFromDocsSlug("guides/run-your-first-factory"),
+    ).toBe("guides");
     expect(
       resolveDocsCollectionIdFromDocsSlug("documentation/cli-reference"),
     ).toBe("documentation");

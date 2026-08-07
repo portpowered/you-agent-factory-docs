@@ -1,50 +1,185 @@
 ---
-title: "Write Your First JavaScript Step"
-description: "Drop into JavaScript when the declarative configuration runs out."
+title: "Write Your First JavaScript Workflow"
+description: "Use the you-agent-factory JavaScript orchestrator: the runtime bindings a workflow script gets, how it dispatches agents, and how it bounds, checkpoints, and returns its work."
 kind: "guide"
 registryId: "guide.write-your-first-javascript"
 messageNamespace: "local"
 assetNamespace: "local"
 status: "published"
 tags: []
-updatedAt: "2026-08-06"
+aliases:
+  - "JavaScript orchestrator"
+  - "JavaScript workflow"
+updatedAt: "2026-08-07"
 ---
 
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="what-it-is" titleKey="sections.whatItIs.title">
   <T k="sections.whatItIs.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/write-your-first-factory",
+        labelKey: "links.writeYourFirstFactory",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="when-to-use" titleKey="sections.whenToUse.title">
   <T k="sections.whenToUse.body" />
 </Section>
 
-<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
-  <T k="sections.stepsOrWorkflow.body" />
+<Section id="the-runtime-bindings" titleKey="sections.theRuntimeBindings.title">
+  <T k="sections.theRuntimeBindings.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.bindingsSymbolHeader" />
+        </th>
+        <th>
+          <T k="links.bindingsPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.bindingArgsSymbol" />
+        </td>
+        <td>
+          <T k="links.bindingArgsPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.bindingAgentRunSymbol" />
+        </td>
+        <td>
+          <T k="links.bindingAgentRunPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.bindingParallelSymbol" />
+        </td>
+        <td>
+          <T k="links.bindingParallelPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.bindingPipelineSymbol" />
+        </td>
+        <td>
+          <T k="links.bindingPipelinePurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.bindingPhaseSymbol" />
+        </td>
+        <td>
+          <T k="links.bindingPhasePurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.bindingWorkflowSymbol" />
+        </td>
+        <td>
+          <T k="links.bindingWorkflowPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/javascript-runtime",
+        labelKey: "links.javascriptRuntimeReference",
+      },
+    ]}
+  />
+</Section>
 
-  <p>
-    <T k="links.workerLabel" />
-  </p>
+<Section id="dispatching-one-agent" titleKey="sections.dispatchingOneAgent.title">
+  <T k="sections.dispatchingOneAgent.body" />
 
-```sh
-you worker add --kind script
+```js
+const result = await agent.run({
+  label: "summarizer",
+  prompt: "Summarise the request below.\n\n" + args.request,
+  modelProvider: args.modelProvider || "",
+  model: args.model || "",
+});
+if (result.status !== "COMPLETED") {
+  throw "summarizer failed";
+}
+return result.output.text.trim();
 ```
 
-  <p>
-    <T k="links.runLabel" />
-  </p>
+  <T k="callouts.checkStatus.body" />
+</Section>
 
-```sh
-you run
+<Section id="fanning-out" titleKey="sections.fanningOut.title">
+  <T k="sections.fanningOut.body" />
+
+```js
+const results = await parallel([
+  { label: "review-accuracy", prompt: "Judge this draft for factual accuracy.\n\n" + draft },
+  { label: "review-completeness", prompt: "Judge this draft for completeness.\n\n" + draft },
+]);
 ```
 
+  <T k="callouts.pipelineVsParallel.body" />
+</Section>
+
+<Section id="staying-inside-the-budget" titleKey="sections.stayingInsideTheBudget.title">
+  <T k="sections.stayingInsideTheBudget.body" />
+
+```js
+const budget = workflow.budget();
+if (args.count + 2 > budget.maxAgents) {
+  throw "needs " + (args.count + 2) + " agent calls but maxAgents is " + budget.maxAgents;
+}
+```
+
+  <T k="callouts.policyIsAuthoritative.body" />
+</Section>
+
+<Section id="checkpoints-and-resume" titleKey="sections.checkpointsAndResume.title">
+  <T k="sections.checkpointsAndResume.body" />
+
+```js
+workflow.checkpoint({ label: "plan-complete", state: { tasks } });
+
+const resumed = workflow.resumeState();
+const tasks = resumed?.state?.tasks ?? (await planTasks());
+```
+
+  <T k="callouts.artifactsAndFinal.body" />
 </Section>
 
 <Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
   <T k="sections.commonPitfalls.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/packaged-factories-index",
+        labelKey: "links.packagedFactoriesReference",
+      },
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.factorySchemaReference",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">

@@ -1,11 +1,14 @@
 /**
- * Browser verification for the filled high-traffic install/run journey
- * (fill-high-traffic-locales-008).
+ * Browser verification for the filled high-traffic install/run journey.
  *
  * Opt-in: requires VERIFY_PRODUCTION_INTEGRATION_TESTS=1 and a fresh
- * production build. Walks the shared production landing → getting-started →
- * install/CLI for ja, zh-CN, and vi; asserts target-language docs prose,
- * copyable install/run commands, and language switching among filled docs.
+ * production build. Walks the shared production landing → install →
+ * run-your-first-factory → CLI for ja, zh-CN, and vi; asserts target-language
+ * docs prose, copyable install/run commands, and language switching.
+ *
+ * Install owns the OS commands and the provider step; the run guide owns the
+ * packaged-factory run. The retired `guides/getting-started` page used to own
+ * both.
  */
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
@@ -36,10 +39,14 @@ const INSTALL_COMMAND =
   "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh";
 const INSTALL_PS1_COMMAND =
   "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex";
-const CLAUDE_INIT_COMMAND = "you init --executor claude";
-const RUN_COMMAND = "you run --named @goal/blah";
+const INIT_PROVIDER_COMMAND = "you init --provider codex";
+const INIT_PACKAGE_COMMAND = "you init --package @you/goal";
+const RUN_COMMAND = 'you run --named @you/goal "Summarise this repository"';
 
-const ENGLISH_GETTING_STARTED_TITLE = "Getting Started";
+const ENGLISH_INSTALL_TITLE = "Install you-agent-factory";
+const ENGLISH_RUN_TITLE = "Run Your First Factory";
+
+const RUN_GUIDE_ROUTE = "/docs/guides/run-your-first-factory";
 
 describe("high-traffic locales browser journey", () => {
   test("served install/run journey shows localized prose, commands, and language switching for ja / zh-CN / vi", async () => {
@@ -47,12 +54,12 @@ describe("high-traffic locales browser journey", () => {
       return;
     }
 
-    const enGettingStarted = await loadPageMessages(
-      getDocsPageDir("guides", "getting-started"),
+    const enRunGuide = await loadPageMessages(
+      getDocsPageDir("guides", "run-your-first-factory"),
       "en",
-      { route: "/docs/guides/getting-started" },
+      { route: RUN_GUIDE_ROUTE },
     );
-    expect(enGettingStarted.title).toBe(ENGLISH_GETTING_STARTED_TITLE);
+    expect(enRunGuide.title).toBe(ENGLISH_RUN_TITLE);
 
     const session = await acquireVerifyServerSession({
       projectRoot: repoRoot,
@@ -66,15 +73,15 @@ describe("high-traffic locales browser journey", () => {
       page.setDefaultTimeout(60_000);
 
       for (const locale of NON_DEFAULT_LOCALES) {
-        const gettingStarted = await loadPageMessages(
-          getDocsPageDir("guides", "getting-started"),
-          locale,
-          { route: `/${locale}/docs/guides/getting-started` },
-        );
         const install = await loadPageMessages(
           getDocsPageDir("documentation", "install"),
           locale,
           { route: `/${locale}/docs/documentation/install` },
+        );
+        const runGuide = await loadPageMessages(
+          getDocsPageDir("guides", "run-your-first-factory"),
+          locale,
+          { route: `/${locale}${RUN_GUIDE_ROUTE}` },
         );
         const cli = await loadPageMessages(
           getDocsPageDir("documentation", "cli"),
@@ -82,7 +89,8 @@ describe("high-traffic locales browser journey", () => {
           { route: `/${locale}/docs/documentation/cli` },
         );
 
-        expect(gettingStarted.title).not.toBe(ENGLISH_GETTING_STARTED_TITLE);
+        expect(install.title).not.toBe(ENGLISH_INSTALL_TITLE);
+        expect(runGuide.title).not.toBe(ENGLISH_RUN_TITLE);
 
         await page.goto(`${session.baseUrl}/${locale}`, {
           waitUntil: "domcontentloaded",
@@ -96,25 +104,7 @@ describe("high-traffic locales browser journey", () => {
           })
           .waitFor({ state: "visible" });
 
-        await page.goto(
-          `${session.baseUrl}/${locale}/docs/guides/getting-started`,
-          { waitUntil: "domcontentloaded" },
-        );
-        await page
-          .getByRole("heading", { level: 1, name: gettingStarted.title })
-          .waitFor({ state: "visible" });
-        // openingSummary is metadata-only; the localized description is the
-        // visible lead on the rendered guide.
-        await expectArticleContains(page, gettingStarted.description);
-        // PS-200: Getting Started owns the full install teaching path.
-        await expectArticleContains(page, INSTALL_COMMAND);
-        await expectArticleContains(page, INSTALL_PS1_COMMAND);
-        await expectArticleContains(page, CLAUDE_INIT_COMMAND);
-        await expectArticleContains(page, RUN_COMMAND);
-        expect(await articleContent(page)).not.toContain(
-          ENGLISH_GETTING_STARTED_TITLE,
-        );
-
+        // Install owns the OS entrypoints and the provider step.
         await page.goto(
           `${session.baseUrl}/${locale}/docs/documentation/install`,
           { waitUntil: "domcontentloaded" },
@@ -122,24 +112,28 @@ describe("high-traffic locales browser journey", () => {
         await page
           .getByRole("heading", { level: 1, name: install.title })
           .waitFor({ state: "visible" });
-        // PS-200: install is a thin stub pointing at Getting Started (commands live there).
-        const installPathBody = String(
-          install.sections?.installPath?.body ?? "",
-        );
-        const gettingStartedLabel = String(install.links?.gettingStarted ?? "");
-        expect(installPathBody.length).toBeGreaterThan(0);
-        expect(gettingStartedLabel.length).toBeGreaterThan(0);
-        await expectArticleContains(page, installPathBody);
-        const gettingStartedHref = await page
-          .getByRole("link", { name: gettingStartedLabel })
-          .getAttribute("href");
-        expect(gettingStartedHref).toMatch(
-          /\/docs\/guides\/getting-started\/?$/,
-        );
-        const installArticle = await articleContent(page);
-        expect(installArticle).not.toContain(INSTALL_COMMAND);
-        expect(installArticle).not.toContain(INSTALL_PS1_COMMAND);
-        expect(installArticle).not.toContain(CLAUDE_INIT_COMMAND);
+        await expectArticleContains(page, install.description);
+        await expectArticleContains(page, INSTALL_COMMAND);
+        await expectArticleContains(page, INSTALL_PS1_COMMAND);
+        await expectArticleContains(page, INIT_PROVIDER_COMMAND);
+        await expectArticleContains(page, INIT_PACKAGE_COMMAND);
+        expect(await articleContent(page)).not.toContain(ENGLISH_INSTALL_TITLE);
+
+        // The run guide owns the packaged-factory run, not the install script.
+        await page.goto(`${session.baseUrl}/${locale}${RUN_GUIDE_ROUTE}`, {
+          waitUntil: "domcontentloaded",
+        });
+        await page
+          .getByRole("heading", { level: 1, name: runGuide.title })
+          .waitFor({ state: "visible" });
+        // openingSummary is metadata-only; the localized description is the
+        // visible lead on the rendered guide.
+        await expectArticleContains(page, runGuide.description);
+        await expectArticleContains(page, RUN_COMMAND);
+        const runArticle = await articleContent(page);
+        expect(runArticle).not.toContain(INSTALL_COMMAND);
+        expect(runArticle).not.toContain(INSTALL_PS1_COMMAND);
+        expect(runArticle).not.toContain(ENGLISH_RUN_TITLE);
 
         await page.goto(`${session.baseUrl}/${locale}/docs/documentation/cli`, {
           waitUntil: "domcontentloaded",
@@ -148,56 +142,53 @@ describe("high-traffic locales browser journey", () => {
           .getByRole("heading", { level: 1, name: cli.title })
           .waitFor({ state: "visible" });
         await expectArticleContains(page, cli.description);
-        await expectArticleContains(page, INSTALL_COMMAND);
+        await expectArticleContains(page, "you mcp serve");
       }
 
       // Language switching among filled surfaces must keep localized body
-      // copy (not English stub titles) for the destination locale.
-      const zhGettingStarted = await loadPageMessages(
-        getDocsPageDir("guides", "getting-started"),
+      // copy (not English titles) for the destination locale.
+      const zhRunGuide = await loadPageMessages(
+        getDocsPageDir("guides", "run-your-first-factory"),
         "zh-CN",
-        { route: "/zh-CN/docs/guides/getting-started" },
+        { route: `/zh-CN${RUN_GUIDE_ROUTE}` },
       );
-      const viGettingStarted = await loadPageMessages(
-        getDocsPageDir("guides", "getting-started"),
+      const viRunGuide = await loadPageMessages(
+        getDocsPageDir("guides", "run-your-first-factory"),
         "vi",
-        { route: "/vi/docs/guides/getting-started" },
+        { route: `/vi${RUN_GUIDE_ROUTE}` },
+      );
+      const jaRunGuide = await loadPageMessages(
+        getDocsPageDir("guides", "run-your-first-factory"),
+        "ja",
+        { route: `/ja${RUN_GUIDE_ROUTE}` },
       );
 
-      await page.goto(`${session.baseUrl}/ja/docs/guides/getting-started`, {
+      await page.goto(`${session.baseUrl}/ja${RUN_GUIDE_ROUTE}`, {
         waitUntil: "domcontentloaded",
       });
       await page
-        .getByRole("heading", { level: 1, name: "はじめに" })
+        .getByRole("heading", { level: 1, name: jaRunGuide.title })
         .waitFor({ state: "visible" });
 
       const languageOpenJa = (await loadUiMessages("ja")).language.open;
       await page.getByRole("button", { name: languageOpenJa }).click();
       await page.getByRole("menuitem", { name: /简体中文/ }).click();
-      await page.waitForURL(/\/zh-CN\/docs\/guides\/getting-started\/?$/);
-      await page
-        .getByRole("heading", {
-          level: 1,
-          name: zhGettingStarted.title,
-        })
-        .waitFor({ state: "visible" });
-      expect(await articleContent(page)).not.toContain(
-        ENGLISH_GETTING_STARTED_TITLE,
+      await page.waitForURL(
+        /\/zh-CN\/docs\/guides\/run-your-first-factory\/?$/,
       );
+      await page
+        .getByRole("heading", { level: 1, name: zhRunGuide.title })
+        .waitFor({ state: "visible" });
+      expect(await articleContent(page)).not.toContain(ENGLISH_RUN_TITLE);
 
       const languageOpenZh = (await loadUiMessages("zh-CN")).language.open;
       await page.getByRole("button", { name: languageOpenZh }).click();
       await page.getByRole("menuitem", { name: /^Tiếng Việt$/i }).click();
-      await page.waitForURL(/\/vi\/docs\/guides\/getting-started\/?$/);
+      await page.waitForURL(/\/vi\/docs\/guides\/run-your-first-factory\/?$/);
       await page
-        .getByRole("heading", {
-          level: 1,
-          name: viGettingStarted.title,
-        })
+        .getByRole("heading", { level: 1, name: viRunGuide.title })
         .waitFor({ state: "visible" });
-      expect(await articleContent(page)).not.toContain(
-        ENGLISH_GETTING_STARTED_TITLE,
-      );
+      expect(await articleContent(page)).not.toContain(ENGLISH_RUN_TITLE);
 
       await page.close();
     } finally {

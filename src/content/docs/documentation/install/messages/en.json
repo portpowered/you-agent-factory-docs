@@ -1,14 +1,61 @@
 {
   "title": "Install you-agent-factory",
-  "description": "Install teaching for you-agent-factory lives in Getting Started. Continue there for OS install scripts, confirm-you guidance, and starter scaffold.",
-  "openingSummary": "Install the you-agent-factory CLI from Getting Started.",
+  "description": "Install the you CLI, confirm it resolves on PATH, pick a worker provider, and install a packaged factory from the embedded catalog.",
+  "openingSummary": "you-agent-factory installs as a single binary named you. Installing it takes one command; making it useful takes two more — choosing the provider that runs your workers, and installing a factory for it to run.",
   "sections": {
-    "installPath": {
-      "title": "Install path",
-      "body": "Getting Started teaches the full you-agent-factory install path: OS release scripts, confirm you is available in your shell, and starter scaffold choice. Continue there to install and run."
+    "install": {
+      "title": "Install",
+      "body": "The published release entrypoint downloads the you binary for your operating system and puts it on your PATH. It installs the CLI only; it does not start a factory or write any configuration."
+    },
+    "confirmTheInstall": {
+      "title": "Confirm The Install",
+      "body": "Print the root help to confirm the shell resolves you and to see the top-level command groups."
+    },
+    "chooseAProvider": {
+      "title": "Choose A Provider",
+      "body": "A worker provider is the agent or model runtime that actually executes work — the coding agent or inference backend behind each worker. you init records a default provider and an optional default model so factories do not have to name one. Run it with no flags for an interactive prompt, or pass --provider to configure it non-interactively in a script or CI job."
+    },
+    "installAPackagedFactory": {
+      "title": "Install A Packaged Factory",
+      "body": "Packaged factories are complete workflows that ship inside the binary. Installing one copies its definition into your named factory root so you can run it, read it, and edit it."
+    },
+    "whereThingsLand": {
+      "title": "Where Things Land",
+      "body": "Provider defaults are operator settings and live in ~/.you-agent-factory/config.json. Named factories installed with --package land under ~/.you-agent-factory/factories unless --dir points somewhere else. A factory you author for one project lives beside that project, in ./factory/factory.json."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "The most common failure after install is a missing provider: workers dispatch, find no configured runtime, and the run ends immediately. Configure a provider before the first run. The second most common is an installer that finished in a shell whose PATH was already loaded — open a new terminal before deciding the install failed."
+    },
+    "nextSteps": {
+      "title": "Next Steps",
+      "body": "With a provider configured and a packaged factory installed, the shortest useful next step is to run one end to end."
     }
   },
   "links": {
-    "gettingStarted": "Getting started"
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "initInteractiveLabel": "Configure a provider interactively",
+    "initProviderLabel": "Configure a provider non-interactively",
+    "packagedFactoriesReference": "Packaged Factory Reference — every shipped factory and its source",
+    "globalConfiguration": "Global configuration factories",
+    "factoryConfiguration": "Factory configuration",
+    "runYourFirstFactory": "Run your first factory",
+    "cliOverview": "CLI",
+    "cliReference": "CLI Reference — every published command"
+  },
+  "callouts": {
+    "newShell": {
+      "body": "The installer writes the binary and updates PATH for new shells. Open a new terminal, or reload your shell profile, before running you for the first time."
+    },
+    "packagedDocs": {
+      "body": "The binary also carries its own reference topics offline. Printing the index shows every topic you can read without a network connection."
+    },
+    "providerNames": {
+      "body": "Provider names are not fixed by this documentation — the binary reports the ones it can select, including any Agent Client Protocol providers an operator added."
+    },
+    "packagedInstallTargets": {
+      "body": "By default the packaged factory installs into the global named factory root under your home directory. Pass --dir to install it into a project-local root instead, --format to choose the authored root definition format, and --replace to overwrite a directory that already exists. Listing factories reads exactly one root at a time and never merges the two, so point --dir at the global root to see what --package installed."
+    }
   }
 }

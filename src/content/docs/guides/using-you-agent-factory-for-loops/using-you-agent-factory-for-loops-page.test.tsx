@@ -62,14 +62,14 @@ describe("using-you-agent-factory-for-loops guide page", () => {
     expect(screen.getByText(SUBMIT)).toBeTruthy();
     expect(screen.getByText(SUBMIT_BATCH)).toBeTruthy();
 
-    const gettingStarted = screen.getByRole("link", {
-      name: "Getting started",
+    const runFirstFactory = screen.getByRole("link", {
+      name: "Run your first factory",
     });
     const writeReview = screen.getByRole("link", {
       name: "Write-Review Loops",
     });
-    expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
+    expect(runFirstFactory.getAttribute("href")).toBe(
+      "/docs/guides/run-your-first-factory",
     );
     expect(writeReview.getAttribute("href")).toBe(
       "/docs/guides/write-review-loops",

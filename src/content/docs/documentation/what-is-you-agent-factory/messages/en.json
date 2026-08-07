@@ -12,7 +12,7 @@
     }
   },
   "links": {
-    "gettingStarted": "Getting started",
-    "architectureOfSystem": "Architecture of system"
+    "architectureOfSystem": "Architecture of system",
+    "runYourFirstFactory": "Run your first factory"
   }
 }

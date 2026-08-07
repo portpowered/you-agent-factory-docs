@@ -4,12 +4,12 @@ import {
   extractNdSidebarHtml,
   FAQ_DOCS_URL,
   findSidebarPageLink,
-  GETTING_STARTED_GUIDE_URL,
   HARNESS_CONCEPT_URL,
   hasLegacyPlaceholderSidebar,
   INSTALL_DOCS_URL,
   PLACEHOLDER_SIDEBAR_DESCRIPTION,
   RALPH_TECHNIQUE_URL,
+  RUN_FIRST_FACTORY_GUIDE_URL,
   stripHtmlScripts,
   TOKENS_CONCEPT_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
@@ -33,18 +33,15 @@ const BUILT_HTML_DOC_ROUTES = [
     requiredSidebarUrls: [RALPH_TECHNIQUE_URL],
   },
   {
-    path: "/docs/guides/getting-started",
-    file: ".next/server/app/docs/guides/getting-started.html",
-    requiredSidebarUrls: [GETTING_STARTED_GUIDE_URL],
+    path: "/docs/guides/run-your-first-factory",
+    file: ".next/server/app/docs/guides/run-your-first-factory.html",
+    requiredSidebarUrls: [RUN_FIRST_FACTORY_GUIDE_URL],
   },
   {
     path: "/docs/documentation/install",
     file: ".next/server/app/docs/documentation/install.html",
-    // The install compatibility page remains directly addressable, but PS-200
-    // deliberately demotes it from explorer membership in favor of the full
-    // Getting Started path.
-    requiredSidebarUrls: [],
-    forbiddenSidebarUrls: [INSTALL_DOCS_URL],
+    // Install opens the Quick starts group, so it is the first explorer entry.
+    requiredSidebarUrls: [INSTALL_DOCS_URL],
   },
 ] as const;
 
@@ -59,13 +56,28 @@ const BUILT_HTML_LOCALIZED_DOC_ROUTES = [
       "/vi/docs/concepts/harness",
       "/vi/docs/concepts/tokens",
     ],
-    // Folder button labels are locale-aware (vi common.json explorer.folders).
-    requiredSidebarLabels: [">Hướng dẫn<", ">Khái niệm<", ">Kỹ thuật<"],
+    // Group and folder button labels are locale-aware (vi common.json
+    // explorer.topLevelGroups / explorer.folders). Only the group holding the
+    // active page renders its folders in server HTML.
+    requiredSidebarLabels: [
+      ">Bắt đầu nhanh<",
+      ">Hướng dẫn thao tác<",
+      ">Thông tin<",
+      ">Khái niệm<",
+      ">Kỹ thuật<",
+    ],
     forbiddenSidebarUrls: [
       "/vi/docs/modules/grouped-query-attention",
       "/vi/docs/modules/multi-head-attention",
     ],
-    forbiddenSidebarLabels: [">Guides<", ">Concepts<", ">Techniques<"],
+    forbiddenSidebarLabels: [
+      ">Guides<",
+      ">Concepts<",
+      ">Techniques<",
+      ">Quick starts<",
+      ">How-tos<",
+      ">Information<",
+    ],
   },
 ] as const;
 
@@ -90,15 +102,15 @@ describe("docs sidebar page-tree contract", () => {
     const tokens = findSidebarPageLink(links, TOKENS_CONCEPT_URL);
     const harness = findSidebarPageLink(links, HARNESS_CONCEPT_URL);
     const ralph = findSidebarPageLink(links, RALPH_TECHNIQUE_URL);
-    const gettingStarted = findSidebarPageLink(
+    const runFirstFactory = findSidebarPageLink(
       links,
-      GETTING_STARTED_GUIDE_URL,
+      RUN_FIRST_FACTORY_GUIDE_URL,
     );
 
     expect(tokens?.name).toBe("Tokens");
     expect(harness?.name).toBe("Harness");
     expect(ralph?.name).toBe("Ralph");
-    expect(gettingStarted?.name).toBe("Getting Started");
+    expect(runFirstFactory?.name).toBe("Run Your First Factory");
   });
 
   test("page tree includes factory collection folder labels", () => {
@@ -124,7 +136,7 @@ describe("docs sidebar page-tree contract", () => {
       (node) => node.type === "folder" && node.name === "Quick starts",
     );
 
-    // Install was demoted while Getting Started owned install teaching. A
+    // Install now opens the quick-start path and owns install teaching. A
     // quick-start path has to begin with installing, so it is listed there —
     // and only there.
     expect(findSidebarPageLink(links, INSTALL_DOCS_URL)).toEqual({
@@ -194,10 +206,11 @@ describe("docs sidebar navigation (built HTML)", () => {
       for (const url of route.requiredSidebarUrls) {
         expect(sidebar).toContain(url);
       }
-      if ("forbiddenSidebarUrls" in route) {
-        for (const url of route.forbiddenSidebarUrls) {
-          expect(sidebar).not.toContain(url);
-        }
+      // No doc route currently forbids a sidebar URL; the loop stays so a
+      // future entry only has to add the field.
+      for (const url of (route as { forbiddenSidebarUrls?: readonly string[] })
+        .forbiddenSidebarUrls ?? []) {
+        expect(sidebar).not.toContain(url);
       }
     });
   }
@@ -213,8 +226,11 @@ describe("docs sidebar navigation (built HTML)", () => {
       const sidebar = extractNdSidebarHtml(visibleHtml);
 
       expect(sidebar.length).toBeGreaterThan(0);
-      expect(sidebar).toContain(">Guides<");
-      expect(sidebar).toContain(">Concepts<");
+      // Server HTML renders the four top-level explorer groups; collection
+      // folders nested inside a collapsed group are client-expanded only.
+      expect(sidebar).toContain(">Quick starts<");
+      expect(sidebar).toContain(">How-tos<");
+      expect(sidebar).toContain(">Information<");
       expect(visibleHtml).not.toContain(PLACEHOLDER_SIDEBAR_DESCRIPTION);
       expect(hasLegacyPlaceholderSidebar(visibleHtml)).toBe(false);
     });

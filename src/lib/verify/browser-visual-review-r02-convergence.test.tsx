@@ -77,8 +77,8 @@ const REVIEW_PUBLISHED_PAGES = [
   },
   {
     path: BROWSER_VISUAL_REVIEW_CODE_HEAVY_GUIDE_ROUTE,
-    docsSlug: ["guides", "getting-started"] as const,
-    registryId: "guide.getting-started",
+    docsSlug: ["guides", "run-your-first-factory"] as const,
+    registryId: "guide.run-your-first-factory",
     title: "Getting Started",
   },
 ] as const;

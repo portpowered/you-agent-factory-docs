@@ -1,58 +1,91 @@
 {
   "title": "CLI",
-  "description": "you-agent-factory CLI をインストールし、ファクトリーの起動、作業の投入、セッションの確認、パッケージ化されたドキュメントの参照に使う主要な you コマンドを調べます。",
-  "openingSummary": "you-agent-factory CLI は、ファクトリーツールをインストールし、マシン上で長時間続くエージェント作業を操作するためのコマンドライン入口です。",
+  "description": "you-agent-factory のコマンドグループ、実行するファクトリーの選び方、全コマンド共通のグローバルフラグ、そして公開されている完全な CLI 契約の在り処を調べます。",
+  "openingSummary": "you-agent-factory の CLI は you という 1 つのバイナリで、十数個のコマンドグループに分かれています。実際に使うのはそのうち 3 つがほとんどです。実行を開始する、稼働中のホストに問い合わせる、オフラインで調べる、の 3 つです。",
   "sections": {
     "install": {
       "title": "インストール",
-      "body": "お使いの OS 向けに公開されているリリース入口で you CLI をインストールします。これらのコマンドはバイナリを入れます。ファクトリーは起動しません。"
+      "body": "お使いの OS 向けの公開リリースエントリポイントで you CLI をインストールし、最初の実行の前にプロバイダーを設定します。インストールページに、OS ごとのコマンド、プロバイダー設定の手順、パッケージ済みファクトリーのインストールがまとまっています。"
     },
     "commands": {
       "title": "コマンド",
-      "body": "この一覧で主要な you コマンドを選び、ファクトリーがすでに動いている必要があるかを確認します。起動系はローカルランタイムを作成または接続します。投入系は稼働中のファクトリーへ作業をキューします。ドキュメント系はオフラインでパッケージ化された参照マークダウンを表示します。"
+      "body": "やりたいことからコマンドグループを選び、ファクトリーのホストがすでに待ち受けている必要があるかを確認してください。起動系はランタイムを作ります。セッション系・作業系・投入系はすでに存在するランタイムに問い合わせます。それ以外はローカルの状態を読み書きします。"
+    },
+    "selectingAFactory": {
+      "title": "ファクトリーの選択",
+      "body": "実行にはどのファクトリーを読み込むかの指定が必要で、方法は 3 つあります。名前付きファクトリーは、まず ./factory から、次にグローバルなファクトリールートから解決されます。ディレクトリ指定はディスク上のファクトリーレイアウトを指します。ポータブルファクトリーは単一の JSON か YAML ファイル、または曖昧さのないディレクトリで、インストールせずにその場で実行します。"
+    },
+    "globalFlags": {
+      "title": "グローバルフラグ",
+      "body": "4 つのフラグがすべてのコマンドで使え、サブコマンドより前に書きます。構造化出力は標準出力に JSON を出し、診断は標準エラーに残します。これが CLI をスクリプトから扱える理由です。server フラグはファクトリー API のベース URI を指定します。HTTP クライアント系コマンドはそこを対象にし、サーバーを有効にした実行はそのループバックホストとポートにバインドします。"
+    },
+    "offlineReference": {
+      "title": "オフラインリファレンス",
+      "body": "バイナリは自身のリファレンストピックを内蔵しており、ネットワーク接続も稼働中のホストもなしに表示します。21 のトピックが、ファクトリーの作成、実行、設定、モックワーカー、記録と再生、ガード、関係、作業、セッション、オーケストレーター、JavaScript ワークフロー、MCP、ワークステーション、ワーカー、リソース、モデル、バッチ入力、テンプレートを網羅しています。"
     },
     "limitsAndAssumptions": {
       "title": "限界と前提",
-      "body": "このページは、インストール入口と主要なコマンド一覧のための Web CLI リファレンスです。完全なフラグ一覧でも、パッケージ化された CLI ドキュメントの同期でもなく、ハーネス、MCP、設定の詳細ページでもありません。初回実行の手順や OS / エグゼキューター別のインストール変形は、それらのページが公開されているとき、インストールとはじめにの面に属します。"
+      "body": "ここで扱うのはコマンドグループ、ファクトリーの選択、グローバルフラグです。コマンドごとの網羅的なフラグ、引数、終了コード、ライフサイクル状態は CLI リファレンスにあり、そこはインストール済みパッケージの契約から直接投影されていて、書き写したものではありません。HTTP の操作は API リファレンスにあります。"
     },
     "tags": {
       "title": "タグ"
     }
   },
   "links": {
-    "installMacosLinuxLabel": "macOS / Linux",
-    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
-    "installWindowsLabel": "Windows (PowerShell)",
-    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
-    "commandMatrixCommandHeader": "コマンド",
-    "commandMatrixPurposeHeader": "目的",
-    "commandMatrixRunningFactoryHeader": "ファクトリーがすでに動いている必要があるか？",
-    "commandMatrixYouCommand": "you",
-    "commandMatrixYouPurpose": "現在のプロジェクトから、デフォルトのローカルファクトリーとダッシュボードを起動します。",
-    "commandMatrixYouRunning": "いいえ — これがランタイムを起動します。",
-    "commandMatrixYouRunDirCommand": "you run --dir <factory>",
-    "commandMatrixYouRunDirPurpose": "明示したファクトリーディレクトリから、ローカルファクトリーを起動または接続します。",
-    "commandMatrixYouRunDirRunning": "いいえ — これがランタイムを起動します。",
-    "commandMatrixYouRunNamedCommand": "you run --named <factory> / you run --factory <path>",
-    "commandMatrixYouRunNamedPurpose": "ローカルのディレクトリ構成を推測せずに、名前付きまたはポータブルなファクトリーを実行します。",
-    "commandMatrixYouRunNamedRunning": "いいえ — これがランタイムを起動します。",
-    "commandMatrixYouRunWorkCommand": "you run --work <batch.json>",
-    "commandMatrixYouRunWorkPurpose": "定常状態の投入ではなく、ローカルファクトリー起動の一部としてバッチ JSON を投入します。",
-    "commandMatrixYouRunWorkRunning": "--dir などの起動形と一緒に使う場合はいいえ。",
-    "commandMatrixYouSubmitCommand": "you submit",
-    "commandMatrixYouSubmitPurpose": "すでに作業を受け付けているファクトリーへ、1 件の作業項目を投入します。",
-    "commandMatrixYouSubmitRunning": "はい",
-    "commandMatrixYouSubmitBatchCommand": "you submit batch",
-    "commandMatrixYouSubmitBatchPurpose": "稼働中のファクトリーセッションへバッチ JSON を upsert します。",
-    "commandMatrixYouSubmitBatchRunning": "はい",
-    "commandMatrixYouSessionListCommand": "you session list",
-    "commandMatrixYouSessionListPurpose": "作業を投入する前に、ファクトリーホストに開いているセッションがあるか確認します。",
-    "commandMatrixYouSessionListRunning": "はい — 稼働中のホストと通信します。",
-    "commandMatrixYouWorkCommand": "you work list / you work show",
-    "commandMatrixYouWorkPurpose": "稼働中のファクトリーから作業項目を確認します。",
-    "commandMatrixYouWorkRunning": "はい",
-    "commandMatrixYouDocsCommand": "you docs / you docs <topic>",
-    "commandMatrixYouDocsPurpose": "インストール済みバイナリから、パッケージ化された参照マークダウンを表示します。",
-    "commandMatrixYouDocsRunning": "いいえ"
+    "installDocs": "you-agent-factory のインストール",
+    "matrixCommandHeader": "コマンドグループ",
+    "matrixPurposeHeader": "用途",
+    "matrixRunningFactoryHeader": "ファクトリーが稼働している必要があるか",
+    "cliReference": "CLI リファレンス — 公開されている全コマンド・フラグ・引数",
+    "cliReferenceFullContract": "CLI リファレンス — 公開されている完全な契約",
+    "apiReference": "API リファレンス — HTTP 操作カタログ",
+    "makeYourAgentUseYou": "エージェントに YOU を使わせる方法",
+    "matrixInitCommand": "you init",
+    "matrixInitPurpose": "既定のプロバイダーとモデルを設定する、または組み込みカタログからパッケージ済みファクトリーをインストールする。",
+    "matrixInitRunning": "不要",
+    "matrixRunCommand": "you run",
+    "matrixRunPurpose": "ファクトリーを読み込んでエンジンを実行する。既定はバッチ。アイドル中も生かし続けるには --continuously を付ける。",
+    "matrixRunRunning": "不要 — これがランタイムを起動する。",
+    "matrixServerCommand": "you server",
+    "matrixServerPurpose": "./factory/factory.json の現在のファクトリーを検証して提供し、準備完了後にダッシュボードを 1 度開く。",
+    "matrixServerRunning": "不要 — これがランタイムを起動する。",
+    "matrixFactoryCommand": "you factory list / create / update / delete",
+    "matrixFactoryPurpose": "一度に 1 つのファクトリールートの下で、永続化された名前付きファクトリーを管理する。",
+    "matrixFactoryRunning": "不要",
+    "matrixFactoryConfigCommand": "you factory config validate / expand / flatten",
+    "matrixFactoryConfigPurpose": "定義を永続化せずに検証する、または単一ファイル形式と分割レイアウトを相互変換する。",
+    "matrixFactoryConfigRunning": "不要",
+    "matrixSessionCommand": "you session list / show / create / delete / pause / resume / dispatches",
+    "matrixSessionPurpose": "ホスト上のファクトリーセッションを管理し、永続化されたディスパッチを読む。",
+    "matrixSessionRunning": "必要",
+    "matrixSubmitCommand": "you submit / you submit batch",
+    "matrixSubmitPurpose": "稼働中のセッションに作業を 1 件投入する、または正規のリクエストバッチをアップサートする。",
+    "matrixSubmitRunning": "必要",
+    "matrixWorkCommand": "you work list / show / move / visualize",
+    "matrixWorkPurpose": "作業項目を調べて移動させる。バッチファイルの可視化はローカル JSON を読む。",
+    "matrixWorkRunning": "必要（visualize を除く）",
+    "matrixWorkersCommand": "you workers list / acp add / acp delete",
+    "matrixWorkersPurpose": "選択可能なワーカー統合を調べ、Agent Client Protocol プロバイダーを設定する。",
+    "matrixWorkersRunning": "不要",
+    "matrixModelsCommand": "you models list / inspect / pull / invoke",
+    "matrixModelsPurpose": "発見されたモデルと準備状態を読む、ローカルモデルを管理キャッシュに取得する、または直接呼び出す。",
+    "matrixModelsRunning": "必要（invoke を除く）",
+    "matrixMcpCommand": "you mcp serve",
+    "matrixMcpPurpose": "MCP ホスト向けに、Factory Session の Model Context Protocol サーバーを stdio で起動する。",
+    "matrixMcpRunning": "不要",
+    "matrixServeCommand": "you serve acp",
+    "matrixServePurpose": "エディター向けに、you-agent-factory を Agent Client Protocol エージェントとして stdio でホストする。",
+    "matrixServeRunning": "不要",
+    "matrixDocsCommand": "you docs / you docs <topic>",
+    "matrixDocsPurpose": "インストール済みバイナリから同梱リファレンスのマークダウンを表示する。",
+    "matrixDocsRunning": "不要"
+  },
+  "callouts": {
+    "currentFactoryDefault": {
+      "body": "セレクターを一切指定しない場合、実行は呼び出し元ディレクトリの ./factory/factory.json を現在のファクトリーとして検証します。定義が無い場合にブートストラップすることはなく、別の current-factory ポインターを追うこともありません。そのため、誤ったディレクトリでの実行は、黙って別のものを選ぶのではなく、何かが始まる前に失敗します。"
+    },
+    "deprecatedPort": {
+      "body": "コマンドごとの --port フラグは非推奨で、グローバルな --server フラグに置き換わりました。ベース URI のほうを使ってください。スキーム、ホスト、ポートを 1 つの値で表し、全体に一律で適用されます。"
+    }
   }
 }

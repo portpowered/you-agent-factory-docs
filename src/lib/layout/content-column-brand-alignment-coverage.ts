@@ -38,7 +38,7 @@ export const BRAND_ALIGNMENT_VERIFICATION_ROUTES = [
   },
   {
     id: "docs-page",
-    path: "/docs/guides/getting-started",
+    path: "/docs/guides/run-your-first-factory",
     label: "Docs page",
     contentColumnSurface: "docs-page" as const,
   },

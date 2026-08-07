@@ -1,58 +1,91 @@
 {
   "title": "CLI",
-  "description": "安装 you-agent-factory CLI，并查阅用于启动工厂、提交工作、检查会话以及阅读打包文档的核心 you 命令。",
-  "openingSummary": "you-agent-factory CLI 是从本机安装工厂工具并操作长时间运行的代理工作的命令行入口。",
+  "description": "查阅 you-agent-factory 的命令分组、一次运行如何选定工厂、所有命令共用的全局参数，以及完整的已发布 CLI 约定在哪里。",
+  "openingSummary": "you-agent-factory 的命令行工具就是一个名为 you 的二进制文件，分成十来个命令组。日常用到的大多集中在三类：启动一次运行、访问运行中的主机、以及离线查阅资料。",
   "sections": {
     "install": {
       "title": "安装",
-      "body": "使用适用于你操作系统的已发布安装入口安装 you CLI。这些命令会安装二进制，但不会启动工厂。"
+      "body": "用适用于你操作系统的官方发布入口安装 you 命令行工具，并在首次运行前配置提供方。安装页面收录了各操作系统的命令、提供方配置步骤，以及打包工厂的安装。"
     },
     "commands": {
       "title": "命令",
-      "body": "用此矩阵选择核心 you 命令，并查看是否必须已有工厂在运行。启动类命令会创建或连接到本地运行时。提交类命令会向实时工厂排队工作。文档类命令可离线打印打包参考 markdown。"
+      "body": "按你想做的事挑选命令组，并确认它是否需要已有工厂主机在监听。启动类命令会创建运行时。会话、工作和提交类命令访问已经存在的运行时。其余命令读写本地状态。"
+    },
+    "selectingAFactory": {
+      "title": "选定工厂",
+      "body": "一次运行需要知道加载哪个工厂，指定方式有三种。具名工厂先从 ./factory 解析，再从全局工厂根目录解析。目录方式指向磁盘上的一份工厂布局。可移植工厂是单个 JSON 或 YAML 文件，或者一个没有歧义的目录，无需安装即可就地运行。"
+    },
+    "globalFlags": {
+      "title": "全局参数",
+      "body": "有四个参数适用于所有命令，写在子命令之前。结构化输出会把 JSON 打到标准输出，诊断信息留在标准错误，这正是命令行工具可脚本化的原因。server 参数设定工厂 API 的基础 URI：HTTP 客户端类命令以它为目标，启用服务器的运行则绑定它的回环主机与端口。"
+    },
+    "offlineReference": {
+      "title": "离线参考",
+      "body": "二进制文件内置了自己的参考主题，无需联网、也无需运行中的主机即可打印。21 个主题覆盖编写工厂、运行、配置、模拟工作单元、录制与回放、守卫、关系、工作、会话、编排器、JavaScript 工作流、MCP、工作站、工作单元、资源、模型、批量输入和模板。"
     },
     "limitsAndAssumptions": {
       "title": "限制与假设",
-      "body": "本页是面向安装入口与核心命令矩阵的 Web CLI 参考。它不是完整标志转储，不是打包 CLI 文档的同步，也不是 harness、MCP 或配置的深入页面。首次运行演练以及操作系统或执行器安装变体，在对应页面发布后属于各自的安装与快速开始面。"
+      "body": "这里覆盖的是命令分组、工厂选定和全局参数。逐命令的完整参数、实参、退出码和生命周期状态在 CLI 参考页，那里是直接从已安装包的约定投影出来的，而不是手工誊抄的。HTTP 操作则在 API 参考页。"
     },
     "tags": {
       "title": "标签"
     }
   },
   "links": {
-    "installMacosLinuxLabel": "macOS / Linux",
-    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
-    "installWindowsLabel": "Windows (PowerShell)",
-    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
-    "commandMatrixCommandHeader": "命令",
-    "commandMatrixPurposeHeader": "用途",
-    "commandMatrixRunningFactoryHeader": "是否必须已有工厂在运行？",
-    "commandMatrixYouCommand": "you",
-    "commandMatrixYouPurpose": "从当前项目启动默认本地工厂与仪表板。",
-    "commandMatrixYouRunning": "否 — 这会启动运行时。",
-    "commandMatrixYouRunDirCommand": "you run --dir <factory>",
-    "commandMatrixYouRunDirPurpose": "从显式工厂目录启动或连接到本地工厂。",
-    "commandMatrixYouRunDirRunning": "否 — 这会启动运行时。",
-    "commandMatrixYouRunNamedCommand": "you run --named <factory> / you run --factory <path>",
-    "commandMatrixYouRunNamedPurpose": "在不猜测本地目录布局的情况下运行命名或可移植工厂。",
-    "commandMatrixYouRunNamedRunning": "否 — 这会启动运行时。",
-    "commandMatrixYouRunWorkCommand": "you run --work <batch.json>",
-    "commandMatrixYouRunWorkPurpose": "作为本地工厂启动的一部分提交批次 JSON，而不是稳态入口。",
-    "commandMatrixYouRunWorkRunning": "与 --dir 等启动形式一起使用时为否。",
-    "commandMatrixYouSubmitCommand": "you submit",
-    "commandMatrixYouSubmitPurpose": "向已经接受工作的工厂提交一个工作项。",
-    "commandMatrixYouSubmitRunning": "是",
-    "commandMatrixYouSubmitBatchCommand": "you submit batch",
-    "commandMatrixYouSubmitBatchPurpose": "向正在运行的工厂会话 upsert 批次 JSON。",
-    "commandMatrixYouSubmitBatchRunning": "是",
-    "commandMatrixYouSessionListCommand": "you session list",
-    "commandMatrixYouSessionListPurpose": "在提交工作前检查工厂主机是否有打开的会话。",
-    "commandMatrixYouSessionListRunning": "是 — 与正在运行的主机通信。",
-    "commandMatrixYouWorkCommand": "you work list / you work show",
-    "commandMatrixYouWorkPurpose": "从正在运行的工厂检查工作项。",
-    "commandMatrixYouWorkRunning": "是",
-    "commandMatrixYouDocsCommand": "you docs / you docs <topic>",
-    "commandMatrixYouDocsPurpose": "从已安装二进制打印打包参考 markdown。",
-    "commandMatrixYouDocsRunning": "否"
+    "installDocs": "安装 you-agent-factory",
+    "matrixCommandHeader": "命令组",
+    "matrixPurposeHeader": "用途",
+    "matrixRunningFactoryHeader": "是否需要工厂已在运行？",
+    "cliReference": "CLI 参考 — 所有已发布的命令、参数与实参",
+    "cliReferenceFullContract": "CLI 参考 — 完整的已发布约定",
+    "apiReference": "API 参考 — HTTP 操作目录",
+    "makeYourAgentUseYou": "如何让你的智能体使用 YOU",
+    "matrixInitCommand": "you init",
+    "matrixInitPurpose": "配置默认提供方与模型，或从内置目录安装一个打包工厂。",
+    "matrixInitRunning": "不需要",
+    "matrixRunCommand": "you run",
+    "matrixRunPurpose": "加载工厂并运行引擎。默认按批处理；加上 --continuously 可在空闲时保持存活。",
+    "matrixRunRunning": "不需要 — 它本身就会启动运行时。",
+    "matrixServerCommand": "you server",
+    "matrixServerPurpose": "校验并提供 ./factory/factory.json 中的当前工厂，就绪后打开一次仪表盘。",
+    "matrixServerRunning": "不需要 — 它本身就会启动运行时。",
+    "matrixFactoryCommand": "you factory list / create / update / delete",
+    "matrixFactoryPurpose": "在一次一个工厂根目录的范围内，管理已持久化的具名工厂。",
+    "matrixFactoryRunning": "不需要",
+    "matrixFactoryConfigCommand": "you factory config validate / expand / flatten",
+    "matrixFactoryConfigPurpose": "在不持久化的情况下校验定义，或在单文件与拆分布局之间互相转换。",
+    "matrixFactoryConfigRunning": "不需要",
+    "matrixSessionCommand": "you session list / show / create / delete / pause / resume / dispatches",
+    "matrixSessionPurpose": "管理主机上的工厂会话，并读取其持久化的派发记录。",
+    "matrixSessionRunning": "需要",
+    "matrixSubmitCommand": "you submit / you submit batch",
+    "matrixSubmitPurpose": "向活动会话提交一条工作，或整体更新一个规范请求批次。",
+    "matrixSubmitRunning": "需要",
+    "matrixWorkCommand": "you work list / show / move / visualize",
+    "matrixWorkPurpose": "检查并移动工作条目。可视化批次文件时读取的是本地 JSON。",
+    "matrixWorkRunning": "需要，visualize 除外",
+    "matrixWorkersCommand": "you workers list / acp add / acp delete",
+    "matrixWorkersPurpose": "查看可选的工作单元集成，并配置 Agent Client Protocol 提供方。",
+    "matrixWorkersRunning": "不需要",
+    "matrixModelsCommand": "you models list / inspect / pull / invoke",
+    "matrixModelsPurpose": "读取已发现的模型及其就绪状态，把本地模型拉入托管缓存，或直接调用其中一个。",
+    "matrixModelsRunning": "需要，invoke 除外",
+    "matrixMcpCommand": "you mcp serve",
+    "matrixMcpPurpose": "为 MCP 宿主通过 stdio 启动 Factory Session 的 Model Context Protocol 服务器。",
+    "matrixMcpRunning": "不需要",
+    "matrixServeCommand": "you serve acp",
+    "matrixServePurpose": "为编辑器通过 stdio 把 you-agent-factory 托管为 Agent Client Protocol 智能体。",
+    "matrixServeRunning": "不需要",
+    "matrixDocsCommand": "you docs / you docs <topic>",
+    "matrixDocsPurpose": "从已安装的二进制文件中打印随附的参考 Markdown。",
+    "matrixDocsRunning": "不需要"
+  },
+  "callouts": {
+    "currentFactoryDefault": {
+      "body": "完全不给选择器时，运行会把调用所在目录的 ./factory/factory.json 作为当前工厂来校验。它不会为缺失的定义做引导，也不会去追随另一个 current-factory 指针。因此在错误目录下运行会在任何东西启动之前就失败，而不是悄悄选中别的工厂。"
+    },
+    "deprecatedPort": {
+      "body": "逐命令的 --port 参数已弃用，改用全局的 --server 参数。建议使用基础 URI：它把协议、主机和端口装在一个值里，并且统一生效。"
+    }
   }
 }

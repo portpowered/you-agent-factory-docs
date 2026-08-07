@@ -1,44 +1,71 @@
 {
   "title": "FAQ",
-  "description": "Short answers to common you-agent-factory questions that point at the owning canonical docs for install, run, configuration, MCP, and dynamic workflows.",
-  "openingSummary": "FAQ is the you-agent-factory short-answer surface for common product questions. Each reply stays brief and sends you to the canonical doc that owns the full contract.",
+  "description": "you-agent-factory についてよくある質問への短い回答。インストール、ファクトリーの実行、作成、エージェント、設定、復旧について、正式なドキュメントとリファレンスページを案内します。",
+  "openingSummary": "FAQ は you-agent-factory のよくある質問に短く答える場所です。回答は簡潔にとどめ、完全な契約を持つ正式なドキュメントやリファレンスページへ案内します。",
   "sections": {
     "whatIsYouAgentFactory": {
-      "title": "What Is You-Agent-Factory, And Where Do I Start?",
-      "body": "you-agent-factory is the CLI and workflow system that keeps long-running agent work persistent. Start with the product overview, then follow Getting Started for first-run order before you dig into install or CLI depth."
+      "title": "you-agent-factory とは何か。どこから始めるか",
+      "body": "you-agent-factory は、長時間にわたるエージェントの作業を永続化し続ける CLI とワークフローシステムです。you という 1 つのバイナリとしてインストールされます。まず製品概要を読み、次にインストールしてパッケージ済みファクトリーを実行してから、CLI の詳細に進んでください。"
     },
     "howToInstall": {
-      "title": "How Do I Install You?",
-      "body": "Install with the OS-specific script for your machine, then confirm you resolves on PATH. Open Install for the full command matrix and post-install scaffold notes—this FAQ does not repeat those commands."
+      "title": "you はどうやってインストールするか",
+      "body": "お使いのマシン向けの OS 別スクリプトでインストールし、シェルで you が解決できることを確認したうえで、ワーカーを実行するプロバイダーを設定します。コマンド一式はインストールページにあります。この FAQ では繰り返しません。"
     },
-    "howToRunNamedWorkflow": {
-      "title": "How Do I Run A Named Workflow Or Confirm A Live Session?",
-      "body": "Start or attach a factory, then confirm a live Factory Session with you session list before you submit work. For first-run order open Getting Started; for the command matrix open CLI; for empty-list vs connection-failure language open Factory Session."
+    "howToRunAFactory": {
+      "title": "ファクトリーはどうやって実行するか",
+      "body": "you init --package でパッケージ済みファクトリーをインストールし、you run --named に依頼を添えて名前で実行します。通常の実行はバッチモードで、HTTP リスナーを起動しません。そのため you session list が答えを返すのは、サーバー付きで実行を開始した場合か、you server が動いている場合だけです。"
+    },
+    "whichFactoriesShip": {
+      "title": "バイナリにはどのファクトリーが同梱されているか",
+      "body": "組み込みカタログには 15 個のパッケージ済みファクトリーが含まれ、目標追跡、レビューループ、多数決とトーナメントによる比較、並列ファンアウト、計画立案、分類、ディープリサーチ、ファクトリーの自動作成、音声合成を網羅しています。各ファクトリーは自身の引数、既定値、実例を公開しています。"
+    },
+    "graphOrJavascript": {
+      "title": "グラフファクトリーと JavaScript ファクトリーのどちらを書くべきか",
+      "body": "ワークフローが作業の流れるトポロジーであり、項目ごとの永続的な状態と並行性を無料で得たい場合はグラフファクトリーを書きます。ワークフローが手続きであり、通常の制御構文を使いたい場合は JavaScript ファクトリーを書きます。orchestrator フィールドがエンジンを選び、省略するとグラフになります。"
     },
     "whereConfigurationLives": {
-      "title": "Where Does Configuration Live?",
-      "body": "Per-factory topology lives in factory.json under the factory root; optional operator defaults live in ~/.you-agent-factory/config.json. Open Configuration for factory.json shape and Global Configuration Factories for operator-default modes—do not treat this FAQ as a second config reference."
+      "title": "設定はどこにあるか",
+      "body": "ファクトリーごとのトポロジーは、ファクトリールート配下の factory.json にあります。ワーカーのプロバイダーなど運用者の既定値は ~/.you-agent-factory/config.json にあります。カタログからインストールした名前付きファクトリーは、別の場所を指定しない限り ~/.you-agent-factory/factories 配下に置かれます。"
+    },
+    "howToMakeAnAgentUseYou": {
+      "title": "AI エージェントに YOU を使わせるにはどうするか",
+      "body": "エージェントに you docs agents を実行して出力を読むよう伝えてください。このトピックは、インストール済みバイナリが内部に持つエージェント向けオリエンテーションとコマンド一覧です。そのためエージェントは、古くなりうる写しではなく、実際に手元にあるコマンドの全体像を学びます。あとはエージェントが CLI を直接使います。"
     },
     "howMcpOrCursorConnects": {
-      "title": "How Do MCP Or Cursor Dynamic Workflows Connect?",
-      "body": "Hosts spawn you mcp serve so Factory Session tools appear under you.factory_session.* names; Cursor uses that MCP bridge for its first dynamic-workflow loop. Open MCP for host JSON and serve modes, Dynamic Workflows for source depth, and the Cursor guide for the first-loop walkthrough."
+      "title": "MCP や Cursor のダイナミックワークフローはどうつながるか",
+      "body": "ホストが you mcp serve を起動すると、Factory Session のツールが you.factory_session.* という名前で現れます。Cursor は最初のダイナミックワークフローのループでこのブリッジを使います。MCP サーバーは stdio で通信し、独自の HTTP やダッシュボードのリスナーは起動しません。"
+    },
+    "whereAreTheExactContracts": {
+      "title": "正確なコマンドやスキーマはどこにあるか",
+      "body": "リファレンスページにあります。これらは書き写したものではなく、インストール済みの @you-agent-factory/api パッケージから投影されています。CLI リファレンスは公開されている全コマンド・フラグ・引数を、API リファレンスは同梱の OpenAPI ドキュメントそのものを、イベントリファレンスは全イベントコーパスとストリーム契約を扱います。"
     },
     "somethingFailed": {
-      "title": "Something Failed—Where Do I Recover?",
-      "body": "When install, run, configuration, MCP, or dynamic-workflow steps fail, open Troubleshooting for symptom-scoped recovery that links into the owning canonical docs. Use this FAQ for common how-to questions; use Troubleshooting when you already have a failure symptom."
+      "title": "失敗したときはどこで復旧するか",
+      "body": "インストール、実行、設定、MCP、ダイナミックワークフローの手順が失敗したときは、トラブルシューティングを開いてください。症状ごとの復旧手順があり、担当する正式なドキュメントへリンクしています。よくある手順の質問にはこの FAQ を、失敗の症状がすでに分かっているときはトラブルシューティングを使ってください。"
     }
   },
   "links": {
-    "whatIsYouAgentFactory": "What is you-agent-factory",
-    "gettingStarted": "Getting Started",
-    "installDocs": "Install",
+    "whatIsYouAgentFactory": "you-agent-factory とは",
+    "runYourFirstFactory": "最初のファクトリーを実行する",
+    "installDocs": "インストール",
     "cliDocs": "CLI",
     "factorySession": "Factory Session",
-    "configurationDocs": "Configuration",
-    "globalConfigurationFactories": "Global Configuration Factories",
+    "packagedFactoriesReference": "パッケージ済みファクトリーリファレンス",
+    "packagedFactoriesDocs": "パッケージ済みファクトリー",
+    "writeYourFirstFactory": "最初のファクトリーを書く",
+    "factorySchemaReference": "ファクトリースキーマリファレンス",
+    "javascriptRuntimeReference": "JavaScript ランタイムリファレンス",
+    "configurationDocs": "設定",
+    "globalConfigurationFactories": "グローバル設定ファクトリー",
+    "systemConfigSchema": "システム設定スキーマ",
+    "makeYourAgentUseYou": "エージェントに YOU を使わせる方法",
     "mcpDocs": "MCP",
-    "dynamicWorkflows": "Dynamic Workflows",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows guide",
-    "troubleshooting": "Troubleshooting"
+    "mcpReference": "MCP リファレンス",
+    "dynamicWorkflows": "ダイナミックワークフロー",
+    "cursorDynamicWorkflows": "Cursor ダイナミックワークフローガイド",
+    "cliReference": "CLI リファレンス",
+    "apiReference": "API リファレンス",
+    "eventsReference": "イベントリファレンス",
+    "troubleshooting": "トラブルシューティング"
   }
 }

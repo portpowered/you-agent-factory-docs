@@ -1,58 +1,91 @@
 {
   "title": "CLI",
-  "description": "Cài đặt CLI you-agent-factory và tra cứu các lệnh you cốt lõi để khởi động factory, gửi công việc, kiểm tra session, và đọc tài liệu đã đóng gói.",
-  "openingSummary": "CLI you-agent-factory là điểm vào dòng lệnh để cài đặt công cụ factory và vận hành công việc agent chạy dài từ máy của bạn.",
+  "description": "Tra cứu các nhóm lệnh của you-agent-factory, cách một lần chạy chọn factory, các cờ toàn cục dùng chung cho mọi lệnh, và nơi đặt hợp đồng CLI đầy đủ đã công bố.",
+  "openingSummary": "CLI của you-agent-factory là một tệp nhị phân duy nhất tên you, chia thành hơn chục nhóm lệnh. Phần lớn việc bạn làm rơi vào ba nhóm: khởi động một lần chạy, làm việc với một máy chủ đang chạy, và tra cứu ngoại tuyến.",
   "sections": {
     "install": {
       "title": "Cài đặt",
-      "body": "Cài đặt CLI you bằng điểm vào phát hành đã công bố cho hệ điều hành của bạn. Các lệnh này cài binary; chúng không khởi động factory."
+      "body": "Cài CLI you bằng điểm vào bản phát hành chính thức cho hệ điều hành của bạn, rồi cấu hình một nhà cung cấp trước lần chạy đầu tiên. Trang cài đặt có đủ lệnh cho từng hệ điều hành, bước chọn nhà cung cấp, và phần cài factory đóng gói."
     },
     "commands": {
       "title": "Lệnh",
-      "body": "Dùng ma trận này để chọn lệnh you cốt lõi và xem liệu factory đã phải chạy sẵn chưa. Các dạng khởi động tạo hoặc gắn vào runtime cục bộ. Các dạng gửi xếp hàng công việc vào factory đang sống. Docs in markdown tham chiếu đã đóng gói ngoại tuyến."
+      "body": "Chọn nhóm lệnh theo việc bạn đang muốn làm, và kiểm tra xem nó có cần một máy chủ factory đang lắng nghe hay không. Các dạng khởi động tạo ra runtime. Các dạng phiên, công việc và gửi việc thì làm việc với một runtime đã tồn tại. Phần còn lại đọc hoặc ghi trạng thái cục bộ."
+    },
+    "selectingAFactory": {
+      "title": "Chọn factory",
+      "body": "Một lần chạy cần biết nạp factory nào, và có ba cách để nói điều đó. Factory có tên được phân giải từ ./factory trước, rồi mới tới thư mục gốc factory toàn cục. Cách chỉ định thư mục trỏ tới một bố cục factory trên đĩa. Factory di động là một tệp JSON hoặc YAML duy nhất, hay một thư mục không gây nhập nhằng, chạy tại chỗ mà không cần cài."
+    },
+    "globalFlags": {
+      "title": "Cờ toàn cục",
+      "body": "Bốn cờ dùng được với mọi lệnh và được viết trước lệnh con. Đầu ra có cấu trúc phát JSON ra stdout trong khi thông tin chẩn đoán ở lại stderr — chính điều đó khiến CLI dùng được trong script. Cờ server đặt URI gốc của API factory: các lệnh client HTTP nhắm vào đó, còn những lần chạy có bật máy chủ sẽ gắn vào host loopback và cổng của nó."
+    },
+    "offlineReference": {
+      "title": "Tham chiếu ngoại tuyến",
+      "body": "Tệp nhị phân mang theo các chủ đề tham chiếu của chính nó và in được mà không cần kết nối mạng hay máy chủ đang chạy. 21 chủ đề bao phủ việc soạn factory, chạy, cấu hình, worker giả lập, ghi và phát lại, guard, quan hệ, công việc, phiên, bộ điều phối, quy trình JavaScript, MCP, workstation, worker, tài nguyên, mô hình, đầu vào theo lô và mẫu."
     },
     "limitsAndAssumptions": {
       "title": "Giới hạn và giả định",
-      "body": "Trang này là tài liệu tham chiếu CLI trên web cho điểm vào cài đặt và ma trận lệnh cốt lõi. Nó không phải dump cờ đầy đủ, không phải đồng bộ tài liệu CLI đã đóng gói, và không phải trang sâu về harness, MCP, hay cấu hình. Hướng dẫn chạy lần đầu và biến thể cài đặt theo OS hoặc executor thuộc các bề mặt cài đặt và Bắt đầu riêng khi các trang đó được xuất bản."
+      "body": "Phạm vi ở đây là nhóm lệnh, cách chọn factory và cờ toàn cục. Toàn bộ cờ, tham số, mã thoát và trạng thái vòng đời của từng lệnh nằm ở trang tham chiếu CLI, vốn được chiếu thẳng từ hợp đồng của gói đã cài chứ không chép tay. Các thao tác HTTP nằm ở trang tham chiếu API."
     },
     "tags": {
       "title": "Thẻ"
     }
   },
   "links": {
-    "installMacosLinuxLabel": "macOS / Linux",
-    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
-    "installWindowsLabel": "Windows (PowerShell)",
-    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
-    "commandMatrixCommandHeader": "Lệnh",
-    "commandMatrixPurposeHeader": "Mục đích",
-    "commandMatrixRunningFactoryHeader": "Factory đã phải chạy sẵn?",
-    "commandMatrixYouCommand": "you",
-    "commandMatrixYouPurpose": "Khởi động factory cục bộ mặc định và dashboard từ dự án hiện tại.",
-    "commandMatrixYouRunning": "Không — lệnh này khởi động runtime.",
-    "commandMatrixYouRunDirCommand": "you run --dir <factory>",
-    "commandMatrixYouRunDirPurpose": "Khởi động hoặc gắn vào factory cục bộ từ thư mục factory tường minh.",
-    "commandMatrixYouRunDirRunning": "Không — lệnh này khởi động runtime.",
-    "commandMatrixYouRunNamedCommand": "you run --named <factory> / you run --factory <path>",
-    "commandMatrixYouRunNamedPurpose": "Chạy factory có tên hoặc portable mà không đoán bố cục thư mục cục bộ.",
-    "commandMatrixYouRunNamedRunning": "Không — lệnh này khởi động runtime.",
-    "commandMatrixYouRunWorkCommand": "you run --work <batch.json>",
-    "commandMatrixYouRunWorkPurpose": "Gửi batch JSON như một phần khởi động factory cục bộ, không phải ingress trạng thái ổn định.",
-    "commandMatrixYouRunWorkRunning": "Không khi dùng với dạng khởi động như --dir.",
-    "commandMatrixYouSubmitCommand": "you submit",
-    "commandMatrixYouSubmitPurpose": "Gửi một mục công việc tới factory đang nhận công việc.",
-    "commandMatrixYouSubmitRunning": "Có",
-    "commandMatrixYouSubmitBatchCommand": "you submit batch",
-    "commandMatrixYouSubmitBatchPurpose": "Upsert batch JSON vào session factory đang chạy.",
-    "commandMatrixYouSubmitBatchRunning": "Có",
-    "commandMatrixYouSessionListCommand": "you session list",
-    "commandMatrixYouSessionListPurpose": "Kiểm tra host factory có session mở trước khi gửi công việc.",
-    "commandMatrixYouSessionListRunning": "Có — nói chuyện với host đang chạy.",
-    "commandMatrixYouWorkCommand": "you work list / you work show",
-    "commandMatrixYouWorkPurpose": "Kiểm tra mục công việc từ factory đang chạy.",
-    "commandMatrixYouWorkRunning": "Có",
-    "commandMatrixYouDocsCommand": "you docs / you docs <topic>",
-    "commandMatrixYouDocsPurpose": "In markdown tham chiếu đã đóng gói từ binary đã cài.",
-    "commandMatrixYouDocsRunning": "Không"
+    "installDocs": "Cài đặt you-agent-factory",
+    "matrixCommandHeader": "Nhóm lệnh",
+    "matrixPurposeHeader": "Mục đích",
+    "matrixRunningFactoryHeader": "Factory có cần đang chạy sẵn không?",
+    "cliReference": "Tham chiếu CLI — mọi lệnh, cờ và tham số đã công bố",
+    "cliReferenceFullContract": "Tham chiếu CLI — hợp đồng đầy đủ đã công bố",
+    "apiReference": "Tham chiếu API — danh mục thao tác HTTP",
+    "makeYourAgentUseYou": "Cách khiến tác tử của bạn dùng YOU",
+    "matrixInitCommand": "you init",
+    "matrixInitPurpose": "Cấu hình nhà cung cấp và mô hình mặc định, hoặc cài một factory đóng gói từ danh mục tích hợp.",
+    "matrixInitRunning": "Không",
+    "matrixRunCommand": "you run",
+    "matrixRunPurpose": "Nạp một factory và chạy engine. Mặc định theo lô; thêm --continuously để giữ sống khi rảnh.",
+    "matrixRunRunning": "Không — chính nó khởi động runtime.",
+    "matrixServerCommand": "you server",
+    "matrixServerPurpose": "Kiểm tra và phục vụ factory hiện tại từ ./factory/factory.json, mở bảng điều khiển một lần khi sẵn sàng.",
+    "matrixServerRunning": "Không — chính nó khởi động runtime.",
+    "matrixFactoryCommand": "you factory list / create / update / delete",
+    "matrixFactoryPurpose": "Quản lý các factory có tên đã lưu, mỗi lần trong đúng một thư mục gốc factory.",
+    "matrixFactoryRunning": "Không",
+    "matrixFactoryConfigCommand": "you factory config validate / expand / flatten",
+    "matrixFactoryConfigPurpose": "Kiểm tra một định nghĩa mà không lưu lại, hoặc chuyển đổi giữa bố cục một tệp và bố cục tách rời.",
+    "matrixFactoryConfigRunning": "Không",
+    "matrixSessionCommand": "you session list / show / create / delete / pause / resume / dispatches",
+    "matrixSessionPurpose": "Quản lý các phiên factory và đọc các lượt điều phối bền vững của chúng trên một máy chủ.",
+    "matrixSessionRunning": "Có",
+    "matrixSubmitCommand": "you submit / you submit batch",
+    "matrixSubmitPurpose": "Gửi một hạng mục công việc, hoặc cập nhật trọn một lô yêu cầu chuẩn, vào một phiên đang hoạt động.",
+    "matrixSubmitRunning": "Có",
+    "matrixWorkCommand": "you work list / show / move / visualize",
+    "matrixWorkPurpose": "Kiểm tra và chuyển các hạng mục công việc. Việc trực quan hóa tệp lô thì đọc JSON cục bộ.",
+    "matrixWorkRunning": "Có, trừ visualize",
+    "matrixWorkersCommand": "you workers list / acp add / acp delete",
+    "matrixWorkersPurpose": "Xem các tích hợp worker chọn được và cấu hình nhà cung cấp Agent Client Protocol.",
+    "matrixWorkersRunning": "Không",
+    "matrixModelsCommand": "you models list / inspect / pull / invoke",
+    "matrixModelsPurpose": "Đọc các mô hình đã phát hiện và mức sẵn sàng của chúng, kéo mô hình cục bộ vào bộ nhớ đệm được quản lý, hoặc gọi trực tiếp một mô hình.",
+    "matrixModelsRunning": "Có, trừ invoke",
+    "matrixMcpCommand": "you mcp serve",
+    "matrixMcpPurpose": "Khởi động máy chủ Model Context Protocol cho Factory Session qua stdio để một nền tảng MCP dùng.",
+    "matrixMcpRunning": "Không",
+    "matrixServeCommand": "you serve acp",
+    "matrixServePurpose": "Lưu trữ you-agent-factory như một tác tử Agent Client Protocol qua stdio cho trình soạn thảo.",
+    "matrixServeRunning": "Không",
+    "matrixDocsCommand": "you docs / you docs <topic>",
+    "matrixDocsPurpose": "In markdown tham chiếu đi kèm từ tệp nhị phân đã cài.",
+    "matrixDocsRunning": "Không"
+  },
+  "callouts": {
+    "currentFactoryDefault": {
+      "body": "Khi không có bộ chọn nào, lần chạy sẽ kiểm tra tệp ./factory/factory.json ngay tại nơi gọi lệnh như là factory hiện tại. Nó không tự dựng một định nghĩa còn thiếu và không đi theo con trỏ current-factory nào khác, nên chạy nhầm thư mục sẽ thất bại trước khi bất cứ thứ gì khởi động, thay vì lặng lẽ chọn một factory khác."
+    },
+    "deprecatedPort": {
+      "body": "Cờ --port theo từng lệnh đã lỗi thời, hãy dùng cờ toàn cục --server. Nên dùng URI gốc: nó gói cả giao thức, host và cổng trong một giá trị và áp dụng nhất quán."
+    }
   }
 }

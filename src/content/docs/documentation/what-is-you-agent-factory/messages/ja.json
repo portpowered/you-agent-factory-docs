@@ -12,7 +12,7 @@
     }
   },
   "links": {
-    "gettingStarted": "はじめに",
-    "architectureOfSystem": "システムのアーキテクチャ"
+    "architectureOfSystem": "システムのアーキテクチャ",
+    "runYourFirstFactory": "最初のファクトリーを実行する"
   }
 }

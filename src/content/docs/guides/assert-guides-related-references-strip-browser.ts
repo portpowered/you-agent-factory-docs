@@ -33,7 +33,7 @@ type RouteProbe = {
 
 const ROUTES: readonly RouteProbe[] = [
   {
-    path: "/docs/guides/getting-started",
+    path: "/docs/guides/run-your-first-factory",
     warmNeedle: 'id="install"',
     requiredHeadingNames: ["Install", "First You", "First Submit"],
     requiredSectionIds: [
