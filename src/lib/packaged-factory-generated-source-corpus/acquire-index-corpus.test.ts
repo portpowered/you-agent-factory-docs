@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { PACKAGED_FACTORY_V002_VERSION } from "@/lib/packaged-factory-v002/five-package-pins";
 import { createHash } from "node:crypto";
 import { getProjectRoot } from "@/lib/content/content-paths";
+import { PACKAGED_FACTORY_V002_VERSION } from "@/lib/packaged-factory-v002/five-package-pins";
 import {
   PACKAGED_FACTORIES_ALLOWLIST_SLUGS,
   PACKAGED_FACTORIES_REQUIRED_RELATIVE_PATHS,
@@ -59,7 +59,9 @@ describe("acquire packaged-factory index corpus (filesystem pull)", () => {
     const goal = result.corpus.entries[0];
     expect(goal?.childSlug).toBe("goal");
     expect(goal?.canonicalName).toBe("goal");
-    expect(goal?.sourceRelativePath).toBe("generated/factories/goal/factory.json");
+    expect(goal?.sourceRelativePath).toBe(
+      "generated/factories/goal/factory.json",
+    );
   });
 
   test("fails closed when an allowlisted required file is missing", () => {

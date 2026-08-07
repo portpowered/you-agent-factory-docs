@@ -109,7 +109,9 @@ describe("packaged-factory index corpus model (pure)", () => {
     expect(entry.canonicalName).toBe("@you/goal");
     expect(entry.packagedDescription).toBeNull();
     expect(entry.childSlug).toBe("goal");
-    expect(entry.sourceRelativePath).toBe("generated/factories/goal/factory.json");
+    expect(entry.sourceRelativePath).toBe(
+      "generated/factories/goal/factory.json",
+    );
     expect(entry.factoryJsonText).toBe(GOAL_FACTORY_JSON);
     expect(entry.factoryJson).toEqual(JSON.parse(GOAL_FACTORY_JSON));
     expect(entry.packageVersion).toBe(PACKAGED_FACTORY_V002_VERSION);

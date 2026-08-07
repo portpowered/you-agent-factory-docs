@@ -36,8 +36,7 @@ describe("packaged factory corpus drift (pure)", () => {
     const hashes = [
       { relativePath: "generated/factories/goal/factory.json", sha256: "abc" },
       {
-        relativePath:
-          "generated/factories/deep-research/factory.json",
+        relativePath: "generated/factories/deep-research/factory.json",
         sha256: "def",
       },
     ];
@@ -63,7 +62,9 @@ describe("packaged factory corpus drift (pure)", () => {
       throw new Error("expected source-hash-drift");
     }
     expect(comparison.code).toBe("source-hash-drift");
-    expect(comparison.relativePath).toBe("generated/factories/goal/factory.json");
+    expect(comparison.relativePath).toBe(
+      "generated/factories/goal/factory.json",
+    );
 
     expect(() =>
       assertPackagedFactorySourceHashesMatch(expected, actual),
@@ -75,7 +76,9 @@ describe("packaged factory corpus drift (pure)", () => {
       expect(error).toBeInstanceOf(PackagedFactoryCorpusDriftError);
       if (error instanceof PackagedFactoryCorpusDriftError) {
         expect(error.code).toBe("source-hash-drift");
-        expect(error.relativePath).toBe("generated/factories/goal/factory.json");
+        expect(error.relativePath).toBe(
+          "generated/factories/goal/factory.json",
+        );
       }
     }
   });

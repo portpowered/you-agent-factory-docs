@@ -181,18 +181,19 @@ describe("events reference page published-route states", () => {
       );
 
       const operations = screen.getByTestId("event-stream-operations-list");
-      expect(operations.getAttribute("data-event-stream-count")).toBe("3");
+      expect(operations.getAttribute("data-event-stream-count")).toBe("2");
       expect(
         screen.getByText("Canonical session-scoped FactoryEvent stream"),
       ).toBeTruthy();
       expect(
         screen.getByText("Ephemeral FactoryResponseEvent stream"),
       ).toBeTruthy();
+      // 0.0.6 removed the process-global GET /events compatibility stream.
       expect(
-        screen.getByText(
+        screen.queryByText(
           "Compatibility-only process-global FactoryEvent stream",
         ),
-      ).toBeTruthy();
+      ).toBeNull();
       const operationsQueries = within(operations);
       expect(
         operationsQueries.getByText("/factory-sessions/{session_id}/events"),
@@ -202,7 +203,7 @@ describe("events reference page published-route states", () => {
           "/factory-sessions/{session_id}/response-events",
         ),
       ).toBeTruthy();
-      expect(operationsQueries.getByText("/events")).toBeTruthy();
+      expect(operationsQueries.queryByText("/events")).toBeNull();
 
       const factoryEventCatalog = screen.getByTestId(
         "factory-event-catalog-section",

@@ -117,13 +117,15 @@ describe("cli reference page", () => {
       expect(
         screen.getByText(/published CLI commands from the package/i),
       ).toBeTruthy();
-      expect(screen.getAllByText("you config init").length).toBeGreaterThan(0);
+      // `you config init` became top-level `you init` in @you-agent-factory/api
+      // 0.0.6; `you factory list` is a stable multi-segment command to sample.
+      expect(screen.getAllByText("you factory list").length).toBeGreaterThan(0);
 
       // Representative command card: trimmed keep-list + under-construction
       // Flags/arguments. Scope to the card so inventory filter labels
       // (Lifecycle / Visibility) do not false-positive.
       const commandCard = document.querySelector(
-        "[data-cli-command-reference]#you-config-init",
+        "[data-cli-command-reference]#you-factory-list",
       );
       expect(commandCard).toBeTruthy();
       if (!(commandCard instanceof HTMLElement)) {
@@ -131,7 +133,7 @@ describe("cli reference page", () => {
       }
       const card = within(commandCard);
       expect(
-        card.getByRole("heading", { name: "you config init" }),
+        card.getByRole("heading", { name: "you factory list" }),
       ).toBeTruthy();
       expect(
         commandCard.querySelector("[data-reference-copyable-anchor]"),

@@ -97,9 +97,7 @@ describe("workstations agent-run type page", () => {
     // AGENT_RUN used to select. The type is now identified by its discriminator
     // and required companion alone, so it selects nothing.
     expect(
-      presentation.fields.filter(
-        (field) => field.applicability === "selected",
-      ),
+      presentation.fields.filter((field) => field.applicability === "selected"),
     ).toEqual([]);
     expect(overlay.companions.compatible).toContain("worker:AGENT_WORKER");
     expect(overlay.companions.compatible).toContain("behavior:STANDARD");

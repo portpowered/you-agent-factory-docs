@@ -98,10 +98,10 @@ describe("factory search payload gate and representative queries (W16-008)", () 
       ),
     ).toBe(true);
 
-    const command = await docsSearchApi.search("you config init");
+    const command = await docsSearchApi.search("you models inspect");
     expect(
       command.some(
-        (result) => result.url === "/docs/references/cli#you-config-init",
+        (result) => result.url === "/docs/references/cli#you-models-inspect",
       ),
     ).toBe(true);
 

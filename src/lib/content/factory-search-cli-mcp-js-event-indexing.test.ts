@@ -31,9 +31,9 @@ describe("factory search CLI/MCP/JS/event reference indexing (W16-004)", () => {
       expect(shape.anchor.length).toBeGreaterThan(0);
     }
 
-    const init = shapes.find((shape) => shape.title === "you config init");
+    const init = shapes.find((shape) => shape.title === "you models inspect");
     expect(init).toBeDefined();
-    expect(init?.url).toBe("/docs/references/cli#you-config-init");
+    expect(init?.url).toBe("/docs/references/cli#you-models-inspect");
   });
 
   test("indexes each published MCP tool with /docs/references/mcp-reference#anchor", () => {
@@ -102,11 +102,11 @@ describe("factory search CLI/MCP/JS/event reference indexing (W16-004)", () => {
 
     const commandHits = await querySearchDocuments(
       documents,
-      "you config init",
+      "you models inspect",
     );
     expect(
       commandHits.some(
-        (hit) => hit.url === "/docs/references/cli#you-config-init",
+        (hit) => hit.url === "/docs/references/cli#you-models-inspect",
       ),
     ).toBe(true);
 

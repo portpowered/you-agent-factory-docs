@@ -69,7 +69,7 @@ describe("packaged-factories index generated artifacts (pure)", () => {
       ...PACKAGED_FACTORIES_ALLOWLIST_SLUGS.map((slug) =>
         packagedFactoriesIndexFactoryDefinitionArtifactPath(slug),
       ),
-          ...PACKAGED_FACTORY_RECORDING_SLUGS.map((slug) =>
+      ...PACKAGED_FACTORY_RECORDING_SLUGS.map((slug) =>
         packagedFactoryRecordingArtifactPath(slug),
       ),
       PACKAGED_FACTORIES_INDEX_MANIFEST_PATH,

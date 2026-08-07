@@ -69,7 +69,13 @@ describe("W00 reference baseline inventory fixtures", () => {
     // `@you-agent-factory/api` 0.0.6 stopped publishing one, so the rule holds
     // vacuously and no stream may claim the path or the role.
     expect(byPath["/events"]).toBeUndefined();
-    expect(live.streams.some((stream) => stream.preferredOrCanonical === false && stream.role === "compatibility-only")).toBe(false);
+    expect(
+      live.streams.some(
+        (stream) =>
+          stream.preferredOrCanonical === false &&
+          stream.role === "compatibility-only",
+      ),
+    ).toBe(false);
     expect(byPath["/factory-sessions/{session_id}/events"]?.role).toBe(
       "canonical",
     );

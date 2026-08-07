@@ -1,5 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import { PACKAGED_FACTORY_V002_VERSION } from "./five-package-pins";
 import { readFileSync, rmSync } from "node:fs";
 import { relative } from "node:path";
 import { installPackagedFactoryV002CleanConsumer } from "./clean-consumer-install";
@@ -8,6 +7,7 @@ import {
   normalizePackageExportsMap,
   packageExportsMapCoversSubpath,
 } from "./export-map-coverage";
+import { PACKAGED_FACTORY_V002_VERSION } from "./five-package-pins";
 import {
   isPackagedFactoriesAllowlistedRelativePath,
   PACKAGED_FACTORIES_ALLOWLIST_SLUGS,
@@ -290,7 +290,9 @@ describe("packaged-factory v0.0.2 packaged-factories filesystem pull", () => {
       expect(thrown).toBeInstanceOf(PackagedFactoriesFilesystemPullError);
       const failure = thrown as PackagedFactoriesFilesystemPullError;
       expect(failure.code).toBe("missing-allowlisted-file");
-      expect(failure.relativePath).toBe("generated/factories/goal/factory.json");
+      expect(failure.relativePath).toBe(
+        "generated/factories/goal/factory.json",
+      );
     } finally {
       rmSync(install.consumerDir, { recursive: true, force: true });
     }

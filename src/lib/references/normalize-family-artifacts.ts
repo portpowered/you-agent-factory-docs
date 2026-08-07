@@ -368,7 +368,8 @@ export function normalizeCliCommandsFromArtifact(
     const command = requirePlainObject(entry, field);
     // The map key is the identity; `id` restates it. Prefer the body so a
     // rekeyed artifact fails the identity check instead of silently renaming.
-    const id = optionalNonEmptyString(command.id) ?? optionalNonEmptyString(key);
+    const id =
+      optionalNonEmptyString(command.id) ?? optionalNonEmptyString(key);
     const name = optionalNonEmptyString(command.name);
     const commandPath = optionalNonEmptyString(command.path);
     if (id === undefined || name === undefined || commandPath === undefined) {

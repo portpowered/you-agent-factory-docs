@@ -8,10 +8,7 @@
 
 import type { OpenApiLike } from "./observe-sse-operations";
 import type { ProjectedAsyncApiDocument } from "./project-openapi-to-asyncapi";
-import {
-  SSE_SPIKE_OPERATIONS,
-  type SseSpikeOperation,
-} from "./sse-operations";
+import { SSE_SPIKE_OPERATIONS, type SseSpikeOperation } from "./sse-operations";
 
 /** Decision-gate concerns called out by the W02 PRD for projection loss. */
 export const PROJECTION_INFORMATION_LOSS_CONCERNS = [
