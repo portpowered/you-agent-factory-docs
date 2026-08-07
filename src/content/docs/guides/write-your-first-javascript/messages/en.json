@@ -13,7 +13,7 @@
     },
     "theRuntimeBindings": {
       "title": "The Runtime Bindings",
-      "body": "Fifteen symbols are published across six top-level names. There is no module system and no import: these are simply in scope when the script starts."
+      "body": "Fifteen symbols are published across eight top-level names. There is no module system and no import: these are simply in scope when the script starts."
     },
     "dispatchingOneAgent": {
       "title": "Dispatching One Agent",
