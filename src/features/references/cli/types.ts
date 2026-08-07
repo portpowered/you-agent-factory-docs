@@ -7,14 +7,14 @@
 
 import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
-import type { CliCommandWithStructuredOptions } from "./cli-capability";
 
 export type CliCommandReferenceProps = {
   /**
-   * Normalized CLI command. May carry optional enriched `flags` / `arguments`
-   * bags; when those are absent or empty, CliCapabilityNotice is shown.
+   * Normalized CLI command, including the published flags and arguments when
+   * the contract carries them. Absent option bags render no table — the card
+   * never substitutes invented rows.
    */
-  command: CliCommandWithStructuredOptions;
+  command: CliCommandNormalized;
   /**
    * Package version when known from the resolved manifest identity. Kept for
    * inventory callers; command cards no longer render package/source badge
@@ -24,17 +24,11 @@ export type CliCommandReferenceProps = {
   packageVersion?: string;
   /** Localized reference chrome forwarded to the stable-anchor copy control. */
   chrome?: ReferenceChromeMessages;
-  className?: string;
-};
-
-/**
- * Under-construction notice when structured flags/arguments are not yet
- * published. Optional title/description override defaults from
- * `cli-capability.ts` — never used to invent option rows.
- */
-export type CliCapabilityNoticeProps = {
-  title?: string;
-  description?: string;
+  /**
+   * Anchor of the root command, where inherited global flags are documented in
+   * full. Absent when the root command is not part of the rendered inventory.
+   */
+  rootAnchor?: string;
   className?: string;
 };
 
