@@ -1,27 +1,28 @@
 /**
- * Browser verify for inventory-first `/docs/references/cli` after intro strip
- * (repair-cli-reference-intro-strip story 003).
+ * Browser verify for the grouped, contract-backed `/docs/references/cli`.
  *
- * Proves: no What It Covers / Key Concepts / folded Opening summary; Command
- * Inventory success with package-backed cards; #153 keep-list including
- * under-construction Flags/arguments (no invented option rows).
+ * Proves in a real browser: no What It Covers / Key Concepts / folded opening
+ * summary and no restated section preamble; inventory success with commands
+ * grouped under family headings; published flags and arguments rendered as
+ * tables; inherited globals pointed at rather than repeated; and a right-rail
+ * table of contents that actually links to the command anchors.
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  *
  * Worktree note: Claude worktrees often resolve `next` from a parent
  * `node_modules`. Turbopack rejects that layout, so this probe starts
- * `next dev --webpack`. Prefer `CLI_INTRO_STRIP_PROBE_BASE_URL` when a server
+ * `next dev --webpack`. Prefer `CLI_INVENTORY_PROBE_BASE_URL` when a server
  * is already warm.
  */
 
 import { type ChildProcess, spawn } from "node:child_process";
 import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
 
-const PORT = Number(process.env.CLI_INTRO_STRIP_PROBE_PORT ?? "3578");
+const PORT = Number(process.env.CLI_INVENTORY_PROBE_PORT ?? "3578");
 const PAGE_PATH = "/docs/references/cli";
 const READY_TIMEOUT_MS = 180_000;
 const PAGE_TIMEOUT_MS = 180_000;
-const EXISTING_BASE_URL = process.env.CLI_INTRO_STRIP_PROBE_BASE_URL?.trim();
+const EXISTING_BASE_URL = process.env.CLI_INVENTORY_PROBE_BASE_URL?.trim();
 
 let server: ChildProcess | undefined;
 
@@ -136,7 +137,7 @@ try {
       { timeout: PAGE_TIMEOUT_MS },
     );
 
-    await page.waitForSelector("[data-cli-command-reference]#you-config-init", {
+    await page.waitForSelector("[data-cli-command-reference]#you-run", {
       timeout: 60_000,
     });
 
@@ -152,9 +153,12 @@ try {
 
       const inventory = document.querySelector("[data-cli-command-inventory]");
       const commandCard = document.querySelector(
-        "[data-cli-command-reference]#you-config-init",
+        "[data-cli-command-reference]#you-run",
       );
-      const cardText = commandCard?.textContent ?? "";
+      const toc = document.querySelector("#nd-toc");
+      const tocHrefs = Array.from(
+        toc?.querySelectorAll("a[href^='#']") ?? [],
+      ).map((link) => link.getAttribute("href") ?? "");
 
       return {
         hasWhatItCoversHeading: headingText("What It Covers"),
@@ -167,6 +171,9 @@ try {
         commandInventoryIdPresent: Boolean(
           document.getElementById("command-inventory"),
         ),
+        verbosePreamblePresent: /Scan the published CLI commands/i.test(
+          document.body.textContent ?? "",
+        ),
         foldedSummaryPresent: Boolean(
           document.querySelector('[data-testid="folded-summary"]'),
         ),
@@ -177,20 +184,37 @@ try {
         commandCount: Number(
           inventory?.getAttribute("data-cli-command-count") ?? "0",
         ),
+        groupPaths: Array.from(
+          document.querySelectorAll("[data-cli-command-group]"),
+        ).map((group) => group.getAttribute("data-cli-command-group") ?? ""),
         filterPresent: Boolean(
           document.querySelector("[data-reference-inventory-filter]"),
         ),
         cardPresent: Boolean(commandCard),
-        cardHasHeading: Boolean(
-          commandCard?.querySelector("h3") &&
-            /you config init/i.test(
-              commandCard?.querySelector("h3")?.textContent ?? "",
-            ),
+        cardHasHeading: /you run/i.test(
+          commandCard?.querySelector("h3")?.textContent ?? "",
         ),
-        cardHasDescription: Boolean(
-          commandCard?.querySelector("header p, header [class*='text-sm']") ||
-            (commandCard?.querySelector("header")?.textContent ?? "").length >
-              "you config init".length + 5,
+        cardDescriptionRepeated: (() => {
+          const summary =
+            commandCard?.querySelector("header p")?.textContent?.trim() ?? "";
+          if (summary.length === 0) return false;
+          const body = commandCard?.textContent ?? "";
+          return body.split(summary).length - 1 > 1;
+        })(),
+        cardHasFlagsTable: Boolean(
+          commandCard?.querySelector("[data-cli-flags] table"),
+        ),
+        cardHasArgumentsTable: Boolean(
+          commandCard?.querySelector("[data-cli-arguments] table"),
+        ),
+        cardHasNamedFlagRow: Boolean(
+          commandCard?.querySelector('[data-cli-flag="named"]'),
+        ),
+        cardRepeatsInheritedGlobals: Boolean(
+          commandCard?.querySelector('[data-cli-flag="json"]'),
+        ),
+        cardHasInheritedNote: Boolean(
+          commandCard?.querySelector("[data-cli-inherited-flags]"),
         ),
         cardHasCopyableAnchor: Boolean(
           commandCard?.querySelector("[data-reference-copyable-anchor]"),
@@ -201,16 +225,18 @@ try {
         cardHasContractSourceBadge: Boolean(
           commandCard?.querySelector("[data-contract-source-badge]"),
         ),
-        cardHasUnderConstruction: Boolean(
-          commandCard?.querySelector(
+        underConstructionPresent: Boolean(
+          document.querySelector(
             '[data-cli-capability="structured-options-under-construction"]',
           ),
         ),
-        cardHasFlagsAndArgumentsLabel: /Flags and arguments/i.test(cardText),
-        cardHasInventedOptionRows: Boolean(
-          commandCard?.querySelector(
-            "[data-cli-flag-row], [data-cli-argument-row], table[data-cli-options]",
-          ),
+        tocPresent: Boolean(toc),
+        tocCommandLinks: tocHrefs.filter((href) => href === "#you-run").length,
+        tocGroupLinks: tocHrefs.filter((href) => href.startsWith("#commands-"))
+          .length,
+        tocLinkCount: tocHrefs.length,
+        tocDanglingLinks: tocHrefs.filter(
+          (href) => href.length > 1 && !document.getElementById(href.slice(1)),
         ),
       };
     });
@@ -225,8 +251,11 @@ try {
     if (probe.foldedSummaryPresent || probe.openingSummaryPresent) {
       failures.push("folded Opening summary chrome still present");
     }
-    if (!probe.hasCommandInventoryHeading || !probe.commandInventoryIdPresent) {
-      failures.push("Command Inventory section missing");
+    if (probe.hasCommandInventoryHeading || probe.commandInventoryIdPresent) {
+      failures.push("retired Command Inventory section heading still present");
+    }
+    if (probe.verbosePreamblePresent) {
+      failures.push("retired inventory preamble prose still present");
     }
     if (probe.inventoryState !== "success") {
       failures.push(`expected inventory success, got ${probe.inventoryState}`);
@@ -236,17 +265,33 @@ try {
         `expected package-backed command count >= 5, got ${probe.commandCount}`,
       );
     }
+    if (!probe.groupPaths.includes("you factory")) {
+      failures.push(
+        `expected a "you factory" family group, got ${probe.groupPaths.join(", ")}`,
+      );
+    }
     if (!probe.filterPresent) {
       failures.push("expected inventory filter chrome");
     }
     if (!probe.cardPresent) {
-      failures.push("representative you config init card missing");
+      failures.push("representative you run card missing");
     }
     if (!probe.cardHasHeading) {
       failures.push("command card missing header");
     }
-    if (!probe.cardHasDescription) {
-      failures.push("command card missing description keep-list content");
+    if (probe.cardDescriptionRepeated) {
+      failures.push("command card prints its description more than once");
+    }
+    if (!probe.cardHasFlagsTable || !probe.cardHasNamedFlagRow) {
+      failures.push("expected published flags table on you run");
+    }
+    if (!probe.cardHasArgumentsTable) {
+      failures.push("expected published arguments table on you run");
+    }
+    if (probe.cardRepeatsInheritedGlobals || !probe.cardHasInheritedNote) {
+      failures.push(
+        "expected inherited globals summarised in one note, not repeated as rows",
+      );
     }
     if (!probe.cardHasCopyableAnchor) {
       failures.push("command card missing copyable anchor");
@@ -257,16 +302,21 @@ try {
     if (probe.cardHasContractSourceBadge) {
       failures.push("command card still shows contract-source badge chrome");
     }
-    if (
-      !probe.cardHasUnderConstruction ||
-      !probe.cardHasFlagsAndArgumentsLabel
-    ) {
+    if (probe.underConstructionPresent) {
+      failures.push("retired under-construction flags notice still present");
+    }
+    if (!probe.tocPresent || probe.tocCommandLinks < 1) {
+      failures.push("right-rail TOC missing per-command links");
+    }
+    if (probe.tocGroupLinks < 2) {
       failures.push(
-        "expected under-construction Flags/arguments keep-list notice",
+        `expected family group links in the TOC, got ${probe.tocGroupLinks}`,
       );
     }
-    if (probe.cardHasInventedOptionRows) {
-      failures.push("invented flag/option rows must not appear");
+    if (probe.tocDanglingLinks.length > 0) {
+      failures.push(
+        `TOC links resolve to no heading: ${probe.tocDanglingLinks.join(", ")}`,
+      );
     }
 
     if (failures.length > 0) {

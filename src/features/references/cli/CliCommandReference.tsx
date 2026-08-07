@@ -3,32 +3,35 @@ import { CopyableReferenceAnchor } from "@/features/references/shared";
 import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
-import { CliCapabilityNotice } from "./CliCapabilityNotice";
-import { cliCommandHasStructuredOptions } from "./cli-capability";
+import {
+  CliCommandArguments,
+  CliCommandFlags,
+  CliInheritedFlagsNote,
+  cliInheritedFlags,
+  cliLocalFlags,
+} from "./CliCommandOptions";
+import { splitCliCommandDescription } from "./cli-command-description";
 import type { CliCommandReferenceProps } from "./types";
 
 /**
- * Render one normalized CLI command with published help text.
+ * Render one normalized CLI command as it reads in `--help`.
  *
- * Card body keep-list: command-path header (with stable-anchor copy), short
- * description, long description when distinct, example when present, and the
- * Flags and arguments under-construction notice when structured options are absent.
- * Does not invent flags, arguments, defaults, or conflicts. Does not render
- * family/package/source badge chrome or duplicated identity / visibility /
- * runnable / handler metadata rows.
+ * Card body: command-path header (with stable-anchor copy), the published
+ * description once, positional arguments, the command's own flags, a pointer to
+ * the inherited global flags, and the published example. Every value comes from
+ * the package contract — this card never invents a flag, default, or conflict,
+ * and never renders family/package/source badge chrome or duplicated identity
+ * metadata rows.
  */
 export function CliCommandReference({
   command,
   chrome,
   className,
+  rootAnchor,
 }: CliCommandReferenceProps) {
-  const shortDescription = command.shortDescription ?? command.description;
-  const longDescription =
-    command.longDescription !== undefined &&
-    command.longDescription !== shortDescription
-      ? command.longDescription
-      : undefined;
-  const showCapabilityNotice = !cliCommandHasStructuredOptions(command);
+  const { summary, detail } = splitCliCommandDescription(command);
+  const localFlags = cliLocalFlags(command.flags);
+  const inheritedFlags = cliInheritedFlags(command.flags);
 
   return (
     <article
@@ -43,7 +46,7 @@ export function CliCommandReference({
     >
       <header className="space-y-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
-          <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
+          <h3 className="m-0 font-mono text-lg font-semibold tracking-tight">
             <a
               className="text-foreground no-underline hover:underline"
               href={`#${command.anchor}`}
@@ -57,39 +60,34 @@ export function CliCommandReference({
             family="cli"
           />
         </div>
-        {shortDescription !== undefined ? (
+        {summary !== undefined ? (
           <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
-            {shortDescription}
+            {summary}
           </ContractDescriptionProse>
         ) : null}
       </header>
 
-      {longDescription !== undefined ? (
-        <section className="space-y-1" data-cli-long-description="">
-          <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Long description
-          </h4>
-          <ContractDescriptionProse className="m-0 whitespace-pre-wrap text-sm text-foreground">
-            {longDescription}
-          </ContractDescriptionProse>
-        </section>
+      {detail !== undefined ? (
+        <ContractDescriptionProse
+          className="m-0 whitespace-pre-wrap text-sm text-foreground"
+          data-cli-long-description=""
+        >
+          {detail}
+        </ContractDescriptionProse>
       ) : null}
+
+      {command.arguments !== undefined ? (
+        <CliCommandArguments arguments={command.arguments} />
+      ) : null}
+
+      <CliCommandFlags flags={localFlags} />
+
+      <CliInheritedFlagsNote flags={inheritedFlags} rootAnchor={rootAnchor} />
 
       {command.example !== undefined ? (
-        <section className="space-y-1" data-cli-example="">
-          <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Example
-          </h4>
+        <section className="space-y-2" data-cli-example="">
+          <h4 className="m-0 text-sm font-semibold text-foreground">Example</h4>
           <CodePanel data-cli-example-code="">{command.example}</CodePanel>
-        </section>
-      ) : null}
-
-      {showCapabilityNotice ? (
-        <section className="space-y-2" data-cli-structured-options="">
-          <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Flags and arguments
-          </h4>
-          <CliCapabilityNotice />
         </section>
       ) : null}
     </article>

@@ -1,19 +1,16 @@
 /**
  * Page-owned render proof for references/cli.
- * Covers inventory-first shell (no What It Covers / Key Concepts / informational
- * Opening summary), package-backed CLI inventory mount, and the trimmed
- * command-card keep-list (no verbose metadata chrome; under-construction Flags
- * and arguments when structured options are absent).
+ * Covers the inventory-first shell (no What It Covers / Key Concepts / opening
+ * summary, and no restated section preamble), the package-backed inventory
+ * mount, family grouping, the published flags/arguments tables, and the
+ * command-level right-rail table of contents.
  * Colocated under the page bundle.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
-import {
-  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
-  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
-} from "@/features/references/cli/cli-capability";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import { groupCliCommands } from "@/lib/references/cli-command-groups";
 import { loadCliReferenceInventory } from "@/lib/references/load-cli-reference-inventory";
 import { source } from "@/lib/source";
 
@@ -39,26 +36,15 @@ describe("cli reference page", () => {
       expect(loadedPage.frontmatter.kind).toBe("reference");
       expect(loadedPage.frontmatter.registryId).toBe("reference.cli");
       expect(loadedPage.messages.title).toBe("CLI");
-      expect(loadedPage.messages.description).toMatch(/package CLI contract/i);
+      expect(loadedPage.messages.description).toMatch(/arguments, flags/i);
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+      // The page description is a one-liner, not a paragraph about docs routes.
+      expect(loadedPage.messages.description.length).toBeLessThan(120);
+      expect(loadedPage.messages.description).not.toMatch(
+        /stable static docs route/i,
+      );
       expect(String(loadedPage.messages.openingSummary ?? "").trim()).toBe("");
-      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
-      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
-
-      const commandInventory = String(
-        loadedPage.messages.sections?.commandInventory?.body ?? "",
-      );
-      expect(commandInventory).toMatch(/published CLI commands/i);
-      expect(commandInventory).not.toMatch(
-        /package-backed metadata|handler present/i,
-      );
-      expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
-      expect(
-        loadedPage.messages.sections?.limitsAndAssumptions,
-      ).toBeUndefined();
-      expect(loadedPage.messages.sections?.related).toBeUndefined();
-      expect(loadedPage.messages.sections?.tags).toBeUndefined();
-      expect(loadedPage.messages.sections?.references).toBeUndefined();
+      expect(loadedPage.messages.sections).toBeUndefined();
       expect(loadedPage.messages.links).toBeUndefined();
 
       const inventory = loadCliReferenceInventory();
@@ -79,9 +65,12 @@ describe("cli reference page", () => {
         </main>,
       );
 
+      // The verbose "scan the published CLI commands below…" preamble is gone.
       expect(
-        screen.getByRole("heading", { name: "Command Inventory" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Command Inventory" }),
+      ).toBeNull();
+      expect(document.getElementById("command-inventory")).toBeNull();
+      expect(screen.queryByText(/Scan the published CLI commands/i)).toBeNull();
       expect(
         screen.queryByRole("heading", { name: "What It Covers" }),
       ).toBeNull();
@@ -89,15 +78,7 @@ describe("cli reference page", () => {
         screen.queryByRole("heading", { name: "Key Concepts" }),
       ).toBeNull();
       expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
-      expect(
-        screen.queryByRole("heading", { name: "Limits And Assumptions" }),
-      ).toBeNull();
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
-      expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
-      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
-      expect(document.getElementById("what-it-covers")).toBeNull();
-      expect(document.getElementById("key-concepts")).toBeNull();
-      expect(document.getElementById("related")).toBeNull();
       expect(screen.queryByTestId("folded-summary")).toBeNull();
       expect(
         document.querySelector('[data-opening-summary="folded"]'),
@@ -114,61 +95,103 @@ describe("cli reference page", () => {
         Number(inventoryRoot?.getAttribute("data-cli-command-count") ?? "0"),
       ).toBe(inventory.commands.length);
 
-      expect(
-        screen.getByText(/published CLI commands from the package/i),
-      ).toBeTruthy();
-      // `you config init` became top-level `you init` in @you-agent-factory/api
-      // 0.0.6; `you factory list` is a stable multi-segment command to sample.
-      expect(screen.getAllByText("you factory list").length).toBeGreaterThan(0);
-
-      // Representative command card: trimmed keep-list + under-construction
-      // Flags/arguments. Scope to the card so inventory filter labels
-      // (Lifecycle / Visibility) do not false-positive.
-      const commandCard = document.querySelector(
-        "[data-cli-command-reference]#you-factory-list",
+      // Every published command lands in exactly one rendered family group.
+      const renderedGroups = [
+        ...document.querySelectorAll("[data-cli-command-group]"),
+      ].map((group) => group.getAttribute("data-cli-command-group"));
+      expect(renderedGroups).toEqual(
+        groupCliCommands(inventory.commands).map((group) => group.path),
       );
-      expect(commandCard).toBeTruthy();
-      if (!(commandCard instanceof HTMLElement)) {
+      expect(renderedGroups).toContain("you factory");
+      expect(
+        document.querySelectorAll("[data-cli-command-reference]").length,
+      ).toBe(inventory.commands.length);
+      expect(
+        screen.getByRole("heading", { level: 2, name: "you factory" }),
+      ).toBeTruthy();
+
+      // `you run` is the richest published surface: arguments plus 17 flags.
+      const runCard = document.querySelector(
+        "[data-cli-command-reference]#you-run",
+      );
+      expect(runCard).toBeTruthy();
+      if (!(runCard instanceof HTMLElement)) {
         return;
       }
-      const card = within(commandCard);
+      const card = within(runCard);
+      expect(card.getByRole("heading", { name: "you run" })).toBeTruthy();
       expect(
-        card.getByRole("heading", { name: "you factory list" }),
+        runCard.querySelector("[data-reference-copyable-anchor]"),
       ).toBeTruthy();
+      expect(runCard.querySelector("[data-cli-flags]")).toBeTruthy();
+      expect(runCard.querySelector('[data-cli-flag="named"]')).toBeTruthy();
+      expect(runCard.querySelector('[data-cli-flag="output"]')).toBeTruthy();
+      expect(runCard.querySelector("[data-cli-arguments]")).toBeTruthy();
+      expect(runCard.querySelector("[data-cli-example-code]")).toBeTruthy();
+
+      // Inherited globals are pointed at once, not repeated as rows.
+      expect(runCard.querySelector('[data-cli-flag="json"]')).toBeNull();
       expect(
-        commandCard.querySelector("[data-reference-copyable-anchor]"),
-      ).toBeTruthy();
+        runCard.querySelector("[data-cli-inherited-flags]")?.textContent,
+      ).toContain("--json");
+
+      // The retired under-construction apology never comes back.
       expect(
-        commandCard.querySelector("[data-contract-source-badge]"),
-      ).toBeNull();
-      expect(
-        commandCard.querySelector("[data-reference-status-chrome]"),
-      ).toBeNull();
-      expect(card.queryByText("Leaf name")).toBeNull();
-      expect(card.queryByText("Handler present")).toBeNull();
-      expect(card.queryByText("Runnable")).toBeNull();
-      expect(card.queryByText("Command path")).toBeNull();
-      expect(card.queryByText("Aliases")).toBeNull();
-      expect(card.queryByText("Visibility")).toBeNull();
-      expect(
-        card.queryByText("Structured flags and arguments unavailable"),
-      ).toBeNull();
-      expect(
-        commandCard.querySelector(
+        document.querySelector(
           '[data-cli-capability="structured-options-under-construction"]',
         ),
-      ).toBeTruthy();
-      expect(
-        card.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
-      ).toBeTruthy();
-      expect(
-        card.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
-      ).toBeTruthy();
-      expect(card.getByText("Flags and arguments")).toBeTruthy();
-      // Inventory still exposes filter chrome outside the card body.
+      ).toBeNull();
+      expect(screen.queryByText(/Under construction/i)).toBeNull();
+      expect(screen.queryByText(/Flags and arguments/i)).toBeNull();
+
+      // Metadata chrome stays out of card bodies.
+      expect(runCard.querySelector("[data-contract-source-badge]")).toBeNull();
+      expect(card.queryByText("Leaf name")).toBeNull();
+      expect(card.queryByText("Handler present")).toBeNull();
+
       expect(
         document.querySelector("[data-reference-inventory-filter]"),
       ).toBeTruthy();
+    },
+    PAGE_RENDER_TIMEOUT_MS,
+  );
+
+  test(
+    "fills the right-rail table of contents with every published command",
+    async () => {
+      const loadedPage = await loadLocalDocsPage({
+        section: "references",
+        slug: "cli",
+      });
+      const inventory = loadCliReferenceInventory();
+      expect(inventory.state).toBe("success");
+      if (inventory.state !== "success") {
+        return;
+      }
+
+      const groups = groupCliCommands(inventory.commands);
+      expect(loadedPage.toc.length).toBe(
+        groups.length + inventory.commands.length,
+      );
+
+      const urls = loadedPage.toc.map((entry) => entry.url);
+      expect(urls).toContain("#commands-you-factory");
+      expect(urls).toContain("#you-run");
+      expect(new Set(urls).size).toBe(urls.length);
+
+      const titles = loadedPage.toc.map((entry) => entry.title);
+      expect(titles).toContain("you factory list");
+      expect(titles).toContain("you workers acp add");
+
+      // Groups sit one level above the commands they contain.
+      const factoryGroup = loadedPage.toc.find(
+        (entry) => entry.url === "#commands-you-factory",
+      );
+      const factoryList = loadedPage.toc.find(
+        (entry) => entry.url === "#you-factory-list",
+      );
+      expect(factoryGroup?.depth).toBe(2);
+      expect(factoryList?.depth).toBe(3);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

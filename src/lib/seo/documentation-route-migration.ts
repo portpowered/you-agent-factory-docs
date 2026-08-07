@@ -136,8 +136,10 @@ export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMi
  * anchors aligned with those first teaching section ids. Worker/workstation
  * authored pages (and their family indexes) expose `how-to-use` after chrome
  * polish. Projection-first pages (for example the API reference) use their
- * primary content section id (`operations`). The CLI reference inventory-first
- * repair opens on `command-inventory`. Index-only targets without a section id
+ * primary content section id (`operations`). The CLI reference groups commands
+ * by family, so it opens on the first group heading (`commands-you`), which is
+ * generated from the published contract rather than authored in MDX.
+ * Index-only targets without a section id
  * use `{ kind: "none", reason: "index-only-target" }`.
  */
 export type DocumentationRouteMigrationImportantAnchor =
@@ -148,7 +150,7 @@ export const DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS: Readonly<
   Record<`/${string}`, DocumentationRouteMigrationImportantAnchor>
 > = {
   "/docs/references/api": { kind: "section", id: "operations" },
-  "/docs/references/cli": { kind: "section", id: "command-inventory" },
+  "/docs/references/cli": { kind: "section", id: "commands-you" },
   "/docs/factories/configuration": {
     kind: "section",
     id: "what-lives-where",

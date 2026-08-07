@@ -1,6 +1,6 @@
 ---
 title: "CLI"
-description: "Look up every published you-agent-factory CLI command from the installed package CLI contract on a stable static docs route."
+description: "Every you command published by the installed CLI contract, with its arguments, flags, and examples."
 kind: "reference"
 registryId: "reference.cli"
 messageNamespace: "local"
@@ -11,14 +11,7 @@ aliases:
   - "CLI reference"
   - "you CLI commands"
   - "package CLI contract"
-updatedAt: "2026-07-19"
+updatedAt: "2026-08-07"
 ---
 
-import { Section } from "@/features/docs/components/Section";
-import { T } from "@/features/docs/components/T";
-
-
-<Section id="command-inventory" titleKey="sections.commandInventory.title">
-  <T k="sections.commandInventory.body" />
-  <CliReferenceInventory />
-</Section>
+<CliReferenceInventory />

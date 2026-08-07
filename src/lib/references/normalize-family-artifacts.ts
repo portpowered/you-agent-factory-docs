@@ -9,7 +9,10 @@
 
 import { toApiPackageExportSpecifier } from "./api-package-public-exports";
 import {
+  type CliArgumentNormalized,
   type CliCommandNormalized,
+  type CliFlagNormalized,
+  type CliFlagScope,
   createCliCommandNormalized,
   createEventTypeNormalized,
   createJavascriptSharedSchemaNormalized,
@@ -330,6 +333,211 @@ function cliCommandProseFromDocumentation(value: unknown): {
 }
 
 /**
+ * Render a published flag default as a display string.
+ *
+ * 0.0.6 publishes two shapes: a flat `default` string on subcommand flags and a
+ * single-key `defaultValue` wrapper (`{ "boolean": false }`) on root flags.
+ * Both are copied verbatim — a missing or empty default stays absent.
+ */
+function cliFlagDefaultDisplay(
+  flag: Record<string, unknown>,
+): string | undefined {
+  const flat = optionalNonEmptyString(flag.default);
+  if (flat !== undefined) {
+    return flat;
+  }
+  if (!isPlainObject(flag.defaultValue)) {
+    return undefined;
+  }
+  for (const wrapped of Object.values(flag.defaultValue)) {
+    if (typeof wrapped === "string") {
+      const trimmed = wrapped.trim();
+      if (trimmed.length > 0) {
+        return trimmed;
+      }
+      continue;
+    }
+    if (typeof wrapped === "boolean" || typeof wrapped === "number") {
+      return String(wrapped);
+    }
+  }
+  return undefined;
+}
+
+function cliContractStringList(value: unknown): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  const entries: string[] = [];
+  for (const entry of value) {
+    const normalized = optionalNonEmptyString(entry);
+    if (normalized !== undefined) {
+      entries.push(normalized);
+    }
+  }
+  return entries;
+}
+
+/**
+ * Index published flag help text by flag id across every command.
+ *
+ * Descendant commands re-list ancestor flags with `scope: "inherited"` and no
+ * `usage`, pointing at the declaring flag through `inheritedFromInputId`. The
+ * index lets the projector borrow the declared text instead of rendering an
+ * inherited flag with an empty description.
+ */
+function cliFlagUsageIndex(
+  commands: Record<string, unknown>,
+): Map<string, string> {
+  const usageById = new Map<string, string>();
+  for (const command of Object.values(commands)) {
+    if (!isPlainObject(command) || !isPlainObject(command.flags)) {
+      continue;
+    }
+    for (const flag of Object.values(command.flags)) {
+      if (!isPlainObject(flag)) {
+        continue;
+      }
+      const id = optionalNonEmptyString(flag.id);
+      const usage = optionalNonEmptyString(flag.usage);
+      if (id !== undefined && usage !== undefined && !usageById.has(id)) {
+        usageById.set(id, usage);
+      }
+    }
+  }
+  return usageById;
+}
+
+/**
+ * Project one command's published flags. Hidden flags are dropped; everything
+ * else is copied from the contract. Unknown scopes fall back to `local` so a
+ * future scope value still renders instead of failing the whole page.
+ */
+function cliFlagsFromCommand(
+  command: Record<string, unknown>,
+  usageById: Map<string, string>,
+): CliFlagNormalized[] {
+  if (!isPlainObject(command.flags)) {
+    return [];
+  }
+
+  const flags: CliFlagNormalized[] = [];
+  for (const entry of Object.values(command.flags)) {
+    if (!isPlainObject(entry)) {
+      continue;
+    }
+    if (optionalNonEmptyString(entry.visibility) === "hidden") {
+      continue;
+    }
+    const id = optionalNonEmptyString(entry.id);
+    const long = optionalNonEmptyString(entry.long);
+    if (id === undefined || long === undefined) {
+      continue;
+    }
+
+    const rawScope = optionalNonEmptyString(entry.scope);
+    const scope: CliFlagScope =
+      rawScope === "inherited" || rawScope === "persistent"
+        ? rawScope
+        : "local";
+
+    const flag: CliFlagNormalized = {
+      id,
+      long,
+      required: entry.required === true,
+      repeatable: entry.repeatable === true,
+      scope,
+    };
+
+    const shorthand = optionalNonEmptyString(entry.shorthand);
+    if (shorthand !== undefined) {
+      flag.shorthand = shorthand;
+    }
+    const valueType = optionalNonEmptyString(entry.valueType);
+    if (valueType !== undefined) {
+      flag.valueType = valueType;
+    }
+    const usage =
+      optionalNonEmptyString(entry.usage) ??
+      usageById.get(optionalNonEmptyString(entry.inheritedFromInputId) ?? "") ??
+      usageById.get(id);
+    if (usage !== undefined) {
+      flag.usage = usage;
+    }
+    const defaultValue = cliFlagDefaultDisplay(entry);
+    if (defaultValue !== undefined) {
+      flag.defaultValue = defaultValue;
+    }
+    const enumValues = cliContractStringList(entry.enum);
+    if (enumValues.length > 0) {
+      flag.enumValues = enumValues;
+    }
+    const lifecycle = lifecycleFromStringOrObject(
+      entry.lifecycle,
+      `flags.${id}.lifecycle`,
+    );
+    if (lifecycle !== undefined) {
+      flag.lifecycle = lifecycle;
+    }
+
+    flags.push(flag);
+  }
+
+  flags.sort((left, right) => left.long.localeCompare(right.long));
+  return flags;
+}
+
+/** Project one command's published positional arguments in position order. */
+function cliArgumentsFromCommand(
+  command: Record<string, unknown>,
+): CliArgumentNormalized[] {
+  if (!isPlainObject(command.arguments)) {
+    return [];
+  }
+
+  const args: CliArgumentNormalized[] = [];
+  for (const entry of Object.values(command.arguments)) {
+    if (!isPlainObject(entry)) {
+      continue;
+    }
+    if (optionalNonEmptyString(entry.visibility) === "hidden") {
+      continue;
+    }
+    const id = optionalNonEmptyString(entry.id);
+    const name = optionalNonEmptyString(entry.name);
+    if (id === undefined || name === undefined) {
+      continue;
+    }
+
+    const argument: CliArgumentNormalized = {
+      id,
+      name,
+      position: typeof entry.position === "number" ? entry.position : 0,
+      required: entry.required === true,
+      variadic: entry.variadic === true,
+    };
+
+    const valueType = optionalNonEmptyString(entry.valueType);
+    if (valueType !== undefined) {
+      argument.valueType = valueType;
+    }
+    const enumValues = cliContractStringList(entry.enum);
+    if (enumValues.length > 0) {
+      argument.enumValues = enumValues;
+    }
+    const channels = cliContractStringList(entry.channels);
+    if (channels.length > 0) {
+      argument.channels = channels;
+    }
+
+    args.push(argument);
+  }
+
+  args.sort((left, right) => left.position - right.position);
+  return args;
+}
+
+/**
  * Normalize CLI command inventory data into command models.
  * Expects the structured object from `@you-agent-factory/api/cli`.
  *
@@ -362,6 +570,7 @@ export function normalizeCliCommandsFromArtifact(
   const publicArtifactId =
     options.publicArtifactId ?? toApiPackageExportSpecifier("cli");
   const commands: CliCommandNormalized[] = [];
+  const flagUsageById = cliFlagUsageIndex(commandsValue);
 
   for (const [key, entry] of Object.entries(commandsValue)) {
     const field = `commands.${key}`;
@@ -446,6 +655,14 @@ export function normalizeCliCommandsFromArtifact(
     }
     if (lifecycle !== undefined) {
       model.lifecycle = lifecycle;
+    }
+    const flags = cliFlagsFromCommand(command, flagUsageById);
+    if (flags.length > 0) {
+      model.flags = flags;
+    }
+    const commandArguments = cliArgumentsFromCommand(command);
+    if (commandArguments.length > 0) {
+      model.arguments = commandArguments;
     }
 
     try {

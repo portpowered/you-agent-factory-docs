@@ -730,10 +730,10 @@ export const W20_PLAN_SECTION_11_COMPONENT_OWNERSHIP = [
     testSurface: "src/features/references/cli/cli-command-reference.test.tsx",
   },
   {
-    name: "CliCapabilityNotice",
+    name: "CliCommandOptions",
     planSection: "11.6",
     owner: "W10",
-    implementation: "src/features/references/cli/CliCapabilityNotice.tsx",
+    implementation: "src/features/references/cli/CliCommandOptions.tsx",
     testSurface: "src/features/references/cli/cli-command-reference.test.tsx",
   },
   {

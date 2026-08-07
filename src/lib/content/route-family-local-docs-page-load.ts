@@ -343,6 +343,26 @@ export async function loadRouteFamilyPageMdxComponents(
 }
 
 /**
+ * Right-rail entries a page contributes on top of its `<Section>` anchors.
+ *
+ * A page whose body is one generated inventory has no authored `<Section>`
+ * elements for the generic scanner to find, so it owns a `page-toc` module that
+ * derives the rail from the same projection it renders. Uses a static import
+ * literal for the same reason `page-mdx-components` does: bundlers cannot
+ * resolve expression-based imports at build time.
+ */
+export async function loadRouteFamilyPageToc(
+  section: RouteFamilyLocalDocsSection,
+  slug: string,
+): Promise<TOCItemType[]> {
+  if (section === "references" && slug === "cli") {
+    const mod = await import("@/content/docs/references/cli/page-toc");
+    return mod.buildPageToc();
+  }
+  return [];
+}
+
+/**
  * Loads a local-message page under a direct route family.
  *
  * `slug` may be nested (`agent/variant`). Uses {@link getDocsPageDir} so nested
@@ -372,6 +392,7 @@ export async function loadRouteFamilyLocalDocsPageFromDisk(
     section,
     slug,
   );
+  const pageToc = await loadRouteFamilyPageToc(section, slug);
 
   const { content, frontmatter } = await compileMDX<PageFrontmatter>({
     source,
@@ -387,6 +408,6 @@ export async function loadRouteFamilyLocalDocsPageFromDisk(
     messages,
     assets,
     content,
-    toc: buildLocalDocsTableOfContents(source, messages),
+    toc: [...buildLocalDocsTableOfContents(source, messages), ...pageToc],
   };
 }

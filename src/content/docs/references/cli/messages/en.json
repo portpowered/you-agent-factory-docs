@@ -1,10 +1,4 @@
 {
   "title": "CLI",
-  "description": "Look up every published you-agent-factory CLI command from the installed package CLI contract on a stable static docs route.",
-  "sections": {
-    "commandInventory": {
-      "title": "Command Inventory",
-      "body": "Scan the published CLI commands below. Filter by command path, alias, description, lifecycle, or visibility when those facets are present on a command. Open a command card for its description and example, and copy its stable anchor when you need a deep link."
-    }
-  }
+  "description": "Every you command published by the installed CLI contract, with its arguments, flags, and examples."
 }

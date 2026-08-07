@@ -58,6 +58,58 @@ export type OpenApiOperationSummary = {
 };
 
 /**
+ * Where a published flag is declared relative to the command that accepts it.
+ * `inherited` flags are declared on an ancestor command and re-listed by the
+ * package on every descendant.
+ */
+export const CLI_FLAG_SCOPES = ["local", "persistent", "inherited"] as const;
+
+export type CliFlagScope = (typeof CLI_FLAG_SCOPES)[number];
+
+const CLI_FLAG_SCOPE_SET = new Set<string>(CLI_FLAG_SCOPES);
+
+/**
+ * Normalized published CLI flag. Every field mirrors the package contract —
+ * defaults, usage text, and value types are copied, never inferred.
+ */
+export type CliFlagNormalized = {
+  id: string;
+  /** Long form without leading dashes (for example `output`). */
+  long: string;
+  /** Single-letter form without the leading dash, when published. */
+  shorthand?: string;
+  /** Published value type (for example `bool`, `string`, `int`). */
+  valueType?: string;
+  /** Published help text. Inherited flags borrow the declaring flag's text. */
+  usage?: string;
+  required: boolean;
+  repeatable: boolean;
+  scope: CliFlagScope;
+  /** Rendered default when the contract published one. */
+  defaultValue?: string;
+  /** Allowed values when the contract published an enum. */
+  enumValues?: string[];
+  /** Lifecycle state when published — used to mark deprecated flags. */
+  lifecycle?: ReferenceLifecycle;
+};
+
+/**
+ * Normalized published CLI positional argument.
+ */
+export type CliArgumentNormalized = {
+  id: string;
+  name: string;
+  position: number;
+  valueType?: string;
+  required: boolean;
+  variadic: boolean;
+  /** Allowed values when the contract published an enum. */
+  enumValues?: string[];
+  /** Input channels the argument accepts (for example `cli`, `stdin`). */
+  channels?: string[];
+};
+
+/**
  * Normalized CLI command identity for later CLI reference pages.
  *
  * Optional metadata fields stay absent when the published contract omitted
@@ -91,6 +143,13 @@ export type CliCommandNormalized = {
   /** Whether a handler is present in the published contract. */
   handlerPresent?: boolean;
   lifecycle?: ReferenceLifecycle;
+  /**
+   * Published flags in contract order, hidden entries already dropped. Absent
+   * when the contract published none for this command.
+   */
+  flags?: CliFlagNormalized[];
+  /** Published positional arguments in position order. */
+  arguments?: CliArgumentNormalized[];
   source: ReferenceSourcePointer;
   anchor: string;
 };
@@ -277,6 +336,132 @@ function requireStringArray(value: unknown, field: string): string[] {
     }
     return entry;
   });
+}
+
+function requireBoolean(value: unknown, field: string): boolean {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  throw new FamilyNormalizedModelParseError(
+    "malformed-model",
+    `Malformed family model: field "${field}" must be a boolean.`,
+    { field },
+  );
+}
+
+function parseCliFlagNormalized(
+  value: unknown,
+  field: string,
+): CliFlagNormalized {
+  if (!isPlainObject(value)) {
+    throw new FamilyNormalizedModelParseError(
+      "malformed-model",
+      `Malformed family model: field "${field}" must be an object.`,
+      { field },
+    );
+  }
+
+  const scope = value.scope;
+  if (typeof scope !== "string" || !CLI_FLAG_SCOPE_SET.has(scope)) {
+    throw new FamilyNormalizedModelParseError(
+      "malformed-model",
+      `Malformed family model: field "${field}.scope" must be one of ${CLI_FLAG_SCOPES.join(", ")}.`,
+      { field: `${field}.scope` },
+    );
+  }
+
+  const flag: CliFlagNormalized = {
+    id: requireNonEmptyString(value.id, `${field}.id`),
+    long: requireNonEmptyString(value.long, `${field}.long`),
+    required: requireBoolean(value.required, `${field}.required`),
+    repeatable: requireBoolean(value.repeatable, `${field}.repeatable`),
+    scope: scope as CliFlagScope,
+  };
+
+  if (value.shorthand !== undefined) {
+    flag.shorthand = requireNonEmptyString(
+      value.shorthand,
+      `${field}.shorthand`,
+    );
+  }
+  if (value.valueType !== undefined) {
+    flag.valueType = requireNonEmptyString(
+      value.valueType,
+      `${field}.valueType`,
+    );
+  }
+  if (value.usage !== undefined) {
+    flag.usage = requireNonEmptyString(value.usage, `${field}.usage`);
+  }
+  if (value.defaultValue !== undefined) {
+    flag.defaultValue = requireNonEmptyString(
+      value.defaultValue,
+      `${field}.defaultValue`,
+    );
+  }
+  if (value.enumValues !== undefined) {
+    flag.enumValues = requireStringArray(
+      value.enumValues,
+      `${field}.enumValues`,
+    );
+  }
+
+  const lifecycle = parseOptionalLifecycle(
+    value.lifecycle,
+    `${field}.lifecycle`,
+  );
+  if (lifecycle !== undefined) {
+    flag.lifecycle = lifecycle;
+  }
+
+  return flag;
+}
+
+function parseCliArgumentNormalized(
+  value: unknown,
+  field: string,
+): CliArgumentNormalized {
+  if (!isPlainObject(value)) {
+    throw new FamilyNormalizedModelParseError(
+      "malformed-model",
+      `Malformed family model: field "${field}" must be an object.`,
+      { field },
+    );
+  }
+
+  if (typeof value.position !== "number" || !Number.isFinite(value.position)) {
+    throw new FamilyNormalizedModelParseError(
+      "malformed-model",
+      `Malformed family model: field "${field}.position" must be a number.`,
+      { field: `${field}.position` },
+    );
+  }
+
+  const argument: CliArgumentNormalized = {
+    id: requireNonEmptyString(value.id, `${field}.id`),
+    name: requireNonEmptyString(value.name, `${field}.name`),
+    position: value.position,
+    required: requireBoolean(value.required, `${field}.required`),
+    variadic: requireBoolean(value.variadic, `${field}.variadic`),
+  };
+
+  if (value.valueType !== undefined) {
+    argument.valueType = requireNonEmptyString(
+      value.valueType,
+      `${field}.valueType`,
+    );
+  }
+  if (value.enumValues !== undefined) {
+    argument.enumValues = requireStringArray(
+      value.enumValues,
+      `${field}.enumValues`,
+    );
+  }
+  if (value.channels !== undefined) {
+    argument.channels = requireStringArray(value.channels, `${field}.channels`);
+  }
+
+  return argument;
 }
 
 function parseSourcePointer(value: unknown): ReferenceSourcePointer {
@@ -497,6 +682,32 @@ export function parseCliCommandNormalized(
   const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");
   if (lifecycle !== undefined) {
     model.lifecycle = lifecycle;
+  }
+
+  if (value.flags !== undefined) {
+    if (!Array.isArray(value.flags)) {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "flags" must be an array.`,
+        { field: "flags" },
+      );
+    }
+    model.flags = value.flags.map((entry, index) =>
+      parseCliFlagNormalized(entry, `flags[${index}]`),
+    );
+  }
+
+  if (value.arguments !== undefined) {
+    if (!Array.isArray(value.arguments)) {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "arguments" must be an array.`,
+        { field: "arguments" },
+      );
+    }
+    model.arguments = value.arguments.map((entry, index) =>
+      parseCliArgumentNormalized(entry, `arguments[${index}]`),
+    );
   }
 
   return model;

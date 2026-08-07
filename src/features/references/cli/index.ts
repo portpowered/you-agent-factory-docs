@@ -1,24 +1,23 @@
-export { CliCapabilityNotice } from "./CliCapabilityNotice";
 export { CliCommandInventory } from "./CliCommandInventory";
+export {
+  CliCommandArguments,
+  CliCommandFlags,
+  CliInheritedFlagsNote,
+  cliFlagInvocation,
+  cliInheritedFlags,
+  cliLocalFlags,
+} from "./CliCommandOptions";
 export {
   CliCommandReference,
   cliCommandInventoryIdentities,
 } from "./CliCommandReference";
-export type {
-  CliCommandStructuredOptionsProjection,
-  CliCommandWithStructuredOptions,
-} from "./cli-capability";
-export {
-  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
-  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
-  cliCommandHasStructuredOptions,
-} from "./cli-capability";
+export type { CliCommandDescription } from "./cli-command-description";
+export { splitCliCommandDescription } from "./cli-command-description";
 export {
   cliVisibilityDisplayLabel,
   mapCliVisibilityToReferenceVisibility,
 } from "./cli-visibility";
 export type {
-  CliCapabilityNoticeProps,
   CliCommandInventoryInput,
   CliCommandInventoryProps,
   CliCommandReferenceProps,

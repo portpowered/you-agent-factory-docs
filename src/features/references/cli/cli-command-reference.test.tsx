@@ -1,19 +1,21 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
-import { CliCapabilityNotice } from "./CliCapabilityNotice";
+import type {
+  CliCommandNormalized,
+  CliFlagNormalized,
+} from "@/lib/references/family-normalized-models";
 import { CliCommandInventory } from "./CliCommandInventory";
+import {
+  cliFlagInvocation,
+  cliInheritedFlags,
+  cliLocalFlags,
+} from "./CliCommandOptions";
 import {
   CliCommandReference,
   cliCommandInventoryIdentities,
 } from "./CliCommandReference";
-import {
-  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
-  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
-  type CliCommandWithStructuredOptions,
-  cliCommandHasStructuredOptions,
-} from "./cli-capability";
+import { splitCliCommandDescription } from "./cli-command-description";
 import {
   cliVisibilityDisplayLabel,
   mapCliVisibilityToReferenceVisibility,
@@ -22,6 +24,22 @@ import {
 afterEach(() => {
   cleanup();
 });
+
+function fixtureFlag(
+  overrides: Partial<CliFlagNormalized> = {},
+): CliFlagNormalized {
+  return {
+    id: "you.config.init.flag.force",
+    long: "force",
+    shorthand: "f",
+    valueType: "bool",
+    usage: "overwrite an existing config",
+    required: false,
+    repeatable: false,
+    scope: "local",
+    ...overrides,
+  };
+}
 
 function fixtureCommand(
   overrides: Partial<CliCommandNormalized> = {},
@@ -63,8 +81,81 @@ describe("cli-visibility helpers", () => {
   });
 });
 
+describe("splitCliCommandDescription", () => {
+  test("drops a long description that only restates the short one", () => {
+    expect(
+      splitCliCommandDescription({
+        shortDescription: "List persisted named factories",
+        longDescription:
+          "List persisted named factories.\n\nReads one factory root at a time.",
+      }),
+    ).toEqual({
+      summary: "List persisted named factories",
+      detail: "Reads one factory root at a time.",
+    });
+  });
+
+  test("keeps both when the long description opens with different prose", () => {
+    expect(
+      splitCliCommandDescription({
+        shortDescription: "Configuration command guide",
+        longDescription:
+          "Route configuration tasks to their canonical commands.",
+      }),
+    ).toEqual({
+      summary: "Configuration command guide",
+      detail: "Route configuration tasks to their canonical commands.",
+    });
+  });
+
+  test("emits no detail when the long description adds nothing", () => {
+    expect(
+      splitCliCommandDescription({
+        shortDescription: "Run a factory",
+        longDescription: "Run a factory.",
+      }),
+    ).toEqual({ summary: "Run a factory" });
+  });
+
+  test("promotes the long description when no short one is published", () => {
+    expect(
+      splitCliCommandDescription({
+        longDescription: "Serve the dashboard.\n\nStays up until cancelled.",
+      }),
+    ).toEqual({
+      summary: "Serve the dashboard.",
+      detail: "Stays up until cancelled.",
+    });
+  });
+});
+
+describe("cli flag partitioning", () => {
+  test("splits a command's own flags from the inherited global ones", () => {
+    const flags = [
+      fixtureFlag(),
+      fixtureFlag({ id: "f.json", long: "json", scope: "inherited" }),
+      fixtureFlag({ id: "f.root", long: "verbose", scope: "persistent" }),
+    ];
+
+    expect(cliLocalFlags(flags).map((flag) => flag.long)).toEqual([
+      "force",
+      "verbose",
+    ]);
+    expect(cliInheritedFlags(flags).map((flag) => flag.long)).toEqual(["json"]);
+    expect(cliLocalFlags(undefined)).toEqual([]);
+    expect(cliInheritedFlags(undefined)).toEqual([]);
+  });
+
+  test("renders a flag the way it is typed", () => {
+    expect(cliFlagInvocation(fixtureFlag())).toBe("--force, -f");
+    expect(cliFlagInvocation(fixtureFlag({ shorthand: undefined }))).toBe(
+      "--force",
+    );
+  });
+});
+
 describe("CliCommandReference", () => {
-  test("renders trimmed help surface from a normalized CLI projection", () => {
+  test("renders the published help surface without repeating the description", () => {
     const { container } = render(
       <CliCommandReference command={fixtureCommand()} packageVersion="0.0.0" />,
     );
@@ -80,12 +171,11 @@ describe("CliCommandReference", () => {
       screen.getByRole("heading", { name: "you config init" }),
     ).toBeTruthy();
     expect(
-      screen.getByText("Create operator/system config on a fresh home"),
-    ).toBeTruthy();
-    expect(screen.getByText("Long description")).toBeTruthy();
-    expect(
-      screen.getByText(/Use after install/, { exact: false }),
-    ).toBeTruthy();
+      screen.getAllByText("Create operator/system config on a fresh home"),
+    ).toHaveLength(1);
+    // The restated opening line is dropped; only the added prose remains.
+    expect(screen.getByText("Use after install.")).toBeTruthy();
+    expect(screen.queryByText("Long description")).toBeNull();
     expect(screen.getByText("Example")).toBeTruthy();
     expect(
       container.querySelector("[data-cli-example-code]")?.textContent,
@@ -94,7 +184,7 @@ describe("CliCommandReference", () => {
       container.querySelector("[data-reference-copyable-anchor]"),
     ).toBeTruthy();
 
-    // Verbose metadata chrome removed from the card body.
+    // Verbose metadata chrome stays out of the card body.
     expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
     expect(
       container.querySelector("[data-reference-status-chrome]"),
@@ -106,15 +196,10 @@ describe("CliCommandReference", () => {
     expect(screen.queryByText("Visibility")).toBeNull();
     expect(screen.queryByText("Runnable")).toBeNull();
     expect(screen.queryByText("Handler present")).toBeNull();
-    expect(screen.queryByText("Lifecycle: Active")).toBeNull();
-    expect(screen.queryByText("0.0.0")).toBeNull();
-    expect(screen.queryByText("Not published on this projection")).toBeNull();
-    expect(screen.queryByText("Family")).toBeNull();
-    expect(screen.queryByText("Source artifact")).toBeNull();
   });
 
   test("omits optional help fields when the projection left them absent", () => {
-    render(
+    const { container } = render(
       <CliCommandReference
         command={fixtureCommand({
           aliases: [],
@@ -133,122 +218,100 @@ describe("CliCommandReference", () => {
     expect(
       screen.getByRole("heading", { name: "you config init" }),
     ).toBeTruthy();
-    expect(screen.queryByText("Long description")).toBeNull();
     expect(screen.queryByText("Example")).toBeNull();
-    expect(screen.queryByText("Aliases")).toBeNull();
-    expect(screen.queryByText("Command path")).toBeNull();
-    expect(screen.queryByText("Visibility")).toBeNull();
-    expect(screen.queryByText("Runnable")).toBeNull();
-    expect(screen.queryByText("Handler present")).toBeNull();
-    expect(screen.queryByText("Leaf name")).toBeNull();
-    expect(screen.queryByText("Not published on this projection")).toBeNull();
+    expect(container.querySelector("[data-cli-flags]")).toBeNull();
+    expect(container.querySelector("[data-cli-arguments]")).toBeNull();
+    expect(container.querySelector("[data-cli-inherited-flags]")).toBeNull();
     expect(document.querySelector("[data-contract-source-badge]")).toBeNull();
   });
 
-  test("shows under-construction Flags and arguments when structured options are absent", () => {
+  test("renders published flags and arguments instead of an apology", () => {
     const { container } = render(
-      <CliCommandReference command={fixtureCommand()} />,
+      <CliCommandReference
+        command={fixtureCommand({
+          flags: [
+            fixtureFlag(),
+            fixtureFlag({
+              id: "f.output",
+              long: "output",
+              shorthand: undefined,
+              valueType: "string",
+              defaultValue: "primary",
+              usage: "select the stdout projection",
+            }),
+            fixtureFlag({
+              id: "f.json",
+              long: "json",
+              shorthand: undefined,
+              scope: "inherited",
+              usage: "emit structured JSON",
+            }),
+          ],
+          arguments: [
+            {
+              id: "you.config.init.arg.0",
+              name: "path",
+              position: 0,
+              valueType: "string",
+              required: true,
+              variadic: false,
+              channels: ["cli", "stdin"],
+            },
+          ],
+        })}
+        rootAnchor="you"
+      />,
     );
 
-    expect(
-      container.querySelector("[data-cli-capability-notice]"),
-    ).toBeTruthy();
-    expect(
-      container.querySelector(
-        '[data-cli-capability="structured-options-under-construction"]',
-      ),
-    ).toBeTruthy();
-    expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
-    ).toBeTruthy();
-    expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
-    ).toBeTruthy();
-    expect(screen.getByText("Flags and arguments")).toBeTruthy();
-    // Old apology panel is gone.
-    expect(
-      screen.queryByText("Structured flags and arguments unavailable"),
-    ).toBeNull();
-    // Visible status chrome — not hover-only.
-    expect(screen.getByRole("status")).toBeTruthy();
-    // Does not invent option rows.
-    expect(screen.queryByText("--help")).toBeNull();
-    expect(screen.queryByText("--json")).toBeNull();
-    expect(screen.queryByText("Defaults")).toBeNull();
-    expect(screen.queryByText("Conflicts")).toBeNull();
-  });
+    const flagsTable = container.querySelector("[data-cli-flags]");
+    expect(flagsTable).toBeTruthy();
+    expect(within(flagsTable as HTMLElement).getByText("Flags")).toBeTruthy();
+    expect(container.querySelector('[data-cli-flag="force"]')).toBeTruthy();
+    expect(screen.getByText("--force, -f")).toBeTruthy();
+    expect(screen.getByText("overwrite an existing config")).toBeTruthy();
+    expect(screen.getByText("select the stdout projection")).toBeTruthy();
+    expect(screen.getByText("primary")).toBeTruthy();
 
-  test("hides under-construction notice when structured options exist on the projection", () => {
-    const enriched: CliCommandWithStructuredOptions = {
-      ...fixtureCommand(),
-      flags: [{ name: "--dry-run" }],
-    };
+    // Inherited globals are pointed at, not repeated as rows on every command.
+    expect(container.querySelector('[data-cli-flag="json"]')).toBeNull();
+    const inherited = container.querySelector("[data-cli-inherited-flags]");
+    expect(inherited?.textContent).toContain("--json");
+    expect(inherited?.querySelector('a[href="#you"]')).toBeTruthy();
 
-    const { container } = render(<CliCommandReference command={enriched} />);
+    const argumentsTable = container.querySelector("[data-cli-arguments]");
+    expect(argumentsTable).toBeTruthy();
+    expect(container.querySelector('[data-cli-argument="path"]')).toBeTruthy();
+    expect(screen.getByText("<path>")).toBeTruthy();
+    expect(screen.getByText(/Required/)).toBeTruthy();
+    expect(screen.getByText(/Reads from cli, stdin/)).toBeTruthy();
 
+    // The retired under-construction apology is gone for good.
     expect(container.querySelector("[data-cli-capability-notice]")).toBeNull();
+    expect(screen.queryByText("🚧 Under construction")).toBeNull();
     expect(
-      screen.queryByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
-    ).toBeNull();
-    // Still does not invent rendered option rows in this story.
-    expect(screen.queryByText("--dry-run")).toBeNull();
-  });
-});
-
-describe("cliCommandHasStructuredOptions", () => {
-  test("treats missing and empty option bags as unavailable", () => {
-    expect(cliCommandHasStructuredOptions(fixtureCommand())).toBe(false);
-    expect(
-      cliCommandHasStructuredOptions({
-        ...fixtureCommand(),
-        flags: [],
-        arguments: [],
-      }),
-    ).toBe(false);
-  });
-
-  test("detects non-empty flags or arguments without inventing values", () => {
-    expect(
-      cliCommandHasStructuredOptions({
-        ...fixtureCommand(),
-        flags: [{ name: "--verbose" }],
-      }),
-    ).toBe(true);
-    expect(
-      cliCommandHasStructuredOptions({
-        ...fixtureCommand(),
-        arguments: [{ name: "path" }],
-      }),
-    ).toBe(true);
-  });
-});
-
-describe("CliCapabilityNotice", () => {
-  test("renders accessible under-construction treatment", () => {
-    const { container } = render(<CliCapabilityNotice />);
-
-    expect(
-      container.querySelector(
-        '[data-cli-capability="structured-options-under-construction"]',
+      screen.queryByText(
+        "Structured flags and arguments are not published yet.",
       ),
-    ).toBeTruthy();
-    expect(screen.getByRole("status")).toBeTruthy();
-    expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
-    ).toBeTruthy();
-    expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
-    ).toBeTruthy();
-    expect(
-      screen.queryByText("Structured flags and arguments unavailable"),
     ).toBeNull();
+  });
+
+  test("omits a boolean default of false rather than printing it on every switch", () => {
+    const { container } = render(
+      <CliCommandReference
+        command={fixtureCommand({
+          flags: [fixtureFlag({ defaultValue: "false" })],
+        })}
+      />,
+    );
+
+    expect(container.querySelector("[data-cli-flags]")).toBeTruthy();
+    expect(screen.queryByText("Default")).toBeNull();
   });
 });
 
 describe("CliCommandInventory", () => {
-  test("renders every command from normalized projections", () => {
+  test("groups commands under family headings", () => {
     const commands = [
-      fixtureCommand(),
       fixtureCommand({
         id: "you",
         name: "you",
@@ -260,6 +323,20 @@ describe("CliCommandInventory", () => {
         shortDescription: "Run factories",
         description: "Run factories",
       }),
+      fixtureCommand({
+        id: "you.factory",
+        name: "factory",
+        commandPath: "you factory",
+        aliases: [],
+        anchor: "you-factory",
+      }),
+      fixtureCommand({
+        id: "you.factory.list",
+        name: "list",
+        commandPath: "you factory list",
+        aliases: [],
+        anchor: "you-factory-list",
+      }),
     ];
 
     const { container } = render(
@@ -268,33 +345,32 @@ describe("CliCommandInventory", () => {
       />,
     );
 
-    expect(screen.getByText(/2 published CLI commands/)).toBeTruthy();
+    expect(screen.getByText(/3 published CLI commands/)).toBeTruthy();
     expect(cliCommandInventoryIdentities(commands)).toEqual([
-      "you config init",
       "you",
+      "you factory",
+      "you factory list",
     ]);
+
+    const groups = container.querySelectorAll("[data-cli-command-group]");
     expect(
-      screen.getByRole("heading", { name: "you config init" }),
+      [...groups].map((group) => group.getAttribute("data-cli-command-group")),
+    ).toEqual(["you", "you factory"]);
+    expect(document.getElementById("commands-you-factory")).toBeTruthy();
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: "you factory" }),
     ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "you" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 3, name: "you factory list" }),
+    ).toBeTruthy();
     expect(
       container.querySelectorAll("[data-reference-copyable-anchor]").length,
-    ).toBe(2);
+    ).toBe(3);
     expect(
       container.querySelector("[data-reference-inventory-filter]"),
     ).toBeTruthy();
-    expect(
-      container
-        .querySelector("[data-cli-command-reference]#you-config-init")
-        ?.getAttribute("id"),
-    ).toBe("you-config-init");
-    // Inventory cards stay trimmed — no ContractSourceBadge chrome restored.
     expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
-    expect(
-      container.querySelectorAll(
-        '[data-cli-capability="structured-options-under-construction"]',
-      ).length,
-    ).toBe(2);
   });
 
   test("filters the inventory ephemerally without mutating projections", async () => {
@@ -323,22 +399,26 @@ describe("CliCommandInventory", () => {
 
     await user.type(screen.getByLabelText("Command path"), "legacy");
     expect(
-      container.getAttribute("data-cli-command-filtered-count") ??
-        container
-          .querySelector("[data-cli-command-inventory]")
-          ?.getAttribute("data-cli-command-filtered-count"),
+      container
+        .querySelector("[data-cli-command-inventory]")
+        ?.getAttribute("data-cli-command-filtered-count") ??
+        container.getAttribute("data-cli-command-filtered-count"),
     ).toBe("1");
-    expect(screen.getByRole("heading", { name: "you legacy" })).toBeTruthy();
     expect(
-      screen.queryByRole("heading", { name: "you config init" }),
+      screen.getByRole("heading", { level: 3, name: "you legacy" }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { level: 3, name: "you config init" }),
     ).toBeNull();
     expect(commands.map((command) => command.anchor)).toEqual(originalAnchors);
 
     await user.clear(screen.getByLabelText("Command path"));
     await user.selectOptions(screen.getByLabelText("Lifecycle"), "deprecated");
-    expect(screen.getByRole("heading", { name: "you legacy" })).toBeTruthy();
     expect(
-      screen.queryByRole("heading", { name: "you config init" }),
+      screen.getByRole("heading", { level: 3, name: "you legacy" }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { level: 3, name: "you config init" }),
     ).toBeNull();
   });
 
