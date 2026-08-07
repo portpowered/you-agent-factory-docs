@@ -71,7 +71,7 @@ describe("FactoryVariantOverlayValidator", () => {
       ...createCanonicalFactoryVariantOverlay("worker", "AGENT_WORKER"),
       fields: {
         shared: ["name", "type", "id"],
-        selected: ["agentTools", "openCodeAgent"],
+        selected: ["agentTools", "skipPermissions"],
         excluded: ["command"],
         conditional: [
           {

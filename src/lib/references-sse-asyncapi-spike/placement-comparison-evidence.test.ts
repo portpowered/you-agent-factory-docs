@@ -31,7 +31,8 @@ describe("W02 SSE spike — custom catalog fixture (008)", () => {
 
     expect(catalog.status).toBe("non-production-temporary");
     expect(catalog.preferredEntries).toHaveLength(2);
-    expect(catalog.compatibilityEntries).toHaveLength(1);
+    // 0.0.6 removed the process-global GET /events compatibility stream.
+    expect(catalog.compatibilityEntries).toHaveLength(0);
 
     const factoryEvent = catalog.preferredEntries.find(
       (entry) => entry.envelopeSchemaName === "FactoryEvent",
@@ -57,8 +58,6 @@ describe("W02 SSE spike — custom catalog fixture (008)", () => {
     expect(responseEvent?.inventedDiscriminator).toBe(false);
     expect(responseEvent?.payloadVariants.length).toBeGreaterThanOrEqual(10);
 
-    expect(catalog.compatibilityEntries[0]?.role).toBe("compatibility-only");
-    expect(catalog.compatibilityEntries[0]?.preferred).toBe(false);
     expect(catalog.totals.preferredEnvelopeCount).toBe(2);
     expect(catalog.totals.preferredPayloadVariantCount).toBe(
       (factoryEvent?.payloadVariants.length ?? 0) +

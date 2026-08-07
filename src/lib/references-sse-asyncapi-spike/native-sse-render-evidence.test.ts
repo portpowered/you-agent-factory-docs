@@ -18,15 +18,14 @@ function parsePackagedOpenApi(): OpenApiLike {
 }
 
 describe("W02 SSE spike — native text/event-stream and x-event-schema evidence", () => {
-  test("cites unmodified media-type objects for all three SSE operations", () => {
+  test("cites unmodified media-type objects for every SSE operation", () => {
     const doc = parsePackagedOpenApi();
     const cited = citeSseMediaTypesFromOpenApi(doc);
 
-    expect(cited).toHaveLength(3);
+    expect(cited).toHaveLength(2);
     expect(cited.map((entry) => entry.path)).toEqual([
       "/factory-sessions/{session_id}/events",
       "/factory-sessions/{session_id}/response-events",
-      "/events",
     ]);
 
     for (const entry of cited) {
@@ -46,7 +45,6 @@ describe("W02 SSE spike — native text/event-stream and x-event-schema evidence
     expect(cited[1]?.xEventSchema).toBe(
       "#/components/schemas/FactoryResponseEvent",
     );
-    expect(cited[2]?.xEventSchema).toBe("#/components/schemas/FactoryEvent");
   });
 
   test("classifies native display as plain string schema and x-event-schema as ignored", () => {
@@ -75,12 +73,10 @@ describe("W02 SSE spike — native text/event-stream and x-event-schema evidence
     expect(evidence.map((entry) => entry.role)).toEqual([
       "canonical",
       "ephemeral",
-      "compatibility-only",
     ]);
     expect(evidence.map((entry) => entry.xEventSchemaRef)).toEqual([
       "#/components/schemas/FactoryEvent",
       "#/components/schemas/FactoryResponseEvent",
-      "#/components/schemas/FactoryEvent",
     ]);
   });
 
@@ -151,7 +147,7 @@ describe("W02 SSE spike — native text/event-stream and x-event-schema evidence
 
     expect(payload.ok).toBe(true);
     expect(payload.classification).toEqual(NATIVE_FUMADOCS_SSE_RENDER);
-    expect(payload.operations).toHaveLength(3);
+    expect(payload.operations).toHaveLength(2);
     for (const operation of payload.operations) {
       expect(operation.schemaIsPlainString).toBe(true);
       expect(operation.mediaSchemaDoesNotTraverseXEventSchema).toBe(true);

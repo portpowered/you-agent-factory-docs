@@ -15,7 +15,7 @@ const WORKER_BASE = createSchemaAddress({
 });
 
 /**
- * AGENT_WORKER exclusively selects agentTools / openCodeAgent.
+ * AGENT_WORKER exclusively selects agentTools / skipPermissions.
  * SCRIPT_WORKER (incompatible) also selects agentTools → must fail closed.
  */
 export function createIncompatibleFieldSelectionFixtureOverlays(): {
@@ -28,7 +28,7 @@ export function createIncompatibleFieldSelectionFixtureOverlays(): {
     discriminator: { field: "type", value: "AGENT_WORKER" },
     fields: {
       shared: ["name", "type"],
-      selected: ["agentTools", "openCodeAgent"],
+      selected: ["agentTools", "skipPermissions"],
       excluded: [],
       conditional: [],
     },

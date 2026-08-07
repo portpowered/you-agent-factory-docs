@@ -11,6 +11,14 @@ import {
 } from "./projection-cache";
 
 describe("deriveCompactModeComposition", () => {
+  // `FactoryRecording.factory` is optional upstream, but the graph cannot reach
+  // its ready state without a definition — narrow once here rather than at every
+  // assertion.
+  const fixtureFactory = FIXTURE_RECORDING_A.factory;
+  if (fixtureFactory === undefined) {
+    throw new Error("FIXTURE_RECORDING_A must carry a factory definition");
+  }
+
   test("loading keeps topology loading and progress hidden", () => {
     const composition = deriveCompactModeComposition({
       playback: undefined,
@@ -49,6 +57,7 @@ describe("deriveCompactModeComposition", () => {
     );
 
     const composition = deriveCompactModeComposition({
+      factory: fixtureFactory,
       playback: selected,
       prepared,
       status: "ready",
@@ -60,9 +69,16 @@ describe("deriveCompactModeComposition", () => {
     expect(composition.progressVisible).toBe(false);
     expect(composition.topology.status).toBe("ready");
     if (composition.topology.status === "ready") {
-      expect(composition.topology.projection.topology).toBe(prepared.topology);
-      expect(composition.topology.projection.activity).toBe(prepared.activity);
-      expect(composition.topology.projection.load).toBe(prepared.load);
+      // 0.0.6 wraps the runtime projection in a FactoryGraphSource that also
+      // carries the complete Factory definition and the selected tick.
+      expect(composition.topology.source.runtime.topology).toBe(
+        prepared.topology,
+      );
+      expect(composition.topology.source.runtime.activity).toBe(
+        prepared.activity,
+      );
+      expect(composition.topology.source.runtime.load).toBe(prepared.load);
+      expect(composition.topology.source.factory).toBe(fixtureFactory);
     }
   });
 

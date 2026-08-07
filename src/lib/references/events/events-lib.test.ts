@@ -20,7 +20,11 @@ import {
 import { SSE_SPIKE_OPERATIONS } from "@/lib/references-sse-asyncapi-spike/sse-operations";
 
 describe("W09 event stream operations inventory", () => {
-  test("owns three stream roles in preferred-consumer order", () => {
+  test("owns its stream roles in preferred-consumer order", () => {
+    // The role vocabulary keeps compatibility-only even though no published
+    // stream claims it: `@you-agent-factory/api` 0.0.6 removed the
+    // process-global GET /events stream, and a future deprecated stream should
+    // reuse the label rather than invent a new one.
     expect([...EVENT_STREAM_ROLES]).toEqual([
       "canonical",
       "ephemeral",
@@ -29,7 +33,6 @@ describe("W09 event stream operations inventory", () => {
     expect(EVENT_STREAM_OPERATIONS.map((op) => op.role)).toEqual([
       "canonical",
       "ephemeral",
-      "compatibility-only",
     ]);
   });
 
@@ -52,9 +55,7 @@ describe("W09 event stream operations inventory", () => {
     expect(eventStreamOperationByRole("ephemeral")?.payloadRoot).toBe(
       "FactoryResponseEvent",
     );
-    expect(eventStreamOperationByRole("compatibility-only")?.payloadRoot).toBe(
-      "FactoryEvent",
-    );
+    expect(eventStreamOperationByRole("compatibility-only")).toBeUndefined();
     expect(isPreferredEventStreamRole("canonical")).toBe(true);
     expect(isPreferredEventStreamRole("ephemeral")).toBe(false);
     expect(isPreferredEventStreamRole("compatibility-only")).toBe(false);

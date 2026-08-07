@@ -266,8 +266,78 @@ export function normalizeOpenApiOperationsFromArtifact(
 }
 
 /**
+ * Read the canonical-English string out of a `cli-command-identity` prose node.
+ *
+ * The published shape is `{ canonicalEnglish, id }` — the `id` is the message
+ * key upstream localization will key off. Docs render the canonical English and
+ * ignore the key, so a node with no usable prose reads as absent.
+ */
+function canonicalEnglishProse(value: unknown): string | undefined {
+  if (!isPlainObject(value)) {
+    return undefined;
+  }
+  return optionalNonEmptyString(value.canonicalEnglish);
+}
+
+/**
+ * Project the nested `documentation` block onto the flat title / description /
+ * example fields the CLI reference renders.
+ *
+ * `@you-agent-factory/api` 0.0.6 moved this prose out of the flat `short` /
+ * `long` / `example` command fields and into a nested documentation block with
+ * message ids, and turned `example` (one string) into `examples` (a list).
+ */
+function cliCommandProseFromDocumentation(value: unknown): {
+  shortDescription?: string;
+  longDescription?: string;
+  example?: string;
+} {
+  if (!isPlainObject(value)) {
+    return {};
+  }
+
+  const prose = isPlainObject(value.documentation) ? value.documentation : {};
+  const shortDescription = canonicalEnglishProse(prose.title);
+  const longDescription = canonicalEnglishProse(prose.description);
+
+  // Examples are authored one invocation per entry. Joining with newlines keeps
+  // the existing single-string `example` contract without dropping any of them.
+  const examples: string[] = [];
+  if (Array.isArray(value.examples)) {
+    for (const entry of value.examples) {
+      const normalized = optionalNonEmptyString(entry);
+      if (normalized !== undefined) {
+        examples.push(normalized);
+      }
+    }
+  }
+
+  const projected: {
+    shortDescription?: string;
+    longDescription?: string;
+    example?: string;
+  } = {};
+  if (shortDescription !== undefined) {
+    projected.shortDescription = shortDescription;
+  }
+  if (longDescription !== undefined) {
+    projected.longDescription = longDescription;
+  }
+  if (examples.length > 0) {
+    projected.example = examples.join("\n");
+  }
+  return projected;
+}
+
+/**
  * Normalize CLI command inventory data into command models.
  * Expects the structured object from `@you-agent-factory/api/cli`.
+ *
+ * `commands` is keyed by dotted command id (`you.factory.list`); each entry
+ * still carries the space-separated invocation as `path`. Before 0.0.6 this was
+ * an array of entries with a flat `idCandidate` / `short` / `long` shape — the
+ * artifact `formatVersion` gate in `api-package-format-versions.ts` is what
+ * stops an older package from reaching this projector.
  */
 export function normalizeCliCommandsFromArtifact(
   data: unknown,
@@ -281,10 +351,10 @@ export function normalizeCliCommandsFromArtifact(
   if (commandsValue === undefined) {
     return [];
   }
-  if (!Array.isArray(commandsValue)) {
+  if (!isPlainObject(commandsValue)) {
     throw new FamilyArtifactNormalizeError(
       "malformed-artifact",
-      `Malformed CLI artifact: field "commands" must be an array.`,
+      `Malformed CLI artifact: field "commands" must be an object keyed by command id.`,
       { field: "commands" },
     );
   }
@@ -293,20 +363,19 @@ export function normalizeCliCommandsFromArtifact(
     options.publicArtifactId ?? toApiPackageExportSpecifier("cli");
   const commands: CliCommandNormalized[] = [];
 
-  for (const [index, entry] of commandsValue.entries()) {
-    const command = requirePlainObject(entry, `commands[${index}]`);
-    const idCandidate = optionalNonEmptyString(command.idCandidate);
+  for (const [key, entry] of Object.entries(commandsValue)) {
+    const field = `commands.${key}`;
+    const command = requirePlainObject(entry, field);
+    // The map key is the identity; `id` restates it. Prefer the body so a
+    // rekeyed artifact fails the identity check instead of silently renaming.
+    const id = optionalNonEmptyString(command.id) ?? optionalNonEmptyString(key);
     const name = optionalNonEmptyString(command.name);
     const commandPath = optionalNonEmptyString(command.path);
-    if (
-      idCandidate === undefined ||
-      name === undefined ||
-      commandPath === undefined
-    ) {
+    if (id === undefined || name === undefined || commandPath === undefined) {
       throw new FamilyArtifactNormalizeError(
         "malformed-artifact",
-        `Malformed CLI command at commands[${index}]: idCandidate, name, and path are required.`,
-        { field: `commands[${index}]` },
+        `Malformed CLI command at ${field}: id, name, and path are required.`,
+        { field },
       );
     }
 
@@ -316,8 +385,8 @@ export function normalizeCliCommandsFromArtifact(
       if (!Array.isArray(aliasesRaw)) {
         throw new FamilyArtifactNormalizeError(
           "malformed-artifact",
-          `Malformed CLI command at commands[${index}]: aliases must be an array.`,
-          { field: `commands[${index}].aliases` },
+          `Malformed CLI command at ${field}: aliases must be an array.`,
+          { field: `${field}.aliases` },
         );
       }
       for (const alias of aliasesRaw) {
@@ -328,26 +397,25 @@ export function normalizeCliCommandsFromArtifact(
       }
     }
 
+    const { shortDescription, longDescription, example } =
+      cliCommandProseFromDocumentation(command.documentation);
     // Prefer short help text; fall back to long. Empty package strings stay absent.
-    const shortDescription = optionalNonEmptyString(command.short);
-    const longDescription = optionalNonEmptyString(command.long);
     const description = shortDescription ?? longDescription;
-    const example = optionalNonEmptyString(command.example);
     const visibility = optionalNonEmptyString(command.visibility);
 
     const lifecycle = lifecycleFromStringOrObject(
       command.lifecycle,
-      `commands[${index}].lifecycle`,
+      `${field}.lifecycle`,
     );
 
     const model: CliCommandNormalized = {
-      id: idCandidate,
+      id,
       name,
       commandPath,
       aliases,
       source: sourcePointer(
         publicArtifactId,
-        `/commands/${index}`,
+        `/commands/${encodeJsonPointerSegment(key)}`,
         options.sourcePath,
       ),
       anchor: provisionalAnchorFromIdentity(commandPath),
@@ -371,8 +439,9 @@ export function normalizeCliCommandsFromArtifact(
     if (typeof command.runnable === "boolean") {
       model.runnable = command.runnable;
     }
-    if (typeof command.handlerPresent === "boolean") {
-      model.handlerPresent = command.handlerPresent;
+    // `handlerPresent` became a nullable `handler` descriptor object.
+    if (command.handler !== undefined) {
+      model.handlerPresent = isPlainObject(command.handler);
     }
     if (lifecycle !== undefined) {
       model.lifecycle = lifecycle;
@@ -381,10 +450,7 @@ export function normalizeCliCommandsFromArtifact(
     try {
       commands.push(createCliCommandNormalized(model));
     } catch (cause) {
-      throw wrapModelError(
-        `Malformed CLI command at commands[${index}]`,
-        cause,
-      );
+      throw wrapModelError(`Malformed CLI command at ${field}`, cause);
     }
   }
 

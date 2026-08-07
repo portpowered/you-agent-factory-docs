@@ -8,26 +8,13 @@
     "compatibilityOnlyEventsPath": "/events"
   },
   "counts": {
-    "sseOperations": 3,
-    "factoryEventTypeMappings": 31,
+    "sseOperations": 2,
+    "factoryEventTypeMappings": 32,
     "factoryResponseEventKinds": 12,
     "factoryResponseEventPhases": 6,
     "factoryResponseEventPayloadOneOf": 14
   },
   "streams": [
-    {
-      "path": "/events",
-      "method": "get",
-      "operationId": "getEvents",
-      "summary": "Stream process-global factory events (compatibility-only)",
-      "role": "compatibility-only",
-      "preferredOrCanonical": false,
-      "xEventSchema": "#/components/schemas/FactoryEvent",
-      "accept": ["text/event-stream"],
-      "dualAccept": false,
-      "identityHandshakeHeaders": [],
-      "jsonRecoverySchema": null
-    },
     {
       "path": "/factory-sessions/{session_id}/events",
       "method": "get",
@@ -42,6 +29,7 @@
         "X-Factory-Session-Backend-Scope-Id",
         "X-Factory-Session-Factory-Session-Id",
         "X-Factory-Session-Logical-Session-Key-Id",
+        "X-Factory-Session-Retained-Event-Count",
         "X-Factory-Session-Stream-Generation-Id"
       ],
       "jsonRecoverySchema": "FactorySessionEventStreamRecovery"
@@ -84,6 +72,10 @@
     {
       "type": "DISPATCH_REQUEST",
       "payloadSchema": "DispatchRequestEventPayload"
+    },
+    {
+      "type": "DISPATCH_WORKER_SESSION_ASSOCIATION",
+      "payloadSchema": "DispatchWorkerSessionAssociationEventPayload"
     },
     {
       "type": "MODEL_REQUEST",

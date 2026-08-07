@@ -8,7 +8,10 @@
 
 import type { OpenApiLike } from "./observe-sse-operations";
 import type { ProjectedAsyncApiDocument } from "./project-openapi-to-asyncapi";
-import { SSE_SPIKE_OPERATIONS } from "./sse-operations";
+import {
+  SSE_SPIKE_OPERATIONS,
+  type SseSpikeOperation,
+} from "./sse-operations";
 
 /** Decision-gate concerns called out by the W02 PRD for projection loss. */
 export const PROJECTION_INFORMATION_LOSS_CONCERNS = [
@@ -317,10 +320,38 @@ function classifyStreamGenerationInvalidation(
 function classifyCompatibilityOnlyStatus(
   asyncapi: ProjectedAsyncApiDocument,
 ): ProjectionInformationLossItem {
-  const compatibilityOp = SSE_SPIKE_OPERATIONS.find(
-    (operation) => operation.role === "compatibility-only",
-  );
-  const channelId = compatibilityOp?.operationId ?? "getEvents";
+  // Widened to the element type on purpose: the const tuple currently holds no
+  // compatibility-only member, so a narrowed `.find` would type as `never` and
+  // TypeScript would treat the labeled branch below as dead code. Reading it as
+  // a plain lookup keeps that branch alive for when a deprecated stream returns.
+  const compatibilityOp = (
+    SSE_SPIKE_OPERATIONS as readonly SseSpikeOperation[]
+  ).find((operation) => operation.role === "compatibility-only");
+
+  // `@you-agent-factory/api` 0.0.6 removed the process-global GET /events
+  // stream, leaving no compatibility-only operation to label. This report
+  // measures what projection *loses* relative to OpenAPI, so a concern the
+  // source no longer carries is preserved by definition — reporting it as
+  // "lost" would blame the projector for an upstream removal.
+  if (compatibilityOp === undefined) {
+    return {
+      concern: "compatibility-only-status",
+      ownership: "both",
+      openApiPresence: "absent",
+      projectedAsyncApiPresence: "absent",
+      status: "preserved",
+      openApiEvidence: [
+        "packaged OpenAPI publishes no compatibility-only event stream",
+      ],
+      projectedAsyncApiEvidence: [
+        "projected AsyncAPI has no compatibility-only channel to label",
+      ],
+      notes:
+        "No compatibility-only stream is published, so there is no compatibility labeling for the projection to drop. Reintroducing a deprecated stream upstream restores this comparison.",
+    };
+  }
+
+  const channelId = compatibilityOp.operationId;
   const channel = asyncapi.channels[channelId];
   const description = channel?.description ?? "";
   const labeled =

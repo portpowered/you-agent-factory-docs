@@ -93,7 +93,6 @@ describe("workstations logical-move type page", () => {
       expect.arrayContaining([
         { path: "guards", applicability: "selected" },
         { path: "classificationRoutes", applicability: "excluded" },
-        { path: "openCodeAgent", applicability: "excluded" },
         { path: "promptFile", applicability: "excluded" },
         { path: "operation", applicability: "excluded" },
         { path: "cron", applicability: "excluded" },

@@ -102,7 +102,6 @@ describe("workstations classifier type page", () => {
         { path: "onContinue", applicability: "excluded" },
         { path: "onRejection", applicability: "excluded" },
         { path: "guards", applicability: "excluded" },
-        { path: "openCodeAgent", applicability: "excluded" },
         { path: "promptFile", applicability: "excluded" },
         { path: "operation", applicability: "excluded" },
         { path: "cron", applicability: "excluded" },

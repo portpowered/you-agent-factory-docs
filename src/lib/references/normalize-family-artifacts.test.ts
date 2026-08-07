@@ -83,28 +83,36 @@ describe("normalizeOpenApiOperationsFromArtifact", () => {
 describe("normalizeCliCommandsFromArtifact", () => {
   test("normalizes fixture-shaped CLI commands and omits empty descriptions", () => {
     const fixture = {
-      formatVersion: "cli-command-identity/v1",
+      formatVersion: "1.0.0",
       rootPath: "you",
-      commands: [
-        {
-          idCandidate: "you",
+      commands: {
+        you: {
+          id: "you",
           name: "you",
           path: "you",
           aliases: [],
-          short: "Run and manage factories",
-          long: "",
+          documentation: {
+            documentation: {
+              title: { canonicalEnglish: "Run and manage factories" },
+              description: { canonicalEnglish: "" },
+            },
+          },
           lifecycle: "active",
         },
-        {
-          idCandidate: "you.config.init",
+        "you.config.init": {
+          id: "you.config.init",
           name: "init",
           path: "you config init",
           aliases: ["bootstrap"],
-          short: "",
-          long: "",
+          documentation: {
+            documentation: {
+              title: { canonicalEnglish: "" },
+              description: { canonicalEnglish: "" },
+            },
+          },
           lifecycle: "active",
         },
-      ],
+      },
     };
 
     const commands = normalizeCliCommandsFromArtifact(fixture);
@@ -124,36 +132,46 @@ describe("normalizeCliCommandsFromArtifact", () => {
 
   test("preserves example, visibility, runnable, and handler metadata when published", () => {
     const fixture = {
-      formatVersion: "cli-command-identity/v1",
+      formatVersion: "1.0.0",
       rootPath: "you",
-      commands: [
-        {
-          idCandidate: "you",
+      commands: {
+        you: {
+          id: "you",
           name: "you",
           path: "you",
           aliases: [],
-          short: "Run factories",
-          long: "Run factories with a longer help block.",
-          example: "  you docs agents",
+          documentation: {
+            documentation: {
+              title: { canonicalEnglish: "Run factories" },
+              description: {
+                canonicalEnglish: "Run factories with a longer help block.",
+              },
+            },
+            examples: ["  you docs agents"],
+          },
           visibility: "visible",
           lifecycle: "active",
           runnable: true,
-          handlerPresent: true,
+          handler: { id: "you.handler" },
         },
-        {
-          idCandidate: "you.mcp",
+        "you.mcp": {
+          id: "you.mcp",
           name: "mcp",
           path: "you mcp",
           aliases: [],
-          short: "MCP servers",
-          long: "",
-          example: "",
+          documentation: {
+            documentation: {
+              title: { canonicalEnglish: "MCP servers" },
+              description: { canonicalEnglish: "" },
+            },
+            examples: [],
+          },
           visibility: "visible",
           lifecycle: "active",
           runnable: false,
-          handlerPresent: false,
+          handler: null,
         },
-      ],
+      },
     };
 
     const commands = normalizeCliCommandsFromArtifact(fixture);
@@ -167,7 +185,33 @@ describe("normalizeCliCommandsFromArtifact", () => {
     });
     expect(commands[1].example).toBeUndefined();
     expect(commands[1].runnable).toBe(false);
+    // A null `handler` is the published way of saying "group, not runnable".
     expect(commands[1].handlerPresent).toBe(false);
+  });
+
+  test("joins every authored example rather than keeping only the first", () => {
+    const commands = normalizeCliCommandsFromArtifact({
+      formatVersion: "1.0.0",
+      rootPath: "you",
+      commands: {
+        "you.factory": {
+          id: "you.factory",
+          name: "factory",
+          path: "you factory",
+          aliases: [],
+          documentation: {
+            documentation: {
+              title: { canonicalEnglish: "Inspect factories" },
+              description: { canonicalEnglish: "" },
+            },
+            examples: ["you factory query", "", "you factory list"],
+          },
+          lifecycle: "active",
+        },
+      },
+    });
+
+    expect(commands[0].example).toBe("you factory query\nyou factory list");
   });
 
   test("consumes W03-resolved CLI public-subpath data", () => {
@@ -177,8 +221,8 @@ describe("normalizeCliCommandsFromArtifact", () => {
     });
 
     expect(commands.length).toBeGreaterThan(5);
-    const init = commands.find((command) => command.id === "you.config.init");
-    expect(init?.commandPath).toBe("you config init");
+    const init = commands.find((command) => command.id === "you.factory.list");
+    expect(init?.commandPath).toBe("you factory list");
     expect(init?.description).toBeTruthy();
     expect(init?.source.publicArtifactId).toBe("@you-agent-factory/api/cli");
     expect(init?.visibility).toBe("visible");

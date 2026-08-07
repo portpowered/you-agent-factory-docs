@@ -26,7 +26,7 @@ describe("W02 SSE spike OpenAPI page factory", () => {
     expect(SSE_SPIKE_SAFETY.enablesLiveRequestPlayground).toBe(false);
   });
 
-  test("createOpenAPI loads all three SSE operations outside happy-dom", async () => {
+  test("createOpenAPI loads every SSE operation outside happy-dom", async () => {
     // happy-dom's URL polyfill breaks fumadocs-openapi's filesystem $ref
     // resolution. Prove the Next/server path with a plain Bun subprocess.
     const proofScript = join(import.meta.dir, "prove-create-openapi-load.ts");
@@ -52,7 +52,7 @@ describe("W02 SSE spike OpenAPI page factory", () => {
     };
     expect(payload).toMatchObject({
       ok: true,
-      operationCount: 3,
+      operationCount: 2,
       proxyUrl: null,
       documentId: SSE_SPIKE_DOCUMENT_ID,
     });

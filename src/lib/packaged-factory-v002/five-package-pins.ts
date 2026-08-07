@@ -5,7 +5,7 @@
  * install proofs both consume this list so the five-package set stays singular.
  */
 
-export const PACKAGED_FACTORY_V002_VERSION = "0.0.2" as const;
+export const PACKAGED_FACTORY_V002_VERSION = "0.0.6" as const;
 
 export const PACKAGED_FACTORY_V002_PACKAGE_NAMES = [
   "@you-agent-factory/client",

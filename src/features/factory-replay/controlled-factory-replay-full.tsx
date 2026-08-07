@@ -60,6 +60,7 @@ export function ControlledFactoryReplayFull({
   });
 
   const composition = deriveFullModeComposition({
+    factory: recording.factory,
     playback: presentationStatus === "ready" ? controller.playback : undefined,
     prepared: presentationStatus === "ready" ? controller.prepared : undefined,
     status: presentationStatus,

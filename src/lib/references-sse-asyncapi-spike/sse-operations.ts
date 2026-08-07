@@ -27,6 +27,11 @@ export type SseSpikeOperation = {
  * Canonical inventory of SSE operations under investigation. Order is
  * canonical → ephemeral → compatibility-only so the spike surface reads in
  * preferred-consumer order.
+ *
+ * `@you-agent-factory/api` 0.0.6 removed the process-global `GET /events`
+ * stream, so the `compatibility-only` role has no member here either. Kept in
+ * step with the production inventory in
+ * `src/lib/references/events/stream-operations.ts`.
  */
 export const SSE_SPIKE_OPERATIONS = [
   {
@@ -42,13 +47,6 @@ export const SSE_SPIKE_OPERATIONS = [
     operationId: "getFactoryResponseEventsBySessionId",
     role: "ephemeral",
     roleLabel: "Ephemeral FactoryResponseEvent stream",
-  },
-  {
-    path: "/events",
-    method: "get",
-    operationId: "getEvents",
-    role: "compatibility-only",
-    roleLabel: "Compatibility-only process-global FactoryEvent stream",
   },
 ] as const satisfies readonly SseSpikeOperation[];
 

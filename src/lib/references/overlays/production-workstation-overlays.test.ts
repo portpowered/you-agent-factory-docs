@@ -143,7 +143,7 @@ describe("production Workstation overlays", () => {
       ...createProductionWorkstationTypeOverlay("AGENT_RUN"),
       fields: {
         ...createProductionWorkstationTypeOverlay("AGENT_RUN").fields,
-        selected: ["openCodeAgent", "legacyMissingField"],
+        selected: ["classificationRoutes", "legacyMissingField"],
       },
     };
 

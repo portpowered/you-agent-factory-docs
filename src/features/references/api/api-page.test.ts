@@ -111,8 +111,8 @@ describe("ApiReferenceAPIPage (createAPIPage binder)", () => {
     expect(API_SCHEMA_COMPONENT_PROBE.expectedFieldNames).toContain("items");
   });
 
-  test("resolves thin hybrid SSE summaries for the three published SSE ops", () => {
-    expect(API_SSE_OPERATIONS).toHaveLength(3);
+  test("resolves thin hybrid SSE summaries for the published SSE ops", () => {
+    expect(API_SSE_OPERATIONS).toHaveLength(2);
     expect(API_SSE_SUMMARY_SAFETY.opensLiveEventStreamConnection).toBe(false);
     expect(API_SSE_SUMMARY_SAFETY.implementsFullEventCatalog).toBe(false);
 

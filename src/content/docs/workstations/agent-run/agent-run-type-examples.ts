@@ -11,9 +11,6 @@ export const AGENT_RUN_TYPE_MINIMAL_EXAMPLE = {
   worker: "agent-main",
   type: "AGENT_RUN",
   behavior: "STANDARD",
-  openCodeAgent: {
-    model: "default",
-  },
   inputs: ["ready"],
   outputs: ["accepted"],
   onContinue: ["ready"],

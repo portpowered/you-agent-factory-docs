@@ -90,7 +90,6 @@ describe("workstations poller behavior page", () => {
     expect(presentation.fields).toEqual(
       expect.arrayContaining([
         { path: "cron", applicability: "excluded" },
-        { path: "openCodeAgent", applicability: "excluded" },
         { path: "classificationRoutes", applicability: "excluded" },
         { path: "operation", applicability: "excluded" },
       ]),

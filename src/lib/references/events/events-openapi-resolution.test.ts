@@ -79,16 +79,12 @@ describe("W09 OpenAPI event-truth resolution (002)", () => {
     expect(loaded.subpath).toBe("openapi");
   });
 
-  test("selects three SSE streams by path/operation/status/media-type and x-event-schema", () => {
+  test("selects every SSE stream by path/operation/status/media-type and x-event-schema", () => {
     const loaded = loadEventsOpenApi();
     const streams = selectEventStreamsFromOpenApi(loaded.document);
 
     expect(streams).toHaveLength(EVENT_STREAM_OPERATIONS.length);
-    expect(streams.map((s) => s.role)).toEqual([
-      "canonical",
-      "ephemeral",
-      "compatibility-only",
-    ]);
+    expect(streams.map((s) => s.role)).toEqual(["canonical", "ephemeral"]);
 
     for (const stream of streams) {
       expect(stream.status).toBe(EVENTS_SSE_RESPONSE_STATUS);
@@ -101,13 +97,10 @@ describe("W09 OpenAPI event-truth resolution (002)", () => {
 
     expect(streams[0]?.payloadRootSchemaName).toBe("FactoryEvent");
     expect(streams[1]?.payloadRootSchemaName).toBe("FactoryResponseEvent");
-    expect(streams[2]?.payloadRootSchemaName).toBe("FactoryEvent");
     expect(streams[0]?.preferred).toBe(true);
     expect(streams[1]?.preferred).toBe(true);
-    expect(streams[2]?.preferred).toBe(false);
-    expect(streams[2]?.compatibilityLabel).toBe(
-      "compatibility-only-non-preferred",
-    );
+    // 0.0.6 removed the process-global GET /events compatibility stream.
+    expect(streams.some((s) => s.role === "compatibility-only")).toBe(false);
   });
 
   test("rejects hard-coded schema-name-only selection", () => {
@@ -140,8 +133,8 @@ describe("W09 OpenAPI event-truth resolution (002)", () => {
   test("resolveEventCorpus builds inventory and W04 schema targets from live OpenAPI", () => {
     const corpus = resolveEventCorpus();
     expect(corpus.sourceHash).toBe(hashOpenApiSource(corpus.openapi.rawText));
-    expect(corpus.selectedStreams).toHaveLength(3);
-    expect(corpus.inventory.operations).toHaveLength(3);
+    expect(corpus.selectedStreams).toHaveLength(2);
+    expect(corpus.inventory.operations).toHaveLength(2);
     expect(corpus.schemaClosure.unresolvedReferenceCount).toBe(0);
     expect(corpus.schemaClosure.schemaNames.length).toBeGreaterThan(50);
 
@@ -160,7 +153,7 @@ describe("W09 OpenAPI event-truth resolution (002)", () => {
     expect(byRole.ephemeral?.rootEventSchemaName).toBe("FactoryResponseEvent");
     expect(byRole.ephemeral?.payloadVariantCount).toBeGreaterThan(0);
 
-    expect(corpus.schemaTargets).toHaveLength(3);
+    expect(corpus.schemaTargets).toHaveLength(2);
     expect(corpus.schemaTargets[0]?.formattedAddress).toContain(
       EVENTS_OPENAPI_EXPORT,
     );
@@ -258,9 +251,9 @@ describe("W09 OpenAPI event-truth resolution (002)", () => {
       corpus.selectedStreams,
     );
 
-    expect(targets).toHaveLength(3);
-    // FactoryEvent is shared by canonical + compatibility-only → 2 unique schema roots
-    // (FactoryEvent, FactoryResponseEvent) × (schema-pointer + event) = 4 entries.
+    expect(targets).toHaveLength(2);
+    // 2 schema roots (FactoryEvent, FactoryResponseEvent) ×
+    // (schema-pointer + event) = 4 entries.
     expect(registered).toHaveLength(4);
     const pageEntries = registry.listPage("references/events");
     expect(pageEntries.some((entry) => entry.kind === "schema-pointer")).toBe(
@@ -284,7 +277,6 @@ describe("W09 OpenAPI event-truth resolution (002)", () => {
     expect(viaTurbopack.selectedStreams.map((stream) => stream.role)).toEqual([
       "canonical",
       "ephemeral",
-      "compatibility-only",
     ]);
   });
 });

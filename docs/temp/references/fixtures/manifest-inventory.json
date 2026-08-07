@@ -4,7 +4,7 @@
   "packageId": "you-agent-factory.api",
   "packageVersion": "0.0.0",
   "formatVersion": "1.0.0",
-  "sourceCommit": "280e13dbb101809532034fef24c6b46144f7f7cc",
+  "sourceCommit": "67d509efe6961090df065e55fc3862bed97f174c",
   "familyFormatVersions": {
     "cli": "1.0.0",
     "config": "1.0.0",
@@ -14,9 +14,10 @@
     "shared": "1.0.0"
   },
   "counts": {
-    "exports": 10
+    "exports": 13
   },
   "exportIds": [
+    "generated.cli.command-manifest",
     "generated.cli.commands",
     "generated.javascript.runtime-api",
     "generated.joined.contracts.common.deprecations",
@@ -25,19 +26,39 @@
     "generated.mcp.tools",
     "generated.openapi.openapi",
     "generated.schemas.factory",
+    "generated.schemas.factory-event",
+    "generated.schemas.factory-recording",
     "generated.schemas.mock-workers",
     "generated.schemas.you-config"
   ],
   "exports": [
     {
-      "id": "generated.cli.commands",
+      "id": "generated.cli.command-manifest",
       "family": "cli",
-      "path": "generated/cli/commands.json",
-      "artifactHash": "6b32edebf7ea06619c958a4723cb96eb5f7c10aa2fcc112c273bf3f809c6424c",
+      "path": "generated/cli/command-manifest.schema.json",
+      "artifactHash": "6223f77257033566d5d4998babd8ebfdb8b986e534e5aa355b6dd96f645ccd1f",
       "documentation": {
         "formatVersion": "1.0.0",
         "visibility": "public",
-        "sourceHash": "6b32edebf7ea06619c958a4723cb96eb5f7c10aa2fcc112c273bf3f809c6424c",
+        "sourceHash": "6223f77257033566d5d4998babd8ebfdb8b986e534e5aa355b6dd96f645ccd1f",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.cli.command-manifest"
+      }
+    },
+    {
+      "id": "generated.cli.commands",
+      "family": "cli",
+      "path": "generated/cli/commands.json",
+      "artifactHash": "70e91984a12ff5de624f2c4335b7dea63bf81a12be142b9c72466a9348d7b07a",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "70e91984a12ff5de624f2c4335b7dea63bf81a12be142b9c72466a9348d7b07a",
         "title": null
       },
       "lifecycle": {
@@ -105,11 +126,11 @@
       "id": "generated.joined.contracts.manifest",
       "family": "shared",
       "path": "generated/joined/contracts/manifest.schema.json",
-      "artifactHash": "4dae080e46652c697025016b97d82a03437cdf27f3f0c43f1485812fa271a339",
+      "artifactHash": "86be29cba2f697c1d32657dab9f1521da0c36e941f5dca74642656e6fbafd980",
       "documentation": {
         "formatVersion": "1.0.0",
         "visibility": "public",
-        "sourceHash": "4dae080e46652c697025016b97d82a03437cdf27f3f0c43f1485812fa271a339",
+        "sourceHash": "86be29cba2f697c1d32657dab9f1521da0c36e941f5dca74642656e6fbafd980",
         "title": null
       },
       "lifecycle": {
@@ -141,11 +162,11 @@
       "id": "generated.openapi.openapi",
       "family": "openapi",
       "path": "generated/openapi/openapi.yaml",
-      "artifactHash": "74932a7018dd449663cb9f858be203d4ec3d8de9d3b44f18e944259db0eec568",
+      "artifactHash": "b5c09cb1cb681934dbe6661130d3be2e0bfdccd1bbc48d774900a5d96db400c8",
       "documentation": {
         "formatVersion": "1.0.0",
         "visibility": "public",
-        "sourceHash": "74932a7018dd449663cb9f858be203d4ec3d8de9d3b44f18e944259db0eec568",
+        "sourceHash": "b5c09cb1cb681934dbe6661130d3be2e0bfdccd1bbc48d774900a5d96db400c8",
         "title": null
       },
       "lifecycle": {
@@ -159,11 +180,11 @@
       "id": "generated.schemas.factory",
       "family": "config",
       "path": "generated/schemas/factory.schema.json",
-      "artifactHash": "06ddc805d0901db1f98fcffaab366655ed5764074a1f27a6b16ace51022a2a93",
+      "artifactHash": "cfaca445e814d3b2b7e8f3df07b50fb2d43bdfeac83de5a04a6d37398c63526b",
       "documentation": {
         "formatVersion": "1.0.0",
         "visibility": "public",
-        "sourceHash": "06ddc805d0901db1f98fcffaab366655ed5764074a1f27a6b16ace51022a2a93",
+        "sourceHash": "cfaca445e814d3b2b7e8f3df07b50fb2d43bdfeac83de5a04a6d37398c63526b",
         "title": null
       },
       "lifecycle": {
@@ -171,6 +192,42 @@
         "since": "0.0.0",
         "formatVersion": "1.0.0",
         "itemId": "generated.schemas.factory"
+      }
+    },
+    {
+      "id": "generated.schemas.factory-event",
+      "family": "config",
+      "path": "generated/schemas/factory-event.schema.json",
+      "artifactHash": "b0b1a3b34e8d0ead7a6646ba37b32daa4513609136f5785bd3ae5ee6ea418d7c",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "b0b1a3b34e8d0ead7a6646ba37b32daa4513609136f5785bd3ae5ee6ea418d7c",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.schemas.factory-event"
+      }
+    },
+    {
+      "id": "generated.schemas.factory-recording",
+      "family": "config",
+      "path": "generated/schemas/factory-recording.schema.json",
+      "artifactHash": "f83a41ca91c8affdba4e910a3cf36d0aa527cfce2a99c7ce56d0e2ffb53ee5cf",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "f83a41ca91c8affdba4e910a3cf36d0aa527cfce2a99c7ce56d0e2ffb53ee5cf",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.schemas.factory-recording"
       }
     },
     {
@@ -195,11 +252,11 @@
       "id": "generated.schemas.you-config",
       "family": "config",
       "path": "generated/schemas/you-config.schema.json",
-      "artifactHash": "d13af3b56397d8da27f47f7b7823a570583f8ac9207602df04364123bdcf88e1",
+      "artifactHash": "4c0ba04cac5e3a1a3834cc52a799425d81c52474b31b4d1df3d8a49b5166dcce",
       "documentation": {
         "formatVersion": "1.0.0",
         "visibility": "public",
-        "sourceHash": "d13af3b56397d8da27f47f7b7823a570583f8ac9207602df04364123bdcf88e1",
+        "sourceHash": "4c0ba04cac5e3a1a3834cc52a799425d81c52474b31b4d1df3d8a49b5166dcce",
         "title": null
       },
       "lifecycle": {

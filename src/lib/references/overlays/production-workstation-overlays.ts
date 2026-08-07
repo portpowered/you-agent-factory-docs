@@ -155,8 +155,16 @@ const CLASSIFIER_DISPATCH_SHARED = [
   "copyReferencedScripts",
 ] as const;
 
-/** Fields exclusive to AGENT_RUN OpenCode overrides. */
-const AGENT_RUN_EXCLUSIVE = ["openCodeAgent"] as const;
+/**
+ * Fields exclusive to AGENT_RUN.
+ *
+ * `@you-agent-factory/api` 0.0.6 dropped `openCodeAgent` from the Workstation
+ * definition, which leaves AGENT_RUN with no field the other variants lack. The
+ * empty set is deliberate: the overlay still has to declare the other variants'
+ * exclusives as `excluded`, and reintroducing an AGENT_RUN-only field later
+ * should extend this list rather than reinvent the wiring.
+ */
+const AGENT_RUN_EXCLUSIVE = [] as const;
 
 /** Fields exclusive to CLASSIFIER_WORKSTATION label routing. */
 const CLASSIFIER_EXCLUSIVE = ["classificationRoutes"] as const;

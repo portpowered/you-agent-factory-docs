@@ -1,10 +1,16 @@
 /**
- * Production inventory of the three published SSE operations and their hybrid
+ * Production inventory of the published SSE operations and their hybrid
  * API-page roles (W02 placement decision: hybrid).
  *
  * Migrated from the W02 spike inventory into the W08 ownership surface. Roles
  * are presentation policy for the API page — not a second OpenAPI corpus.
  * Full event envelope/payload catalogs remain W09.
+ *
+ * `@you-agent-factory/api` 0.0.6 dropped the process-global `GET /events`
+ * stream, so the `compatibility-only` role currently has no members. The role
+ * stays in the union because it is presentation policy rather than a mirror of
+ * the spec — a future deprecated stream should reuse it rather than reinvent a
+ * label.
  */
 
 export type ApiSseRole = "canonical" | "ephemeral" | "compatibility-only";
@@ -51,15 +57,6 @@ export const API_SSE_OPERATIONS = [
     preferredOrCanonical: false,
     eventSchemaRef: "#/components/schemas/FactoryResponseEvent",
   },
-  {
-    path: "/events",
-    method: "get",
-    operationId: "getEvents",
-    role: "compatibility-only",
-    roleLabel: "Compatibility-only process-global FactoryEvent stream",
-    preferredOrCanonical: false,
-    eventSchemaRef: "#/components/schemas/FactoryEvent",
-  },
 ] as const satisfies readonly ApiSseOperation[];
 
 export type ApiSseOperationItem = (typeof API_SSE_OPERATIONS)[number];
@@ -95,7 +92,7 @@ export function findApiSseOperation(options: {
   );
 }
 
-/** True when the operation is one of the three published SSE streams. */
+/** True when the operation is one of the published SSE streams. */
 export function isApiSseOperation(options: {
   operationId?: string;
   path?: string;

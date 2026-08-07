@@ -52,36 +52,29 @@ describe("ApiSseOperationSummaryPanel", () => {
     );
   });
 
-  test("labels compatibility-only as never preferred", () => {
-    const summary = resolveApiSseOperationSummary({
-      operationId: "getEvents",
-    });
-    expect(summary).toBeDefined();
-    if (!summary) throw new Error("expected compatibility summary");
-
-    render(<ApiSseOperationSummaryPanel summary={summary} />);
-    expect(screen.getByText("Compatibility-only")).toBeTruthy();
-    expect(screen.getByText("Never preferred")).toBeTruthy();
-    expect(screen.queryByText("Preferred")).toBeNull();
+  // `@you-agent-factory/api` 0.0.6 removed the process-global GET /events
+  // stream, the only compatibility-only member. The never-preferred labelling
+  // itself is still exercised by `sse-operation-summary.test.ts`; there is no
+  // longer a published operation to render it against.
+  test("no published operation claims the compatibility-only role", () => {
     expect(
-      screen.getByText(/Never present as preferred or canonical/i),
-    ).toBeTruthy();
+      resolveApiSseOperationSummary({ operationId: "getEvents" }),
+    ).toBeUndefined();
   });
 });
 
 describe("ApiOperationSection SSE wiring", () => {
-  test("mounts hybrid summaries on the three SSE operations only", () => {
+  test("mounts hybrid summaries on the SSE operations only", () => {
     const { byAnchor } = buildApiOperationDetailsFromArtifact();
     const canonical = byAnchor.get("getEventsBySessionId");
     const ephemeral = byAnchor.get("getFactoryResponseEventsBySessionId");
-    const compatibility = byAnchor.get("getEvents");
     const nonSse = byAnchor.get("submitWorkBySessionId");
 
     expect(canonical).toBeDefined();
     expect(ephemeral).toBeDefined();
-    expect(compatibility).toBeDefined();
+    expect(byAnchor.has("getEvents")).toBe(false);
     expect(nonSse).toBeDefined();
-    if (!canonical || !ephemeral || !compatibility || !nonSse) {
+    if (!canonical || !ephemeral || !nonSse) {
       throw new Error("expected live package operation details");
     }
 
@@ -107,20 +100,11 @@ describe("ApiOperationSection SSE wiring", () => {
       container.querySelector(`[${API_SSE_ROLE_ATTR}="ephemeral"]`),
     ).toBeTruthy();
 
-    rerender(<ApiOperationSection detail={compatibility} />);
-    expect(
-      container.querySelector(`[${API_SSE_SUMMARY_ATTR}="getEvents"]`),
-    ).toBeTruthy();
-    expect(
-      container.querySelector(`[${API_SSE_ROLE_ATTR}="compatibility-only"]`),
-    ).toBeTruthy();
-    expect(within(container).getByText("Never preferred")).toBeTruthy();
-
     rerender(<ApiOperationSection detail={nonSse} />);
     expect(container.querySelector(`[${API_SSE_SUMMARY_ATTR}]`)).toBeNull();
   });
 
-  test("harness renders all three SSE summaries without a live connection", () => {
+  test("harness renders every SSE summary without a live connection", () => {
     const { model } = buildApiOperationNavigationFromArtifact();
     const { byAnchor } = buildApiOperationDetailsFromArtifact();
     const { container } = render(
@@ -131,7 +115,7 @@ describe("ApiOperationSection SSE wiring", () => {
     );
 
     const summaries = projectAllApiSseOperationSummaries();
-    expect(summaries).toHaveLength(3);
+    expect(summaries).toHaveLength(2);
     for (const summary of summaries) {
       const panel = container.querySelector(
         `[${API_SSE_SUMMARY_ATTR}="${summary.operationId}"]`,

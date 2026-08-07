@@ -23,9 +23,9 @@ describe("loadCliReferenceInventory", () => {
     ).toBe(true);
 
     const init = inventory.commands.find(
-      (command) => command.id === "you.config.init",
+      (command) => command.id === "you.factory.list",
     );
-    expect(init?.commandPath).toBe("you config init");
+    expect(init?.commandPath).toBe("you factory list");
     expect(init?.description).toBeTruthy();
   });
 
@@ -48,8 +48,8 @@ describe("loadCliReferenceInventory", () => {
       resolveExport: () => "file:///tmp/cli-empty.json",
       readTextFile: () =>
         JSON.stringify({
-          formatVersion: "cli-command-identity/v1",
-          commands: [],
+          formatVersion: "1.0.0",
+          commands: {},
         }),
     });
 
@@ -61,8 +61,8 @@ describe("loadCliReferenceInventory", () => {
       resolveExport: () => "file:///tmp/cli-malformed.json",
       readTextFile: () =>
         JSON.stringify({
-          formatVersion: "cli-command-identity/v1",
-          commands: "not-an-array",
+          formatVersion: "1.0.0",
+          commands: "not-an-object",
         }),
     });
 

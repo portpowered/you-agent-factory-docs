@@ -31,6 +31,10 @@ export type EventStreamOperation = {
 /**
  * Canonical inventory of SSE operations. Order is canonical → ephemeral →
  * compatibility-only so the corpus reads in preferred-consumer order.
+ *
+ * `@you-agent-factory/api` 0.0.6 removed the process-global `GET /events`
+ * compatibility stream, so that role currently has no member. `EVENT_STREAM_ROLES`
+ * keeps it because role is catalog vocabulary, not a projection of the spec.
  */
 export const EVENT_STREAM_OPERATIONS = [
   {
@@ -48,14 +52,6 @@ export const EVENT_STREAM_OPERATIONS = [
     role: "ephemeral",
     roleLabel: "Ephemeral FactoryResponseEvent stream",
     payloadRoot: "FactoryResponseEvent",
-  },
-  {
-    path: "/events",
-    method: "get",
-    operationId: "getEvents",
-    role: "compatibility-only",
-    roleLabel: "Compatibility-only process-global FactoryEvent stream",
-    payloadRoot: "FactoryEvent",
   },
 ] as const satisfies readonly EventStreamOperation[];
 

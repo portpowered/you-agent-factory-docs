@@ -84,15 +84,15 @@ describe("compareFamilyInventoryIdentities", () => {
 describe("artifact identity extractors", () => {
   test("extract CLI command paths from fixture-shaped artifact data", () => {
     const paths = extractCliCommandPathsFromArtifact({
-      formatVersion: "cli-command-identity/v1",
-      commands: [
-        { path: "you", name: "you", idCandidate: "you" },
-        {
+      formatVersion: "1.0.0",
+      commands: {
+        you: { path: "you", name: "you", id: "you" },
+        "you.config.init": {
           path: "you config init",
           name: "init",
-          idCandidate: "you.config.init",
+          id: "you.config.init",
         },
-      ],
+      },
     });
     expect(paths).toEqual(["you", "you config init"]);
   });

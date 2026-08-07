@@ -1,19 +1,19 @@
 {
   "title": "Agent-run workstation",
-  "description": "Configure type = AGENT_RUN for agent worker dispatch and OpenCode agent overrides through an AGENT_WORKER backend.",
-  "openingSummary": "AGENT_RUN is the WorkstationType for agent worker dispatch. Set type to AGENT_RUN when a step must run an agent loop through an AGENT_WORKER, optionally with openCodeAgent overrides, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling.",
+  "description": "Configure type = AGENT_RUN for agent worker dispatch through an AGENT_WORKER backend.",
+  "openingSummary": "AGENT_RUN is the WorkstationType for agent worker dispatch. Set type to AGENT_RUN when a step must run an agent loop through an AGENT_WORKER, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling.",
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with type AGENT_RUN and bind an AGENT_WORKER. Choose behavior for the scheduling axis you need — STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so agent outcomes route correctly. Optionally set openCodeAgent when this step needs OpenCode agent overrides. Do not set operation, operationBindings, classificationRoutes, promptFile, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose INFERENCE_RUN for bounded inference, SCRIPT_RUN for scripts, or MODEL_INVOKE for provider-neutral operation bindings. AGENT_RUN is not a scheduling behavior and is not MODEL_INVOKE — keep operation and operationBindings on the model-invoke type, and keep one-shot inference on INFERENCE_RUN."
+      "body": "Author a workstation with type AGENT_RUN and bind an AGENT_WORKER. Choose behavior for the scheduling axis you need — STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so agent outcomes route correctly. Do not set operation, operationBindings, classificationRoutes, promptFile, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose INFERENCE_RUN for bounded inference, SCRIPT_RUN for scripts, or MODEL_INVOKE for provider-neutral operation bindings. AGENT_RUN is not a scheduling behavior and is not MODEL_INVOKE — keep operation and operationBindings on the model-invoke type, and keep one-shot inference on INFERENCE_RUN."
     },
     "schemaReference": {
       "title": "Schema reference",
-      "body": "The embed below shows the live Workstation base definition with AGENT_RUN overlay applicability. AGENT_RUN selects the exclusive openCodeAgent field. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+      "body": "The embed below shows the live Workstation base definition with AGENT_RUN overlay applicability. AGENT_RUN carries no field of its own — it is identified by its discriminator and its required AGENT_WORKER companion, and shares the identity and dispatch fields with every other WorkstationType. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting an AGENT_RUN workstation with behavior STANDARD and an openCodeAgent override. The misuse example borrows operation from MODEL_INVOKE — that field is excluded from AGENT_RUN."
+      "body": "Use the minimal valid example when starting an AGENT_RUN workstation with behavior STANDARD. The misuse example borrows operation from MODEL_INVOKE — that field is excluded from AGENT_RUN."
     },
     "tags": {
       "title": "Tags"
@@ -30,7 +30,7 @@
     "companionPoller": "Poller workstation",
     "minimalExampleLabel": "Minimal valid AGENT_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — operation on AGENT_RUN:",
-    "misuseNote": "operation belongs on MODEL_INVOKE. Keep AGENT_RUN on identity, worker binding, inputs, outputs, routing fields, and optional openCodeAgent overrides only.",
+    "misuseNote": "operation belongs on MODEL_INVOKE. Keep AGENT_RUN on identity, worker binding, inputs, outputs, and routing fields only.",
     "fullFactorySchema": "Full Factory schema reference"
   }
 }

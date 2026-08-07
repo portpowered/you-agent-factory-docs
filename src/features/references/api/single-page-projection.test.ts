@@ -50,11 +50,13 @@ describe("W08 production OpenAPI single-page projection", () => {
     expect(pathCount).toBeGreaterThan(0);
     expect(operationCount).toBeGreaterThanOrEqual(pathCount);
 
-    // Baseline observation from the plan era (45 ops / 41 paths). Keep as a
-    // soft check against the live artifact so drift is visible, not as a
-    // product quota the projection must invent.
-    expect(operationCount).toBe(45);
-    expect(pathCount).toBe(41);
+    // Baseline observation from the installed package (44 ops / 40 paths after
+    // `@you-agent-factory/api` 0.0.6 removed /events and /workflow-previews and
+    // added /packaged-factories). Keep as a soft check against the live
+    // artifact so drift is visible, not as a product quota the projection must
+    // invent.
+    expect(operationCount).toBe(44);
+    expect(pathCount).toBe(40);
   });
 
   test('per:"file" projects every published operation onto exactly one virtual page', () => {
