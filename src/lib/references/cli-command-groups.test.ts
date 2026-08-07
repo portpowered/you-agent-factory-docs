@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { cliCommandGroupAnchor, groupCliCommands } from "./cli-command-groups";
 import type { CliCommandNormalized } from "./family-normalized-models";
 import { loadCliReferenceInventory } from "./load-cli-reference-inventory";
+import { dedentCliExample } from "./normalize-family-artifacts";
 
 function command(commandPath: string): CliCommandNormalized {
   return {
@@ -89,5 +90,49 @@ describe("groupCliCommands", () => {
     expect(new Set(grouped.map((entry) => entry.id)).size).toBe(
       inventory.commands.length,
     );
+  });
+});
+
+describe("dedentCliExample", () => {
+  test("removes the indentation every line shares", () => {
+    expect(dedentCliExample("  # comment\n  you run\n\n  you run --json")).toBe(
+      "# comment\nyou run\n\nyou run --json",
+    );
+  });
+
+  test("keeps relative indentation inside the block", () => {
+    expect(dedentCliExample("  you run\n    --named @you/goal")).toBe(
+      "you run\n  --named @you/goal",
+    );
+  });
+
+  test("leaves an already-flush block alone", () => {
+    expect(dedentCliExample("you run\n  --json")).toBe("you run\n  --json");
+  });
+
+  test("treats blank and non-string input as unpublished", () => {
+    expect(dedentCliExample("   \n  ")).toBeUndefined();
+    expect(dedentCliExample(undefined)).toBeUndefined();
+    expect(dedentCliExample(42)).toBeUndefined();
+  });
+
+  test("every published example lands flush against the left edge", () => {
+    const inventory = loadCliReferenceInventory();
+    expect(inventory.state).toBe("success");
+    if (inventory.state !== "success") {
+      return;
+    }
+
+    const hanging = inventory.commands
+      .filter((command) => command.example !== undefined)
+      .filter((command) => {
+        const lines = (command.example ?? "")
+          .split("\n")
+          .filter((line) => line.trim().length > 0);
+        return lines.every((line) => line.startsWith(" "));
+      })
+      .map((command) => command.commandPath);
+
+    expect(hanging).toEqual([]);
   });
 });

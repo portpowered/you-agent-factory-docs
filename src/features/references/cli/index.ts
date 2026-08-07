@@ -2,9 +2,7 @@ export { CliCommandInventory } from "./CliCommandInventory";
 export {
   CliCommandArguments,
   CliCommandFlags,
-  CliInheritedFlagsNote,
   cliFlagInvocation,
-  cliInheritedFlags,
   cliLocalFlags,
 } from "./CliCommandOptions";
 export {

@@ -6,11 +6,7 @@ import type {
   CliFlagNormalized,
 } from "@/lib/references/family-normalized-models";
 import { CliCommandInventory } from "./CliCommandInventory";
-import {
-  cliFlagInvocation,
-  cliInheritedFlags,
-  cliLocalFlags,
-} from "./CliCommandOptions";
+import { cliFlagInvocation, cliLocalFlags } from "./CliCommandOptions";
 import {
   CliCommandReference,
   cliCommandInventoryIdentities,
@@ -130,7 +126,7 @@ describe("splitCliCommandDescription", () => {
 });
 
 describe("cli flag partitioning", () => {
-  test("splits a command's own flags from the inherited global ones", () => {
+  test("drops the inherited globals and keeps the command's own flags", () => {
     const flags = [
       fixtureFlag(),
       fixtureFlag({ id: "f.json", long: "json", scope: "inherited" }),
@@ -141,9 +137,7 @@ describe("cli flag partitioning", () => {
       "force",
       "verbose",
     ]);
-    expect(cliInheritedFlags(flags).map((flag) => flag.long)).toEqual(["json"]);
     expect(cliLocalFlags(undefined)).toEqual([]);
-    expect(cliInheritedFlags(undefined)).toEqual([]);
   });
 
   test("renders a flag the way it is typed", () => {
@@ -259,7 +253,6 @@ describe("CliCommandReference", () => {
             },
           ],
         })}
-        rootAnchor="you"
       />,
     );
 
@@ -272,11 +265,13 @@ describe("CliCommandReference", () => {
     expect(screen.getByText("select the stdout projection")).toBeTruthy();
     expect(screen.getByText("primary")).toBeTruthy();
 
-    // Inherited globals are pointed at, not repeated as rows on every command.
+    // Inherited globals are documented once on the root card, not repeated
+    // as rows — and no per-command pointer line is left behind either.
     expect(container.querySelector('[data-cli-flag="json"]')).toBeNull();
-    const inherited = container.querySelector("[data-cli-inherited-flags]");
-    expect(inherited?.textContent).toContain("--json");
-    expect(inherited?.querySelector('a[href="#you"]')).toBeTruthy();
+    expect(container.querySelector("[data-cli-inherited-flags]")).toBeNull();
+    expect(container.textContent).not.toContain(
+      "Also accepts the global flags",
+    );
 
     const argumentsTable = container.querySelector("[data-cli-arguments]");
     expect(argumentsTable).toBeTruthy();

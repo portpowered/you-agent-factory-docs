@@ -24,11 +24,6 @@ export type CliCommandReferenceProps = {
   packageVersion?: string;
   /** Localized reference chrome forwarded to the stable-anchor copy control. */
   chrome?: ReferenceChromeMessages;
-  /**
-   * Anchor of the root command, where inherited global flags are documented in
-   * full. Absent when the root command is not part of the rendered inventory.
-   */
-  rootAnchor?: string;
   className?: string;
 };
 
