@@ -33,6 +33,10 @@ import {
   ApiSurface,
 } from "@/features/references/api";
 import { ApiMethodBadge } from "@/features/references/api/api-method-badge";
+import {
+  API_OPERATION_ANCHOR_ATTR,
+  API_OPERATION_SECTION_ATTR,
+} from "@/features/references/api/operation-anchors";
 import { API_OPENAPI_PUBLIC_ASSET_PATH } from "@/lib/references/emit-openapi-public-artifact";
 import "@/features/docs/styles/references-api-accents.css";
 import "@/features/docs/styles/references-api-print.css";
@@ -111,6 +115,13 @@ function StaticOperationHeaders({
         <section
           className="min-w-0 scroll-mt-20 space-y-2 border-border border-t pt-6"
           data-api-operation-id={detail.operationId ?? detail.anchor}
+          {...{
+            // The no-JS contract identifies operation sections by this marker;
+            // without it the static shell is invisible to the probe even though
+            // it carries method, path, and summary.
+            [API_OPERATION_SECTION_ATTR]: "",
+            [API_OPERATION_ANCHOR_ATTR]: detail.anchor,
+          }}
           data-api-operation-method={detail.method}
           data-api-operation-path={detail.path}
           data-api-operation-summary={detail.summary ?? detail.operationId}
