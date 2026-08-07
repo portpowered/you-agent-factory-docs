@@ -130,8 +130,8 @@ describe("reference payload budget baselines", () => {
       expect(entry.maxJsPayloadBytes).toBeGreaterThan(
         entry.measuredJsPayloadBytes,
       );
-      expect(entry.measuredJsPayloadBytes).toBe(2_597_203);
-      expect(entry.maxJsPayloadBytes).toBe(3_250_000);
+      expect(entry.measuredJsPayloadBytes).toBe(3_070_795);
+      expect(entry.maxJsPayloadBytes).toBe(3_600_000);
     }
   });
 

@@ -65,8 +65,8 @@ export const REFERENCE_PAYLOAD_BUDGET_MEASUREMENT_METHOD = {
    * Re-measure on this lane's `out/` before raising ceilings.
    */
   baselineSource: {
-    measuredAtUtc: "2026-07-22T23:20:00Z",
-    note: "Events HTML retains the intentional linked OpenAPI component splay (~164 nested published component schemas). The reference-aligned landing added interactive provider controls to the shared Terminal client surface; a fresh static export measured 2_597_203 attributable JS bytes on API, events, and factory-schema. The 3.25 MB ceiling restores roughly 25% headroom without changing any HTML ceiling.",
+    measuredAtUtc: "2026-08-07T07:00:00Z",
+    note: "Events HTML retains the intentional linked OpenAPI component splay (~164 nested published component schemas). /docs/references/api moved to client rendering from the shipped OpenAPI JSON, dropping its HTML from 10_258_887 to 326_658 bytes while adding the schema-tree and operations client modules to the shared reference chunk: attributable JS measured 3_070_795 bytes on all three routes (2_597_203 before). HTML ceilings are unchanged except API, which came down with its measurement.",
   } as const,
 } as const;
 
@@ -102,7 +102,11 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
       measuredJsPayloadBytes: 3_070_795,
       // ~25% headroom above the client-rendered shell.
       maxHtmlBytes: 420_000,
-      maxJsPayloadBytes: 3_250_000,
+      // Client rendering moved ~470 KB into the shared reference chunk (2_597_203
+      // before). That is the deliberate side of the trade: ~0.5 MB of JS, paid
+      // once and cached, against ~9.5 MB of HTML per locale. Headroom widened
+      // from 3_250_000 so the new baseline is not sitting 5% under its ceiling.
+      maxJsPayloadBytes: 3_600_000,
     },
     {
       routeId: "references-events",
@@ -110,20 +114,20 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
       // Linked component schema splay inlines transitive published `$ref`
       // targets (InferenceOutcome-class) on the events page.
       measuredHtmlBytes: 4_527_337,
-      measuredJsPayloadBytes: 2_597_203,
+      measuredJsPayloadBytes: 3_070_795,
       // ~25% headroom above the post-splay SSR HTML measurement.
       maxHtmlBytes: 5_700_000,
-      maxJsPayloadBytes: 3_250_000,
+      maxJsPayloadBytes: 3_600_000,
     },
     {
       routeId: "references-factory-schema",
       path: "/docs/references/factory-schema",
       // Catalog splay renders the transitive Factory `$defs` closure on-page.
       measuredHtmlBytes: 1_997_920,
-      measuredJsPayloadBytes: 2_597_203,
+      measuredJsPayloadBytes: 3_070_795,
       // ~25% headroom above the splayed catalog SSR HTML.
       maxHtmlBytes: 2_500_000,
-      maxJsPayloadBytes: 3_250_000,
+      maxJsPayloadBytes: 3_600_000,
     },
   ] as const;
 
