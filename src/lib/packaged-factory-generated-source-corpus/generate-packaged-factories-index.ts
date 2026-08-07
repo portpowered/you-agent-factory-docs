@@ -3,7 +3,7 @@
  * artifacts under
  * `src/content/docs/references/packaged-factories-index/generated/`.
  *
- * Acquires the ordered index corpus + deep-research companion via the
+ * Acquires the ordered index corpus via the
  * filesystem pull, builds pure artifact contents, and writes them with
  * write-if-changed semantics so re-runs are byte-stable.
  */
@@ -15,7 +15,6 @@ import {
   writeFileIfChangedSync,
 } from "@/lib/content/write-file-if-changed";
 import type { PackagedFactoriesFilesystemPullDependencies } from "@/lib/packaged-factory-v002/packaged-factories-filesystem-pull";
-import { buildDeepResearchCompanionSourceFromPull } from "./acquire-companion-source";
 import {
   type AcquirePackagedFactoryIndexCorpusOptions,
   acquirePackagedFactoryIndexCorpus,
@@ -64,8 +63,8 @@ export function getPackagedFactoriesIndexGeneratedRoot(
 }
 
 /**
- * Acquire packaged-factories@0.0.2 corpus + companion and write deterministic
- * generated artifacts (index.json, per-factory definitions, companion source,
+ * Acquire the packaged-factories corpus and write deterministic
+ * generated artifacts (index.json, per-factory definitions,
  * six factory-recording/v1 samples, manifest.json). Re-running with identical
  * package inputs leaves file bytes unchanged. Recording samples are validated
  * through the public client parser and factory-replay projections before write.
@@ -87,11 +86,8 @@ export function generatePackagedFactoriesIndex(
     pullAllowlistedFiles,
     ...pullDependencies,
   });
-  const companion = buildDeepResearchCompanionSourceFromPull(acquired.pull);
-  const bundle = buildPackagedFactoriesIndexGeneratedBundle(
-    acquired.corpus,
-    companion,
-  );
+
+  const bundle = buildPackagedFactoriesIndexGeneratedBundle(acquired.corpus);
 
   const written: WriteFileIfChangedResult[] = [];
   for (const file of bundle.files) {

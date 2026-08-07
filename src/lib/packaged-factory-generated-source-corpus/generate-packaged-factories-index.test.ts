@@ -11,6 +11,7 @@ import {
   projectFactoryWorkProgressAtTick,
 } from "@you-agent-factory/factory-replay";
 import { getProjectRoot } from "@/lib/content/content-paths";
+import { PACKAGED_FACTORY_V002_VERSION } from "@/lib/packaged-factory-v002/five-package-pins";
 import { PACKAGED_FACTORIES_ALLOWLIST_SLUGS } from "@/lib/packaged-factory-v002/packaged-factories-allowlist";
 import {
   generatePackagedFactoriesIndex,
@@ -18,7 +19,6 @@ import {
 } from "./generate-packaged-factories-index";
 import {
   PACKAGED_FACTORIES_INDEX_ARTIFACT_PATH,
-  PACKAGED_FACTORIES_INDEX_COMPANION_ARTIFACT_PATH,
   PACKAGED_FACTORIES_INDEX_GENERATED_RELATIVE_ROOT,
   PACKAGED_FACTORIES_INDEX_MANIFEST_PATH,
   packagedFactoriesIndexFactoryDefinitionArtifactPath,
@@ -55,46 +55,33 @@ describe("generate packaged-factories index artifacts (IO)", () => {
     expect(first.bundle.index.entries.map((entry) => entry.childSlug)).toEqual([
       ...PACKAGED_FACTORIES_ALLOWLIST_SLUGS,
     ]);
-    expect(first.bundle.index.companionSource.childSlug).toBe("deep-research");
-    expect(
-      first.bundle.index.companionSource.sourceText.trim().length,
-    ).toBeGreaterThan(0);
-
     const indexPath = join(outputDir, PACKAGED_FACTORIES_INDEX_ARTIFACT_PATH);
     const manifestPath = join(
       outputDir,
       PACKAGED_FACTORIES_INDEX_MANIFEST_PATH,
     );
-    const companionPath = join(
-      outputDir,
-      PACKAGED_FACTORIES_INDEX_COMPANION_ARTIFACT_PATH,
-    );
-
     const indexJson = JSON.parse(readFileSync(indexPath, "utf8")) as {
       packageVersion: string;
       entries: Array<{ childSlug: string; factoryJsonText: string }>;
-      companionSource: { sourceText: string; sourceSha256: string };
     };
-    expect(indexJson.packageVersion).toBe("0.0.2");
+    expect(indexJson.packageVersion).toBe(PACKAGED_FACTORY_V002_VERSION);
     expect(indexJson.entries.map((entry) => entry.childSlug)).toEqual([
       ...PACKAGED_FACTORIES_ALLOWLIST_SLUGS,
     ]);
-    expect(indexJson.companionSource.sourceText).toBe(
-      first.bundle.index.companionSource.sourceText,
-    );
-
     const manifestJson = JSON.parse(readFileSync(manifestPath, "utf8")) as {
       packageVersion: string;
       generatedRelativeRoot: string;
       artifacts: Array<{ path: string; sourceSha256?: string }>;
       sourceHashes: Array<{ relativePath: string; sha256: string }>;
     };
-    expect(manifestJson.packageVersion).toBe("0.0.2");
+    expect(manifestJson.packageVersion).toBe(PACKAGED_FACTORY_V002_VERSION);
     expect(manifestJson.generatedRelativeRoot).toBe(
       PACKAGED_FACTORIES_INDEX_GENERATED_RELATIVE_ROOT,
     );
+    // One hash per allowlisted factory.json; the companion source that used to
+    // add a trailing entry left the package in 0.0.6.
     expect(manifestJson.sourceHashes.length).toBe(
-      PACKAGED_FACTORIES_ALLOWLIST_SLUGS.length + 1,
+      PACKAGED_FACTORIES_ALLOWLIST_SLUGS.length,
     );
     expect(manifestJson.artifacts.some((a) => a.path === "index.json")).toBe(
       true,
@@ -113,11 +100,6 @@ describe("generate packaged-factories index artifacts (IO)", () => {
       }
       expect(onDisk).toBe(entry.factoryJsonText);
     }
-
-    const companionOnDisk = readFileSync(companionPath, "utf8");
-    expect(JSON.parse(companionOnDisk)).toEqual(
-      first.bundle.index.companionSource,
-    );
 
     expect(
       first.bundle.recordings.map((recording) => recording.childSlug),

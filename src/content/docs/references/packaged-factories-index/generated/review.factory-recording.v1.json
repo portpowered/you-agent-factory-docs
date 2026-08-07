@@ -83,6 +83,23 @@
             "state": "init"
           }
         ]
+      },
+      {
+        "name": "review-loop-breaker",
+        "worker": "",
+        "inputs": [
+          {
+            "workType": "reviewable-work",
+            "state": "init"
+          }
+        ],
+        "type": "LOGICAL_MOVE",
+        "outputs": [
+          {
+            "workType": "reviewable-work",
+            "state": "failed"
+          }
+        ]
       }
     ],
     "workers": [
@@ -187,6 +204,23 @@
                 {
                   "workType": "reviewable-work",
                   "state": "init"
+                }
+              ]
+            },
+            {
+              "name": "review-loop-breaker",
+              "worker": "",
+              "inputs": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "init"
+                }
+              ],
+              "type": "LOGICAL_MOVE",
+              "outputs": [
+                {
+                  "workType": "reviewable-work",
+                  "state": "failed"
                 }
               ]
             }

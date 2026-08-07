@@ -8,7 +8,6 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { getProjectRoot } from "@/lib/content/content-paths";
 import type { PackagedFactoriesFilesystemPullDependencies } from "@/lib/packaged-factory-v002/packaged-factories-filesystem-pull";
-import { buildDeepResearchCompanionSourceFromPull } from "./acquire-companion-source";
 import {
   type AcquirePackagedFactoryIndexCorpusOptions,
   acquirePackagedFactoryIndexCorpus,
@@ -118,25 +117,17 @@ export function verifyCommittedPackagedFactoriesIndex(
     pullAllowlistedFiles,
     ...pullDependencies,
   });
-  const companion = buildDeepResearchCompanionSourceFromPull(acquired.pull);
   const liveBundle = buildPackagedFactoriesIndexGeneratedBundle(
     acquired.corpus,
-    companion,
   );
 
   const committed = loadCommittedPackagedFactoriesIndexArtifacts(committedRoot);
   assertPackagedFactoryGeneratedArtifactsMatch(committed, liveBundle.files);
 
-  const acquiredSources = [
-    ...liveBundle.index.entries.map((entry) => ({
-      relativePath: entry.sourceRelativePath,
-      text: entry.factoryJsonText,
-    })),
-    {
-      relativePath: liveBundle.index.companionSource.relativePath,
-      text: liveBundle.index.companionSource.sourceText,
-    },
-  ];
+  const acquiredSources = liveBundle.index.entries.map((entry) => ({
+    relativePath: entry.sourceRelativePath,
+    text: entry.factoryJsonText,
+  }));
   const recomputedHashes = hashAcquiredPackagedFactorySources(acquiredSources);
   assertPackagedFactorySourceHashesMatch(
     liveBundle.manifest.sourceHashes,

@@ -37,7 +37,7 @@
             "state": "init"
           }
         ],
-        "type": "MODEL_INVOKE",
+        "type": "INFERENCE_RUN",
         "outputs": [
           {
             "workType": "task",
@@ -55,7 +55,7 @@
     "workers": [
       {
         "name": "tts-executor",
-        "type": "MODEL_WORKER"
+        "type": "INFERENCE_WORKER"
       }
     ]
   },
@@ -106,7 +106,7 @@
                   "state": "init"
                 }
               ],
-              "type": "MODEL_INVOKE",
+              "type": "INFERENCE_RUN",
               "outputs": [
                 {
                   "workType": "task",
@@ -124,7 +124,7 @@
           "workers": [
             {
               "name": "tts-executor",
-              "type": "MODEL_WORKER"
+              "type": "INFERENCE_WORKER"
             }
           ]
         }

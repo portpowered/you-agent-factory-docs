@@ -34,7 +34,9 @@ describe("packaged-factory-v002 host package pins", () => {
         "@you-agent-factory/factory-visualizers": PACKAGED_FACTORY_V002_VERSION,
         "@you-agent-factory/packaged-factories": PACKAGED_FACTORY_V002_VERSION,
       }),
-    ).toThrow(/exact "0\.0\.2"/);
+    ).toThrow(
+      new RegExp(`exact "${PACKAGED_FACTORY_V002_VERSION}"`),
+    );
   });
 
   test("pure helper rejects dual components versions", () => {

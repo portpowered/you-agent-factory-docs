@@ -2,7 +2,7 @@
  * Pure + live-host drift / fail-closed proofs for the packaged-factories-index
  * generated corpus (story 005).
  *
- * Asserts docs-owned order, unabridged definitions, companion JavaScript exact
+ * Asserts docs-owned order, unabridged definitions, exact
  * text, six distinctive recordings, source-hash alignment with installed
  * package bytes, and byte-stable committed generated outputs — without scanning
  * React pages, route loaders, CSS, or dependency manifests.
@@ -10,7 +10,6 @@
 import { describe, expect, test } from "bun:test";
 import { getProjectRoot } from "@/lib/content/content-paths";
 import { PACKAGED_FACTORIES_ALLOWLIST_SLUGS } from "@/lib/packaged-factory-v002/packaged-factories-allowlist";
-import { buildDeepResearchCompanionSourceFromPull } from "./acquire-companion-source";
 import { acquirePackagedFactoryIndexCorpus } from "./acquire-index-corpus";
 import {
   assertPackagedFactoryGeneratedArtifactsMatch,
@@ -35,10 +34,10 @@ import {
 describe("packaged factory corpus drift (pure)", () => {
   test("source hash comparison succeeds for identical ordered sets", () => {
     const hashes = [
-      { relativePath: "factories/goal/factory.json", sha256: "abc" },
+      { relativePath: "generated/factories/goal/factory.json", sha256: "abc" },
       {
         relativePath:
-          "factories/deep-research/scripts/deep-research.workflow.js",
+          "generated/factories/deep-research/factory.json",
         sha256: "def",
       },
     ];
@@ -52,10 +51,10 @@ describe("packaged factory corpus drift (pure)", () => {
 
   test("fails closed on source hash drift against package bytes", () => {
     const expected = [
-      { relativePath: "factories/goal/factory.json", sha256: "aaa" },
+      { relativePath: "generated/factories/goal/factory.json", sha256: "aaa" },
     ];
     const actual = [
-      { relativePath: "factories/goal/factory.json", sha256: "bbb" },
+      { relativePath: "generated/factories/goal/factory.json", sha256: "bbb" },
     ];
 
     const comparison = comparePackagedFactorySourceHashes(expected, actual);
@@ -64,7 +63,7 @@ describe("packaged factory corpus drift (pure)", () => {
       throw new Error("expected source-hash-drift");
     }
     expect(comparison.code).toBe("source-hash-drift");
-    expect(comparison.relativePath).toBe("factories/goal/factory.json");
+    expect(comparison.relativePath).toBe("generated/factories/goal/factory.json");
 
     expect(() =>
       assertPackagedFactorySourceHashesMatch(expected, actual),
@@ -76,7 +75,7 @@ describe("packaged factory corpus drift (pure)", () => {
       expect(error).toBeInstanceOf(PackagedFactoryCorpusDriftError);
       if (error instanceof PackagedFactoryCorpusDriftError) {
         expect(error.code).toBe("source-hash-drift");
-        expect(error.relativePath).toBe("factories/goal/factory.json");
+        expect(error.relativePath).toBe("generated/factories/goal/factory.json");
       }
     }
   });
@@ -231,15 +230,11 @@ describe("packaged factory corpus drift (pure)", () => {
 });
 
 describe("packaged factory corpus drift (live host + committed)", () => {
-  test("pure corpus asserts order, unabridged defs, companion text, and six recordings", () => {
+  test("pure corpus asserts order, unabridged defs, and six recordings", () => {
     const acquired = acquirePackagedFactoryIndexCorpus({
       consumerDir: getProjectRoot(),
     });
-    const companion = buildDeepResearchCompanionSourceFromPull(acquired.pull);
-    const bundle = buildPackagedFactoriesIndexGeneratedBundle(
-      acquired.corpus,
-      companion,
-    );
+    const bundle = buildPackagedFactoriesIndexGeneratedBundle(acquired.corpus);
 
     expect(bundle.index.entries.map((entry) => entry.childSlug)).toEqual([
       ...PACKAGED_FACTORIES_ALLOWLIST_SLUGS,
@@ -258,21 +253,13 @@ describe("packaged factory corpus drift (live host + committed)", () => {
       expect(definitionArtifact?.contents).toBe(entry.factoryJsonText);
     }
 
-    expect(bundle.index.companionSource.sourceText).toBe(companion.sourceText);
-    expect(bundle.index.companionSource.sourceSha256).toBe(
-      companion.sourceSha256,
-    );
-    expect(bundle.index.companionSource.sourceKind).toBe(
-      "companion-javascript",
-    );
-    const companionArtifact = bundle.files.find(
-      (file) => file.relativePath === "deep-research.source.json",
-    );
-    expect(companionArtifact).toBeDefined();
-    if (companionArtifact === undefined) {
-      throw new Error("missing deep-research.source.json in live bundle");
-    }
-    expect(JSON.parse(companionArtifact.contents)).toEqual(companion);
+    // The deep-research companion JavaScript left the package in 0.0.6 and its
+    // factory.json references no script, so no companion artifact is emitted.
+    expect(
+      bundle.files.some(
+        (file) => file.relativePath === "deep-research.source.json",
+      ),
+    ).toBe(false);
 
     expect(bundle.recordings.map((recording) => recording.childSlug)).toEqual([
       ...PACKAGED_FACTORY_RECORDING_SLUGS,
@@ -296,11 +283,7 @@ describe("packaged factory corpus drift (live host + committed)", () => {
     const acquired = acquirePackagedFactoryIndexCorpus({
       consumerDir: getProjectRoot(),
     });
-    const companion = buildDeepResearchCompanionSourceFromPull(acquired.pull);
-    const bundle = buildPackagedFactoriesIndexGeneratedBundle(
-      acquired.corpus,
-      companion,
-    );
+    const bundle = buildPackagedFactoriesIndexGeneratedBundle(acquired.corpus);
 
     const fromPull = hashAcquiredPackagedFactorySources([
       ...acquired.pull.required.map((file) => ({
@@ -325,8 +308,10 @@ describe("packaged factory corpus drift (live host + committed)", () => {
     });
 
     expect(result.artifactCount).toBeGreaterThan(0);
+    // One hash per allowlisted factory.json. The companion JavaScript that
+    // added a trailing hash left the package in 0.0.6.
     expect(result.sourceHashCount).toBe(
-      PACKAGED_FACTORIES_ALLOWLIST_SLUGS.length + 1,
+      PACKAGED_FACTORIES_ALLOWLIST_SLUGS.length,
     );
     expect(
       result.committedRoot.endsWith("packaged-factories-index/generated"),
@@ -337,11 +322,7 @@ describe("packaged factory corpus drift (live host + committed)", () => {
     const acquired = acquirePackagedFactoryIndexCorpus({
       consumerDir: getProjectRoot(),
     });
-    const companion = buildDeepResearchCompanionSourceFromPull(acquired.pull);
-    const bundle = buildPackagedFactoriesIndexGeneratedBundle(
-      acquired.corpus,
-      companion,
-    );
+    const bundle = buildPackagedFactoriesIndexGeneratedBundle(acquired.corpus);
 
     const drifted = bundle.manifest.sourceHashes.map((entry, index) =>
       index === 0
