@@ -130,19 +130,18 @@ export function extractCliCommandPathsFromArtifact(data: unknown): string[] {
   if (commandsValue === undefined) {
     return [];
   }
-  if (!Array.isArray(commandsValue)) {
-    throw new Error(
-      'Malformed CLI artifact for drift extract: field "commands" must be an array.',
-    );
-  }
+  // `@you-agent-factory/api` 0.0.6 keys `commands` by dotted command id rather
+  // than publishing an array. Each entry still carries the space-separated
+  // invocation as `path`, which stays the drift identity.
+  const commands = requirePlainObject(commandsValue, "commands");
 
   const paths: string[] = [];
-  for (const [index, entry] of commandsValue.entries()) {
-    const command = requirePlainObject(entry, `commands[${index}]`);
+  for (const [key, entry] of Object.entries(commands)) {
+    const command = requirePlainObject(entry, `commands.${key}`);
     const commandPath = optionalNonEmptyString(command.path);
     if (commandPath === undefined) {
       throw new Error(
-        `Malformed CLI command at commands[${index}]: path is required for drift identity.`,
+        `Malformed CLI command at commands.${key}: path is required for drift identity.`,
       );
     }
     paths.push(commandPath);

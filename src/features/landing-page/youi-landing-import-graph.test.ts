@@ -132,8 +132,11 @@ describe("youi landing client import-graph isolation", () => {
     expect(
       forbiddenHits.some((hit) => hit.marker === "generated/index.json"),
     ).toBe(true);
-    expect(forbiddenHits.some((hit) => hit.marker === ".source.json")).toBe(
-      true,
+    // `.source.json` stays on the forbidden list as a forward guard, but the
+    // pollution fixture can no longer trip it: the only corpus `*.source.json`
+    // was the deep-research companion, which left the package in 0.0.6.
+    expect(YOUI_LANDING_IMPORT_GRAPH_FORBIDDEN_MARKERS).toContain(
+      ".source.json",
     );
   });
 });

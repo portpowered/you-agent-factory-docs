@@ -113,8 +113,12 @@ describe("W01 OpenAPI spike operation anchors", () => {
       operationsWithAuthoredMediaExamples: number;
     };
     expect(payload.ok).toBe(true);
-    expect(payload.operationCount).toBe(45);
-    expect(payload.operationsWithResponseSchema).toBe(44);
+    expect(payload.operationCount).toBe(44);
+    // One published operation carries no response schema in
+    // `@you-agent-factory/api` 0.0.6. Recorded as the observed value rather than
+    // asserted equal to the operation count, so a future spec fixing (or
+    // widening) that gap is visible here instead of silently absorbed.
+    expect(payload.operationsWithResponseSchema).toBe(43);
     expect(payload.operationsWithAuthoredMediaExamples).toBeGreaterThan(0);
   });
 });

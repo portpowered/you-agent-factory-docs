@@ -188,8 +188,10 @@ describe("reference inventory item exact-match deep links", () => {
         url: "/docs/references/api#submitWorkBySessionId",
       },
       {
-        query: "you config init",
-        url: "/docs/references/cli#you-config-init",
+        // `you config init` became top-level `you init` in
+        // @you-agent-factory/api 0.0.6; this is a stable multi-segment command.
+        query: "you models inspect",
+        url: "/docs/references/cli#you-models-inspect",
       },
       {
         query: "javascript.log",

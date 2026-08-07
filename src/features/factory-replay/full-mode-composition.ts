@@ -5,10 +5,12 @@
  * No React, timers, or DOM. Does not import FactoryRecordingTopologyReplay.
  */
 
+import type { FactoryDefinition } from "@you-agent-factory/client";
 import type {
   FactoryTimelineScrubberState,
   FactoryTopologyReplayState,
 } from "@you-agent-factory/factory-visualizers";
+import { deriveFactoryTopologyReplayState } from "./factory-graph-source";
 import type { PlaybackState } from "./playback-transitions";
 import type { PreparedReplayProjection } from "./projection-cache";
 
@@ -16,6 +18,8 @@ import type { PreparedReplayProjection } from "./projection-cache";
 export type FullModePresentationStatus = "failed" | "loading" | "ready";
 
 export type FullModeCompositionInput = {
+  /** Factory definition from the bound recording; the graph needs it to be ready. */
+  readonly factory?: Readonly<FactoryDefinition> | undefined;
   readonly playback: PlaybackState | undefined;
   readonly prepared: PreparedReplayProjection | undefined;
   readonly status: FullModePresentationStatus;
@@ -73,17 +77,13 @@ export function deriveFullModeComposition(
     status: "available",
   };
 
-  const topology: FactoryTopologyReplayState =
-    prepared.topology.nodes.length === 0
-      ? { status: "empty" }
-      : {
-          projection: {
-            activity: prepared.activity,
-            load: prepared.load,
-            topology: prepared.topology,
-          },
-          status: "ready",
-        };
+  const topology: FactoryTopologyReplayState = deriveFactoryTopologyReplayState(
+    {
+      factory: input.factory,
+      prepared,
+      selectedTick: playback.selectedTick,
+    },
+  );
 
   return {
     progressVisible: true,

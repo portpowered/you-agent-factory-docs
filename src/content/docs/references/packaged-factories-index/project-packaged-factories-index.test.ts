@@ -1,7 +1,9 @@
 /**
  * Pure projection proofs for the packaged-factories index view model.
  */
+
 import { describe, expect, test } from "bun:test";
+import { PACKAGED_FACTORY_V002_VERSION } from "@/lib/packaged-factory-v002/five-package-pins";
 import generatedIndex from "./generated/index.json";
 import {
   PACKAGED_FACTORIES_INDEX_CHILD_BASE_PATH,
@@ -15,7 +17,7 @@ describe("projectPackagedFactoriesIndex", () => {
     const view = projectPackagedFactoriesIndex(generatedIndex);
 
     expect(view.packageName).toBe("@you-agent-factory/packaged-factories");
-    expect(view.packageVersion).toBe("0.0.2");
+    expect(view.packageVersion).toBe(PACKAGED_FACTORY_V002_VERSION);
     expect(view.entries.map((entry) => entry.childSlug)).toEqual([
       "goal",
       "subagent",
@@ -28,15 +30,18 @@ describe("projectPackagedFactoriesIndex", () => {
 
     const goal = view.entries[0];
     expect(goal?.kind).toBe("factory-json");
-    expect(goal?.canonicalName).toBe("@you/goal");
-    expect(goal?.packagedDescription).toBeNull();
+    expect(goal?.canonicalName).toBe("goal");
+    expect(typeof goal?.packagedDescription).toBe("string");
+    expect((goal?.packagedDescription ?? "").length).toBeGreaterThan(0);
     expect(goal?.childHref).toBe(
       `${PACKAGED_FACTORIES_INDEX_CHILD_BASE_PATH}/goal`,
     );
     expect(goal?.anchorId).toBe("goal");
     expect(goal?.sourceKind).toBe("factory.json");
-    expect(goal?.sourceRelativePath).toBe("factories/goal/factory.json");
-    expect(goal?.definitionText).toContain('"name": "@you/goal"');
+    expect(goal?.sourceRelativePath).toBe(
+      "generated/factories/goal/factory.json",
+    );
+    expect(goal?.definitionText).toContain('"name": "goal"');
     expect(goal?.definitionText).toBe(
       generatedIndex.entries[0]?.factoryJsonText,
     );

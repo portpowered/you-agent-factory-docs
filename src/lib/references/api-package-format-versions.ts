@@ -44,7 +44,13 @@ export const SUPPORTED_API_PACKAGE_LIFECYCLE_FORMAT_VERSION = "1.0.0" as const;
  * YAML, JSON Schema exports) are gated only via `familyFormatVersions`.
  */
 export const SUPPORTED_API_PACKAGE_ARTIFACT_BODY_FORMAT_VERSIONS = {
-  cli: "cli-command-identity/v1",
+  // `@you-agent-factory/api` 0.0.6 renamed this from "cli-command-identity/v1"
+  // to "1.0.0" alongside a breaking body change: `commands` went from an array
+  // of flat entries to a map keyed by dotted command id, and the help prose
+  // moved into a nested `documentation` block. `normalizeCliCommandsFromArtifact`
+  // reads the 0.0.6 shape only — this gate is what keeps an older package from
+  // reaching it.
+  cli: "1.0.0",
   mcp: "1",
   javascript: "1.0.0",
 } as const satisfies Partial<Record<SupportedApiPackageFamily, string>>;

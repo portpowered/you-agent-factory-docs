@@ -142,7 +142,7 @@ try {
           `[data-api-sse-events-link="${op.eventsAnchor}"]`,
         );
         const fumadocsOp = document.querySelector(
-          `[data-api-fumadocs-operation="${op.operationId}"]`,
+          `[data-api-operation-id="${op.operationId}"]`,
         );
         return {
           operationId: op.operationId,
@@ -196,7 +196,7 @@ try {
       return {
         surfaceStatus: surface?.getAttribute("data-api-status") ?? null,
         hasStatusPanel: Boolean(statusPanel),
-        fumadocsOps: document.querySelectorAll("[data-api-fumadocs-operation]")
+        fumadocsOps: document.querySelectorAll("[data-api-operation-section]")
           .length,
         sectionCount: document.querySelectorAll("[data-api-operation-section]")
           .length,

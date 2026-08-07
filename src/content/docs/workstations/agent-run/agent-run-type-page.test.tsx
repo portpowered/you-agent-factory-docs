@@ -62,13 +62,12 @@ describe("workstations agent-run type page", () => {
     expect(openingSummary).toMatch(/AGENT_RUN/i);
     expect(openingSummary).toMatch(/WorkstationType/i);
     expect(openingSummary).toMatch(/AGENT_WORKER/i);
-    expect(openingSummary).toMatch(/openCodeAgent/i);
     expect(howToUse).toMatch(/type AGENT_RUN/i);
     expect(howToUse).toMatch(/AGENT_WORKER/i);
     expect(howToUse).toMatch(/Do not set operation/i);
     expect(howToUse).toMatch(/not a scheduling behavior/i);
     expect(howToUse).toMatch(/not MODEL_INVOKE/i);
-    expect(schemaReference).toMatch(/selects the exclusive openCodeAgent/i);
+    expect(schemaReference).toMatch(/carries no field of its own/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operation/i);
     expect(openingSummary).not.toMatch(
@@ -89,16 +88,17 @@ describe("workstations agent-run type page", () => {
     expect(presentation.variantLabel).toBe("AGENT_RUN");
     expect(presentation.fields).toEqual(
       expect.arrayContaining([
-        { path: "openCodeAgent", applicability: "selected" },
         { path: "operation", applicability: "excluded" },
         { path: "classificationRoutes", applicability: "excluded" },
         { path: "cron", applicability: "excluded" },
       ]),
     );
+    // `@you-agent-factory/api` 0.0.6 removed `openCodeAgent`, the one field
+    // AGENT_RUN used to select. The type is now identified by its discriminator
+    // and required companion alone, so it selects nothing.
     expect(
-      presentation.fields.find((field) => field.path === "openCodeAgent")
-        ?.applicability,
-    ).toBe("selected");
+      presentation.fields.filter((field) => field.applicability === "selected"),
+    ).toEqual([]);
     expect(overlay.companions.compatible).toContain("worker:AGENT_WORKER");
     expect(overlay.companions.compatible).toContain("behavior:STANDARD");
     expect(overlay.companions.compatible).toContain("behavior:CRON");
@@ -109,7 +109,7 @@ describe("workstations agent-run type page", () => {
     ]);
     expect(AGENT_RUN_TYPE_MINIMAL_EXAMPLE.type).toBe("AGENT_RUN");
     expect(AGENT_RUN_TYPE_MINIMAL_EXAMPLE.behavior).toBe("STANDARD");
-    expect(AGENT_RUN_TYPE_MINIMAL_EXAMPLE).toHaveProperty("openCodeAgent");
+    expect(AGENT_RUN_TYPE_MINIMAL_EXAMPLE).not.toHaveProperty("openCodeAgent");
     expect(AGENT_RUN_TYPE_MISUSE_OPERATION_EXAMPLE).toHaveProperty("operation");
     expect(AGENT_RUN_TYPE_MISUSE_OPERATION_EXAMPLE.type).toBe("AGENT_RUN");
   });
@@ -233,7 +233,7 @@ describe("workstations agent-run type page", () => {
     expect(
       examples?.querySelector('[data-agent-run-type-example="minimal"]')
         ?.textContent,
-    ).toContain('"openCodeAgent"');
+    ).toContain('"worker": "agent-main"');
     expect(
       examples?.querySelector(
         '[data-agent-run-type-example="misuse-operation"]',

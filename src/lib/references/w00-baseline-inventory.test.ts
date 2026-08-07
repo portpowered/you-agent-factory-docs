@@ -64,8 +64,18 @@ describe("W00 reference baseline inventory fixtures", () => {
     const byPath = Object.fromEntries(
       live.streams.map((stream) => [stream.path, stream]),
     );
-    expect(byPath["/events"]?.role).toBe("compatibility-only");
-    expect(byPath["/events"]?.preferredOrCanonical).toBe(false);
+    // The presentation rule above is policy and outlives the spec: it says that
+    // *if* a process-global /events stream is published it is never preferred.
+    // `@you-agent-factory/api` 0.0.6 stopped publishing one, so the rule holds
+    // vacuously and no stream may claim the path or the role.
+    expect(byPath["/events"]).toBeUndefined();
+    expect(
+      live.streams.some(
+        (stream) =>
+          stream.preferredOrCanonical === false &&
+          stream.role === "compatibility-only",
+      ),
+    ).toBe(false);
     expect(byPath["/factory-sessions/{session_id}/events"]?.role).toBe(
       "canonical",
     );

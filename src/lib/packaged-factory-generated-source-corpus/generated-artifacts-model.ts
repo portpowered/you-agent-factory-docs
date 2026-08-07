@@ -2,8 +2,13 @@
  * Pure generated-artifact model for the packaged-factories-index corpus.
  *
  * Builds deterministic JSON contents for index.json, per-factory definition
- * files, deep-research.source.json, and manifest.json from already-acquired
- * corpus + companion models. No filesystem IO.
+ * files, factory-recording samples, and manifest.json from an already-acquired
+ * corpus model. No filesystem IO.
+ *
+ * `@you-agent-factory/packaged-factories` 0.0.6 stopped shipping the
+ * deep-research companion JavaScript, and its factory.json no longer references
+ * any script, so the companion artifact and its `companion-javascript` manifest
+ * kind were retired with it.
  */
 
 import { PACKAGED_FACTORY_V002_VERSION } from "@/lib/packaged-factory-v002/five-package-pins";
@@ -11,7 +16,6 @@ import {
   PACKAGED_FACTORIES_ALLOWLIST_SLUGS,
   type PackagedFactoriesAllowlistSlug,
 } from "@/lib/packaged-factory-v002/packaged-factories-allowlist";
-import type { PackagedFactoryCompanionSource } from "./companion-source-model";
 import {
   hashPackagedFactorySourceText,
   type PackagedFactoryIndexCorpus,
@@ -27,8 +31,6 @@ export const PACKAGED_FACTORIES_INDEX_GENERATED_RELATIVE_ROOT =
 
 export const PACKAGED_FACTORIES_INDEX_ARTIFACT_PATH = "index.json" as const;
 export const PACKAGED_FACTORIES_INDEX_MANIFEST_PATH = "manifest.json" as const;
-export const PACKAGED_FACTORIES_INDEX_COMPANION_ARTIFACT_PATH =
-  "deep-research.source.json" as const;
 
 export const PACKAGED_FACTORIES_INDEX_GENERATED_FORMAT_VERSION = "1" as const;
 
@@ -44,18 +46,14 @@ export function packagedFactoriesIndexFactoryDefinitionArtifactPath(
 
 /**
  * Consolidated index model written to `index.json`.
- * Includes ordered corpus entries (story 001) plus companion source (story 002).
+ * Ordered corpus entries (story 001).
  */
-export type PackagedFactoriesIndexGeneratedIndex =
-  PackagedFactoryIndexCorpus & {
-    companionSource: PackagedFactoryCompanionSource;
-  };
+export type PackagedFactoriesIndexGeneratedIndex = PackagedFactoryIndexCorpus;
 
 export type PackagedFactoriesIndexManifestArtifactKind =
   | "index"
   | "manifest"
   | "factory-definition"
-  | "companion-javascript"
   | "factory-recording";
 
 export type PackagedFactoriesIndexManifestArtifact = {
@@ -104,7 +102,6 @@ export type PackagedFactoriesIndexGeneratedBundle = {
 };
 
 export type PackagedFactoriesIndexGeneratedArtifactsErrorCode =
-  | "corpus-companion-mismatch"
   | "slug-order-mismatch"
   | "missing-factory-entry";
 
@@ -136,36 +133,12 @@ export function serializePackagedFactoriesIndexGeneratedJson(
 }
 
 /**
- * Build the consolidated index model from acquired corpus + companion.
- * Fails closed when package metadata or deep-research identity diverges.
+ * Build the consolidated index model from the acquired corpus.
+ * Fails closed when slug membership or order diverges from the allowlist.
  */
 export function buildPackagedFactoriesIndexGeneratedIndex(
   corpus: PackagedFactoryIndexCorpus,
-  companionSource: PackagedFactoryCompanionSource,
 ): PackagedFactoriesIndexGeneratedIndex {
-  if (corpus.packageVersion !== companionSource.packageVersion) {
-    throw new PackagedFactoriesIndexGeneratedArtifactsError(
-      "corpus-companion-mismatch",
-      `Corpus package version ${JSON.stringify(corpus.packageVersion)} does not match companion package version ${JSON.stringify(companionSource.packageVersion)}.`,
-    );
-  }
-
-  const deepResearch = corpus.entries.find(
-    (entry) => entry.childSlug === "deep-research",
-  );
-  if (deepResearch === undefined) {
-    throw new PackagedFactoriesIndexGeneratedArtifactsError(
-      "missing-factory-entry",
-      `Corpus is missing the deep-research entry required to pair companion JavaScript.`,
-    );
-  }
-  if (deepResearch.canonicalName !== companionSource.canonicalName) {
-    throw new PackagedFactoriesIndexGeneratedArtifactsError(
-      "corpus-companion-mismatch",
-      `Companion canonical name ${JSON.stringify(companionSource.canonicalName)} does not match deep-research corpus entry ${JSON.stringify(deepResearch.canonicalName)}.`,
-    );
-  }
-
   if (corpus.entries.length !== PACKAGED_FACTORIES_ALLOWLIST_SLUGS.length) {
     throw new PackagedFactoriesIndexGeneratedArtifactsError(
       "slug-order-mismatch",
@@ -190,27 +163,22 @@ export function buildPackagedFactoriesIndexGeneratedIndex(
     packageVersion: corpus.packageVersion,
     exportsMapAbsent: corpus.exportsMapAbsent,
     entries: corpus.entries,
-    companionSource,
   };
 }
 
 /**
- * Build the full deterministic generated file bundle (index, definitions,
- * companion, six factory-recording/v1 samples, manifest) without writing to
- * disk. Recording samples are validated through the public client parser and
- * factory-replay projections before they are included.
+ * Build the full deterministic generated file bundle (index, definitions, six
+ * factory-recording/v1 samples, manifest) without writing to disk. Recording
+ * samples are validated through the public client parser and factory-replay
+ * projections before they are included.
  */
 export function buildPackagedFactoriesIndexGeneratedBundle(
   corpus: PackagedFactoryIndexCorpus,
-  companionSource: PackagedFactoryCompanionSource,
   recordings: PackagedFactoryRecordingSampleArtifact[] = buildPackagedFactoryRecordingSamples(
     corpus,
   ),
 ): PackagedFactoriesIndexGeneratedBundle {
-  const index = buildPackagedFactoriesIndexGeneratedIndex(
-    corpus,
-    companionSource,
-  );
+  const index = buildPackagedFactoriesIndexGeneratedIndex(corpus);
 
   const files: PackagedFactoriesIndexGeneratedArtifactFile[] = [];
 
@@ -230,13 +198,6 @@ export function buildPackagedFactoriesIndexGeneratedBundle(
     });
   }
 
-  const companionContents =
-    serializePackagedFactoriesIndexGeneratedJson(companionSource);
-  files.push({
-    relativePath: PACKAGED_FACTORIES_INDEX_COMPANION_ARTIFACT_PATH,
-    contents: companionContents,
-  });
-
   const recordingContentsByPath = new Map<string, string>();
   for (const recordingArtifact of recordings) {
     const contents = serializePackagedFactoriesIndexGeneratedJson(
@@ -249,16 +210,11 @@ export function buildPackagedFactoriesIndexGeneratedBundle(
     });
   }
 
-  const sourceHashes: PackagedFactoriesIndexManifestSourceHash[] = [
-    ...index.entries.map((entry) => ({
+  const sourceHashes: PackagedFactoriesIndexManifestSourceHash[] =
+    index.entries.map((entry) => ({
       relativePath: entry.sourceRelativePath,
       sha256: entry.factoryJsonSha256,
-    })),
-    {
-      relativePath: companionSource.relativePath,
-      sha256: companionSource.sourceSha256,
-    },
-  ];
+    }));
 
   // Manifest lists content artifacts only (not itself) so artifact hashes stay
   // byte-stable without a self-referential hash cycle. The manifest file is
@@ -279,14 +235,6 @@ export function buildPackagedFactoriesIndexGeneratedBundle(
       sourceRelativePath: entry.sourceRelativePath,
       sourceSha256: entry.factoryJsonSha256,
     })),
-    {
-      path: PACKAGED_FACTORIES_INDEX_COMPANION_ARTIFACT_PATH,
-      kind: "companion-javascript",
-      artifactSha256: hashPackagedFactorySourceText(companionContents),
-      childSlug: companionSource.childSlug,
-      sourceRelativePath: companionSource.relativePath,
-      sourceSha256: companionSource.sourceSha256,
-    },
     ...recordings.map((recordingArtifact) => {
       const contents = recordingContentsByPath.get(
         recordingArtifact.relativePath,

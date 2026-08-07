@@ -1,74 +1,148 @@
 {
-  "name": "@you/tts",
-  "id": "builtin-tts",
-  "workTypes": [
+  "description": {
+    "type": "LOCALIZABLE_ASSET",
+    "value": "Converts submitted text to audio with the packaged local text-to-speech model."
+  },
+  "examples": [
     {
-      "name": "task",
-      "handlingBehavior": ["DEFAULT"],
-      "states": [
-        {"name": "init", "type": "INITIAL"},
-        {"name": "complete", "type": "TERMINAL"},
-        {"name": "failed", "type": "FAILED"}
-      ]
+      "args": {
+        "text": "The release is ready."
+      },
+      "description": {
+        "type": "LOCALIZABLE_ASSET",
+        "value": "Convert a short release summary to audio."
+      },
+      "name": "speak-release-summary"
     }
   ],
+  "id": "builtin-tts",
+  "invocationSignature": {
+    "parameters": [
+      {
+        "bindings": [
+          {
+            "kind": "POSITIONAL",
+            "position": 1
+          },
+          {
+            "kind": "STDIN"
+          },
+          {
+            "kind": "NAMED"
+          }
+        ],
+        "description": "Text to convert to speech.",
+        "externalName": "to",
+        "name": "text",
+        "required": true
+      }
+    ]
+  },
+  "name": "tts",
   "resources": [
     {
-      "name": "omnivoice-cache",
-      "type": "MODEL",
-      "capacity": 1,
-      "model": "OMNIVOICE_Q4_K_M",
       "backend": "LLAMACPP",
-      "loadPolicy": "ON_DEMAND"
+      "capacity": 1,
+      "loadPolicy": "ON_DEMAND",
+      "model": "OMNIVOICE_Q4_K_M",
+      "name": "omnivoice-cache",
+      "type": "MODEL"
+    }
+  ],
+  "workTypes": [
+    {
+      "handlingBehavior": [
+        "DEFAULT"
+      ],
+      "name": "task",
+      "states": [
+        {
+          "name": "init",
+          "type": "INITIAL"
+        },
+        {
+          "name": "complete",
+          "type": "TERMINAL"
+        },
+        {
+          "name": "failed",
+          "type": "FAILED"
+        }
+      ]
     }
   ],
   "workers": [
     {
-      "name": "tts-executor",
-      "type": "MODEL_WORKER",
-      "model": "OMNIVOICE_Q4_K_M",
-      "modelProvider": "CODEX",
-      "modelLocality": "LOCAL",
+      "body": "You are the local text-to-speech worker for @you/tts. Treat the bound text slot as the complete input, preserve its wording and reading order, synthesize exactly one audio result with the configured local model, and surface a clear failure rather than returning partial or unrelated content.",
       "command": "omnivoice-llamacpp",
-      "resources": [
-        {"name": "omnivoice-cache", "capacity": 1}
-      ],
+      "model": "OMNIVOICE_Q4_K_M",
+      "modelLocality": "LOCAL",
+      "modelProvider": "CODEX",
+      "name": "tts-executor",
       "operations": [
         {
-          "name": "TTS",
           "inputs": [
-            {"name": "text", "contentTypes": ["TEXT"], "required": true}
+            {
+              "contentTypes": [
+                "TEXT"
+              ],
+              "name": "text",
+              "required": true
+            }
           ],
+          "name": "TTS",
           "outputs": [
-            {"name": "audio", "contentTypes": ["AUDIO"]}
+            {
+              "contentTypes": [
+                "AUDIO"
+              ],
+              "name": "audio"
+            }
           ]
         }
       ],
-      "body": "You are the @you/tts built-in factory worker."
+      "resources": [
+        {
+          "capacity": 1,
+          "name": "omnivoice-cache"
+        }
+      ],
+      "type": "INFERENCE_WORKER"
     }
   ],
   "workstations": [
     {
+      "body": "For Work {{ .WorkID }}, read the complete bound text input, pass it unchanged to the configured TTS operation, and return the resulting audio content. Do not summarize, translate, add commentary, or claim success if synthesis produces no valid audio output.",
+      "inputs": [
+        {
+          "state": "init",
+          "workType": "task"
+        }
+      ],
       "name": "execute-tts",
-      "type": "MODEL_INVOKE",
-      "worker": "tts-executor",
+      "onFailure": [
+        {
+          "state": "failed",
+          "workType": "task"
+        }
+      ],
       "operation": "TTS",
       "operationBindings": [
         {
-          "slot": "text",
-          "selector": {"type": "TEXT"}
+          "selector": {
+            "type": "TEXT"
+          },
+          "slot": "text"
         }
       ],
-      "inputs": [
-        {"workType": "task", "state": "init"}
-      ],
       "outputs": [
-        {"workType": "task", "state": "complete"}
+        {
+          "state": "complete",
+          "workType": "task"
+        }
       ],
-      "onFailure": [
-        {"workType": "task", "state": "failed"}
-      ],
-      "body": "Convert the requested text into speech for {{ .WorkID }}."
+      "type": "INFERENCE_RUN",
+      "worker": "tts-executor"
     }
   ]
 }

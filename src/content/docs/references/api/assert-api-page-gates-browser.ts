@@ -95,6 +95,12 @@ try {
     waitUntil: "domcontentloaded",
     timeout: 120_000,
   });
+
+  // Operation detail renders on the client from the shipped OpenAPI JSON.
+  // Nothing below this point exists in the delivered HTML.
+  await page.waitForSelector('[data-api-shipped-json-state="ready"]', {
+    timeout: 60_000,
+  });
   if (!response?.ok()) {
     throw new Error(
       `Expected 200 for ${PAGE_PATH}, got ${response?.status() ?? "no response"}`,
@@ -129,7 +135,7 @@ try {
   }
 
   const fumadocsOps = await page
-    .locator("[data-api-fumadocs-operation]")
+    .locator("[data-api-operation-section]")
     .count();
   if (fumadocsOps < 1) {
     throw new Error(
@@ -227,12 +233,12 @@ try {
       document.querySelectorAll('a[href^="/docs/references/events"]'),
     ).length;
     const insideFumadocs = summaries.filter((el) =>
-      el.closest("[data-api-fumadocs-operation]"),
+      el.closest("[data-api-operation-section]"),
     ).length;
     const matchedIds = ids.filter(
       (id) =>
         document.querySelector(
-          `[data-api-fumadocs-operation="${id}"] [data-api-sse-summary]`,
+          `[data-api-operation-id="${id}"] [data-api-sse-summary]`,
         ) !== null,
     );
     return {
@@ -253,14 +259,12 @@ try {
 
   const { operationId, expectedFieldNames } = API_SCHEMA_COMPONENT_PROBE;
   const schemaSection = page.locator(
-    `[data-api-fumadocs-operation="${operationId}"]`,
+    `[data-api-operation-id="${operationId}"]`,
   );
   await schemaSection.scrollIntoViewIfNeeded();
   await page.waitForFunction(
     ({ opId, slotAttr, fields }) => {
-      const op = document.querySelector(
-        `[data-api-fumadocs-operation="${opId}"]`,
-      );
+      const op = document.querySelector(`[data-api-operation-id="${opId}"]`);
       const requestSlot = op?.querySelector(`[${slotAttr}="request"]`);
       const text = requestSlot?.textContent ?? "";
       return (

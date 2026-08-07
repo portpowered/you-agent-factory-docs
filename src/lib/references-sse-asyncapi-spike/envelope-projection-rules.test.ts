@@ -162,7 +162,7 @@ describe("W02 SSE spike — envelope attachment / no invented discriminator (006
       projection.asyncapi,
       projection.selectedStreams,
     );
-    expect(evidence.messages).toHaveLength(3);
+    expect(evidence.messages).toHaveLength(2);
     expect(
       evidence.messages.every(
         (m) => m.envelopeAttachment === ENVELOPE_ATTACHMENT_MODE,

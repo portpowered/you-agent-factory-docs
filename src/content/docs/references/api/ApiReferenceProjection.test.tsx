@@ -81,7 +81,7 @@ function stubApiPagePropsFromNavigation(
   };
 }
 
-function stubRenderApiPage(
+function _stubRenderApiPage(
   props: ApiPageProps,
   navigation: ApiOperationNavigationProjection,
 ): ReactNode {
@@ -164,31 +164,17 @@ describe("ApiReferenceProjection", () => {
   });
 
   test(
-    "mounts Fumadocs-primary operations with tag navigation on the ready path",
+    "renders tag navigation and one static header per published operation",
     () => {
-      const { navigation, apiPageProps } = readyStubBundle();
-      expect(navigation.model.operationCount).toBeGreaterThan(0);
-
-      const state = resolveApiReferenceProjectionState({
-        buildNavigation: () => navigation,
-        buildDetails: (): ApiOperationDetailProjection => ({
-          details: [],
-          byAnchor: new Map(),
-          operationCount: navigation.model.operationCount,
-          operationsWithAuthoredExamples: 0,
-          operationsWithEventStream: 0,
-          specifier: "@you-agent-factory/api/openapi",
-        }),
-        buildLocalServer: buildApiLocalServerBaseUrlFromArtifact,
-      });
+      // Real loaders: the static shell is projected from the same packaged
+      // artifact the nav is, so anchors must line up between them.
+      const state = resolveApiReferenceProjectionState();
       expect(state.status).toBe("ready");
+      if (state.status !== "ready") return;
+      expect(state.model.operationCount).toBeGreaterThan(0);
 
       const { container } = render(
-        <ApiReferenceProjectionView
-          state={state}
-          apiPageProps={apiPageProps}
-          renderApiPage={(props) => stubRenderApiPage(props, navigation)}
-        />,
+        <ApiReferenceProjectionView state={state} />,
       );
 
       const surface = screen.getByTestId("api-surface");
@@ -209,19 +195,12 @@ describe("ApiReferenceProjection", () => {
         container.querySelector(`[${API_FUMADOCS_OPERATIONS_ATTR}]`),
       ).not.toBeNull();
 
-      const sections = container.querySelectorAll(
-        `[${API_OPERATION_SECTION_ATTR}]`,
-      );
-      expect(sections.length).toBe(navigation.model.operationCount);
-
-      for (const item of navigation.model.groups.flatMap(
-        (group) => group.items,
-      )) {
+      // Detail arrives client-side from the shipped JSON; every operation must
+      // still be addressable and readable from delivered HTML.
+      for (const item of state.model.groups.flatMap((group) => group.items)) {
         const section = container.querySelector(`#${CSS.escape(item.anchor)}`);
         expect(section).not.toBeNull();
-        expect(section?.getAttribute(API_FUMADOCS_OPERATION_ATTR)).toBe(
-          item.anchor,
-        );
+        expect(section?.getAttribute("data-api-operation-path")).toBeTruthy();
 
         const navLinks = container.querySelectorAll(
           `[${API_OPERATION_NAV_LINK_ATTR}][href="#${item.anchor}"]`,
@@ -246,7 +225,7 @@ describe("ApiReferenceProjection", () => {
         throw new Error("expected packaged OpenAPI servers entry");
       }
 
-      const { navigation, apiPageProps } = readyStubBundle();
+      const { navigation } = readyStubBundle();
       const state = resolveApiReferenceProjectionState({
         buildNavigation: () => navigation,
         buildDetails: (): ApiOperationDetailProjection => ({
@@ -261,11 +240,7 @@ describe("ApiReferenceProjection", () => {
       });
 
       const { container } = render(
-        <ApiReferenceProjectionView
-          state={state}
-          apiPageProps={apiPageProps}
-          renderApiPage={(props) => stubRenderApiPage(props, navigation)}
-        />,
+        <ApiReferenceProjectionView state={state} />,
       );
       const root = screen.getByTestId("api-reference-projection");
 
@@ -339,16 +314,21 @@ describe("ApiReferenceProjection", () => {
     ).toBe(0);
   });
 
-  test("renders accessible invalid status when Fumadocs props are missing on ready state", () => {
+  test("ready state renders static operation headers for no-JS readers", () => {
     const state = resolveApiReferenceProjectionState();
     expect(state.status).toBe("ready");
 
-    render(
-      <ApiReferenceProjectionView state={state} apiPageProps={undefined} />,
-    );
+    const { container } = render(<ApiReferenceProjectionView state={state} />);
 
-    const status = screen.getByRole("status");
-    expect(status.getAttribute("data-api-status")).toBe("invalid");
-    expect(status.textContent).toContain(API_UI_STATUS_DEFAULT_TITLES.invalid);
+    // Operation detail loads client-side from the shipped JSON; identity and
+    // summary must still be present without it.
+    const statics = container.querySelector("[data-api-static-operations]");
+    expect(statics).toBeTruthy();
+    expect(
+      container.querySelectorAll("[data-api-operation-path]").length,
+    ).toBeGreaterThan(0);
+    expect(
+      container.querySelector("[data-api-shipped-json-state]"),
+    ).toBeTruthy();
   });
 });

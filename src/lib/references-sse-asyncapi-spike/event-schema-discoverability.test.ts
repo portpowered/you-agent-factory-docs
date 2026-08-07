@@ -56,16 +56,14 @@ describe("W02 SSE spike — FactoryEvent / FactoryResponseEvent discoverability"
 
     expect(evidence.renderer).toBe(NATIVE_FUMADOCS_SSE_RENDER.renderer);
     expect(evidence.xEventSchemaHandling).toBe("ignored");
-    expect(evidence.operations).toHaveLength(3);
+    expect(evidence.operations).toHaveLength(2);
     expect(evidence.operations.map((entry) => entry.role)).toEqual([
       "canonical",
       "ephemeral",
-      "compatibility-only",
     ]);
     expect(evidence.operations.map((entry) => entry.rootEventSchema)).toEqual([
       "FactoryEvent",
       "FactoryResponseEvent",
-      "FactoryEvent",
     ]);
 
     for (const entry of evidence.operations) {
@@ -81,7 +79,7 @@ describe("W02 SSE spike — FactoryEvent / FactoryResponseEvent discoverability"
 
     // Roles stay distinguishable even though payload shapes are not.
     expect(new Set(evidence.operations.map((entry) => entry.role)).size).toBe(
-      3,
+      2,
     );
   });
 

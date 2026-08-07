@@ -179,7 +179,7 @@ describe("EventStreamOperationSummary", () => {
 });
 
 describe("EventStreamOperationsList against live packaged OpenAPI", () => {
-  test("renders all three roles with correct preferred/canonicality semantics", () => {
+  test("renders every published role with correct preferred/canonicality semantics", () => {
     const corpus = resolveEventCorpus();
     const summaries = eventStreamOperationSummaryModelsFromCorpus({
       selectedStreams: corpus.selectedStreams,
@@ -189,7 +189,6 @@ describe("EventStreamOperationsList against live packaged OpenAPI", () => {
     expect(summaries.map((item) => item.role)).toEqual([
       "canonical",
       "ephemeral",
-      "compatibility-only",
     ]);
     expect(summaries.map((item) => item.path)).toEqual(
       EVENT_STREAM_OPERATIONS.map((item) => item.path),
@@ -203,7 +202,7 @@ describe("EventStreamOperationsList against live packaged OpenAPI", () => {
     );
 
     const list = screen.getByTestId("event-stream-operations-list");
-    expect(list.getAttribute("data-event-stream-count")).toBe("3");
+    expect(list.getAttribute("data-event-stream-count")).toBe("2");
 
     const canonical = screen
       .getByText("Canonical session-scoped FactoryEvent stream")
@@ -237,26 +236,13 @@ describe("EventStreamOperationsList against live packaged OpenAPI", () => {
       within(ephemeral as HTMLElement).getByText("Not preferred"),
     ).toBeTruthy();
 
-    const compatibility = screen
-      .getByText("Compatibility-only process-global FactoryEvent stream")
-      .closest('[data-testid="event-stream-operation-summary"]');
-    expect(compatibility?.getAttribute("data-event-stream-role")).toBe(
-      "compatibility-only",
-    );
+    // `@you-agent-factory/api` 0.0.6 removed the process-global GET /events
+    // stream, so no summary carries the compatibility-only role any more.
     expect(
-      compatibility?.getAttribute("data-event-preferred-session-stream"),
-    ).toBe("false");
-    expect(
-      within(compatibility as HTMLElement).getByText("Non-canonical"),
-    ).toBeTruthy();
-    expect(
-      within(compatibility as HTMLElement).getByText("Not preferred"),
-    ).toBeTruthy();
-    expect(
-      within(compatibility as HTMLElement).getByText(
-        /Compatibility-only \/ non-canonical/i,
+      screen.queryByText(
+        "Compatibility-only process-global FactoryEvent stream",
       ),
-    ).toBeTruthy();
+    ).toBeNull();
   });
 
   test("empty list renders accessible empty messaging", () => {

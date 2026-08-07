@@ -34,10 +34,10 @@ describe("factory search item hits above page crowding (W16-006)", () => {
       ),
     ).toBe(true);
 
-    const command = await docsSearchApi.search("you config init");
+    const command = await docsSearchApi.search("you models inspect");
     expect(
       command.some(
-        (result) => result.url === "/docs/references/cli#you-config-init",
+        (result) => result.url === "/docs/references/cli#you-models-inspect",
       ),
     ).toBe(true);
   });

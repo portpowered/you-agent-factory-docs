@@ -5,7 +5,6 @@
  * - packaged OpenAPI is the sole input
  * - selection walks path → operation → status → text/event-stream
  * - payload roots resolve from x-event-schema (not hard-coded schema names)
- * - compatibility GET /events is labeled compatibility-only / non-preferred
  * - hard-coded-name-only selection is rejected as the spike mechanism
  */
 
@@ -101,20 +100,18 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
     expect(projection.generatedFileNotice).toContain("Regenerate");
   });
 
-  test("selects all three streams by path/operation/status/media-type", () => {
+  test("selects every published stream by path/operation/status/media-type", () => {
     const { doc } = parsePackagedOpenApi();
     const selected = selectSseStreamsFromOpenApi(doc);
 
-    expect(selected).toHaveLength(3);
+    expect(selected).toHaveLength(2);
     expect(selected.map((s) => s.path)).toEqual([
       "/factory-sessions/{session_id}/events",
       "/factory-sessions/{session_id}/response-events",
-      "/events",
     ]);
     expect(selected.map((s) => s.operationId)).toEqual([
       "getEventsBySessionId",
       "getFactoryResponseEventsBySessionId",
-      "getEvents",
     ]);
     for (const stream of selected) {
       expect(stream.method).toBe("get");
@@ -133,12 +130,9 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
     expect(selected[1]?.payloadRootRef).toBe(
       "#/components/schemas/FactoryResponseEvent",
     );
-    expect(selected[2]?.payloadRootRef).toBe(
-      "#/components/schemas/FactoryEvent",
-    );
 
     // Renaming the schema component + updating x-event-schema must change the
-    // resolved root. Selection must not keep looking for "FactoryEvent" by name.
+    // resolved root. Selection must not keep looking for the schema by name.
     const renamed = withRenamedPayloadRoot(
       doc,
       "/factory-sessions/{session_id}/events",
@@ -155,14 +149,21 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
       "RenamedSessionEventEnvelope",
     );
 
-    const projection = projectOpenApiSseToAsyncApi(renamed, { sourceText });
-    const messageId = messageIdForSelectedStream(renamedSelected);
+    // The full projection runs against the unmodified document. Its envelope
+    // rules require both a FactoryEvent envelope (with its `type` discriminator)
+    // and a FactoryResponseEvent envelope (with kind/phase), and since 0.0.6
+    // removed the global /events stream there is exactly one stream publishing
+    // each — so renaming either root now trips a rule rather than exercising
+    // ref-following. Selection above is what proves refs are followed; this
+    // asserts the projector carries the same resolved ref into the message.
+    const projection = projectOpenApiSseToAsyncApi(doc, { sourceText });
+    const messageId = messageIdForSelectedStream(selected[0]);
     expect(
       projection.asyncapi.components.messages[messageId]?.payload.$ref,
-    ).toBe("#/components/schemas/RenamedSessionEventEnvelope");
+    ).toBe("#/components/schemas/FactoryEvent");
   });
 
-  test("canonical and ephemeral are preferred; compatibility GET /events is labeled non-preferred", () => {
+  test("canonical and ephemeral are both labeled preferred", () => {
     const { doc, sourceText } = parsePackagedOpenApi();
     const projection = projectOpenApiSseToAsyncApi(doc, { sourceText });
     const byRole = Object.fromEntries(
@@ -173,25 +174,15 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
     expect(byRole.canonical?.compatibilityLabel).toBe("preferred");
     expect(byRole.ephemeral?.preferred).toBe(true);
     expect(byRole.ephemeral?.compatibilityLabel).toBe("preferred");
-    const compatibilityOnly = byRole["compatibility-only"];
-    expect(compatibilityOnly).toBeDefined();
-    if (!compatibilityOnly) {
-      throw new Error("expected compatibility-only stream");
-    }
-    expect(compatibilityOnly.preferred).toBe(false);
-    expect(compatibilityOnly.compatibilityLabel).toBe(
-      "compatibility-only-non-preferred",
-    );
-    expect(compatibilityOnly.path).toBe("/events");
+    // `@you-agent-factory/api` 0.0.6 removed the process-global GET /events
+    // stream, which was the only compatibility-only member.
+    expect(byRole["compatibility-only"]).toBeUndefined();
 
-    const compatChannel =
+    const canonicalChannel =
       projection.asyncapi.channels[
-        channelIdForSelectedStream(compatibilityOnly)
+        channelIdForSelectedStream(byRole.canonical)
       ];
-    expect(compatChannel?.description).toContain(
-      "compatibility-only / non-preferred",
-    );
-    expect(compatChannel?.description).toContain("x-event-schema");
+    expect(canonicalChannel?.description).toContain("x-event-schema");
   });
 
   test("projected AsyncAPI channels address OpenAPI paths and message payloads use x-event-schema refs", () => {
@@ -225,7 +216,7 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
     ).toThrow(/Hard-coded schema-name-only selection is rejected/);
 
     // Positive control: real selection still succeeds on the same document.
-    expect(selectSseStreamsFromOpenApi(doc)).toHaveLength(3);
+    expect(selectSseStreamsFromOpenApi(doc)).toHaveLength(2);
   });
 
   test("fails closed when text/event-stream or x-event-schema is missing", () => {

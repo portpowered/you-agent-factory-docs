@@ -91,7 +91,6 @@ describe("workstations poller-run type page", () => {
     expect(presentation.fields).toEqual(
       expect.arrayContaining([
         { path: "promptFile", applicability: "excluded" },
-        { path: "openCodeAgent", applicability: "excluded" },
         { path: "operation", applicability: "excluded" },
         { path: "cron", applicability: "excluded" },
       ]),

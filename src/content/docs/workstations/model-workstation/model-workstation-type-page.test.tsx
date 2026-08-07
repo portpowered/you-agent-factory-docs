@@ -100,7 +100,6 @@ describe("workstations model-workstation type page", () => {
         { path: "stopWords", applicability: "selected" },
         { path: "operation", applicability: "excluded" },
         { path: "operationBindings", applicability: "excluded" },
-        { path: "openCodeAgent", applicability: "excluded" },
         { path: "cron", applicability: "excluded" },
       ]),
     );

@@ -98,7 +98,6 @@ describe("workstations model-invoke type page", () => {
         { path: "outcomeFormat", applicability: "excluded" },
         { path: "outputSchema", applicability: "excluded" },
         { path: "stopWords", applicability: "excluded" },
-        { path: "openCodeAgent", applicability: "excluded" },
         { path: "cron", applicability: "excluded" },
       ]),
     );

@@ -29,8 +29,7 @@ describe("HeroSection", () => {
       `min-height:${HERO_SECTION_TERMINAL_HOLE_MIN_HEIGHT}px`,
     );
     expect(html).toContain("YOU");
-    expect(html).toContain("AGENT");
-    expect(html).toContain("FACTORY CLI");
+    expect(html).not.toContain("FACTORY CLI");
     expect(html).toContain(HERO_SECTION_DEFAULT_SUBTITLE);
     expect(HERO_SECTION_DEFAULT_TITLE).toBe(fixtureLandingPageData.hero.title);
   });

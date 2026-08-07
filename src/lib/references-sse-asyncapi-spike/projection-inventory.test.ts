@@ -66,10 +66,10 @@ describe("W02 SSE spike — AsyncAPI projector closure / inventory (005)", () =>
     // Wholesale copy preserves discriminator, description, and oneOf shape.
     expect(factoryEvent.discriminator?.propertyName).toBe("type");
     expect(Object.keys(factoryEvent.discriminator?.mapping ?? {}).length).toBe(
-      31,
+      32,
     );
     expect(factoryEvent.description).toContain("canonical schema");
-    expect(factoryEvent.properties?.payload?.oneOf?.length).toBe(31);
+    expect(factoryEvent.properties?.payload?.oneOf?.length).toBe(32);
   });
 
   test("generated output carries source hash and generated-file notice", () => {
@@ -96,7 +96,7 @@ describe("W02 SSE spike — AsyncAPI projector closure / inventory (005)", () =>
     const { inventory } = projection;
 
     expect(inventory.sourceHash).toBe(projection.sourceHash);
-    expect(inventory.operations).toHaveLength(3);
+    expect(inventory.operations).toHaveLength(2);
     expect(inventory.schemaClosure.unresolvedReferenceCount).toBe(0);
     expect(inventory.schemaClosure.schemaCount).toBe(
       projection.schemaClosure.schemaNames.length,
@@ -114,8 +114,8 @@ describe("W02 SSE spike — AsyncAPI projector closure / inventory (005)", () =>
     expect(byRole.canonical?.rootEventSchemaRef).toBe(
       "#/components/schemas/FactoryEvent",
     );
-    expect(byRole.canonical?.eventTypeCount).toBe(31);
-    expect(byRole.canonical?.payloadVariantCount).toBe(31);
+    expect(byRole.canonical?.eventTypeCount).toBe(32);
+    expect(byRole.canonical?.payloadVariantCount).toBe(32);
     expect(byRole.canonical?.unresolvedReferenceCount).toBe(0);
 
     expect(byRole.ephemeral?.operationId).toBe(
@@ -127,11 +127,8 @@ describe("W02 SSE spike — AsyncAPI projector closure / inventory (005)", () =>
     expect(byRole.ephemeral?.payloadVariantCount).toBe(14);
     expect(byRole.ephemeral?.unresolvedReferenceCount).toBe(0);
 
-    const compatibilityOnly = byRole["compatibility-only"];
-    expect(compatibilityOnly?.operationId).toBe("getEvents");
-    expect(compatibilityOnly?.rootEventSchemaName).toBe("FactoryEvent");
-    expect(compatibilityOnly?.eventTypeCount).toBe(31);
-    expect(compatibilityOnly?.payloadVariantCount).toBe(31);
+    // 0.0.6 removed the process-global GET /events compatibility stream.
+    expect(byRole["compatibility-only"]).toBeUndefined();
 
     expect(projection.asyncapi.info["x-semantic-inventory"]).toEqual(inventory);
   });

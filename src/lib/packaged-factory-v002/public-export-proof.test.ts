@@ -7,6 +7,7 @@ import {
   normalizePackageExportsMap,
   packageExportsMapCoversSubpath,
 } from "./export-map-coverage";
+import { PACKAGED_FACTORY_V002_VERSION } from "./five-package-pins";
 import {
   isPackagedFactoriesAllowlistedRelativePath,
   PACKAGED_FACTORIES_ALLOWLIST_SLUGS,
@@ -104,11 +105,14 @@ describe("packaged-factory v0.0.2 packaged-factories allowlist", () => {
         packagedFactoriesFactoryJsonRelativePath(slug),
       ),
     );
-    expect([...PACKAGED_FACTORIES_OPTIONAL_COMPANION_RELATIVE_PATHS]).toEqual([
-      "factories/deep-research/scripts/deep-research.workflow.js",
-    ]);
+    // 0.0.6 ships no JavaScript, so the optional companion allowlist is empty.
+    expect([...PACKAGED_FACTORIES_OPTIONAL_COMPANION_RELATIVE_PATHS]).toEqual(
+      [],
+    );
     expect(
-      isPackagedFactoriesAllowlistedRelativePath("factories/goal/factory.json"),
+      isPackagedFactoriesAllowlistedRelativePath(
+        "generated/factories/goal/factory.json",
+      ),
     ).toBe(true);
     expect(
       isPackagedFactoriesAllowlistedRelativePath(
@@ -180,8 +184,12 @@ describe("packaged-factory v0.0.2 library public-export proof", () => {
         result.consumerDir,
         "@you-agent-factory/packaged-factories",
       );
-      // Absence of exports map is expected and must not fail library proof.
-      expect(packagedExports).toBeNull();
+      // 0.0.6 publishes an exports map (0.0.2 had none). The library proof must
+      // be indifferent either way — it resolves the package root and reads
+      // allowlisted paths directly rather than going through exports.
+      expect(
+        packagedExports === null || typeof packagedExports === "object",
+      ).toBe(true);
     } finally {
       rmSync(result.consumerDir, { recursive: true, force: true });
     }
@@ -193,8 +201,9 @@ describe("packaged-factory v0.0.2 packaged-factories filesystem pull", () => {
     const proof = provePackagedFactoriesFilesystemPull({ keepOnSuccess: true });
 
     try {
-      expect(proof.pull.installedVersion).toBe("0.0.2");
-      expect(proof.pull.exportsMapAbsent).toBe(true);
+      expect(proof.pull.installedVersion).toBe(PACKAGED_FACTORY_V002_VERSION);
+      // 0.0.6 publishes an exports map; absence was only expected at 0.0.2.
+      expect(proof.pull.exportsMapAbsent).toBe(false);
       expect(proof.pull.required.map((file) => file.relativePath)).toEqual([
         ...PACKAGED_FACTORIES_REQUIRED_RELATIVE_PATHS,
       ]);
@@ -209,13 +218,10 @@ describe("packaged-factory v0.0.2 packaged-factories filesystem pull", () => {
         expect(relativeToRoot).toBe(file.relativePath);
       }
 
+      // No optional companion files remain in the published package.
       expect(
         proof.pull.optionalPresent.map((file) => file.relativePath),
-      ).toEqual(["factories/deep-research/scripts/deep-research.workflow.js"]);
-      const companion = proof.pull.optionalPresent[0];
-      // Companion JS is read as text only — never executed into a derived model.
-      expect(companion?.text.includes("lead-research")).toBe(true);
-      expect(companion?.text.trim().length).toBeGreaterThan(0);
+      ).toEqual([]);
     } finally {
       rmSync(proof.consumerDir, { recursive: true, force: true });
     }
@@ -230,7 +236,7 @@ describe("packaged-factory v0.0.2 packaged-factories filesystem pull", () => {
       const root = resolveInstalledPackagedFactoriesPackageRoot(
         install.consumerDir,
       );
-      expect(root.exportsMapAbsent).toBe(true);
+      expect(root.exportsMapAbsent).toBe(false);
 
       let thrown: unknown;
       try {
@@ -284,13 +290,15 @@ describe("packaged-factory v0.0.2 packaged-factories filesystem pull", () => {
       expect(thrown).toBeInstanceOf(PackagedFactoriesFilesystemPullError);
       const failure = thrown as PackagedFactoriesFilesystemPullError;
       expect(failure.code).toBe("missing-allowlisted-file");
-      expect(failure.relativePath).toBe("factories/goal/factory.json");
+      expect(failure.relativePath).toBe(
+        "generated/factories/goal/factory.json",
+      );
     } finally {
       rmSync(install.consumerDir, { recursive: true, force: true });
     }
   }, 180_000);
 
-  test("fails closed when installed packaged-factories version is not exact 0.0.2", () => {
+  test("fails closed when the installed packaged-factories version drifts from the pin", () => {
     const install = installPackagedFactoryV002CleanConsumer({
       keepOnSuccess: true,
     });
@@ -305,7 +313,10 @@ describe("packaged-factory v0.0.2 packaged-factories filesystem pull", () => {
               absolutePath.includes("@you-agent-factory/packaged-factories") &&
               absolutePath.endsWith("package.json")
             ) {
-              return text.replace('"version": "0.0.2"', '"version": "9.9.9"');
+              return text.replace(
+                `"version": "${PACKAGED_FACTORY_V002_VERSION}"`,
+                '"version": "9.9.9"',
+              );
             }
             return text;
           },
@@ -334,13 +345,13 @@ describe("packaged-factory v0.0.2 split acquisition proof", () => {
       expect(result.libraryExports).toHaveLength(
         PACKAGED_FACTORY_V002_FIXED_REQUIRED_EXPORTS.length,
       );
-      expect(result.packagedFactoriesPull.exportsMapAbsent).toBe(true);
+      expect(result.packagedFactoriesPull.exportsMapAbsent).toBe(false);
       expect(result.packagedFactoriesPull.required).toHaveLength(
         PACKAGED_FACTORIES_REQUIRED_RELATIVE_PATHS.length,
       );
       expect(
         result.packagedFactoriesPull.optionalPresent.map((f) => f.relativePath),
-      ).toContain("factories/deep-research/scripts/deep-research.workflow.js");
+      ).toEqual([]);
     } finally {
       rmSync(result.consumerDir, { recursive: true, force: true });
     }

@@ -109,10 +109,12 @@ describe("packaged-factory index corpus model (pure)", () => {
     expect(entry.canonicalName).toBe("@you/goal");
     expect(entry.packagedDescription).toBeNull();
     expect(entry.childSlug).toBe("goal");
-    expect(entry.sourceRelativePath).toBe("factories/goal/factory.json");
+    expect(entry.sourceRelativePath).toBe(
+      "generated/factories/goal/factory.json",
+    );
     expect(entry.factoryJsonText).toBe(GOAL_FACTORY_JSON);
     expect(entry.factoryJson).toEqual(JSON.parse(GOAL_FACTORY_JSON));
-    expect(entry.packageVersion).toBe("0.0.2");
+    expect(entry.packageVersion).toBe(PACKAGED_FACTORY_V002_VERSION);
     expect(entry.factoryJsonSha256).toBe(
       hashPackagedFactorySourceText(GOAL_FACTORY_JSON),
     );
@@ -176,7 +178,7 @@ describe("packaged-factory index corpus model (pure)", () => {
 
     expect(corpus.formatVersion).toBe("1");
     expect(corpus.packageName).toBe("@you-agent-factory/packaged-factories");
-    expect(corpus.packageVersion).toBe("0.0.2");
+    expect(corpus.packageVersion).toBe(PACKAGED_FACTORY_V002_VERSION);
     expect(corpus.exportsMapAbsent).toBe(true);
     expect(corpus.entries.map((entry) => entry.childSlug)).toEqual([
       ...PACKAGED_FACTORIES_ALLOWLIST_SLUGS,

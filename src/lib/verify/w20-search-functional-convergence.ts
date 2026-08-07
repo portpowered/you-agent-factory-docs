@@ -130,8 +130,8 @@ export const W20_SEARCH_FUNCTIONAL_REPRESENTATIVE_ITEM_QUERIES = [
     family: "item-deep-link-events",
   },
   {
-    query: "you config init",
-    expectedUrl: "/docs/references/cli#you-config-init",
+    query: "you models inspect",
+    expectedUrl: "/docs/references/cli#you-models-inspect",
     family: "item-deep-link-cli",
   },
 ] as const;

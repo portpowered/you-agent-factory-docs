@@ -7,10 +7,12 @@
       "schemaDraft": "https://json-schema.org/draft/2020-12/schema",
       "title": "You Factory configuration",
       "counts": {
-        "rootProperties": 18,
-        "defs": 91
+        "rootProperties": 20,
+        "defs": 103
       },
       "rootPropertyNames": [
+        "description",
+        "examples",
         "factoryDirectory",
         "guards",
         "id",
@@ -38,6 +40,7 @@
         "ClassificationRoute",
         "FactoryGuard",
         "FactoryGuardType",
+        "FactoryInvocationArguments",
         "FactoryInvocationExample",
         "FactoryInvocationOutputContract",
         "FactoryInvocationOutputContractMode",
@@ -49,10 +52,19 @@
         "FactoryInvocationSignature",
         "FactoryInvocationUnknownNamedArgumentPolicy",
         "FactoryLayout",
+        "FactoryLayoutAnnotation",
+        "FactoryLayoutAnnotationKind",
+        "FactoryLayoutAnnotationPosition",
+        "FactoryLayoutAnnotationSize",
         "FactoryLayoutBounds",
         "FactoryLayoutEdge",
+        "FactoryLayoutEmptyState",
         "FactoryLayoutGroup",
+        "FactoryLayoutImage",
+        "FactoryLayoutImageSource",
         "FactoryLayoutNode",
+        "FactoryLayoutNote",
+        "FactoryLayoutNoteTone",
         "FactoryLayoutPoint",
         "FactoryLayoutPreferences",
         "FactoryLayoutSize",
@@ -81,6 +93,9 @@
         "ModelOperationContentType",
         "ModelOperationName",
         "ModelOperationSlot",
+        "NameValue",
+        "ProviderIdentity",
+        "ReasoningEffort",
         "RequiredTool",
         "Resource",
         "ResourceManifest",
@@ -108,7 +123,6 @@
         "WorkTypeHandlingBehavior",
         "Worker",
         "WorkerModelLocality",
-        "WorkerModelProvider",
         "WorkerProvider",
         "WorkerType",
         "Workstation",
@@ -130,14 +144,20 @@
       "schemaDraft": "https://json-schema.org/draft/2020-12/schema",
       "title": "You operator and system configuration",
       "counts": {
-        "rootProperties": 3,
-        "defs": 6
+        "rootProperties": 4,
+        "defs": 7
       },
-      "rootPropertyNames": ["backendScopeID", "defaults", "workerPresets"],
+      "rootPropertyNames": [
+        "backendScopeID",
+        "defaults",
+        "runtime",
+        "workerPresets"
+      ],
       "defNames": [
         "fieldContract",
         "fileOwner",
         "operatorWorkerModelProvider",
+        "runtimeArtifactSettings",
         "sharedFileSplit",
         "unknownFieldPolicyEntry",
         "workerPreset"

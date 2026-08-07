@@ -11,22 +11,21 @@ import {
 } from "./sse-operation-summary";
 import {
   API_SSE_OPERATIONS,
+  type ApiSseOperation,
   findApiSseOperation,
   isApiSseOperation,
 } from "./sse-operations";
 
 describe("sse-operations inventory", () => {
-  test("covers exactly the three published SSE operations", () => {
-    expect(API_SSE_OPERATIONS).toHaveLength(3);
+  test("covers exactly the published SSE operations", () => {
+    expect(API_SSE_OPERATIONS).toHaveLength(2);
     expect(API_SSE_OPERATIONS.map((op) => op.operationId)).toEqual([
       "getEventsBySessionId",
       "getFactoryResponseEventsBySessionId",
-      "getEvents",
     ]);
     expect(API_SSE_OPERATIONS.map((op) => op.path)).toEqual([
       "/factory-sessions/{session_id}/events",
       "/factory-sessions/{session_id}/response-events",
-      "/events",
     ]);
   });
 
@@ -37,10 +36,16 @@ describe("sse-operations inventory", () => {
     );
     expect(byRole.canonical?.preferredOrCanonical).toBe(true);
     expect(byRole.ephemeral?.preferredOrCanonical).toBe(false);
-    expect(byRole["compatibility-only"]?.preferredOrCanonical).toBe(false);
-    expect(byRole["compatibility-only"]?.roleLabel).toMatch(
-      /compatibility-only/i,
-    );
+    // `@you-agent-factory/api` 0.0.6 removed the process-global GET /events
+    // stream, the only compatibility-only member. The vacuous case must still
+    // satisfy the never-preferred rule rather than silently pass on an empty
+    // scan.
+    expect(byRole["compatibility-only"]).toBeUndefined();
+    expect(
+      (API_SSE_OPERATIONS as readonly ApiSseOperation[]).some(
+        (op) => op.role === "compatibility-only",
+      ),
+    ).toBe(false);
   });
 
   test("finds operations by operationId or path+method", () => {
@@ -49,12 +54,16 @@ describe("sse-operations inventory", () => {
     ).toBe("canonical");
     expect(
       findApiSseOperation({
-        path: "/events",
+        path: "/factory-sessions/{session_id}/response-events",
         method: "GET",
       })?.operationId,
-    ).toBe("getEvents");
+    ).toBe("getFactoryResponseEventsBySessionId");
     expect(isApiSseOperation({ operationId: "submitWorkBySessionId" })).toBe(
       false,
+    );
+    // The removed global stream must no longer resolve.
+    expect(findApiSseOperation({ path: "/events", method: "GET" })).toBe(
+      undefined,
     );
   });
 });
@@ -62,7 +71,7 @@ describe("sse-operations inventory", () => {
 describe("sse-operation-summary projectors", () => {
   test("projects HTTP semantics for each role", () => {
     const summaries = projectAllApiSseOperationSummaries();
-    expect(summaries).toHaveLength(3);
+    expect(summaries).toHaveLength(2);
 
     const canonical = summaries.find(
       (s) => s.operationId === "getEventsBySessionId",
@@ -107,17 +116,17 @@ describe("sse-operation-summary projectors", () => {
       /must not derive canonical/i,
     );
 
-    const compatibility = summaries.find((s) => s.operationId === "getEvents");
-    expect(compatibility?.role).toBe("compatibility-only");
-    expect(compatibility?.neverPreferredOrCanonical).toBe(true);
-    expect(compatibility?.preferredOrCanonical).toBe(false);
-    const compatibilityFields = Object.fromEntries(
-      (compatibility?.semantics ?? []).map((entry) => [entry.field, entry]),
-    );
-    expect(compatibilityFields.compatibilityOnlyStatus?.applicable).toBe(true);
-    expect(compatibilityFields.compatibilityOnlyStatus?.value).toMatch(
-      /Never present as preferred or canonical/i,
-    );
+    // No compatibility-only stream is published since 0.0.6, so no summary
+    // marks the compatibility-status field applicable.
+    expect(summaries.some((s) => s.role === "compatibility-only")).toBe(false);
+    expect(
+      summaries.some((s) =>
+        s.semantics.some(
+          (entry) =>
+            entry.field === "compatibilityOnlyStatus" && entry.applicable,
+        ),
+      ),
+    ).toBe(false);
   });
 
   test("links toward planned /docs/references/events anchors", () => {
@@ -166,7 +175,7 @@ describe("sse-operation-summary projectors", () => {
     ).toBeUndefined();
 
     const byId = apiSseOperationSummariesByOperationId();
-    expect(byId.size).toBe(3);
-    expect(byId.get("getEvents")?.neverPreferredOrCanonical).toBe(true);
+    expect(byId.size).toBe(2);
+    expect(byId.has("getEvents")).toBe(false);
   });
 });

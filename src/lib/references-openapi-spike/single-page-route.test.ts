@@ -27,13 +27,13 @@ describe("W01 OpenAPI spike single-page route projection", () => {
     expect(normalized.endsWith("generated/manifest.json")).toBe(true);
   });
 
-  test("packaged OpenAPI artifact currently publishes 45 operations across 41 paths", () => {
+  test("packaged OpenAPI artifact currently publishes 44 operations across 40 paths", () => {
     const artifactPath = resolveOpenApiArtifactPath();
     const document = loadYaml(readFileSync(artifactPath, "utf8")) as {
       paths?: Record<string, Record<string, unknown>>;
     };
-    expect(Object.keys(document.paths ?? {}).length).toBe(41);
-    expect(countOpenApiOperations(document)).toBe(45);
+    expect(Object.keys(document.paths ?? {}).length).toBe(40);
+    expect(countOpenApiOperations(document)).toBe(44);
   });
 
   test('per:"file" projects every published operation onto exactly one virtual page', () => {
@@ -64,7 +64,7 @@ describe("W01 OpenAPI spike single-page route projection", () => {
     };
     expect(payload.ok).toBe(true);
     expect(payload.pageCount).toBe(1);
-    expect(payload.operationCount).toBe(45);
+    expect(payload.operationCount).toBe(44);
     expect(payload.pagePath).toContain("references-openapi-spike");
     expect(payload.document).toBe("you-agent-factory-api");
   });

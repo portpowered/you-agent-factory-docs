@@ -5,7 +5,9 @@
  * No React, timers, or DOM. Does not import FactoryRecordingTopologyReplay.
  */
 
+import type { FactoryDefinition } from "@you-agent-factory/client";
 import type { FactoryTopologyReplayState } from "@you-agent-factory/factory-visualizers";
+import { deriveFactoryTopologyReplayState } from "./factory-graph-source";
 import type { FullModePresentationStatus } from "./full-mode-composition";
 import type { PlaybackState } from "./playback-transitions";
 import type { PreparedReplayProjection } from "./projection-cache";
@@ -13,6 +15,8 @@ import type { PreparedReplayProjection } from "./projection-cache";
 export type CompactModePresentationStatus = FullModePresentationStatus;
 
 export type CompactModeCompositionInput = {
+  /** Factory definition from the bound recording; the graph needs it to be ready. */
+  readonly factory?: Readonly<FactoryDefinition> | undefined;
   readonly playback: PlaybackState | undefined;
   readonly prepared: PreparedReplayProjection | undefined;
   readonly status: CompactModePresentationStatus;
@@ -67,17 +71,13 @@ export function deriveCompactModeComposition(
     };
   }
 
-  const topology: FactoryTopologyReplayState =
-    prepared.topology.nodes.length === 0
-      ? { status: "empty" }
-      : {
-          projection: {
-            activity: prepared.activity,
-            load: prepared.load,
-            topology: prepared.topology,
-          },
-          status: "ready",
-        };
+  const topology: FactoryTopologyReplayState = deriveFactoryTopologyReplayState(
+    {
+      factory: input.factory,
+      prepared,
+      selectedTick: playback.selectedTick,
+    },
+  );
 
   return {
     earliestTick: playback.earliestTick,

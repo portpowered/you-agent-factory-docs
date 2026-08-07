@@ -55,6 +55,7 @@ export function ControlledFactoryReplayCompact({
   });
 
   const composition = deriveCompactModeComposition({
+    factory: recording.factory,
     playback: presentationStatus === "ready" ? controller.playback : undefined,
     prepared: presentationStatus === "ready" ? controller.prepared : undefined,
     status: presentationStatus,

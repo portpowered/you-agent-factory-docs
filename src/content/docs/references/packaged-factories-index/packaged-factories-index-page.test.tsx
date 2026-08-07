@@ -8,11 +8,13 @@
  * packaged-factories-index-import-graph.test.ts. Does not author child page
  * bodies.
  */
+
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
+import { PACKAGED_FACTORY_V002_VERSION } from "@/lib/packaged-factory-v002/five-package-pins";
 import { source } from "@/lib/source";
 import { loadReferencesFamilyIndex } from "../family-index/load-references-family-index";
 import { REFERENCE_FAMILY_DISCOVERABILITY_ROUTES } from "../family-index/reference-family-routes";
@@ -144,7 +146,7 @@ describe("packaged-factories-index ordered enumeration", () => {
       "@you-agent-factory/packaged-factories",
     );
     expect(root.getAttribute("data-packaged-factories-index-version")).toBe(
-      "0.0.2",
+      PACKAGED_FACTORY_V002_VERSION,
     );
 
     const articles = within(root).getAllByRole("article");
@@ -164,9 +166,12 @@ describe("packaged-factories-index ordered enumeration", () => {
           name: corpusEntry?.canonicalName ?? "",
         }),
       ).toBeTruthy();
+      // 0.0.6 factory.json files publish a description; the page renders it
+      // verbatim and falls back to the empty-state copy only when absent.
       expect(
-        within(article).getByText("No packaged description."),
-      ).toBeTruthy();
+        article.querySelector("[data-packaged-factory-description]")
+          ?.textContent,
+      ).toBe(corpusEntry?.packagedDescription);
       expect(
         article.querySelector("[data-packaged-factory-package-version]")
           ?.textContent,
@@ -194,7 +199,8 @@ describe("packaged-factories-index ordered enumeration", () => {
       );
       expect(code.tagName).toBe("PRE");
       expect(code.textContent).toBe(corpusEntry?.factoryJsonText ?? "");
-      expect(code.textContent).toContain(`"name": "@you/${slug}"`);
+      // 0.0.6 publishes bare factory names; 0.0.2 scoped them as "@you/<slug>".
+      expect(code.textContent).toContain(`"name": "${slug}"`);
     }
 
     expect(root.querySelector("[data-factory-replay]")).toBeNull();
@@ -270,7 +276,7 @@ describe("packaged-factories-index ordered enumeration", () => {
     expect(articles.map((node) => node.id)).toEqual([...ALLOWLIST_ORDER]);
     expect(
       within(articles[0] as HTMLElement).getByRole("heading", {
-        name: "@you/goal",
+        name: "goal",
       }),
     ).toBeTruthy();
     expect(

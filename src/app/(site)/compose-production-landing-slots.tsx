@@ -219,7 +219,10 @@ export function composeProductionHeroSlot(
     <HeroSection
       portrait={<HeroPortrait src={hero.portraitSrc} />}
       sphere={<ParticleSphere className="aspect-square h-auto w-full" />}
-      subtitle=""
+      // Renders below the terminal as the hero's one-line positioning
+      // statement. Previously forced empty because the fixture subtitle was a
+      // nine-paragraph feature dump.
+      subtitle={hero.subtitle}
       terminal={
         <HeroCommandPanel
           goalCommand={HOMEPAGE_GOAL_COMMAND}

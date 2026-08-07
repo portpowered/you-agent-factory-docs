@@ -22,6 +22,10 @@
             "type": "TERMINAL"
           },
           {
+            "name": "blocked",
+            "type": "PROCESSING"
+          },
+          {
             "name": "failed",
             "type": "FAILED"
           }
@@ -43,28 +47,27 @@
         ],
         "type": "AGENT_RUN",
         "behavior": "REPEATER",
-        "outputs": [
-          {
-            "workType": "goal",
-            "state": "complete"
-          }
-        ],
-        "onContinue": [
-          {
-            "workType": "goal",
-            "state": "init"
-          }
-        ],
         "onFailure": [
           {
             "workType": "goal",
             "state": "failed"
           }
-        ],
-        "onRejection": [
+        ]
+      },
+      {
+        "name": "goal-loop-breaker",
+        "worker": "",
+        "inputs": [
           {
             "workType": "goal",
             "state": "init"
+          }
+        ],
+        "type": "LOGICAL_MOVE",
+        "outputs": [
+          {
+            "workType": "goal",
+            "state": "failed"
           }
         ]
       }
@@ -72,8 +75,7 @@
     "workers": [
       {
         "name": "goal-executor",
-        "type": "AGENT_WORKER",
-        "stopToken": "<COMPLETE>"
+        "type": "AGENT_WORKER"
       }
     ]
   },
@@ -109,6 +111,10 @@
                   "type": "TERMINAL"
                 },
                 {
+                  "name": "blocked",
+                  "type": "PROCESSING"
+                },
+                {
                   "name": "failed",
                   "type": "FAILED"
                 }
@@ -130,28 +136,27 @@
               ],
               "type": "AGENT_RUN",
               "behavior": "REPEATER",
-              "outputs": [
-                {
-                  "workType": "goal",
-                  "state": "complete"
-                }
-              ],
-              "onContinue": [
-                {
-                  "workType": "goal",
-                  "state": "init"
-                }
-              ],
               "onFailure": [
                 {
                   "workType": "goal",
                   "state": "failed"
                 }
-              ],
-              "onRejection": [
+              ]
+            },
+            {
+              "name": "goal-loop-breaker",
+              "worker": "",
+              "inputs": [
                 {
                   "workType": "goal",
                   "state": "init"
+                }
+              ],
+              "type": "LOGICAL_MOVE",
+              "outputs": [
+                {
+                  "workType": "goal",
+                  "state": "failed"
                 }
               ]
             }
@@ -159,8 +164,7 @@
           "workers": [
             {
               "name": "goal-executor",
-              "type": "AGENT_WORKER",
-              "stopToken": "<COMPLETE>"
+              "type": "AGENT_WORKER"
             }
           ]
         }

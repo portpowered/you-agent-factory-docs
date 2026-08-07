@@ -84,7 +84,6 @@ describe("workers agent page", () => {
     expect(presentation.fields).toEqual(
       expect.arrayContaining([
         { path: "agentTools", applicability: "selected" },
-        { path: "openCodeAgent", applicability: "selected" },
         { path: "skipPermissions", applicability: "selected" },
         { path: "operations", applicability: "excluded" },
         { path: "command", applicability: "excluded" },

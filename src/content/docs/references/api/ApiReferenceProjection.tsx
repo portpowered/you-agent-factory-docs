@@ -1,23 +1,22 @@
 /**
  * Page-local production mount for `/docs/references/api`.
  *
- * Mounts Fumadocs OpenAPI `createAPIPage` / `<APIPage />` as the primary
- * operation renderer (method / path / parameters / body / responses), fed by
- * the package-backed `per: "file"` single-page projection. Thin page-local
- * adapters remain: local-server notice, tag-grouped navigation, hash
- * controller, and status shell. Static-only: no live playground, proxy, or
- * EventSource.
+ * Operations render on the client from the shipped OpenAPI JSON
+ * (`public/generated/openapi.json`). The server renders the page shell, the
+ * tag-grouped navigation, the local-server notice, and a static header per
+ * operation — method, path, summary, anchor — which stays in the delivered HTML
+ * for no-JS readers, search engines, and the a11y contract.
  *
- * The public export is synchronous (Suspense boundary) so MDX + happy-dom
- * page tests can mount it; the Fumadocs single-page load runs in the async
- * child under RSC.
+ * This replaced server-rendered Fumadocs Schema UI. Expanding 44 operations
+ * against 442 component schemas produced ~10 MB of HTML, duplicated across four
+ * locales and again into each route's RSC sidecar — ~113 MB of a ~320 MB export
+ * derived from one ~380 KB artifact. `ApiReferenceAPIPage` remains available for
+ * the dev renderer harness; it is no longer the published path.
  *
- * Non-success outcomes short-circuit through `ApiSurface` / `ApiStatus` so the
- * published route never blank-fails when the OpenAPI projection cannot render.
+ * Static-only: no live playground, proxy, or EventSource.
  */
 
-import type { ApiPageProps } from "fumadocs-openapi/ui";
-import { type ReactNode, Suspense } from "react";
+import { Suspense } from "react";
 import {
   API_FUMADOCS_OPERATIONS_ATTR,
   API_PLAYGROUND_SUPPRESSED_ATTR,
@@ -26,35 +25,32 @@ import {
   type ApiLocalServerBaseUrl,
   ApiLocalServerBaseUrlNotice,
   type ApiLocalServerBaseUrlProjection,
-  type ApiOperationDetailProjection,
   ApiOperationNavigation,
   type ApiOperationNavigationProjection,
   type ApiOperationNavModel,
-  ApiReferenceAPIPage,
+  ApiOperationsFromShippedJson,
   ApiReferenceHashController,
   ApiSurface,
-  loadApiOpenApiSinglePageProjection,
 } from "@/features/references/api";
+import { ApiMethodBadge } from "@/features/references/api/api-method-badge";
+import {
+  API_OPERATION_ANCHOR_ATTR,
+  API_OPERATION_SECTION_ATTR,
+} from "@/features/references/api/operation-anchors";
+import { API_OPENAPI_PUBLIC_ASSET_PATH } from "@/lib/references/emit-openapi-public-artifact";
 import "@/features/docs/styles/references-api-accents.css";
 import "@/features/docs/styles/references-api-print.css";
+import { resolvePublicAssetHref } from "@/lib/navigation/site-metadata-path";
 import { cn } from "@/lib/utils";
 import { apiReferenceProductionLoaders } from "./api-reference-production-loaders";
-
-// Page-local Fumadocs OpenAPI CSS — keep out of app/globals.css so unrelated
-// routes do not pay for OpenAPI styles on every page.
-import "fumadocs-openapi/css/preset.css";
 
 /** Injectable loaders for page-local success / non-success proofs. */
 export type ApiReferenceProjectionLoaders = {
   buildNavigation: () => ApiOperationNavigationProjection;
-  buildDetails: () => ApiOperationDetailProjection;
+  buildDetails: () => ReturnType<
+    typeof apiReferenceProductionLoaders.buildDetails
+  >;
   buildLocalServer: () => ApiLocalServerBaseUrlProjection;
-  /**
-   * Async Fumadocs `ApiPageProps` for the primary operation renderer.
-   * Production loads the package-backed single-page projection. Tests may
-   * inject a sync-friendly stub to avoid happy-dom / `openapiSource` issues.
-   */
-  loadApiPageProps?: () => Promise<ApiPageProps>;
 };
 
 /**
@@ -65,15 +61,11 @@ export type ApiReferenceProjectionLoaders = {
 const defaultLoaders: ApiReferenceProjectionLoaders =
   apiReferenceProductionLoaders;
 
-async function defaultLoadApiPageProps(): Promise<ApiPageProps> {
-  const projection = await loadApiOpenApiSinglePageProjection();
-  return projection.apiPageProps;
-}
-
 export type ApiReferenceProjectionReadyState = {
   status: "ready";
   model: ApiOperationNavModel;
   localServerBaseUrl: ApiLocalServerBaseUrl | undefined;
+  details: ReturnType<typeof apiReferenceProductionLoaders.buildDetails>;
 };
 
 export type ApiReferenceProjectionNonReadyState = {
@@ -97,18 +89,63 @@ export function resolveApiReferenceProjectionState(
     if (model.operationCount === 0) {
       return { status: "empty" };
     }
-    // Keep details load in the ready gate so corrupt detail inventories still
-    // surface as invalid (same package corpus as navigation).
-    loaders.buildDetails();
+    const details = loaders.buildDetails();
     const { primary: localServerBaseUrl } = loaders.buildLocalServer();
-    return {
-      status: "ready",
-      model,
-      localServerBaseUrl,
-    };
+    return { status: "ready", model, localServerBaseUrl, details };
   } catch {
     return { status: "invalid" };
   }
+}
+
+/**
+ * Static per-operation headers rendered into the delivered HTML.
+ *
+ * Deliberately header-only: identity and summary are what no-JS readers, the
+ * a11y long-token probes, and crawlers need, and they cost ~1 KB per operation
+ * instead of the ~230 KB a fully expanded operation used to.
+ */
+function StaticOperationHeaders({
+  details,
+}: {
+  details: ApiReferenceProjectionReadyState["details"];
+}) {
+  return (
+    <div className="flex min-w-0 flex-col gap-8" data-api-static-operations="">
+      {details.details.map((detail) => (
+        <section
+          className="min-w-0 scroll-mt-20 space-y-2 border-border border-t pt-6"
+          data-api-operation-id={detail.operationId ?? detail.anchor}
+          {...{
+            // The no-JS contract identifies operation sections by this marker;
+            // without it the static shell is invisible to the probe even though
+            // it carries method, path, and summary.
+            [API_OPERATION_SECTION_ATTR]: "",
+            [API_OPERATION_ANCHOR_ATTR]: detail.anchor,
+          }}
+          data-api-operation-method={detail.method}
+          data-api-operation-path={detail.path}
+          data-api-operation-summary={detail.summary ?? detail.operationId}
+          id={detail.anchor}
+          key={detail.anchor}
+        >
+          <h2 className="flex min-w-0 flex-wrap items-center gap-2 font-semibold text-foreground text-lg">
+            <ApiMethodBadge method={detail.method} />
+            <code className="break-all font-medium font-mono text-base text-foreground">
+              {detail.path}
+            </code>
+          </h2>
+          {detail.summary !== undefined ? (
+            <p className="text-muted-foreground text-sm">{detail.summary}</p>
+          ) : null}
+          {detail.operationId !== undefined ? (
+            <p className="font-mono text-muted-foreground text-xs">
+              operationId: {detail.operationId}
+            </p>
+          ) : null}
+        </section>
+      ))}
+    </div>
+  );
 }
 
 export type ApiReferenceProjectionProps = {
@@ -116,21 +153,12 @@ export type ApiReferenceProjectionProps = {
   "data-testid"?: string;
   /** Optional loaders for page-local non-success proofs. Production omits this. */
   loaders?: ApiReferenceProjectionLoaders;
-  /**
-   * Override the Fumadocs operations renderer. Production uses
-   * {@link ApiReferenceAPIPage}; tests may stub to avoid happy-dom SSR of
-   * fumadocs-openapi.
-   */
-  renderApiPage?: (props: ApiPageProps) => ReactNode;
+  /** Override the shipped-JSON URL. Production resolves it from the base path. */
+  documentSrc?: string;
 };
-
-function defaultRenderApiPage(props: ApiPageProps): ReactNode {
-  return <ApiReferenceAPIPage {...props} />;
-}
 
 type ApiReferenceProjectionViewProps = ApiReferenceProjectionProps & {
   state: ApiReferenceProjectionState;
-  apiPageProps?: ApiPageProps;
 };
 
 /**
@@ -140,8 +168,7 @@ export function ApiReferenceProjectionView({
   className,
   "data-testid": testId = "api-reference-projection",
   state,
-  apiPageProps,
-  renderApiPage = defaultRenderApiPage,
+  documentSrc,
 }: ApiReferenceProjectionViewProps) {
   if (state.status !== "ready") {
     return (
@@ -153,31 +180,12 @@ export function ApiReferenceProjectionView({
     );
   }
 
-  if (apiPageProps === undefined) {
-    return (
-      <ApiSurface
-        className={cn("min-w-0", className)}
-        data-testid={testId}
-        status="invalid"
-      />
-    );
-  }
-
-  const operations = apiPageProps.operations ?? [];
-  if (operations.length === 0) {
-    return (
-      <ApiSurface
-        className={cn("min-w-0", className)}
-        data-testid={testId}
-        status="empty"
-      />
-    );
-  }
-
-  const { model, localServerBaseUrl } = state;
+  const { model, localServerBaseUrl, details } = state;
+  const src =
+    documentSrc ?? resolvePublicAssetHref(API_OPENAPI_PUBLIC_ASSET_PATH);
 
   return (
-    <ApiSurface status="ready" className={cn("min-w-0", className)}>
+    <ApiSurface className={cn("min-w-0", className)} status="ready">
       <ApiReferenceHashController>
         <div
           className="mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden text-foreground"
@@ -200,7 +208,10 @@ export function ApiReferenceProjectionView({
             {...{ [API_FUMADOCS_OPERATIONS_ATTR]: "host" }}
             data-api-operation-sections=""
           >
-            {renderApiPage(apiPageProps)}
+            <ApiOperationsFromShippedJson
+              src={src}
+              staticFallback={<StaticOperationHeaders details={details} />}
+            />
           </div>
         </div>
       </ApiReferenceHashController>
@@ -212,42 +223,16 @@ async function ApiReferenceProjectionAsync({
   className,
   "data-testid": testId = "api-reference-projection",
   loaders = defaultLoaders,
-  renderApiPage = defaultRenderApiPage,
+  documentSrc,
 }: ApiReferenceProjectionProps) {
   const state = resolveApiReferenceProjectionState(loaders);
-
-  if (state.status !== "ready") {
-    return (
-      <ApiReferenceProjectionView
-        className={className}
-        data-testid={testId}
-        state={state}
-      />
-    );
-  }
-
-  let apiPageProps: ApiPageProps | undefined;
-  try {
-    apiPageProps = await (
-      loaders.loadApiPageProps ?? defaultLoadApiPageProps
-    )();
-  } catch {
-    return (
-      <ApiReferenceProjectionView
-        className={className}
-        data-testid={testId}
-        state={{ status: "invalid" }}
-      />
-    );
-  }
 
   return (
     <ApiReferenceProjectionView
       className={className}
       data-testid={testId}
+      documentSrc={documentSrc}
       state={state}
-      apiPageProps={apiPageProps}
-      renderApiPage={renderApiPage}
     />
   );
 }

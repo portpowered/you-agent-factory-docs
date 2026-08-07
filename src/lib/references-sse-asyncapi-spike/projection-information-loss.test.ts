@@ -52,7 +52,7 @@ describe("W02 SSE spike — @fumadocs/asyncapi render + information loss (007)",
     expect(spike.asyncapi.info["x-generated-file-notice"]).toContain(
       "Do not hand-edit",
     );
-    expect(spike.operations.length).toBe(3);
+    expect(spike.operations.length).toBe(2);
     expect(
       spike.operations.every((operation) => operation.action === "receive"),
     ).toBe(true);
@@ -75,7 +75,6 @@ describe("W02 SSE spike — @fumadocs/asyncapi render + information loss (007)",
     expect(surface.channelIds).toEqual([
       "getEventsBySessionId",
       "getFactoryResponseEventsBySessionId",
-      "getEvents",
     ]);
     expect(surface.operationIds).toContain("receive_getEventsBySessionId");
     expect(surface.messageIds).toContain("getEventsBySessionId__FactoryEvent");
@@ -114,9 +113,8 @@ describe("W02 SSE spike — @fumadocs/asyncapi render + information loss (007)",
     expect(byConcern["handshake-response-headers"]?.status).toBe("lost");
     expect(byConcern["retained-history"]?.status).toBe("lost");
     expect(byConcern["stream-generation-invalidation"]?.status).toBe("lost");
-    expect(byConcern["compatibility-only-status"]?.status).toBe(
-      "partially-preserved",
-    );
+    // Nothing to lose: 0.0.6 removed the only compatibility-only stream.
+    expect(byConcern["compatibility-only-status"]?.status).toBe("preserved");
   });
 
   test("HTML probe detects role markers and records absent examples without requiring hand-edits", () => {
@@ -169,9 +167,9 @@ describe("W02 SSE spike — @fumadocs/asyncapi render + information loss (007)",
     };
     expect(payload).toMatchObject({
       ok: true,
-      operationCount: 3,
-      messageCount: 3,
-      channelCount: 3,
+      operationCount: 2,
+      messageCount: 2,
+      channelCount: 2,
       handEdited: false,
       permanentProductionPin: false,
     });

@@ -86,7 +86,6 @@ describe("workstations cron behavior page", () => {
     expect(presentation.fields).toEqual(
       expect.arrayContaining([
         { path: "cron", applicability: "selected" },
-        { path: "openCodeAgent", applicability: "excluded" },
         { path: "classificationRoutes", applicability: "excluded" },
         { path: "operation", applicability: "excluded" },
       ]),

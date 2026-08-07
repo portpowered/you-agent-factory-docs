@@ -1,83 +1,75 @@
 {
   "formatVersion": "1",
   "packageName": "@you-agent-factory/packaged-factories",
-  "packageVersion": "0.0.2",
-  "exportsMapAbsent": true,
+  "packageVersion": "0.0.6",
+  "exportsMapAbsent": false,
   "generatedRelativeRoot": "src/content/docs/references/packaged-factories-index/generated",
   "artifacts": [
     {
       "path": "index.json",
       "kind": "index",
-      "artifactSha256": "de0908ae0d5cd782171a21baae6c199f11f692ff177a78892a23a0c6b814015f"
+      "artifactSha256": "b454fdfd021462119f414ea5a8bae7b2a1a085e993bf20dd1dc61ac59fd2b016"
     },
     {
       "path": "factories/goal.factory.json",
       "kind": "factory-definition",
-      "artifactSha256": "382cf4e415ce0ed68384f698221060a7bfd816a87f83ba85af45db124c0f6d2e",
+      "artifactSha256": "99efafd8a3e17ec2042e8978cdcb2cd9b5a09277b3cbc2fabb6dc105ced6692a",
       "childSlug": "goal",
-      "sourceRelativePath": "factories/goal/factory.json",
-      "sourceSha256": "382cf4e415ce0ed68384f698221060a7bfd816a87f83ba85af45db124c0f6d2e"
+      "sourceRelativePath": "generated/factories/goal/factory.json",
+      "sourceSha256": "99efafd8a3e17ec2042e8978cdcb2cd9b5a09277b3cbc2fabb6dc105ced6692a"
     },
     {
       "path": "factories/subagent.factory.json",
       "kind": "factory-definition",
-      "artifactSha256": "d80315f40326db1fdab536bbbead5ca6ddf83f86eded86750d3914d553eac52d",
+      "artifactSha256": "95c9d41e00d096d2dd133f1d7887e608cf75b2010c2ff5f084fa45c19412f8e6",
       "childSlug": "subagent",
-      "sourceRelativePath": "factories/subagent/factory.json",
-      "sourceSha256": "d80315f40326db1fdab536bbbead5ca6ddf83f86eded86750d3914d553eac52d"
+      "sourceRelativePath": "generated/factories/subagent/factory.json",
+      "sourceSha256": "95c9d41e00d096d2dd133f1d7887e608cf75b2010c2ff5f084fa45c19412f8e6"
     },
     {
       "path": "factories/fusion.factory.json",
       "kind": "factory-definition",
-      "artifactSha256": "ffced05cae1ebe978ade5777304a62f72ddbafc338e138328bacfa3a33bfbf55",
+      "artifactSha256": "5f796e7ead85e0e536ef086e0de72292f294124e9462c2e1d7bdcfadacfe529a",
       "childSlug": "fusion",
-      "sourceRelativePath": "factories/fusion/factory.json",
-      "sourceSha256": "ffced05cae1ebe978ade5777304a62f72ddbafc338e138328bacfa3a33bfbf55"
+      "sourceRelativePath": "generated/factories/fusion/factory.json",
+      "sourceSha256": "5f796e7ead85e0e536ef086e0de72292f294124e9462c2e1d7bdcfadacfe529a"
     },
     {
       "path": "factories/review.factory.json",
       "kind": "factory-definition",
-      "artifactSha256": "c87c7ed284a0da158def1634024fddcb68967cb936fb1f9006f08d7968cfed5b",
+      "artifactSha256": "a4a85133f62a692382c9607419829ef3eb9525765efc660f7c3dcde684f199ca",
       "childSlug": "review",
-      "sourceRelativePath": "factories/review/factory.json",
-      "sourceSha256": "c87c7ed284a0da158def1634024fddcb68967cb936fb1f9006f08d7968cfed5b"
+      "sourceRelativePath": "generated/factories/review/factory.json",
+      "sourceSha256": "a4a85133f62a692382c9607419829ef3eb9525765efc660f7c3dcde684f199ca"
     },
     {
       "path": "factories/quorum.factory.json",
       "kind": "factory-definition",
-      "artifactSha256": "bdeb877e96f77fd5c9c51bfe9af827f8f63ead4d7ba14d0b0fa22c3e540e43b1",
+      "artifactSha256": "f4b9c59d4481955b051a2d36768ba664878879bacd7ffcb9891a02fcb3c83281",
       "childSlug": "quorum",
-      "sourceRelativePath": "factories/quorum/factory.json",
-      "sourceSha256": "bdeb877e96f77fd5c9c51bfe9af827f8f63ead4d7ba14d0b0fa22c3e540e43b1"
+      "sourceRelativePath": "generated/factories/quorum/factory.json",
+      "sourceSha256": "f4b9c59d4481955b051a2d36768ba664878879bacd7ffcb9891a02fcb3c83281"
     },
     {
       "path": "factories/tts.factory.json",
       "kind": "factory-definition",
-      "artifactSha256": "e33f7549f1434df1c371379c1914fac95703017821341983ac55ebd8fce6dec7",
+      "artifactSha256": "074de7745359dee76441a8a579d367103f5e858be1b59a0308599376b1ca97c7",
       "childSlug": "tts",
-      "sourceRelativePath": "factories/tts/factory.json",
-      "sourceSha256": "e33f7549f1434df1c371379c1914fac95703017821341983ac55ebd8fce6dec7"
+      "sourceRelativePath": "generated/factories/tts/factory.json",
+      "sourceSha256": "074de7745359dee76441a8a579d367103f5e858be1b59a0308599376b1ca97c7"
     },
     {
       "path": "factories/deep-research.factory.json",
       "kind": "factory-definition",
-      "artifactSha256": "4bb5a22e99ddb059097bea21fde7f6ce6d8d60b00947e927b765d22e6ffa99af",
+      "artifactSha256": "41f5ed140dfb3f61b6d4b951a7468adea640277c2e16ea8da309ad83f97d260b",
       "childSlug": "deep-research",
-      "sourceRelativePath": "factories/deep-research/factory.json",
-      "sourceSha256": "4bb5a22e99ddb059097bea21fde7f6ce6d8d60b00947e927b765d22e6ffa99af"
-    },
-    {
-      "path": "deep-research.source.json",
-      "kind": "companion-javascript",
-      "artifactSha256": "32f63e87c2fa89ac7caf23a9752fc991691280e8bf0bb9d3dd1cb0236b9541c2",
-      "childSlug": "deep-research",
-      "sourceRelativePath": "factories/deep-research/scripts/deep-research.workflow.js",
-      "sourceSha256": "34eced10c33ec0cc2d37fec2d15193ebc6e9df1b6829190aba66b550287e2f8d"
+      "sourceRelativePath": "generated/factories/deep-research/factory.json",
+      "sourceSha256": "41f5ed140dfb3f61b6d4b951a7468adea640277c2e16ea8da309ad83f97d260b"
     },
     {
       "path": "goal.factory-recording.v1.json",
       "kind": "factory-recording",
-      "artifactSha256": "5a4262d8b73405388bf6e297794bf0843bfee4c02036d05fbd31f8c8a59f1d01",
+      "artifactSha256": "bbd7dc2d02694e3659d4fafee619da1bb50d92a6a5569665ed98d3fb5a0ef42d",
       "childSlug": "goal"
     },
     {
@@ -95,7 +87,7 @@
     {
       "path": "review.factory-recording.v1.json",
       "kind": "factory-recording",
-      "artifactSha256": "bf50b3908d69cc95474b08e18de26ce9dbffc9d1cee2b4225bdacb095f2cee75",
+      "artifactSha256": "3298e146430e972f923a8495c3a9f3e2ca4c7c69366fb82f36e88ff4ed8a14fa",
       "childSlug": "review"
     },
     {
@@ -107,42 +99,38 @@
     {
       "path": "tts.factory-recording.v1.json",
       "kind": "factory-recording",
-      "artifactSha256": "9aa800f8746068e2a3dcdc090a56de2df6cb6eeb3ed213ea9bb5822bc8b90acf",
+      "artifactSha256": "b2fba9fa1eb483d03e517b4659ff1f558d017bc2a79d851d3a77cd2b3a0657d9",
       "childSlug": "tts"
     }
   ],
   "sourceHashes": [
     {
-      "relativePath": "factories/goal/factory.json",
-      "sha256": "382cf4e415ce0ed68384f698221060a7bfd816a87f83ba85af45db124c0f6d2e"
+      "relativePath": "generated/factories/goal/factory.json",
+      "sha256": "99efafd8a3e17ec2042e8978cdcb2cd9b5a09277b3cbc2fabb6dc105ced6692a"
     },
     {
-      "relativePath": "factories/subagent/factory.json",
-      "sha256": "d80315f40326db1fdab536bbbead5ca6ddf83f86eded86750d3914d553eac52d"
+      "relativePath": "generated/factories/subagent/factory.json",
+      "sha256": "95c9d41e00d096d2dd133f1d7887e608cf75b2010c2ff5f084fa45c19412f8e6"
     },
     {
-      "relativePath": "factories/fusion/factory.json",
-      "sha256": "ffced05cae1ebe978ade5777304a62f72ddbafc338e138328bacfa3a33bfbf55"
+      "relativePath": "generated/factories/fusion/factory.json",
+      "sha256": "5f796e7ead85e0e536ef086e0de72292f294124e9462c2e1d7bdcfadacfe529a"
     },
     {
-      "relativePath": "factories/review/factory.json",
-      "sha256": "c87c7ed284a0da158def1634024fddcb68967cb936fb1f9006f08d7968cfed5b"
+      "relativePath": "generated/factories/review/factory.json",
+      "sha256": "a4a85133f62a692382c9607419829ef3eb9525765efc660f7c3dcde684f199ca"
     },
     {
-      "relativePath": "factories/quorum/factory.json",
-      "sha256": "bdeb877e96f77fd5c9c51bfe9af827f8f63ead4d7ba14d0b0fa22c3e540e43b1"
+      "relativePath": "generated/factories/quorum/factory.json",
+      "sha256": "f4b9c59d4481955b051a2d36768ba664878879bacd7ffcb9891a02fcb3c83281"
     },
     {
-      "relativePath": "factories/tts/factory.json",
-      "sha256": "e33f7549f1434df1c371379c1914fac95703017821341983ac55ebd8fce6dec7"
+      "relativePath": "generated/factories/tts/factory.json",
+      "sha256": "074de7745359dee76441a8a579d367103f5e858be1b59a0308599376b1ca97c7"
     },
     {
-      "relativePath": "factories/deep-research/factory.json",
-      "sha256": "4bb5a22e99ddb059097bea21fde7f6ce6d8d60b00947e927b765d22e6ffa99af"
-    },
-    {
-      "relativePath": "factories/deep-research/scripts/deep-research.workflow.js",
-      "sha256": "34eced10c33ec0cc2d37fec2d15193ebc6e9df1b6829190aba66b550287e2f8d"
+      "relativePath": "generated/factories/deep-research/factory.json",
+      "sha256": "41f5ed140dfb3f61b6d4b951a7468adea640277c2e16ea8da309ad83f97d260b"
     }
   ]
 }

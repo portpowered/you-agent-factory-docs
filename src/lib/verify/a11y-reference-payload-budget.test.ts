@@ -116,8 +116,8 @@ describe("reference payload budget baselines", () => {
       REFERENCE_PAYLOAD_PAGE_BUDGETS.map((entry) => [entry.routeId, entry]),
     );
 
-    expect(byId["references-api"]?.measuredHtmlBytes).toBe(10_258_887);
-    expect(byId["references-api"]?.maxHtmlBytes).toBe(13_000_000);
+    expect(byId["references-api"]?.measuredHtmlBytes).toBe(326_658);
+    expect(byId["references-api"]?.maxHtmlBytes).toBe(420_000);
     expect(byId["references-events"]?.measuredHtmlBytes).toBe(4_527_337);
     expect(byId["references-events"]?.maxHtmlBytes).toBe(5_700_000);
     expect(byId["references-factory-schema"]?.measuredHtmlBytes).toBe(
@@ -130,8 +130,8 @@ describe("reference payload budget baselines", () => {
       expect(entry.maxJsPayloadBytes).toBeGreaterThan(
         entry.measuredJsPayloadBytes,
       );
-      expect(entry.measuredJsPayloadBytes).toBe(2_597_203);
-      expect(entry.maxJsPayloadBytes).toBe(3_250_000);
+      expect(entry.measuredJsPayloadBytes).toBe(3_070_795);
+      expect(entry.maxJsPayloadBytes).toBe(3_600_000);
     }
   });
 

@@ -146,7 +146,12 @@ export function HeroSection({
                 data-hero-section-title=""
               >
                 {titleLines.map((line, index) => {
-                  const highlighted = index === 0 && line.startsWith("YOU ");
+                  // The plate carries the wordmark. Matches a bare "YOU" title
+                  // as well as a "YOU …" first line, so shortening the title to
+                  // the product name alone keeps the treatment rather than
+                  // silently dropping to unplated text.
+                  const highlighted =
+                    index === 0 && (line === "YOU" || line.startsWith("YOU "));
                   return (
                     <Fragment key={line}>
                       <span className="block">
@@ -162,8 +167,8 @@ export function HeroSection({
                              */}
                             <span className="mr-[0.08em] inline-block bg-[#ecece4] pr-[0.08em] text-[1.12em] text-[#191f2b]">
                               YOU
-                            </span>{" "}
-                            {line.slice(4)}
+                            </span>
+                            {line.length > 3 ? <> {line.slice(4)}</> : null}
                           </>
                         ) : (
                           line
@@ -191,7 +196,10 @@ export function HeroSection({
 
         {hasSubtitle ? (
           <p
-            className="m-0 max-w-[56rem] whitespace-pre-line text-[0.68rem] leading-[1.28] text-[#ecece4]/86 sm:text-xs lg:text-sm"
+            // Sized as a subheading, not body copy: this is one sentence under
+            // the terminal, where it used to be a nine-paragraph block that had
+            // to be set small to fit.
+            className="m-0 max-w-[44rem] whitespace-pre-line text-sm leading-[1.45] text-[#ecece4]/86 sm:text-base lg:text-lg"
             data-hero-section-subtitle=""
           >
             {subtitle}

@@ -161,9 +161,13 @@ export const fixtureLandingPageData: LandingPageData = {
     ],
   },
   hero: {
-    title: "YOU AGENT\nFACTORY CLI",
+    // The wordmark is the product name, nothing more. "YOU AGENT FACTORY CLI"
+    // spent three lines saying what the subtitle below the terminal now says
+    // once, and boxed the product in as a CLI when the CLI is one of four ways
+    // in.
+    title: "YOU",
     subtitle:
-      "You use YOU as an AI agent factory CLI that wraps AI agent harnesses and combines them with programmatic workflows so you can run hundreds of agents at once.\n\nYou can use your favorite AI harnesses across Codex, Claude, Cursor, and 5+ others on YOU immediately.\n\nYou can get started straight out the box with YOU’s prebuilt workflows.\nYou can save money, get more throughput, better output, or faster throughput, based on the flows you want to use.\nYou can use YOU’s patterns like “pick-best-model”, “loop”, “adversarial-review”, “planner-executor”, and 7+ more!\n\nYou can fit YOU’s system into your flow if the prepackaged flows aren’t enough.\nYOU’s graph based system has 15+ different nodes with complex flow logic as well as javascript based flows.\n\nYou can trust YOU to run, as it has been tested to over 10000+ Commits, with operational metrics, logs, traces, to boot.",
+      "YOU orchestrates AI agents across every major harness — and puts that orchestration wherever you already work: a UI, your editor, the CLI, or the API.",
     portraitSrc: landingHomeAssets.womanHead,
   },
   capability: {

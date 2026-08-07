@@ -70,8 +70,8 @@ describe("reference heading de-spam search contract", () => {
         url: "/docs/references/api#submitWorkBySessionId",
       },
       {
-        query: "you config init",
-        url: "/docs/references/cli#you-config-init",
+        query: "you models inspect",
+        url: "/docs/references/cli#you-models-inspect",
       },
       {
         query: "javascript.log",

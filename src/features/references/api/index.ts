@@ -73,6 +73,11 @@ export {
   type ApiOperationNavigatorProps,
 } from "./api-operation-navigator";
 export {
+  API_SHIPPED_JSON_OPERATIONS_ATTR,
+  API_SHIPPED_JSON_SOURCE_ATTR,
+  ApiOperationsFromShippedJson,
+} from "./api-operations-from-shipped-json";
+export {
   API_FUMADOCS_OPERATION_ATTR,
   API_FUMADOCS_OPERATIONS_ATTR,
   API_OPERATION_PATH_TOKEN_ATTR,
@@ -95,6 +100,13 @@ export {
   ApiReferenceMobileNavigator,
   type ApiReferenceMobileNavigatorProps,
 } from "./api-reference-mobile-navigator";
+export {
+  API_SCHEMA_FIELD_ATTR,
+  API_SCHEMA_TREE_ATTR,
+  ApiSchemaTree,
+  resolveSchemaRef,
+  schemaTypeLabel,
+} from "./api-schema-tree";
 export {
   ApiSseOperationSummaryPanel,
   type ApiSseOperationSummaryProps,
@@ -250,6 +262,7 @@ export {
   assertsNoApiProxyUrl,
   isApiPlaygroundSuppressed,
 } from "./playground-suppression";
+export { API_SCHEMA_SLOT_ATTR as API_SCHEMA_SLOT_ATTR_STANDALONE } from "./schema-slot";
 export {
   API_EVENTS_REFERENCE_PAGE_PATH,
   type ApiSseEventsCatalogLink,

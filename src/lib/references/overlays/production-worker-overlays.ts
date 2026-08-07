@@ -84,12 +84,12 @@ const MODEL_ROUTING_SHARED = ["model", "modelProvider", "stopToken"] as const;
  */
 const SCRIPT_EXCLUSIVE = ["command", "args", "executorProvider"] as const;
 
-/** Fields exclusive to agent-loop tooling. Selected only on AGENT_WORKER. */
-const AGENT_EXCLUSIVE = [
-  "agentTools",
-  "openCodeAgent",
-  "skipPermissions",
-] as const;
+/**
+ * Fields exclusive to agent-loop tooling. Selected only on AGENT_WORKER.
+ *
+ * `openCodeAgent` left the Worker definition in `@you-agent-factory/api` 0.0.6.
+ */
+const AGENT_EXCLUSIVE = ["agentTools", "skipPermissions"] as const;
 
 /**
  * Fields exclusive to one-shot inference capability declarations. Selected on
@@ -224,7 +224,6 @@ export function createModelWorkerOverlay(): FactoryVariantOverlaySchema {
         ...WORKER_IDENTITY_SHARED,
         ...MODEL_ROUTING_SHARED,
         ...INFERENCE_EXCLUSIVE,
-        "openCodeAgent",
       ],
       selected: [],
       excluded: [

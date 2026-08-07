@@ -32,7 +32,7 @@ export type PackagedFactoryIndexCorpusEntry = {
   /** Docs-owned child slug (allowlist identity). */
   childSlug: PackagedFactoriesAllowlistSlug;
   /** Package-relative path of the acquired factory.json. */
-  sourceRelativePath: `factories/${PackagedFactoriesAllowlistSlug}/factory.json`;
+  sourceRelativePath: `generated/factories/${PackagedFactoriesAllowlistSlug}/factory.json`;
   /** Complete unabridged factory.json UTF-8 text as acquired. */
   factoryJsonText: string;
   /** Complete unabridged factory.json object as acquired (parsed, not rewritten). */

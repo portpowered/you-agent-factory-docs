@@ -1,10 +1,14 @@
 /**
  * Docs-owned allowlist for direct filesystem acquisition of
- * `@you-agent-factory/packaged-factories@0.0.2`.
+ * `@you-agent-factory/packaged-factories`.
  *
- * Pure constants only — no filesystem IO. Published 0.0.2 ships
- * `files: ["factories"]` with no `exports` map; consumers resolve the package
- * root and read only these relative paths.
+ * Pure constants only — no filesystem IO. Consumers resolve the package root
+ * and read only these relative paths.
+ *
+ * 0.0.6 moved the catalog from `factories/` to `generated/factories/` and added
+ * an `exports` map; the relative paths below track that move. It also dropped
+ * the deep-research companion JavaScript, which is why the optional companion
+ * list is now empty.
  */
 
 export const PACKAGED_FACTORIES_PACKAGE_NAME =
@@ -33,22 +37,26 @@ export type PackagedFactoriesAllowlistSlug =
  * Every path must exist and be readable for the proof to pass.
  */
 export const PACKAGED_FACTORIES_REQUIRED_RELATIVE_PATHS = [
-  "factories/goal/factory.json",
-  "factories/subagent/factory.json",
-  "factories/fusion/factory.json",
-  "factories/review/factory.json",
-  "factories/quorum/factory.json",
-  "factories/tts/factory.json",
-  "factories/deep-research/factory.json",
+  "generated/factories/goal/factory.json",
+  "generated/factories/subagent/factory.json",
+  "generated/factories/fusion/factory.json",
+  "generated/factories/review/factory.json",
+  "generated/factories/quorum/factory.json",
+  "generated/factories/tts/factory.json",
+  "generated/factories/deep-research/factory.json",
 ] as const;
 
 /**
  * Optional companion files under deep-research. When present they must be
  * readable and stay inside the package root; absence is allowed.
+ *
+ * Empty since 0.0.6: the package no longer ships
+ * `scripts/deep-research.workflow.js` (or any other JavaScript). Kept as a
+ * declared surface so a companion returning upstream is re-allowlisted here
+ * rather than read ad hoc.
  */
-export const PACKAGED_FACTORIES_OPTIONAL_COMPANION_RELATIVE_PATHS = [
-  "factories/deep-research/scripts/deep-research.workflow.js",
-] as const;
+export const PACKAGED_FACTORIES_OPTIONAL_COMPANION_RELATIVE_PATHS =
+  [] as const satisfies readonly string[];
 
 export type PackagedFactoriesAllowlistedRelativePath =
   | (typeof PACKAGED_FACTORIES_REQUIRED_RELATIVE_PATHS)[number]
@@ -71,6 +79,6 @@ export function isPackagedFactoriesAllowlistedRelativePath(
 /** Factory definition path for one allowlisted slug. */
 export function packagedFactoriesFactoryJsonRelativePath(
   slug: PackagedFactoriesAllowlistSlug,
-): `factories/${PackagedFactoriesAllowlistSlug}/factory.json` {
-  return `factories/${slug}/factory.json`;
+): `generated/factories/${PackagedFactoriesAllowlistSlug}/factory.json` {
+  return `generated/factories/${slug}/factory.json`;
 }

@@ -15,7 +15,6 @@ import {
   API_SSE_OPERATIONS,
   API_SSE_SUMMARY_SAFETY,
   type ApiSseOperation,
-  type ApiSseOperationItem,
   type ApiSseRole,
   findApiSseOperation,
 } from "./sse-operations";
@@ -345,9 +344,16 @@ export function apiSseOperationSummariesByOperationId(): Map<
   );
 }
 
-/** Assert compatibility-only is never preferred/canonical in the inventory. */
+/**
+ * Assert compatibility-only is never preferred/canonical in the inventory.
+ *
+ * Holds vacuously while no published operation claims the role — 0.0.6 removed
+ * the process-global GET /events stream. `ApiSseOperation` (the wider element
+ * type) is read here rather than the narrowed tuple member so the role check
+ * stays live code for a future deprecated stream.
+ */
 export function assertCompatibilityOnlyNeverPreferred(
-  operations: readonly ApiSseOperationItem[] = API_SSE_OPERATIONS,
+  operations: readonly ApiSseOperation[] = API_SSE_OPERATIONS,
 ): boolean {
   return operations.every((operation) => {
     if (operation.role !== "compatibility-only") return true;

@@ -100,8 +100,8 @@ describe("factory search English identifiers in every locale (W16-007)", () => {
         url: "/docs/references/api#submitWorkBySessionId",
       },
       {
-        query: "you config init",
-        url: "/docs/references/cli#you-config-init",
+        query: "you models inspect",
+        url: "/docs/references/cli#you-models-inspect",
       },
       {
         query: "you.factory_session.get",

@@ -106,6 +106,12 @@ try {
     waitUntil: "domcontentloaded",
     timeout: 120_000,
   });
+
+  // Operation detail renders on the client from the shipped OpenAPI JSON.
+  // Nothing below this point exists in the delivered HTML.
+  await page.waitForSelector('[data-api-shipped-json-state="ready"]', {
+    timeout: 60_000,
+  });
   if (!response?.ok()) {
     throw new Error(
       `Expected 200 for ${PAGE_PATH}, got ${response?.status() ?? "no response"}`,
@@ -208,7 +214,7 @@ try {
   }
 
   const fumadocsOps = await page
-    .locator("[data-api-fumadocs-operation]")
+    .locator("[data-api-operation-section]")
     .count();
   if (fumadocsOps < 1) {
     throw new Error("Expected at least one Fumadocs-rendered operation");

@@ -1,68 +1,153 @@
 {
-  "name": "@you/subagent",
+  "description": {
+    "type": "LOCALIZABLE_ASSET",
+    "value": "Runs one bounded read-only subagent and returns its result."
+  },
+  "examples": [
+    {
+      "args": {
+        "input": "Summarize this release"
+      },
+      "description": {
+        "type": "LOCALIZABLE_ASSET",
+        "value": "Summarize a release request."
+      },
+      "name": "positional-input"
+    },
+    {
+      "args": {
+        "input": "Summarize this release"
+      },
+      "description": {
+        "type": "LOCALIZABLE_ASSET",
+        "value": "Summarize the same request using structured input."
+      },
+      "name": "stdin-input"
+    }
+  ],
   "id": "builtin-subagent",
   "invocationSignature": {
     "parameters": [
       {
-        "name": "input",
-        "description": "Text request for the one-pass subagent.",
-        "required": true,
         "bindings": [
-          {"kind": "POSITIONAL", "position": 1},
-          {"kind": "STDIN"}
-        ]
+          {
+            "kind": "POSITIONAL",
+            "position": 1
+          },
+          {
+            "kind": "STDIN"
+          },
+          {
+            "kind": "NAMED"
+          }
+        ],
+        "description": "Text request for the one-pass subagent.",
+        "externalName": "to",
+        "name": "input",
+        "required": true
+      },
+      {
+        "bindings": [
+          {
+            "kind": "NAMED"
+          }
+        ],
+        "defaultValues": [
+          ""
+        ],
+        "description": "Model provider for the subagent; omitted values use operator defaults.",
+        "externalName": "worker-provider",
+        "name": "workerProvider"
+      },
+      {
+        "bindings": [
+          {
+            "kind": "NAMED"
+          }
+        ],
+        "defaultValues": [
+          ""
+        ],
+        "description": "Model for the subagent; omitted values use operator defaults.",
+        "externalName": "worker-model",
+        "name": "workerModel"
+      },
+      {
+        "bindings": [
+          {
+            "kind": "NAMED"
+          }
+        ],
+        "defaultValues": [
+          ""
+        ],
+        "description": "Optional reasoning effort for the subagent; omitted values use the provider default.",
+        "externalName": "worker-reasoning-effort",
+        "name": "workerReasoningEffort"
       }
     ]
   },
-  "examples": [
-    {
-      "name": "positional-input",
-      "description": {"type": "LOCALIZABLE_ASSET", "value": "Summarize a release request."},
-      "args": {"input": "Summarize this release"}
-    },
-    {
-      "name": "stdin-input",
-      "description": {"type": "LOCALIZABLE_ASSET", "value": "Summarize the same request using structured input."},
-      "args": {"input": "Summarize this release"}
-    }
-  ],
+  "name": "subagent",
   "workTypes": [
     {
+      "handlingBehavior": [
+        "DEFAULT"
+      ],
       "name": "task",
-      "handlingBehavior": ["DEFAULT"],
       "states": [
-        {"name": "init", "type": "INITIAL"},
-        {"name": "complete", "type": "TERMINAL"},
-        {"name": "failed", "type": "FAILED"}
+        {
+          "name": "init",
+          "type": "INITIAL"
+        },
+        {
+          "name": "complete",
+          "type": "TERMINAL"
+        },
+        {
+          "name": "failed",
+          "type": "FAILED"
+        }
       ]
     }
   ],
-  "resources": [],
   "workers": [
     {
-      "name": "subagent-worker",
-      "type": "AGENT_WORKER",
       "agentTools": {
         "policy": "READ_ONLY"
       },
-      "promptFile": "prompts/worker.md"
+      "model": "${workerModel}",
+      "modelProvider": "${workerProvider}",
+      "name": "subagent-worker",
+      "reasoningEffort": "${workerReasoningEffort}",
+      "skipPermissions": true,
+      "type": "AGENT_WORKER"
     }
   ],
   "workstations": [
     {
-      "name": "run-subagent",
-      "type": "AGENT_RUN",
-      "worker": "subagent-worker",
+      "body": "Begin from zero context and complete the submitted request in one pass for Work\n{{ (index .Inputs 0).WorkID }}. Read the entire request before acting. If it\nconcerns a repository, inspect contributor instructions, relevant architecture,\nsource, tests, and working-tree state. Preserve unrelated work, run proportional\nverification, and return a self-contained outcome with evidence and limitations.\n\nRequest:\n${input}\n",
       "inputs": [
-        {"workType": "task", "state": "init"}
+        {
+          "state": "init",
+          "workType": "task"
+        }
+      ],
+      "name": "run-subagent",
+      "onFailure": [
+        {
+          "state": "failed",
+          "workType": "task"
+        }
       ],
       "outputs": [
-        {"workType": "task", "state": "complete"}
+        {
+          "state": "complete",
+          "workType": "task"
+        }
       ],
-      "onFailure": [
-        {"workType": "task", "state": "failed"}
-      ],
-      "promptFile": "prompts/run-subagent.md"
+      "promptFile": "prompts/run-subagent.md",
+      "type": "AGENT_RUN",
+      "worker": "subagent-worker"
     }
   ]
 }

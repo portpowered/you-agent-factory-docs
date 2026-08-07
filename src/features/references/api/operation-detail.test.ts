@@ -235,7 +235,7 @@ describe("buildApiOperationDetailsFromArtifact", () => {
     const loaded = loadApiOpenApiArtifact();
 
     expect(projection.operationCount).toBe(nav.model.operationCount);
-    expect(projection.operationsWithEventStream).toBe(3);
+    expect(projection.operationsWithEventStream).toBe(2);
     expect(projection.operationsWithAuthoredExamples).toBeGreaterThanOrEqual(1);
 
     const submit = projection.byAnchor.get("submitWorkBySessionId");

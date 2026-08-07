@@ -104,9 +104,10 @@ describe("composeProductionHeroSlot", () => {
 
     expect(html).toContain('data-hero-section=""');
     expect(html).toContain("YOU");
-    expect(html).toContain("AGENT");
-    expect(html).toContain("FACTORY CLI");
-    expect(html).not.toContain(fixtureLandingPageData.hero.subtitle);
+    // The wordmark is the product name alone. "AGENT FACTORY CLI" moved out of
+    // the h1 and into the one-line subtitle below the terminal.
+    expect(html).not.toContain("FACTORY CLI");
+    expect(html).toContain(fixtureLandingPageData.hero.subtitle);
     expect(html).toContain('data-particle-sphere=""');
     expect(html).toContain("https://youagentfactory.com/install.sh");
     expect(html).toContain("OPEN SOURCE");
