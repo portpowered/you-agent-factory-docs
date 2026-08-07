@@ -15,25 +15,28 @@ import type {
 /** Placeholder for a cell the published contract left empty. */
 const UNPUBLISHED_CELL = "—";
 
+/**
+ * Hairline-separated rows with airy vertical padding: the identifier column
+ * carries the weight, the supporting columns stay quiet.
+ */
 const TABLE_CLASS =
-  "m-0 w-full border-collapse text-left text-sm [&_td]:border-t [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:align-top [&_th]:px-3 [&_th]:py-2 [&_th]:text-xs [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-wide [&_th]:text-muted-foreground";
+  "m-0 w-full border-collapse text-left text-sm [&_td]:border-t [&_td]:border-border [&_td]:px-3 [&_td]:py-3 [&_td]:align-top [&_th]:px-3 [&_th]:pb-2 [&_th]:pt-0 [&_th]:text-xs [&_th]:font-semibold [&_th]:uppercase [&_th]:tracking-wide [&_th]:text-muted-foreground";
+
+const OPTIONS_HEADING_CLASS =
+  "m-0 text-base font-bold tracking-tight text-foreground";
+
+const IDENTIFIER_CELL_CLASS =
+  "whitespace-nowrap font-mono font-semibold text-foreground";
 
 /**
- * Flags declared on the command itself. Inherited flags are listed separately
- * so a command's own surface is not buried under the four global flags every
- * subcommand re-declares.
+ * Flags declared on the command itself. Inherited flags are dropped: the four
+ * globals every subcommand re-declares are documented once on the root `you`
+ * card, and repeating them across forty commands says nothing new.
  */
 export function cliLocalFlags(
   flags: readonly CliFlagNormalized[] | undefined,
 ): CliFlagNormalized[] {
   return (flags ?? []).filter((flag) => flag.scope !== "inherited");
-}
-
-/** Flags the command inherits from an ancestor command. */
-export function cliInheritedFlags(
-  flags: readonly CliFlagNormalized[] | undefined,
-): CliFlagNormalized[] {
-  return (flags ?? []).filter((flag) => flag.scope === "inherited");
 }
 
 /** Render a flag as it is typed: `--output, -o`. */
@@ -82,8 +85,8 @@ export function CliCommandArguments({
   }
 
   return (
-    <section className="space-y-2" data-cli-arguments="">
-      <h4 className="m-0 text-sm font-semibold text-foreground">Arguments</h4>
+    <section className="flex flex-col gap-3" data-cli-arguments="">
+      <h4 className={OPTIONS_HEADING_CLASS}>Arguments</h4>
       <div className="overflow-x-auto">
         <table className={TABLE_CLASS}>
           <thead>
@@ -96,7 +99,7 @@ export function CliCommandArguments({
           <tbody>
             {args.map((argument) => (
               <tr data-cli-argument={argument.name} key={argument.id}>
-                <td className="whitespace-nowrap font-mono text-foreground">
+                <td className={IDENTIFIER_CELL_CLASS}>
                   {argument.variadic
                     ? `<${argument.name}…>`
                     : `<${argument.name}>`}
@@ -130,8 +133,8 @@ export function CliCommandFlags({
   );
 
   return (
-    <section className="space-y-2" data-cli-flags="">
-      <h4 className="m-0 text-sm font-semibold text-foreground">Flags</h4>
+    <section className="flex flex-col gap-3" data-cli-flags="">
+      <h4 className={OPTIONS_HEADING_CLASS}>Flags</h4>
       <div className="overflow-x-auto">
         <table className={TABLE_CLASS}>
           <thead>
@@ -147,7 +150,7 @@ export function CliCommandFlags({
               const defaultValue = displayableDefault(flag);
               return (
                 <tr data-cli-flag={flag.long} key={flag.id}>
-                  <td className="whitespace-nowrap font-mono text-foreground">
+                  <td className={IDENTIFIER_CELL_CLASS}>
                     {cliFlagInvocation(flag)}
                     {flag.required ? (
                       <span className="ml-2 font-sans text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -185,46 +188,5 @@ export function CliCommandFlags({
         </table>
       </div>
     </section>
-  );
-}
-
-/**
- * One-line pointer to the global flags a subcommand re-declares. They are
- * documented in full on the root `you` card, so repeating four identical rows
- * on 40 commands would only pad the page.
- */
-export function CliInheritedFlagsNote({
-  flags,
-  rootAnchor,
-}: {
-  flags: readonly CliFlagNormalized[];
-  rootAnchor?: string;
-}) {
-  if (flags.length === 0) {
-    return null;
-  }
-
-  const names = flags.map((flag) => `--${flag.long}`);
-  return (
-    <p
-      className="m-0 text-sm text-muted-foreground"
-      data-cli-inherited-flags=""
-    >
-      Also accepts the global flags{" "}
-      {names.map((name, index) => (
-        <span key={name}>
-          {index > 0 ? ", " : null}
-          <code className="font-mono">{name}</code>
-        </span>
-      ))}
-      {rootAnchor !== undefined ? (
-        <>
-          {" "}
-          (see <a href={`#${rootAnchor}`}>you</a>).
-        </>
-      ) : (
-        "."
-      )}
-    </p>
   );
 }

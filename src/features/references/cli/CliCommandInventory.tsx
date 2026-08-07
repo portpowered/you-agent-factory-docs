@@ -135,9 +135,6 @@ export function CliCommandInventory({
   const filterable = anchoredCommands.map(toFilterable);
   const filtered = filterReferenceInventoryItems(filterable, filter);
   const groups = groupCliCommands(filtered.map((item) => item.command));
-  const rootAnchor = anchoredCommands.find(
-    (command) => command.commandPath === "you",
-  )?.anchor;
   const countTemplate =
     anchoredCommands.length === 1
       ? (inv?.countOne ??
@@ -147,7 +144,12 @@ export function CliCommandInventory({
 
   return (
     <div
-      className={cn("flex flex-col gap-8", className)}
+      // `not-prose` is load-bearing: fumadocs prose margins outrank a plain
+      // `m-0` utility, so without it every heading, paragraph, and table here
+      // carries an inherited margin on top of the flex gap. That is what made
+      // the rhythm uneven and pushed each command heading half its 24px top
+      // margin below its own anchor control.
+      className={cn("not-prose flex flex-col gap-12", className)}
       data-cli-command-count={String(anchoredCommands.length)}
       data-cli-command-filtered-count={String(filtered.length)}
       data-cli-command-inventory=""
@@ -181,12 +183,12 @@ export function CliCommandInventory({
       ) : (
         groups.map((group) => (
           <section
-            className="flex flex-col gap-4"
+            className="flex scroll-mt-24 flex-col gap-5"
             data-cli-command-group={group.path}
             id={group.anchor}
             key={group.path}
           >
-            <h2 className="m-0 font-mono text-2xl font-semibold tracking-tight">
+            <h2 className="m-0 border-b border-border pb-3 font-mono text-3xl font-bold leading-tight tracking-tight">
               {group.path}
             </h2>
             {group.commands.map((command) => (
@@ -195,7 +197,6 @@ export function CliCommandInventory({
                 command={command}
                 key={command.id}
                 packageVersion={inventory.packageVersion}
-                rootAnchor={rootAnchor}
               />
             ))}
           </section>

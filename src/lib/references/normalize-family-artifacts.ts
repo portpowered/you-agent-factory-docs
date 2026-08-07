@@ -275,6 +275,47 @@ export function normalizeOpenApiOperationsFromArtifact(
  * key upstream localization will key off. Docs render the canonical English and
  * ignore the key, so a node with no usable prose reads as absent.
  */
+/**
+ * Dedent a published example block.
+ *
+ * Cobra indents every line of an example by two spaces. Trimming the string
+ * whole would strip that indent from the first line only, leaving the rest
+ * hanging — so remove the indentation the lines share instead.
+ */
+export function dedentCliExample(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const lines = value.replace(/\s+$/, "").split("\n");
+  while (lines.length > 0 && lines[0]?.trim() === "") {
+    lines.shift();
+  }
+  if (lines.length === 0) {
+    return undefined;
+  }
+
+  let sharedIndent = Number.POSITIVE_INFINITY;
+  for (const line of lines) {
+    if (line.trim().length === 0) {
+      continue;
+    }
+    sharedIndent = Math.min(
+      sharedIndent,
+      line.length - line.trimStart().length,
+    );
+  }
+  if (!Number.isFinite(sharedIndent) || sharedIndent === 0) {
+    const joined = lines.join("\n");
+    return joined.trim().length > 0 ? joined : undefined;
+  }
+
+  const dedented = lines
+    .map((line) => (line.trim().length === 0 ? "" : line.slice(sharedIndent)))
+    .join("\n");
+  return dedented.trim().length > 0 ? dedented : undefined;
+}
+
 function canonicalEnglishProse(value: unknown): string | undefined {
   if (!isPlainObject(value)) {
     return undefined;
@@ -308,7 +349,7 @@ function cliCommandProseFromDocumentation(value: unknown): {
   const examples: string[] = [];
   if (Array.isArray(value.examples)) {
     for (const entry of value.examples) {
-      const normalized = optionalNonEmptyString(entry);
+      const normalized = dedentCliExample(entry);
       if (normalized !== undefined) {
         examples.push(normalized);
       }

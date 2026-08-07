@@ -213,9 +213,25 @@ try {
         cardRepeatsInheritedGlobals: Boolean(
           commandCard?.querySelector('[data-cli-flag="json"]'),
         ),
-        cardHasInheritedNote: Boolean(
-          commandCard?.querySelector("[data-cli-inherited-flags]"),
+        inheritedNoteAnywhere: Boolean(
+          document.querySelector("[data-cli-inherited-flags]"),
         ),
+        rootCardDocumentsGlobals: Boolean(
+          document.querySelector(
+            '[data-cli-command-reference]#you [data-cli-flag="json"]',
+          ),
+        ),
+        headingAnchorMisaligned: (() => {
+          const heading = commandCard?.querySelector("h3");
+          const anchor = commandCard?.querySelector(
+            "[data-reference-copyable-anchor]",
+          );
+          if (!heading || !anchor) return true;
+          const h = heading.getBoundingClientRect();
+          const a = anchor.getBoundingClientRect();
+          // Centre lines within 2px counts as aligned.
+          return Math.abs(h.top + h.height / 2 - (a.top + a.height / 2)) > 2;
+        })(),
         cardHasCopyableAnchor: Boolean(
           commandCard?.querySelector("[data-reference-copyable-anchor]"),
         ),
@@ -288,9 +304,17 @@ try {
     if (!probe.cardHasArgumentsTable) {
       failures.push("expected published arguments table on you run");
     }
-    if (probe.cardRepeatsInheritedGlobals || !probe.cardHasInheritedNote) {
+    if (probe.cardRepeatsInheritedGlobals || probe.inheritedNoteAnywhere) {
       failures.push(
-        "expected inherited globals summarised in one note, not repeated as rows",
+        "inherited globals must not reappear as per-command rows or a pointer line",
+      );
+    }
+    if (!probe.rootCardDocumentsGlobals) {
+      failures.push("root you card must still document the global flags");
+    }
+    if (probe.headingAnchorMisaligned) {
+      failures.push(
+        "command heading and its anchor are not vertically aligned",
       );
     }
     if (!probe.cardHasCopyableAnchor) {

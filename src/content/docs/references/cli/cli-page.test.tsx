@@ -110,6 +110,15 @@ describe("cli reference page", () => {
         screen.getByRole("heading", { level: 2, name: "you factory" }),
       ).toBeTruthy();
 
+      // Information hierarchy: family heading outranks the command heading,
+      // which outranks the in-card option labels — each one bold.
+      const familyHeading = screen.getByRole("heading", {
+        level: 2,
+        name: "you factory",
+      });
+      expect(familyHeading.className).toContain("text-3xl");
+      expect(familyHeading.className).toContain("font-bold");
+
       // `you run` is the richest published surface: arguments plus 17 flags.
       const runCard = document.querySelector(
         "[data-cli-command-reference]#you-run",
@@ -119,7 +128,15 @@ describe("cli reference page", () => {
         return;
       }
       const card = within(runCard);
-      expect(card.getByRole("heading", { name: "you run" })).toBeTruthy();
+      const runHeading = card.getByRole("heading", { name: "you run" });
+      expect(runHeading).toBeTruthy();
+      expect(runHeading.className).toContain("text-2xl");
+      expect(runHeading.className).toContain("font-bold");
+      expect(
+        within(runCard).getByRole("heading", { name: "Flags" }).className,
+      ).toContain("font-bold");
+      // Heading and anchor share a centre line rather than a top edge.
+      expect(runHeading.parentElement?.className).toContain("items-center");
       expect(
         runCard.querySelector("[data-reference-copyable-anchor]"),
       ).toBeTruthy();
@@ -129,11 +146,18 @@ describe("cli reference page", () => {
       expect(runCard.querySelector("[data-cli-arguments]")).toBeTruthy();
       expect(runCard.querySelector("[data-cli-example-code]")).toBeTruthy();
 
-      // Inherited globals are pointed at once, not repeated as rows.
+      // Inherited globals live on the root `you` card only — no per-command
+      // rows and no redundant "Also accepts the global flags" line.
       expect(runCard.querySelector('[data-cli-flag="json"]')).toBeNull();
-      expect(
-        runCard.querySelector("[data-cli-inherited-flags]")?.textContent,
-      ).toContain("--json");
+      expect(document.querySelector("[data-cli-inherited-flags]")).toBeNull();
+      expect(document.body.textContent).not.toContain(
+        "Also accepts the global flags",
+      );
+      // The root card still documents them, so the information is not lost.
+      const rootCard = document.querySelector(
+        "[data-cli-command-reference]#you",
+      );
+      expect(rootCard?.querySelector('[data-cli-flag="json"]')).toBeTruthy();
 
       // The retired under-construction apology never comes back.
       expect(
