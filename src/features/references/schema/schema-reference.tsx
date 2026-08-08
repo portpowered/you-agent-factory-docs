@@ -6,6 +6,7 @@
  * Invalid or missing addresses yield explicit status UI — never a crash.
  */
 
+import type { ReactNode } from "react";
 import type { ReferenceCrossLinkOutcome } from "@/lib/references/reference-cross-link-resolver";
 import type { ReferenceDisplayProjection } from "@/lib/references/reference-display-projection";
 import type {
@@ -25,6 +26,7 @@ import { schemaFieldTreeNodesFromProperties } from "./schema-field-path";
 import { SchemaFilter } from "./schema-filter";
 import { resolveSchemaReferenceInput } from "./schema-reference-display";
 import { SchemaSurface } from "./schema-surface";
+import type { SchemaTypeScale } from "./schema-type-scale";
 import type { SchemaFieldTreeNode, SchemaUiStatus } from "./types";
 
 export type SchemaReferenceProps = {
@@ -90,9 +92,92 @@ export type SchemaReferenceProps = {
    * definitions when `showFilter` is enabled).
    */
   showCatalog?: boolean;
+  /**
+   * Forwarded to SchemaFilter. Pass false on a page that renders the whole
+   * catalog below the filter, so the list is a search result rather than a
+   * standing duplicate of the page body.
+   */
+  showDefinitionListWhenEmpty?: boolean;
+  /**
+   * Ordered, titled sections over the catalog. When set, complete mode renders
+   * these instead of one flat "Definitions" list, and each section heading gets
+   * a stable anchor a right-rail table of contents can link to. Grouping is the
+   * owning page's call — this surface only renders what it is handed, and a
+   * definition missing from every group is simply not rendered.
+   */
+  catalogGroups?: readonly SchemaCatalogGroup[];
+  /**
+   * Section chrome for the primary (root) definition, so it reads as the first
+   * titled section rather than an untitled block above the groups. Omit to
+   * render the primary definition bare, as embeds do.
+   */
+  primarySection?: SchemaCatalogSection;
+  /**
+   * Heading scale. `"page"` also renders each definition as a separated card;
+   * `"embed"` (default) keeps the flat, quiet treatment every embed uses.
+   */
+  typeScale?: SchemaTypeScale;
   className?: string;
   "data-testid"?: string;
 };
+
+/** Heading, blurb, and stable fragment for one titled section. */
+export type SchemaCatalogSection = {
+  id: string;
+  title: string;
+  description?: string;
+  /** In-page fragment for the section heading. */
+  anchor: string;
+};
+
+/** One titled section of the definition catalog. */
+export type SchemaCatalogGroup = SchemaCatalogSection & {
+  definitions: readonly SchemaDefinitionModel[];
+};
+
+/**
+ * `page` scale renders every definition as its own bordered block so a reader
+ * can tell where one schema object ends and the next begins — the flat scale
+ * relies on the surrounding prose for that separation.
+ */
+const PAGE_DEFINITION_CARD_CLASS =
+  "scroll-mt-24 rounded-lg border border-border bg-background px-5 py-5";
+
+/**
+ * Titled section wrapper shared by the primary definition and each catalog
+ * group, so both carry the same heading weight and the same anchor contract.
+ */
+function SchemaCatalogSectionShell({
+  section,
+  children,
+}: {
+  section: SchemaCatalogSection;
+  children: ReactNode;
+}) {
+  return (
+    <section
+      aria-labelledby={`${section.anchor}-heading`}
+      className="min-w-0 scroll-mt-24 space-y-5"
+      data-schema-catalog-group={section.id}
+      id={section.anchor}
+    >
+      <div className="space-y-2 border-border border-b pb-3">
+        <h2
+          className="m-0 font-bold text-3xl text-foreground leading-tight tracking-tight"
+          id={`${section.anchor}-heading`}
+        >
+          {section.title}
+        </h2>
+        {section.description !== undefined ? (
+          <p className="m-0 text-base text-muted-foreground">
+            {section.description}
+          </p>
+        ) : null}
+      </div>
+      {children}
+    </section>
+  );
+}
 
 export function SchemaReference({
   status,
@@ -113,6 +198,10 @@ export function SchemaReference({
   defaultExpanded = false,
   showFilter = true,
   showCatalog = true,
+  showDefinitionListWhenEmpty = true,
+  catalogGroups,
+  primarySection,
+  typeScale = "embed",
   className,
   "data-testid": testId = "schema-reference",
 }: SchemaReferenceProps) {
@@ -155,18 +244,60 @@ export function SchemaReference({
     filterDefinitions !== undefined &&
     filterDefinitions.length > 0;
   const showFieldFilter = showFilter && nodes.length > 0;
+  const isPageScale = typeScale === "page";
+  const definitionCardClass = isPageScale
+    ? PAGE_DEFINITION_CARD_CLASS
+    : undefined;
+
+  const primaryDefinition = (
+    <SchemaDefinition
+      className={definitionCardClass}
+      data-testid={`${testId}-definition`}
+      defaultExpanded={defaultExpanded}
+      definition={primary}
+      exampleInputs={exampleInputs}
+      examples={examples}
+      examplesPlacement={examplesPlacement}
+      fieldNodes={nodes}
+      pagePath={pagePath}
+      projection={projection}
+      resolve={resolve}
+      showEmptyExamples={showEmptyExamples}
+      typeScale={typeScale}
+    />
+  );
+
+  const catalogEntry = (entry: SchemaDefinitionModel) => (
+    <SchemaDefinition
+      className={definitionCardClass}
+      data-testid={`${testId}-catalog-${entry.address.pointer}`}
+      defaultExpanded={defaultExpanded}
+      definition={entry}
+      key={formatCatalogKey(entry.address)}
+      pagePath={pagePath}
+      resolve={resolve}
+      typeScale={typeScale}
+    />
+  );
 
   return (
     <SchemaSurface
-      className={cn("space-y-6", className)}
+      className={cn(
+        // `not-prose` is load-bearing at page scale: fumadocs prose margins
+        // outrank a plain `m-0` utility, so without it every heading and
+        // paragraph carries an inherited margin on top of the explicit rhythm.
+        isPageScale ? "not-prose space-y-12" : "space-y-6",
+        className,
+      )}
       data-testid={testId}
       definition={{ definition: primary, address: primary.address }}
       status="ready"
     >
       <div
-        className="min-w-0 space-y-6"
+        className={cn("min-w-0", isPageScale ? "space-y-12" : "space-y-6")}
         data-schema-reference-mode={resolved.mode}
         data-schema-reference-pointer={primary.address.pointer}
+        data-schema-reference-type-scale={typeScale}
       >
         {showDefinitionFilter || showFieldFilter ? (
           <SchemaFilter
@@ -176,45 +307,47 @@ export function SchemaReference({
             fieldNodes={showFieldFilter ? nodes : undefined}
             pagePath={pagePath}
             showDefinitionList={showDefinitionFilter}
+            showDefinitionListWhenEmpty={showDefinitionListWhenEmpty}
             showFieldTree={false}
           />
         ) : null}
 
-        <SchemaDefinition
-          data-testid={`${testId}-definition`}
-          defaultExpanded={defaultExpanded}
-          definition={primary}
-          exampleInputs={exampleInputs}
-          examples={examples}
-          examplesPlacement={examplesPlacement}
-          fieldNodes={nodes}
-          pagePath={pagePath}
-          projection={projection}
-          resolve={resolve}
-          showEmptyExamples={showEmptyExamples}
-        />
+        {primarySection !== undefined ? (
+          <SchemaCatalogSectionShell section={primarySection}>
+            {primaryDefinition}
+          </SchemaCatalogSectionShell>
+        ) : (
+          primaryDefinition
+        )}
 
         {resolved.mode === "complete" &&
         showCatalog &&
         resolved.catalog.length > 0 ? (
           <section
             aria-label="Schema definitions"
-            className="min-w-0 space-y-6"
+            className={cn("min-w-0", isPageScale ? "space-y-12" : "space-y-6")}
             data-schema-reference="catalog"
           >
-            <h2 className="font-semibold text-foreground text-base">
-              Definitions
-            </h2>
-            {resolved.catalog.map((entry) => (
-              <SchemaDefinition
-                data-testid={`${testId}-catalog-${entry.address.pointer}`}
-                defaultExpanded={defaultExpanded}
-                definition={entry}
-                key={formatCatalogKey(entry.address)}
-                pagePath={pagePath}
-                resolve={resolve}
-              />
-            ))}
+            {catalogGroups !== undefined && catalogGroups.length > 0 ? (
+              catalogGroups.map((group) => (
+                <SchemaCatalogSectionShell key={group.id} section={group}>
+                  {group.definitions.map(catalogEntry)}
+                </SchemaCatalogSectionShell>
+              ))
+            ) : (
+              <>
+                <h2
+                  className={
+                    isPageScale
+                      ? "m-0 border-border border-b pb-3 font-bold text-3xl text-foreground leading-tight tracking-tight"
+                      : "font-semibold text-foreground text-base"
+                  }
+                >
+                  Definitions
+                </h2>
+                {resolved.catalog.map(catalogEntry)}
+              </>
+            )}
           </section>
         ) : null}
       </div>

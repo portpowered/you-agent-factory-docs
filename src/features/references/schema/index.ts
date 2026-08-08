@@ -104,6 +104,8 @@ export {
   type SchemaRefLinkProps,
 } from "./schema-ref-link";
 export {
+  type SchemaCatalogGroup,
+  type SchemaCatalogSection,
   SchemaReference,
   type SchemaReferenceProps,
 } from "./schema-reference";
@@ -129,6 +131,10 @@ export {
   type SchemaTypeBadgeProps,
   schemaTypeBadgePropsFromProjection,
 } from "./schema-type-badge";
+export {
+  SCHEMA_TYPE_SCALES,
+  type SchemaTypeScale,
+} from "./schema-type-scale";
 export {
   SchemaVariantApplicabilityBadge,
   type SchemaVariantApplicabilityBadgeProps,

@@ -183,6 +183,82 @@ try {
         hasKeyConceptsHeading: hasHeading("Key Concepts"),
         hasHowToUseHeading: hasHeading("How To Use"),
         hasSchemaLookupHeading: hasHeading("Schema Lookup"),
+        groupIds: [
+          ...document.querySelectorAll("[data-schema-catalog-group]"),
+        ].map((section) => section.getAttribute("data-schema-catalog-group")),
+        ungroupedDefinitions: [
+          ...(catalog?.querySelectorAll("[data-schema-definition-pointer]") ??
+            []),
+        ].filter(
+          (definition) => !definition.closest("[data-schema-catalog-group]"),
+        ).length,
+        // Computed styles, not class strings: this page renders inside
+        // fumadocs prose, where a `.prose h3` rule outranks a bare `m-0`
+        // utility. Only the real cascade proves the reset took.
+        typeScale: (() => {
+          const section = document.querySelector(
+            '[data-schema-catalog-group="workers"]',
+          );
+          const groupHeading = section?.querySelector("h2");
+          const definition = section?.querySelector(
+            '[data-schema-definition-pointer="/$defs/Worker"]',
+          );
+          const title = definition?.querySelector(
+            "[data-schema-definition-title]",
+          );
+          const fieldsHeading = definition?.querySelector(
+            "[data-schema-definition-fields] h4",
+          );
+          const read = (element: Element | null | undefined) => {
+            if (!element) return null;
+            const style = getComputedStyle(element);
+            return {
+              tag: element.tagName,
+              size: Number.parseFloat(style.fontSize),
+              weight: Number.parseInt(style.fontWeight, 10),
+              marginTop: Number.parseFloat(style.marginTop),
+            };
+          };
+          return {
+            group: read(groupHeading),
+            definition: read(title),
+            fields: read(fieldsHeading),
+            carded:
+              definition instanceof HTMLElement
+                ? Number.parseFloat(
+                    getComputedStyle(definition).borderTopWidth,
+                  ) > 0
+                : false,
+          };
+        })(),
+        // Geometry, not markup: `items-center` centres the *margin box*, so an
+        // unreset prose margin drops a heading below its own anchor by half
+        // the margin. Only measuring catches that.
+        misalignedHeadings: [
+          ...document.querySelectorAll("[data-schema-definition-pointer]"),
+        ].filter((card) => {
+          const heading = card.querySelector("[data-schema-definition-title]");
+          const anchor = card.querySelector('[data-schema-breadcrumb="copy"]');
+          if (!heading || !anchor) return true;
+          const h = heading.getBoundingClientRect();
+          const a = anchor.getBoundingClientRect();
+          return Math.abs(h.top + h.height / 2 - (a.top + a.height / 2)) > 2;
+        }).length,
+        hasFilterInput: Boolean(
+          document.querySelector('[data-schema-filter="input"]'),
+        ),
+        standingFilterRows: document.querySelectorAll(
+          "[data-schema-filter-definition-pointer]",
+        ).length,
+        tocLinks: [...document.querySelectorAll("#nd-toc a[href*='#']")].map(
+          (link) => link.getAttribute("href") ?? "",
+        ),
+        danglingTocAnchors: [
+          ...document.querySelectorAll("#nd-toc a[href*='#']"),
+        ].filter((link) => {
+          const fragment = (link.getAttribute("href") ?? "").split("#")[1];
+          return !fragment || !document.getElementById(fragment);
+        }).length,
         hasWhatItCoversSection: Boolean(
           document.getElementById("what-it-covers"),
         ),
@@ -254,8 +330,51 @@ try {
   requireTrue(!repair.hasHowToUseHeading, "no How To Use heading");
   requireTrue(!repair.hasWhatItCoversSection, "no #what-it-covers section");
   requireTrue(!repair.hasKeyConceptsSection, "no #key-concepts section");
-  requireTrue(repair.hasSchemaLookupHeading, "Schema Lookup heading present");
-  requireTrue(repair.hasSchemaLookupSection, "#schema-lookup section present");
+  requireTrue(
+    !repair.hasSchemaLookupHeading,
+    "no Schema Lookup heading (removed as useless chrome)",
+  );
+  requireTrue(!repair.hasSchemaLookupSection, "no #schema-lookup section");
+  requireTrue(
+    repair.groupIds.join(",") ===
+      "core,workers,workstations,work,orchestrator,invocation,guards,resources,layout,shared",
+    `catalog grouped in reading order (got ${repair.groupIds.join(",")})`,
+  );
+  requireTrue(
+    repair.ungroupedDefinitions === 0,
+    `every definition sits in a section (${repair.ungroupedDefinitions} loose)`,
+  );
+  requireTrue(
+    (repair.typeScale.group?.size ?? 0) >
+      (repair.typeScale.definition?.size ?? 0) &&
+      (repair.typeScale.definition?.size ?? 0) >
+        (repair.typeScale.fields?.size ?? 0),
+    `heading scale steps down (${JSON.stringify(repair.typeScale)})`,
+  );
+  requireTrue(
+    (repair.typeScale.group?.weight ?? 0) >= 700 &&
+      (repair.typeScale.definition?.weight ?? 0) >= 700 &&
+      (repair.typeScale.fields?.weight ?? 0) >= 700,
+    `section and definition headings are bold (${JSON.stringify(repair.typeScale)})`,
+  );
+  requireTrue(
+    repair.typeScale.group?.marginTop === 0 &&
+      repair.typeScale.definition?.marginTop === 0 &&
+      repair.typeScale.fields?.marginTop === 0,
+    `prose margins reset by not-prose (${JSON.stringify(repair.typeScale)})`,
+  );
+  requireTrue(
+    repair.typeScale.carded,
+    "definitions render as separated blocks",
+  );
+  requireTrue(
+    repair.tocLinks.length > 100,
+    `right rail lists every definition (${repair.tocLinks.length} links)`,
+  );
+  requireTrue(
+    repair.danglingTocAnchors === 0,
+    `no dangling rail anchors (${repair.danglingTocAnchors})`,
+  );
   requireTrue(repair.hasCatalog, "splayed definitions catalog visible");
   requireTrue(repair.hasWorkerDef, "Worker $def splayed on page");
   requireTrue(repair.hasWorkstationDef, "Workstation $def splayed on page");

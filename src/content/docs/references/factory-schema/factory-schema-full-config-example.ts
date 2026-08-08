@@ -42,7 +42,7 @@ export const FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_ID =
 /**
  * Single authored `exampleInputs` override for SchemaReference on the Factory
  * schema page. Production mounts pass this so the root definition shows one
- * copyable full configuration JSON example near Schema Lookup.
+ * copyable full configuration JSON example in the Core configuration section.
  */
 export const FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS: readonly SchemaExampleInput[] =
   [
