@@ -18,6 +18,7 @@ import {
   schemaFieldLeafName,
   schemaFieldTreeNodeCanExpand,
 } from "./schema-field-path";
+import { schemaFieldTypeLink } from "./schema-field-type-link";
 import {
   type SchemaRefLinkDisplay,
   schemaRefCompactLabel,
@@ -49,6 +50,13 @@ export type SchemaFieldRowProps = {
    */
   showAnchorCopy?: boolean;
   /**
+   * When false, omit the leading expand column entirely. Callers pass false for
+   * a flat tree where nothing can expand, so field names align with the rest of
+   * the block instead of sitting behind a dead indent. Default true keeps the
+   * column reserved so sibling rows stay aligned when some do expand.
+   */
+  showExpandColumn?: boolean;
+  /**
    * When true, omit the secondary path label when it equals the leaf name so
    * each field is listed once. Default false preserves name + path chrome for
    * nested schema trees on non-events surfaces.
@@ -73,6 +81,7 @@ export function SchemaFieldRow({
   refLink,
   pagePath,
   showAnchorCopy = true,
+  showExpandColumn = true,
   showFieldPathWhenDistinct = false,
   showPointerPathChrome = false,
   children,
@@ -96,6 +105,11 @@ export function SchemaFieldRow({
             : { label: schemaRefCompactLabel(refTarget.pointer) }),
         })
       : undefined);
+  const typeLink = schemaFieldTypeLink(field, {
+    pagePath,
+    ...(resolvedRefLink !== undefined ? { refLink: resolvedRefLink } : {}),
+    showPointerPathChrome,
+  });
   const fieldAddress = field.address;
   const fieldDeepLink =
     showAnchorCopy && fieldAddress !== undefined
@@ -139,13 +153,13 @@ export function SchemaFieldRow({
               <ChevronRight aria-hidden="true" className="size-4" />
             )}
           </button>
-        ) : (
+        ) : showExpandColumn ? (
           <span
             aria-hidden="true"
             className="mt-0.5 inline-flex size-7 shrink-0"
             data-schema-field-expand-spacer=""
           />
-        )}
+        ) : null}
 
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -165,11 +179,31 @@ export function SchemaFieldRow({
               </code>
             ) : null}
             <SchemaRequiredBadge required={field.required} />
-            <SchemaTypeBadge
-              format={field.format}
-              nullable={field.nullable}
-              typeSummary={field.typeSummary}
-            />
+            {/* The target *is* the type. A field whose summary is `allOf`
+                reads as nothing; naming the ref target in the badge — and
+                making the badge the link — replaces both that summary and the
+                separate `$ref → X` row this row used to carry. */}
+            {typeLink !== undefined ? (
+              <>
+                <SchemaRefLink
+                  className="rounded-md border border-border bg-muted/50 px-1.5 py-0.5"
+                  display={typeLink.display}
+                />
+                <SchemaTypeBadge
+                  format={field.format}
+                  nullable={field.nullable}
+                  {...(typeLink.replacesSummary
+                    ? {}
+                    : { typeSummary: field.typeSummary })}
+                />
+              </>
+            ) : (
+              <SchemaTypeBadge
+                format={field.format}
+                nullable={field.nullable}
+                typeSummary={field.typeSummary}
+              />
+            )}
             {variantApplicability !== undefined ? (
               <SchemaVariantApplicabilityBadge
                 applicability={variantApplicability}
@@ -211,22 +245,6 @@ export function SchemaFieldRow({
               segments={fieldBreadcrumbSegments}
               showPathSegments={showPointerPathChrome}
             />
-          ) : null}
-
-          {resolvedRefLink !== undefined ? (
-            <div
-              className="flex min-w-0 flex-wrap items-baseline gap-1"
-              data-schema-ref-row=""
-            >
-              <span className="font-mono text-muted-foreground text-xs">
-                $ref →
-              </span>
-              <SchemaRefLink display={resolvedRefLink} />
-              <span className="sr-only">
-                {" "}
-                (reference link; not expanded recursively)
-              </span>
-            </div>
           ) : null}
         </div>
       </div>

@@ -111,10 +111,13 @@ export const REFERENCE_LONG_TOKENS: readonly ReferenceLongTokenSpec[] = [
     routeIds: ["references-factory-schema"],
   },
   {
-    id: "schema-field-path",
+    // Replaces the secondary path label: on the schema page a field's second
+    // token is now its linked type target (`NameValue`, `WorkType[]`), which
+    // is pointer-derived and just as prone to overflowing a narrow column.
+    id: "schema-field-type-link",
     kind: "field",
-    selector: "[data-schema-field-path-label]",
-    label: "Schema field path",
+    selector: "a[data-schema-ref-kind] [data-schema-ref-label]",
+    label: "Schema field type link",
     required: true,
     routeIds: ["references-factory-schema"],
   },

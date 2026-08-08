@@ -57,7 +57,9 @@ export function SchemaRefLink({
         data-testid={testId}
         href={linkHref(display)}
       >
-        <span data-schema-ref-label="">{display.label}</span>
+        <span className="min-w-0 break-all" data-schema-ref-label="">
+          {display.label}
+        </span>
         {display.kind === "cycle" ? (
           <span
             className="font-sans text-[0.7rem] text-muted-foreground no-underline"
@@ -85,7 +87,9 @@ export function SchemaRefLink({
       data-testid={testId}
       role="status"
     >
-      <span data-schema-ref-label="">{display.label}</span>
+      <span className="min-w-0 break-all" data-schema-ref-label="">
+        {display.label}
+      </span>
       <span
         className="font-sans text-[0.7rem] text-muted-foreground"
         data-schema-ref-unresolved=""

@@ -1,5 +1,5 @@
 {
   "title": "Factory schema",
   "description": "Reference for the factory configuration schema.",
-  "contextSentence": "This is a reference for the factory configuration schema, which defines how a factory works. It opens with the core configuration — the root object of a factory file — and then covers each subject it references: workers, workstations, work types and messages, and the rest."
+  "contextSentence": "This is a reference for the factory configuration schema. The config is used to declare the shape of a factory. What are the workers, what are the workstations, guards, limits, and all other things."
 }

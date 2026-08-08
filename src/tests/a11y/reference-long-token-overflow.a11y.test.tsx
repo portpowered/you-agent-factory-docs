@@ -165,7 +165,7 @@ describe("reference long-token overflow (always-on)", () => {
     expect(pathCode?.className).toContain("break-all");
   });
 
-  test("factory-schema field names and paths are contained", () => {
+  test("factory-schema field names and type links are contained", () => {
     const { container } = render(<FactorySchemaReference />);
     stubCleanPageWidth(512);
     const probe = expectReferenceLongTokenOverflow(
@@ -175,8 +175,15 @@ describe("reference long-token overflow (always-on)", () => {
     );
     expect(probe.ok).toBe(true);
     expect(container.querySelector("[data-schema-field-name]")).not.toBeNull();
+    // The page prints each field's name once; its second token is the linked
+    // type target, which is what has to survive a narrow column now.
     expect(
       container.querySelector("[data-schema-field-path-label]"),
+    ).toBeNull();
+    expect(
+      container.querySelector(
+        "a[data-schema-ref-kind] [data-schema-ref-label]",
+      ),
     ).not.toBeNull();
   });
 
@@ -190,7 +197,14 @@ describe("reference long-token overflow (always-on)", () => {
             field: createSchemaFieldModel({
               path: `root.nested.${longField}`,
               required: true,
-              typeSummary: "string",
+              typeSummary: "allOf",
+              // The field's second token is now its linked type target, and a
+              // pointer leaf can be as long as any field name.
+              refTarget: {
+                publicArtifactId: "schemas/factory",
+                pointer:
+                  "/$defs/ExtremelyLongUnbrokenSchemaDefinitionNameForOverflow",
+              },
               enum: [
                 "accept",
                 "passthrough",
@@ -211,12 +225,14 @@ describe("reference long-token overflow (always-on)", () => {
 
     stubCleanPageWidth(390);
     const name = container.querySelector("[data-schema-field-name]");
-    const path = container.querySelector("[data-schema-field-path-label]");
+    const typeLink = container.querySelector(
+      "a[data-schema-ref-kind] [data-schema-ref-label]",
+    );
     const enumCode = container.querySelector(
       '[data-schema-constraint="enum"] code',
     );
     expect(name?.className).toContain("break-all");
-    expect(path?.className).toContain("truncate");
+    expect(typeLink?.className).toContain("break-all");
     expect(enumCode?.className).toMatch(/break-all|overflow-x-auto/);
 
     const probe = expectReferenceLongTokenOverflow(
