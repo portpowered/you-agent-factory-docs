@@ -37,6 +37,13 @@ import {
 } from "./schema-ref-display";
 import { SchemaRefLink } from "./schema-ref-link";
 import { SchemaTypeBadge } from "./schema-type-badge";
+import {
+  SCHEMA_DEFINITION_TITLE_CLASS,
+  SCHEMA_DEFINITION_TITLE_TAG,
+  SCHEMA_SECTION_HEADING_CLASS,
+  SCHEMA_SECTION_HEADING_TAG,
+  type SchemaTypeScale,
+} from "./schema-type-scale";
 import type { SchemaFieldTreeNode } from "./types";
 
 export type SchemaDefinitionProps = {
@@ -103,6 +110,12 @@ export type SchemaDefinitionProps = {
    * examples after header metadata and before composition/fields.
    */
   examplesPlacement?: SchemaExamplesPlacement;
+  /**
+   * Heading weight and level. Default `"embed"` keeps the quiet scale every
+   * `*SchemaEmbed` mount renders at; `"page"` is for routes whose body is the
+   * schema itself. See schema-type-scale.
+   */
+  typeScale?: SchemaTypeScale;
   className?: string;
   "data-testid"?: string;
 };
@@ -151,9 +164,12 @@ export function SchemaDefinition({
   showFieldPathWhenDistinct = false,
   showPointerPathChrome = false,
   examplesPlacement = "after-fields",
+  typeScale = "embed",
   className,
   "data-testid": testId = "schema-definition",
 }: SchemaDefinitionProps) {
+  const Title = SCHEMA_DEFINITION_TITLE_TAG[typeScale];
+  const FieldsHeading = SCHEMA_SECTION_HEADING_TAG[typeScale];
   const deepLink = schemaAddressDeepLink(definition.address, pagePath);
   const anchor = projection?.anchor ?? deepLink.anchor;
   const href =
@@ -203,12 +219,24 @@ export function SchemaDefinition({
   const headingId = `schema-def-${anchor}`;
   const examplesBeforeBody = examplesPlacement === "before-body";
 
+  const isPageScale = typeScale === "page";
+  const breadcrumb = (
+    <SchemaBreadcrumb
+      anchor={anchor}
+      aria-label={`Deep link for ${title}`}
+      href={href}
+      segments={breadcrumbSegments}
+      showPathSegments={showPointerPathChrome}
+    />
+  );
+
   const examplesPanel = (
     <SchemaExamplePanel
       data-testid="schema-definition-examples"
       exampleInputs={exampleInputs}
       examples={examples}
       showEmpty={showEmptyExamples}
+      typeScale={typeScale}
       values={
         examples === undefined && exampleInputs === undefined
           ? definition.examples
@@ -224,6 +252,7 @@ export function SchemaDefinition({
           composition={definition.composition}
           pagePath={pagePath}
           resolve={resolve}
+          typeScale={typeScale}
         />
       ) : null}
 
@@ -233,7 +262,11 @@ export function SchemaDefinition({
           className="min-w-0"
           data-schema-definition-fields=""
         >
-          <h3 className="mb-2 font-medium text-foreground text-sm">Fields</h3>
+          <FieldsHeading
+            className={cn("mb-2", SCHEMA_SECTION_HEADING_CLASS[typeScale])}
+          >
+            Fields
+          </FieldsHeading>
           <SchemaFieldTree
             defaultExpanded={defaultExpanded}
             nodes={nodes}
@@ -260,30 +293,36 @@ export function SchemaDefinition({
       tabIndex={-1}
     >
       <header className="space-y-2">
-        <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <h2
-            className="font-semibold text-foreground text-lg"
-            data-schema-definition-title=""
-            id={headingId}
-          >
-            {title}
-          </h2>
-          <SchemaTypeBadge format={format} typeSummary={typeSummary} />
+        {/* At page scale the deep-link control shares the title's line, as it
+            does on the CLI reference — parked on its own row it reads as an
+            orphaned icon rather than as chrome belonging to the heading. */}
+        <div
+          className={cn(
+            "flex min-w-0 flex-wrap items-center gap-2",
+            isPageScale && "justify-between gap-x-4",
+          )}
+        >
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <Title
+              className={SCHEMA_DEFINITION_TITLE_CLASS[typeScale]}
+              data-schema-definition-title=""
+              id={headingId}
+            >
+              {title}
+            </Title>
+            <SchemaTypeBadge format={format} typeSummary={typeSummary} />
+          </div>
+          {isPageScale && showPointerBreadcrumb ? breadcrumb : null}
         </div>
 
-        {showPointerBreadcrumb ? (
-          <SchemaBreadcrumb
-            anchor={anchor}
-            aria-label={`Deep link for ${title}`}
-            href={href}
-            segments={breadcrumbSegments}
-            showPathSegments={showPointerPathChrome}
-          />
-        ) : null}
+        {!isPageScale && showPointerBreadcrumb ? breadcrumb : null}
 
         {description !== undefined ? (
           <ContractDescriptionProse
-            className="text-muted-foreground text-sm"
+            className={cn(
+              "text-muted-foreground",
+              isPageScale ? "text-base" : "text-sm",
+            )}
             data-schema-definition-description=""
           >
             {description}

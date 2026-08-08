@@ -10,10 +10,11 @@
  * `assert-factory-schema-repair-browser.ts`.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { focusReferenceHashTarget } from "@/features/references/shared";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import { loadSchemaVerificationPackageModel } from "@/lib/references/load-schema-verification-models";
 import { source } from "@/lib/source";
 import {
   FACTORY_SCHEMA_PAGE_PATH,
@@ -23,6 +24,9 @@ import {
   FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE,
   FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_ID,
 } from "./factory-schema-full-config-example";
+import { groupFactorySchemaDefinitions } from "./factory-schema-groups";
+import { collectFactorySchemaSplayDefinitions } from "./factory-schema-splay";
+import { buildPageToc } from "./page-toc";
 
 describe("factory-schema reference page", () => {
   afterEach(() => {
@@ -42,7 +46,16 @@ describe("factory-schema reference page", () => {
     expect(loadedPage.frontmatter.kind).toBe("reference");
     expect(loadedPage.frontmatter.registryId).toBe("reference.factory-schema");
     expect(loadedPage.messages.title).toBe("Factory schema");
-    expect(loadedPage.messages.description).toMatch(/Factory JSON Schema/i);
+    expect(loadedPage.messages.description).toBe(
+      "Reference for the factory configuration schema.",
+    );
+
+    // The verbose "Schema Lookup" preamble is gone; the page opens on one
+    // plain-language sentence and then the schema itself.
+    expect(loadedPage.messages.sections).toBeUndefined();
+    expect(loadedPage.messages.contextSentence).toMatch(
+      /reference for the factory configuration schema/i,
+    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
@@ -68,7 +81,8 @@ describe("factory-schema reference page", () => {
       screen.queryByRole("heading", { name: "What It Covers" }),
     ).toBeNull();
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
-    expect(screen.getByRole("heading", { name: "Schema Lookup" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "Schema Lookup" })).toBeNull();
+    expect(document.getElementById("schema-lookup")).toBeNull();
     expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
@@ -114,6 +128,136 @@ describe("FactorySchemaReference mount", () => {
     expect(
       surface.querySelector('[data-schema-field-path="workers"]'),
     ).toBeTruthy();
+  });
+
+  test("groups the splayed catalog into ordered, titled sections", () => {
+    render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+    // The flat, untitled "Definitions" bucket is gone.
+    expect(screen.queryByRole("heading", { name: "Definitions" })).toBeNull();
+
+    const sections = [
+      ...surface.querySelectorAll("[data-schema-catalog-group]"),
+    ];
+
+    // Core configuration leads, then each subject, then the shared primitives.
+    expect(
+      sections.map((section) =>
+        section.getAttribute("data-schema-catalog-group"),
+      ),
+    ).toEqual([
+      "core",
+      "workers",
+      "workstations",
+      "work",
+      "orchestrator",
+      "invocation",
+      "guards",
+      "resources",
+      "layout",
+      "shared",
+    ]);
+
+    // Every section is a labelled landmark with a stable, unique anchor.
+    const anchors = new Set<string>();
+    for (const section of sections) {
+      const anchor = section.getAttribute("id") ?? "";
+      expect(anchor).toMatch(/^schema-group-[a-z0-9-]+$/);
+      expect(anchors.has(anchor)).toBe(false);
+      anchors.add(anchor);
+      expect(document.getElementById(`${anchor}-heading`)?.tagName).toBe("H2");
+    }
+
+    // Each definition sits inside exactly one section — none escape to the
+    // catalog root, which is what made the old page read as a dump.
+    const catalog = screen.getByRole("region", { name: "Schema definitions" });
+    for (const definition of catalog.querySelectorAll(
+      "[data-schema-definition-pointer]",
+    )) {
+      expect(definition.closest("[data-schema-catalog-group]")).toBeTruthy();
+    }
+
+    const workers = surface.querySelector(
+      '[data-schema-catalog-group="workers"]',
+    );
+    expect(
+      workers
+        ?.querySelector("[data-schema-definition-pointer]")
+        ?.getAttribute("data-schema-definition-pointer"),
+    ).toBe("/$defs/Worker");
+  });
+
+  test("renders each definition as a separated block at page type scale", () => {
+    render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+    expect(
+      surface.querySelector('[data-schema-reference-type-scale="page"]'),
+    ).toBeTruthy();
+
+    // `not-prose` is what lets the explicit spacing apply at all: fumadocs
+    // prose margins outrank a bare `m-0` utility.
+    expect(surface.className).toContain("not-prose");
+
+    const definitions = [
+      ...surface.querySelectorAll("[data-schema-definition-pointer]"),
+    ];
+    expect(definitions.length).toBeGreaterThan(50);
+    for (const definition of definitions) {
+      expect(definition.className).toContain("border");
+      expect(definition.className).toContain("rounded-lg");
+    }
+
+    // Section h2 → definition h3 → Fields/Examples h4, so the hierarchy steps
+    // down instead of flattening into one weight.
+    const worker = surface.querySelector(
+      '[data-schema-definition-pointer="/$defs/Worker"]',
+    );
+    const title = worker?.querySelector("[data-schema-definition-title]");
+    expect(title?.tagName).toBe("H3");
+    expect(title?.className).toContain("font-bold");
+    expect(
+      worker?.querySelector("[data-schema-definition-fields] h4"),
+    ).toBeTruthy();
+  });
+
+  test("holds the definition list back until a query is typed", () => {
+    render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+
+    // The filter input stays — it is the page's search affordance.
+    expect(surface.querySelector('[data-schema-filter="input"]')).toBeTruthy();
+
+    // Its results do not: a standing list of 100+ rows above content that
+    // already renders all of them is the dump, not a control.
+    expect(
+      screen.queryByTestId("factory-schema-reference-filter-results"),
+    ).toBeNull();
+    expect(
+      surface.querySelectorAll("[data-schema-filter-definition-pointer]"),
+    ).toHaveLength(0);
+
+    // Typing surfaces matches, and every match is a link that goes somewhere.
+    fireEvent.change(
+      surface.querySelector('[data-schema-filter="input"]') as HTMLInputElement,
+      { target: { value: "WorkstationCron" } },
+    );
+
+    const rows = [
+      ...surface.querySelectorAll("[data-schema-filter-definition-pointer]"),
+    ];
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      const href = row.querySelector("a")?.getAttribute("href") ?? "";
+      expect(href.startsWith(`${FACTORY_SCHEMA_PAGE_PATH}#`)).toBe(true);
+      expect(
+        document.getElementById(
+          href.slice(`${FACTORY_SCHEMA_PAGE_PATH}#`.length),
+        ),
+      ).toBeTruthy();
+    }
   });
 
   test("recursively splays referenced Factory definitions onto the page", () => {
@@ -290,5 +434,49 @@ describe("FactorySchemaReference mount", () => {
     expect(alert.textContent ?? "").toMatch(
       /simulated factory schema acquisition failure/i,
     );
+  });
+});
+
+describe("factory-schema right rail", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  test("lists every section and definition, and every link lands on the page", async () => {
+    const model = loadSchemaVerificationPackageModel("schemas/factory");
+    const definitions = collectFactorySchemaSplayDefinitions(
+      model.root,
+      model.definitions,
+    );
+    const groups = groupFactorySchemaDefinitions(definitions);
+    const toc = buildPageToc();
+
+    // Core section + root definition, then one entry per group and per
+    // definition. Pinning the arithmetic is what stops the rail from silently
+    // dropping a section when the published schema grows.
+    expect(toc).toHaveLength(2 + groups.length + definitions.length);
+    expect(toc[0]?.title).toBe("Core configuration");
+    expect(toc[1]?.title).toBe("You Factory configuration");
+    expect(new Set(toc.map((item) => item.url)).size).toBe(toc.length);
+
+    const loadedPage = await loadLocalDocsPage({
+      section: "references",
+      slug: "factory-schema",
+    });
+    render(
+      <main>
+        <DocsPageProviders
+          assets={loadedPage.assets}
+          messages={loadedPage.messages}
+        >
+          {loadedPage.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    for (const item of toc) {
+      const fragment = String(item.url).slice(1);
+      expect(document.getElementById(fragment)).toBeTruthy();
+    }
   });
 });

@@ -24,6 +24,11 @@ import {
   schemaExampleOriginLabel,
 } from "./schema-example-display";
 import { SchemaStatus } from "./schema-status";
+import {
+  SCHEMA_SECTION_HEADING_CLASS,
+  SCHEMA_SECTION_HEADING_TAG,
+  type SchemaTypeScale,
+} from "./schema-type-scale";
 
 export type SchemaExamplePanelProps = {
   /**
@@ -53,6 +58,8 @@ export type SchemaExamplePanelProps = {
    * present. When false, return null instead.
    */
   showEmpty?: boolean;
+  /** Heading weight for the Examples label. See schema-type-scale. */
+  typeScale?: SchemaTypeScale;
   className?: string;
   "data-testid"?: string;
 };
@@ -128,9 +135,11 @@ export function SchemaExamplePanel({
   language = "json",
   chrome,
   showEmpty = true,
+  typeScale = "embed",
   className,
   "data-testid": testId = "schema-example-panel",
 }: SchemaExamplePanelProps) {
+  const Heading = SCHEMA_SECTION_HEADING_TAG[typeScale];
   const resolved = resolveExamples({
     examples,
     exampleInputs,
@@ -150,7 +159,9 @@ export function SchemaExamplePanel({
         data-schema-examples="empty"
         data-testid={testId}
       >
-        <h3 className="font-medium text-foreground text-sm">Examples</h3>
+        <Heading className={SCHEMA_SECTION_HEADING_CLASS[typeScale]}>
+          Examples
+        </Heading>
         <SchemaStatus
           data-testid="schema-example-empty"
           kind="empty"
@@ -168,7 +179,9 @@ export function SchemaExamplePanel({
       data-schema-examples="present"
       data-testid={testId}
     >
-      <h3 className="font-medium text-foreground text-sm">Examples</h3>
+      <Heading className={SCHEMA_SECTION_HEADING_CLASS[typeScale]}>
+        Examples
+      </Heading>
       <ul className="m-0 list-none space-y-3 p-0">
         {resolved.map((example) => {
           const originLabel = schemaExampleOriginLabel(example.origin, chrome);

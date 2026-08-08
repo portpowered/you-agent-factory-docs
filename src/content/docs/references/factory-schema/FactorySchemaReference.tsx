@@ -15,6 +15,7 @@
  * sibling-schema default and not a live Factory host fetch.
  */
 
+import type { SchemaCatalogSection } from "@/features/references/schema";
 import { SchemaReference } from "@/features/references/schema";
 import { ReferenceHashNavigation } from "@/features/references/shared";
 import {
@@ -24,9 +25,25 @@ import {
 import { createReferenceCrossLinkResolver } from "@/lib/references/reference-cross-link-resolver";
 import type { SchemaAddress } from "@/lib/references/schema-model";
 import { FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS } from "./factory-schema-full-config-example";
+import {
+  factorySchemaGroupAnchor,
+  groupFactorySchemaDefinitions,
+} from "./factory-schema-groups";
 import { collectFactorySchemaSplayDefinitions } from "./factory-schema-splay";
 
 export const FACTORY_SCHEMA_PAGE_PATH = "/docs/references/factory-schema";
+
+/**
+ * The root object a `factory.json` file is. Rendered first, above the variant
+ * sections, so the page opens on the thing a reader is actually authoring.
+ */
+export const FACTORY_SCHEMA_CORE_SECTION: SchemaCatalogSection = {
+  id: "core",
+  title: "Core configuration",
+  description:
+    "The root object of a factory configuration file. Every field below is declared directly on it; the sections that follow describe the objects it references.",
+  anchor: factorySchemaGroupAnchor("core"),
+};
 
 export type FactorySchemaReferenceProps = {
   /**
@@ -68,14 +85,22 @@ export function FactorySchemaReference({
       <>
         <ReferenceHashNavigation data-testid="factory-schema-hash-navigation" />
         <SchemaReference
+          catalogGroups={groupFactorySchemaDefinitions(splayedDefinitions)}
           data-testid="factory-schema-reference"
           definitions={splayedDefinitions}
           exampleInputs={FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS}
           pagePath={FACTORY_SCHEMA_PAGE_PATH}
+          primarySection={FACTORY_SCHEMA_CORE_SECTION}
           resolve={buildResolve(model)}
           root={model.root}
           showCatalog
+          // The whole catalog is rendered below, grouped, and listed again in
+          // the right rail. Standing a third flat copy of it above the content
+          // is the dump this page was rebuilt to remove — so the filter list
+          // appears only once a reader actually types a query.
+          showDefinitionListWhenEmpty={false}
           showEmptyExamples
+          typeScale="page"
         />
       </>
     );

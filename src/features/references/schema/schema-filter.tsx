@@ -11,6 +11,7 @@
 import { useId, useState } from "react";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { schemaAddressDeepLink } from "./schema-anchor";
 import { SchemaFieldTree } from "./schema-field-tree";
 import {
   filterSchemaDefinitions,
@@ -55,6 +56,13 @@ export type SchemaFilterProps = {
    */
   showDefinitionList?: boolean;
   /**
+   * When false, the definition list appears only once a query is typed. A page
+   * that already renders every definition below the filter does not need a
+   * second full copy of the list sitting above them — that reads as a dump, not
+   * as a control. Default true preserves the standing always-listed behavior.
+   */
+  showDefinitionListWhenEmpty?: boolean;
+  /**
    * When true (default), render `SchemaFieldTree` for filtered field nodes
    * when `fieldNodes` is provided.
    */
@@ -93,6 +101,7 @@ export function SchemaFilter({
   definitions,
   fieldNodes,
   showDefinitionList = true,
+  showDefinitionListWhenEmpty = true,
   showFieldTree = true,
   pagePath,
   defaultExpanded = false,
@@ -128,9 +137,11 @@ export function SchemaFilter({
     fieldNodes,
   });
   const hasClearableQuery = normalizeSchemaFilterQuery(query).length > 0;
+  const listDefinitions =
+    showDefinitionList && (showDefinitionListWhenEmpty || hasClearableQuery);
   const showResults =
     !noMatches &&
-    ((showDefinitionList &&
+    ((listDefinitions &&
       filteredDefinitions !== undefined &&
       filteredDefinitions.length > 0) ||
       (showFieldTree &&
@@ -184,7 +195,7 @@ export function SchemaFilter({
           data-schema-filter="results"
           data-testid={`${testId}-results`}
         >
-          {showDefinitionList &&
+          {listDefinitions &&
           filteredDefinitions !== undefined &&
           filteredDefinitions.length > 0 ? (
             <section
@@ -197,23 +208,33 @@ export function SchemaFilter({
               <ul className="m-0 list-none space-y-1 p-0">
                 {filteredDefinitions.map((definition) => {
                   const labelText = definitionListLabel(definition);
+                  const deepLink = schemaAddressDeepLink(
+                    definition.address,
+                    pagePath,
+                  );
                   return (
                     <li
-                      className="min-w-0 rounded-md border border-border px-3 py-2"
+                      className="min-w-0"
                       data-schema-filter-definition-pointer={
                         definition.address.pointer
                       }
                       key={definition.address.pointer}
                     >
-                      <span
-                        className="font-medium text-foreground text-sm"
-                        data-schema-filter-definition-title=""
+                      {/* A match is only useful if it takes you there. */}
+                      <a
+                        className="block rounded-md border border-border px-3 py-2 no-underline transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        href={deepLink.href ?? `#${deepLink.anchor}`}
                       >
-                        {labelText}
-                      </span>
-                      <span className="mt-0.5 block truncate font-mono text-muted-foreground text-xs">
-                        {definition.address.pointer}
-                      </span>
+                        <span
+                          className="font-medium text-foreground text-sm"
+                          data-schema-filter-definition-title=""
+                        >
+                          {labelText}
+                        </span>
+                        <span className="mt-0.5 block truncate font-mono text-muted-foreground text-xs">
+                          {definition.address.pointer}
+                        </span>
+                      </a>
                     </li>
                   );
                 })}

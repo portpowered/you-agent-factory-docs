@@ -359,6 +359,12 @@ export async function loadRouteFamilyPageToc(
     const mod = await import("@/content/docs/references/cli/page-toc");
     return mod.buildPageToc();
   }
+  if (section === "references" && slug === "factory-schema") {
+    const mod = await import(
+      "@/content/docs/references/factory-schema/page-toc"
+    );
+    return mod.buildPageToc();
+  }
   return [];
 }
 

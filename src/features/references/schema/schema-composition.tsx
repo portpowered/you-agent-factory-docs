@@ -18,6 +18,11 @@ import {
   schemaCompositionKindLabel,
 } from "./schema-ref-display";
 import { SchemaRefLink } from "./schema-ref-link";
+import {
+  SCHEMA_SECTION_HEADING_CLASS,
+  SCHEMA_SECTION_HEADING_TAG,
+  type SchemaTypeScale,
+} from "./schema-type-scale";
 
 export type SchemaCompositionProps = {
   /**
@@ -33,15 +38,20 @@ export type SchemaCompositionProps = {
   resolve?: (address: SchemaAddress) => ReferenceCrossLinkOutcome;
   /** Owning page path used to build full `href` values on member links. */
   pagePath?: string;
+  /** Heading weight for branch/discriminator labels. See schema-type-scale. */
+  typeScale?: SchemaTypeScale;
   className?: string;
   "data-testid"?: string;
 };
 
 function SchemaDiscriminatorPanel({
   discriminator,
+  typeScale,
 }: {
   discriminator: SchemaDiscriminatorDisplay;
+  typeScale: SchemaTypeScale;
 }) {
+  const Heading = SCHEMA_SECTION_HEADING_TAG[typeScale];
   return (
     <section
       aria-label={`Discriminator on ${discriminator.propertyName}`}
@@ -49,10 +59,10 @@ function SchemaDiscriminatorPanel({
       data-schema-discriminator=""
       data-schema-discriminator-property={discriminator.propertyName}
     >
-      <h3 className="font-medium text-foreground text-sm">
+      <Heading className={SCHEMA_SECTION_HEADING_CLASS[typeScale]}>
         Discriminator:{" "}
         <code className="font-mono text-xs">{discriminator.propertyName}</code>
-      </h3>
+      </Heading>
       {discriminator.mappings.length === 0 ? null : (
         <ul className="m-0 list-none space-y-1 p-0">
           {discriminator.mappings.map((mapping) => (
@@ -81,9 +91,11 @@ export function SchemaComposition({
   display: displayProp,
   resolve,
   pagePath,
+  typeScale = "embed",
   className,
   "data-testid": testId = "schema-composition",
 }: SchemaCompositionProps) {
+  const BranchHeading = SCHEMA_SECTION_HEADING_TAG[typeScale];
   const display =
     displayProp ??
     (composition !== undefined
@@ -110,9 +122,9 @@ export function SchemaComposition({
           data-schema-composition-kind={branch.kind}
           key={branch.kind}
         >
-          <h3 className="font-medium text-foreground text-sm">
+          <BranchHeading className={SCHEMA_SECTION_HEADING_CLASS[typeScale]}>
             {schemaCompositionKindLabel(branch.kind)}
-          </h3>
+          </BranchHeading>
           <ul className="m-0 list-none space-y-1 p-0">
             {branch.members.map((member) => {
               const memberKey = [
@@ -137,7 +149,10 @@ export function SchemaComposition({
       ))}
 
       {display.discriminator !== undefined ? (
-        <SchemaDiscriminatorPanel discriminator={display.discriminator} />
+        <SchemaDiscriminatorPanel
+          discriminator={display.discriminator}
+          typeScale={typeScale}
+        />
       ) : null}
     </section>
   );
