@@ -73,6 +73,10 @@ export {
   type SchemaFieldTreeProps,
 } from "./schema-field-tree";
 export {
+  type SchemaFieldTypeLink,
+  schemaFieldTypeLink,
+} from "./schema-field-type-link";
+export {
   SchemaFilter,
   type SchemaFilterProps,
 } from "./schema-filter";

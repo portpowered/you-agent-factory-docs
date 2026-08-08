@@ -166,7 +166,9 @@ describe("SchemaFieldTree", () => {
 
     render(<SchemaFieldTree nodes={nodes} />);
 
-    expect(screen.getByText("$ref →")).toBeTruthy();
+    // The target is the type: the link *is* the type badge now, not a
+    // separate `$ref → Worker` row printed below the description.
+    expect(screen.queryByText("$ref →")).toBeNull();
     expect(
       screen.getByRole("link", { name: /schema reference: Worker/i }),
     ).toBeTruthy();

@@ -32,6 +32,12 @@ export type SchemaFieldTreeProps = {
    */
   showFieldPathWhenDistinct?: boolean;
   /**
+   * When false, rows omit their per-field copyable deep-link control. A copy
+   * button on every parameter is more chrome than signal; the owning definition
+   * still carries one. Default true preserves per-field anchors.
+   */
+  showAnchorCopy?: boolean;
+  /**
    * When true, show full OpenAPI pointer breadcrumbs and full-pointer `$ref`
    * labels. Forwarded to each {@link SchemaFieldRow}. Default false prefers
    * leaf names and compact `$ref` labels while keeping copyable deep links.
@@ -54,6 +60,7 @@ export function SchemaFieldTree({
   defaultExpanded = false,
   pagePath,
   showFieldPathWhenDistinct = false,
+  showAnchorCopy = true,
   showPointerPathChrome = false,
   className,
   "data-testid": testId = "schema-field-tree",
@@ -65,6 +72,10 @@ export function SchemaFieldTree({
   if (resolvedNodes.length === 0) {
     return null;
   }
+
+  // Reserve the expand column only when a sibling actually uses it. On a flat
+  // list it is dead indent that pushes every field off the block's left edge.
+  const showExpandColumn = resolvedNodes.some(schemaFieldTreeNodeCanExpand);
 
   return (
     <ul
@@ -84,6 +95,7 @@ export function SchemaFieldTree({
               depth={depth + 1}
               nodes={node.children}
               pagePath={pagePath}
+              showAnchorCopy={showAnchorCopy}
               showFieldPathWhenDistinct={showFieldPathWhenDistinct}
               showPointerPathChrome={showPointerPathChrome}
             />
@@ -96,6 +108,8 @@ export function SchemaFieldTree({
             key={node.field.path}
             node={node}
             pagePath={pagePath}
+            showAnchorCopy={showAnchorCopy}
+            showExpandColumn={showExpandColumn}
             showFieldPathWhenDistinct={showFieldPathWhenDistinct}
             showPointerPathChrome={showPointerPathChrome}
           >

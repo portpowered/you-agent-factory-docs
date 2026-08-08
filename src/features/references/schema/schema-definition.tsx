@@ -271,7 +271,12 @@ export function SchemaDefinition({
             defaultExpanded={defaultExpanded}
             nodes={nodes}
             pagePath={pagePath}
-            showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+            // At page scale the definition owns the copyable anchor; a copy
+            // button on all 286 parameters is noise, not affordance. The
+            // secondary path label is dropped for the same reason — on a flat
+            // list it just prints each field's own name twice.
+            showAnchorCopy={!isPageScale}
+            showFieldPathWhenDistinct={isPageScale || showFieldPathWhenDistinct}
             showPointerPathChrome={showPointerPathChrome}
           />
         </section>

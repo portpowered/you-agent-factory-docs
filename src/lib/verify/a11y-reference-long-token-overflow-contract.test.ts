@@ -73,7 +73,7 @@ describe("a11y-reference-long-token-overflow-contract", () => {
       listRequiredReferenceLongTokens("references-factory-schema").map(
         (entry) => entry.id,
       ),
-    ).toEqual(["schema-field-name", "schema-field-path"]);
+    ).toEqual(["schema-field-name", "schema-field-type-link"]);
   });
 
   test("contained break-all path tokens pass while page overflow stays clean", () => {
@@ -172,7 +172,7 @@ describe("a11y-reference-long-token-overflow-contract", () => {
         <pre>curl https://example.test/very-long-unbroken-path-token</pre>
       </div>
       <span data-schema-field-name="" class="break-all">veryLongFieldNameWithoutBreaks</span>
-      <code data-schema-field-path-label="" class="truncate max-w-full">a.b.c.very.long.field.path</code>
+      <a data-schema-ref-kind="resolved" href="#defs-VeryLongDefinitionName"><span data-schema-ref-label="" class="min-w-0 break-all">VeryLongSchemaDefinitionNameWithoutBreaks</span></a>
     `;
 
     const enumSpec = REFERENCE_LONG_TOKENS.find(

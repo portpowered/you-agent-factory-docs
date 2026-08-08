@@ -222,6 +222,79 @@ describe("FactorySchemaReference mount", () => {
     ).toBeTruthy();
   });
 
+  test("names each field once, unindented, with no per-parameter copy button", () => {
+    render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+    const rows = [...surface.querySelectorAll("[data-schema-field-path]")];
+    expect(rows.length).toBeGreaterThan(200);
+
+    for (const row of rows) {
+      // `agentTools agentTools` printed the same name twice.
+      expect(row.querySelector("[data-schema-field-path-label]")).toBeNull();
+      // A copy button on every parameter is chrome, not affordance — the
+      // owning definition still carries one.
+      expect(row.querySelector('[data-schema-breadcrumb="copy"]')).toBeNull();
+      // Nothing on this page expands, so the reserved chevron column was pure
+      // indent pushing every field off the block's left edge.
+      expect(row.querySelector("[data-schema-field-expand-spacer]")).toBeNull();
+    }
+
+    // The definition still has its anchor.
+    expect(
+      surface.querySelector(
+        '[data-schema-definition-pointer="/$defs/Worker"] [data-schema-breadcrumb="copy"]',
+      ),
+    ).toBeTruthy();
+  });
+
+  test("makes a field's type its link to the definition it names", () => {
+    render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+
+    // `workTypes` is a WorkType[] — the badge already said so, it just could
+    // not be clicked.
+    const workTypes = surface.querySelector(
+      '[data-schema-field-path="workTypes"]',
+    );
+    const workTypesLink = workTypes?.querySelector("a[data-schema-ref-kind]");
+    expect(workTypesLink?.getAttribute("data-schema-ref-pointer")).toBe(
+      "/$defs/WorkType",
+    );
+    expect(workTypesLink?.textContent).toContain("WorkType[]");
+
+    // `description` published `allOf`, which names nothing. Its target does.
+    const description = surface.querySelector(
+      '[data-schema-field-path="description"]',
+    );
+    const descriptionLink = description?.querySelector(
+      "a[data-schema-ref-kind]",
+    );
+    expect(descriptionLink?.getAttribute("data-schema-ref-pointer")).toBe(
+      "/$defs/NameValue",
+    );
+    expect(descriptionLink?.textContent).toContain("NameValue");
+    expect(description?.textContent ?? "").not.toContain("allOf");
+
+    // The separate `$ref → X` row it used to duplicate is gone.
+    expect(surface.querySelector("[data-schema-ref-row]")).toBeNull();
+
+    // Every type link lands on a definition rendered on this page.
+    const links = [...surface.querySelectorAll("a[data-schema-ref-kind]")];
+    expect(links.length).toBeGreaterThan(100);
+    for (const link of links) {
+      const href = link.getAttribute("href") ?? "";
+      expect(href.startsWith(`${FACTORY_SCHEMA_PAGE_PATH}#`)).toBe(true);
+      const target = document.getElementById(
+        href.slice(`${FACTORY_SCHEMA_PAGE_PATH}#`.length),
+      );
+      expect(target?.getAttribute("data-schema-definition-pointer")).toBe(
+        link.getAttribute("data-schema-ref-pointer"),
+      );
+    }
+  });
+
   test("holds the definition list back until a query is typed", () => {
     render(<FactorySchemaReference />);
 
